@@ -57,7 +57,7 @@ namespace Franquicia.DataAccess.Repository
                     UidPromocion = new Guid(item["UidCliente"].ToString())
                 });
             }
-
+            // demo
             return lsClientesCBLPromocionesModel;
         }
         #endregion
