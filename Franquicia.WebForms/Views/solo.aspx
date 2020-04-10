@@ -163,8 +163,43 @@
             </nav>
             <!-- End Navbar -->
             <div class="content">
+
+                <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+                <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/css/bootstrap-multiselect.css" rel="stylesheet" type="text/css" />
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/js/bootstrap-multiselect.min.js"></script>
+                <script type="text/javascript">
+                    $(function () {
+                        $("#ListBox1").multiselect({
+                            includeSelectAllOption: true
+                        });
+                    });
+                </script>
                 <div class="container-fluid">
                     <!-- ojdiouhduihduihhi -->
+                    <form id="form1" runat="server">
+                        <div class="container mt-4">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <asp:Button Text="WhatsApp" CssClass="btn btn-success" runat="server" ID="btnSendWhatsApp" OnClick="btnSendWhatsApp_Click" />
+                                </div>
+
+                                <asp:TextBox runat="server" ID="txtMessage" CssClass="form-control" />
+
+                                <div class="input-group-append">
+                                    <asp:Button Text="SMS" runat="server" ID="btnSendMessage" CssClass="btn btn-info" OnClick="btnSendMessage_Click" />
+                                </div>
+                            </div>
+
+                            <asp:Label Text="Response: " ID="lblResponse" runat="server" CssClass="text-danger" />
+                        </div>
+                        <div>
+                            <asp:ListBox ID="ListBox1" runat="server" SelectionMode="Multiple">
+                                <asp:ListItem Text="text" />
+                                <asp:ListItem Text="text2" />
+                                <asp:ListItem Text="text3" />
+                            </asp:ListBox>
+                        </div>
+                    </form>
                 </div>
             </div>
             <footer class="footer">
@@ -272,7 +307,7 @@
         </div>
     </div>
     <!--   Core JS Files   -->
-    <script src="../assets/js/core/jquery.min.js"></script>
+    <%--<script src="../assets/js/core/jquery.min.js"></script>--%>
     <script src="../assets/js/core/popper.min.js"></script>
     <script src="../assets/js/core/bootstrap-material-design.min.js"></script>
     <script src="../assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>

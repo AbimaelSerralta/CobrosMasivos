@@ -1,4 +1,5 @@
 ﻿using Franquicia.DataAccess.Common;
+using Franquicia.Domain.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -82,6 +83,46 @@ namespace Franquicia.DataAccess.Repository
                 throw;
             }
             return resultado;
+        }
+        
+        public List<LigasUrlsPayCardModel> ConsultarPromocionLiga(string IdReferencia)
+        {
+            List<LigasUrlsPayCardModel> lsLigasUrlsPayCardModel = new List<LigasUrlsPayCardModel>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select * from LigasUrls where IdReferencia = '" + IdReferencia + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                Guid UidLigaAsociado = item.IsNull("UidLigaAsociado") ? Guid.Empty : Guid.Parse(item["UidLigaAsociado"].ToString());
+
+                if (UidLigaAsociado != null && UidLigaAsociado != Guid.Empty)
+                {
+                    SqlCommand quer = new SqlCommand();
+                    quer.CommandType = CommandType.Text;
+
+                    quer.CommandText = "select * from LigasUrls where IdReferencia != '"+ IdReferencia + "' and UidLigaAsociado = '" + UidLigaAsociado + "'";
+
+                    DataTable data = this.Busquedas(quer);
+
+                    foreach (DataRow it in data.Rows)
+                    {
+                        lsLigasUrlsPayCardModel.Add(new LigasUrlsPayCardModel()
+                        {
+                            UidLigaUrl = Guid.Parse(it["UidLigaUrl"].ToString()),
+                            VchUrl = it["VchUrl"].ToString(),
+                            VchConcepto = it["VchConcepto"].ToString(),
+                            IdReferencia = it["IdReferencia"].ToString()
+                        });
+                    }
+                }
+            }
+
+            return lsLigasUrlsPayCardModel;
         }
     }
 }

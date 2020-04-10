@@ -13,7 +13,14 @@ namespace Franquicia.DataAccess.Repository
 {
     public class FranquiciatariosRepository : SqlDataRepository
     {
-        
+
+        private FranquiciasGridViewModel _franquiciasGridViewModel = new FranquiciasGridViewModel();
+        public FranquiciasGridViewModel franquiciasGridViewModel
+        {
+            get { return _franquiciasGridViewModel; }
+            set { _franquiciasGridViewModel = value; }
+        }
+
         public List<FranquiciasGridViewModel> CargarFranquiciatarios()
         {
             List<FranquiciasGridViewModel> lsFranquiciasGridViewModel = new List<FranquiciasGridViewModel>();
@@ -217,5 +224,28 @@ namespace Franquicia.DataAccess.Repository
             }
             return Resultado;
         }
+
+        #region AdminFranquicias
+        public void ObtenerFranquicia(Guid UidAdministrador)
+        {
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "Select fr.*, es.VchDescripcion, es.VchIcono from Franquiciatarios fr, Estatus es, FranquiciasUsuarios fu, Usuarios us where fu.UidUsuario = us.UidUsuario and fr.UidFranquiciatarios = fu.UidFranquicia and fr.UidEstatus = es.UidEstatus and us.UidUsuario = '"+ UidAdministrador +"'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                franquiciasGridViewModel = new FranquiciasGridViewModel()
+                {
+                    UidFranquiciatarios = new Guid(item["UidFranquiciatarios"].ToString()),
+                    VchRFC = item["VchRFC"].ToString(),
+                    VchRazonSocial = item["VchRazonSocial"].ToString(),
+                    VchNombreComercial = item["VchNombreComercial"].ToString()
+                };
+            }
+        }
+        #endregion
     }
 }

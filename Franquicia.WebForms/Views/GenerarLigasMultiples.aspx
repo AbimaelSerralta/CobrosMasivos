@@ -6,14 +6,39 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="CPHCaja" runat="server">
 
+    <%--<style>
+        .table .radio, .table .checkbox {
+            margin-top: 0;
+            margin-bottom: 0;
+            padding: 0;
+            width: 30px;
+        }
+    </style>--%>
     <style>
         .form-check, label {
-            color: white;
+            font-size: 14px;
+            line-height: 1.42857;
+            color: #333333;
+            font-weight: 400;
+            padding-left: 5px;
+            padding-right: 20px;
+            width: 100%;
         }
     </style>
 
     <asp:UpdatePanel runat="server">
         <ContentTemplate>
+            <asp:Panel ID="pnlAlertImportarError" Visible="false" runat="server">
+                <div id="divAlertImportarError" class="alert alert-danger alert-dismissible fade" role="alert" runat="server">
+                    <div class="row">
+                        <asp:Label ID="lblMnsjAlertImportarError" Style="margin-top: 5px; margin-left: 15px;" runat="server" />
+                        <asp:LinkButton ID="btnDescargarError" Visible="false" OnClick="btnDescargarError_Click" Style="padding-bottom: 5px; padding-top: 5px; padding-right: 5px; padding-left: 5px; margin-top: 0px;" class="btn btn-success" runat="server">Descargar Error</asp:LinkButton>
+                        <asp:LinkButton ID="btnMasDetalle" Visible="false" OnClick="btnMasDetalle_Click" Style="padding-bottom: 5px; padding-top: 5px; padding-right: 5px; padding-left: 5px; margin-top: 0px;" class="btn btn-info" runat="server">Más detalle</asp:LinkButton>
+                    </div>
+
+                    <asp:LinkButton ID="btnCloseAlertImportarError" OnClick="btnCloseAlertImportarError_Click" class="close" aria-label="Close" runat="server"><span aria-hidden="true">&times;</span></asp:LinkButton>
+                </div>
+            </asp:Panel>
             <asp:Panel ID="pnlAlert" Visible="false" runat="server">
                 <div id="divAlert" class="alert alert-danger alert-dismissible fade" role="alert" runat="server">
                     <asp:Label ID="lblMensajeAlert" runat="server" />
@@ -90,7 +115,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="table-responsive">
-                                            <asp:GridView ID="gvUsuariosSeleccionados" OnSorting="gvUsuariosSeleccionados_Sorting" OnRowCommand="gvUsuariosSeleccionados_RowCommand" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="IdUsuario" GridLines="None" border="0" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvUsuariosSeleccionados_PageIndexChanging" runat="server">
+                                            <asp:GridView ID="gvUsuariosSeleccionados" OnRowDataBound="gvUsuariosSeleccionados_RowDataBound" OnSorting="gvUsuariosSeleccionados_Sorting" OnRowCommand="gvUsuariosSeleccionados_RowCommand" AllowSorting="true" AutoGenerateColumns="false" CssClass="table-hover" DataKeyNames="IdUsuario" GridLines="None" border="0" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvUsuariosSeleccionados_PageIndexChanging" runat="server">
                                                 <EmptyDataTemplate>
                                                     <div class="alert alert-info">No hay usuarios</div>
                                                 </EmptyDataTemplate>
@@ -130,6 +155,11 @@
                                                     <asp:TemplateField SortExpression="DtVencimiento" HeaderText="VENCIMIENTO">
                                                         <ItemTemplate>
                                                             <asp:TextBox ID="txtGvVencimiento" Style="width: 100%" Text='<%#Eval("DtVencimiento", "{0:yyyy-MM-dd}")%>' TextMode="Date" Enabled="false" BorderStyle="None" runat="server" />
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <asp:TemplateField HeaderText="PROMOCIÓN">
+                                                        <ItemTemplate>
+                                                            <asp:ListBox ID="ListBoxMultiple" runat="server" SelectionMode="Multiple"></asp:ListBox>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                     <asp:TemplateField>
@@ -197,12 +227,12 @@
                                             </asp:GridView>
                                         </div>
                                     </div>
-                                    <div class="form-group col-md-4" style="padding-left: 0px;" visible="false" runat="server">
+                                    <div class="form-group col-md-4" visible="false" style="padding-left: 0px;" runat="server">
                                         <label for="txtCadena" style="color: black;">cade</label>
                                         <asp:TextBox ID="txtCadena" CssClass="form-control" runat="server" />
                                     </div>
 
-                                    <asp:LinkButton ID="BTNdEs" visible="false" Text="dESC" OnClick="BTNdEs_Click"  runat="server" />
+                                    <asp:LinkButton ID="BTNdEs" Visible="false" Text="dESC" OnClick="BTNdEs_Click" runat="server" />
                                 </div>
                             </div>
                         </div>
@@ -303,6 +333,13 @@
             </div>
         </ContentTemplate>
     </asp:UpdatePanel>
+    <script>
+        function multi() {
+            $('[id*=ListBox]').multiselect({
+                includeSelectAllOption: true
+            });
+        }
+    </script>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="cBodyBottom" runat="server">
     <!--MODAL-->
@@ -586,6 +623,121 @@
             </div>
         </div>
     </div>
+
+    <div id="ModalMasDetalle" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <asp:UpdatePanel runat="server">
+                    <ContentTemplate>
+                        <div class="modal-header">
+                            <h5 class="modal-title" runat="server">
+                                <asp:Label ID="Label1" Text="Más Detalle" runat="server" /></h5>
+                            <%--<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>--%>
+                        </div>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+                <div class="modal-body pt-0" style="padding-bottom: 0px;">
+                    <div class="tab-content">
+                        <asp:UpdatePanel runat="server">
+                            <ContentTemplate>
+                                <asp:Panel ID="Panel1" runat="server">
+                                    <div class="row">
+                                        <div class="card" style="margin-top: 0px;margin-bottom: 0px;">
+                                            <img src="../Images/LigaSimple.PNG" class="card-img-top" alt="...">
+                                            <div class="card-body">
+                                                <h5 class="card-title"><strong>Campos obligatorios *</strong></h5>
+                                                <div class="table-responsive">
+                                                    <table class="table">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td class="td-name">
+                                                                    <p class="card-text">Nombre(s) *.</p>
+                                                                </td>
+                                                                <td>
+                                                                    <p class="card-text">ApePaterno *.</p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="td-name">
+                                                                    <p class="card-text">ApeMaterno *.</p>
+                                                                </td>
+                                                                <td>
+                                                                    <p class="card-text">Correo * + Formato correcto (ejemplo@ejemplo.com).</p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="td-name">
+                                                                    <p class="card-text">Celular *.</p>
+                                                                </td>
+                                                                <td>
+                                                                    
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card" style="margin-top: 0px;margin-bottom: 0px;">
+                                            <img src="../Images/Multiple.PNG" class="card-img-top" alt="...">
+                                            <div class="card-body">
+                                                <h5 class="card-title"><strong>Campos obligatorios *</strong></h5>
+                                                <div class="table-responsive">
+                                                    <table class="table">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td class="td-name">
+                                                                    <p class="card-text">Asunto *.</p>
+                                                                </td>
+                                                                <td>
+                                                                    <p class="card-text">Concepto *.</p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="td-name">
+                                                                    <p class="card-text">Importe *.</p>
+                                                                </td>
+                                                                <td>
+                                                                    <p class="card-text">Vencimiento *.</p>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="td-name">
+                                                                    <p class="card-text">Promocion(es) (Opcional).</p>
+                                                                </td>
+                                                                <td>
+                                                                    
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                
+                                                <h5 class="card-title"><strong>¿Agrego promociones?</strong></h5>
+                                                <p class="card-text">Por favor revice que las promociones ingresadas en el campo (PROMOCION(ES)) se encuentre en las permitidas.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </asp:Panel>
+                            </ContentTemplate>
+                        </asp:UpdatePanel>
+                    </div>
+                </div>
+                <asp:UpdatePanel runat="server">
+                    <ContentTemplate>
+                        <div class="modal-footer justify-content-center">
+                            <asp:LinkButton class="close" data-dismiss="modal" aria-label="Close" CssClass="btn btn-success btn-round" runat="server">
+                            <i class="material-icons">check</i> Aceptar
+                            </asp:LinkButton>
+                        </div>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+            </div>
+        </div>
+    </div>
     <!--END MODAL-->
 
     <script>
@@ -604,6 +756,14 @@
 
         function hideModalSeleccionar() {
             $('#ModalSeleccionar').modal('hide');
+        }
+
+        function showModalMasDetalle() {
+            $('#ModalMasDetalle').modal('show');
+        }
+
+        function hideModalMasDetalle() {
+            $('#ModalMasDetalle').modal('hide');
         }
     </script>
 </asp:Content>

@@ -49,6 +49,7 @@ namespace Franquicia.Domain.Models
 
         #region Fanquicias
         public Guid UidEstatusEmpresa { get; set; }
+        public string VchNombreComercial { get; set; }
         #endregion
 
         #region Otros Modelos

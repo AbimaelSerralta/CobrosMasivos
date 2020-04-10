@@ -10,10 +10,14 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/solid.css" />
 
+    <!-- CssPropio -->
+    <link href="../CSSPropio/StyleVentanaModal.css" rel="stylesheet" />
+    <link href="../CSSPropio/Loader.css" rel="stylesheet" />
     <link href="../CSSPropio/Login.css" rel="stylesheet" />
+    <!-- CssPropio -->
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title><%:Page.Title %></title>
+    <title>Login</title>
     <link rel="shortcut icon" href="../Images/logoCobroscontarjetas.png" />
 
     <script>
@@ -28,7 +32,23 @@
 </head>
 <body>
     <form id="form1" runat="server">
-        <div class="container">
+        <asp:ScriptManager runat="server" />
+
+        <asp:UpdateProgress runat="server">
+            <ProgressTemplate>
+                <div class="PogressModal" style="top: 0px;">
+                    <div>
+                        <div class="loader"></div>
+                        <br />
+                        <asp:Label Text="Validando..." Style="color: white;" runat="server" />
+                    </div>
+                </div>
+            </ProgressTemplate>
+        </asp:UpdateProgress>
+
+        <asp:UpdatePanel runat="server">
+            <ContentTemplate>
+                <div class="container">
             <div class="modal-dialog text-center">
                 <div class="col-sm-9 main-section">
                     <div class="modal-content">
@@ -63,7 +83,8 @@
                 </div>
             </div>
         </div>
-
+            </ContentTemplate>
+        </asp:UpdatePanel>
     </form>
 </body>
 </html>

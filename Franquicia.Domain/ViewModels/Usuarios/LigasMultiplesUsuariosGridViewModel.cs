@@ -17,5 +17,8 @@ namespace Franquicia.Domain.ViewModels
         public string StrConcepto { get; set; }
         public decimal DcmImporte { get; set; }
         public DateTime DtVencimiento { get; set; }
+        public string StrPromociones { get; set; }
+        public int IdFranquicia { get; set; }
+        public string VchNombreComercial { get; set; }
     }
 }

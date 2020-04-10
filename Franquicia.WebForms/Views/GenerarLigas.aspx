@@ -6,10 +6,14 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="CPHCaja" runat="server">
-
     <style>
         .form-check, label {
-            color: white;
+            font-size: 14px;
+            line-height: 1.42857;
+            color: #333333;
+            font-weight: 400;
+            padding-left: 5px;
+            padding-right: 20px;
         }
     </style>
 
@@ -32,7 +36,7 @@
                         <asp:LinkButton ID="btnMasDetalle" Visible="false" OnClick="btnMasDetalle_Click" Style="padding-bottom: 5px; padding-top: 5px; padding-right: 5px; padding-left: 5px; margin-top: 0px;" class="btn btn-info" runat="server">Más detalle</asp:LinkButton>
                     </div>
 
-                    <asp:LinkButton ID="btnCloseAlertImportarError" OnClick="btnCloseAlertImportarError_Click" class="close" aria-label="Close" runat="server" ><span aria-hidden="true">&times;</span></asp:LinkButton>
+                    <asp:LinkButton ID="btnCloseAlertImportarError" OnClick="btnCloseAlertImportarError_Click" class="close" aria-label="Close" runat="server"><span aria-hidden="true">&times;</span></asp:LinkButton>
                 </div>
             </asp:Panel>
 
@@ -72,8 +76,10 @@
                                 <div class="card-header card-header-tabs card-header-primary" style="padding-top: 0px; padding-bottom: 0px;">
                                     <div class="nav-tabs-navigation">
                                         <div class="nav-tabs-wrapper">
-                                            <div class="form-group">
-
+                                            <div class="form-group" style="margin-top: 0px; padding-bottom: 0px;">
+                                                <asp:LinkButton ID="btnFiltros" Visible="false" ToolTip="Filtros de busqueda." BackColor="#4db6ac" class="btn btn-lg btn-fab btn-fab-mini btn-round" runat="server">
+                                                        <i class="material-icons">search</i>
+                                                </asp:LinkButton>
                                                 <asp:Label Text="Listado de Usuarios" runat="server" />
 
                                                 <div class="pull-right">
@@ -114,15 +120,35 @@
                                                 <label for="txtConcepto" style="color: black;">Concepto *</label>
                                                 <asp:TextBox ID="txtConcepto" CssClass="form-control" runat="server" />
                                             </div>
-                                            <div class="form-group col-md-4" style="padding-left: 0px;">
+                                            <div class="form-group col-md-2" style="padding-left: 0px;">
                                                 <label for="txtImporte" style="color: black;">Importe *</label>
-                                                <asp:TextBox ID="txtImporte" CssClass="form-control" TextMode="Phone" runat="server" />
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="material-icons">$</i>
+                                                        </span>
+                                                    </div>
+                                                    <asp:TextBox ID="txtImporte" CssClass="form-control" TextMode="Phone" runat="server" />
+                                                </div>
+
                                                 <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtImporte" runat="server" />
                                             </div>
-                                            <div class="form-group col-md-4" style="padding-left: 0px;">
+                                            <div class="form-group col-md-2" style="padding-left: 0px;">
                                                 <label for="txtVencimiento" style="color: black;">Vencimiento *</label>
                                                 <asp:TextBox ID="txtVencimiento" TextMode="Date" CssClass="form-control" runat="server" />
                                             </div>
+                                            <asp:Panel ID="pnlPromociones" runat="server">
+                                                <div class="form-group col-md-4" visible="false" style="padding-left: 0px;" runat="server">
+                                                    <asp:ListBox ID="ListBoxSimple" runat="server" SelectionMode="Multiple"></asp:ListBox>
+                                                </div>
+                                                <div class="form-group col-md-12" runat="server" style="padding-bottom: 0px;">
+                                                    <div class="card card-stats bg-light border-info" style="margin-top: 0px; margin-bottom: 0px;" runat="server">
+                                                        <label for="cblPromociones" style="color: black;">Promociones</label>
+                                                        <asp:CheckBoxList ID="cblPromociones" RepeatDirection="Horizontal" CssClass="form-check" runat="server">
+                                                        </asp:CheckBoxList>
+                                                    </div>
+                                                </div>
+                                            </asp:Panel>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -134,7 +160,7 @@
                                                 <Columns>
                                                     <asp:BoundField SortExpression="NombreCompleto" DataField="NombreCompleto" HeaderText="NOMBRE" />
                                                     <asp:BoundField SortExpression="StrCorreo" DataField="StrCorreo" HeaderText="CORREO" />
-                                                    <asp:BoundField SortExpression="StrTelefono" DataField="StrTelefono" HeaderText="TELÉFONO" />
+                                                    <asp:BoundField SortExpression="StrTelefono" DataField="StrTelefono" HeaderText="CELULAR" />
                                                     <asp:TemplateField>
                                                         <ItemTemplate>
                                                             <table>
@@ -174,7 +200,7 @@
                                                     </asp:TemplateField>
                                                     <asp:BoundField DataField="NombreCompleto" HeaderText="NOMBRE" />
                                                     <asp:BoundField DataField="StrCorreo" HeaderText="CORREO" />
-                                                    <asp:BoundField DataField="StrTelefono" HeaderText="TELEFONO" />
+                                                    <asp:BoundField DataField="StrTelefono" HeaderText="CELULAR" />
                                                 </Columns>
                                             </asp:GridView>
                                         </div>
@@ -284,6 +310,14 @@
             </asp:LinkButton></a>--%>
         </ContentTemplate>
     </asp:UpdatePanel>
+
+    <script>
+        function multi() {
+            $('[id*=ListBox]').multiselect({
+                includeSelectAllOption: true
+            });
+        }
+    </script>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="cBodyBottom" runat="server">
     <!--MODAL-->
@@ -523,7 +557,7 @@
                                                             </asp:TemplateField>
                                                             <asp:BoundField SortExpression="NombreCompleto" DataField="NombreCompleto" HeaderText="NOMBRE" />
                                                             <asp:BoundField SortExpression="StrCorreo" DataField="StrCorreo" HeaderText="CORREO" />
-                                                            <asp:BoundField SortExpression="StrTelefono" DataField="StrTelefono" HeaderText="TELEFONO" />
+                                                            <asp:BoundField SortExpression="StrTelefono" DataField="StrTelefono" HeaderText="CELULAR" />
                                                         </Columns>
                                                         <PagerStyle CssClass="pagination-ys" />
                                                     </asp:GridView>

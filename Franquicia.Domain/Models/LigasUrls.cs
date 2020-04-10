@@ -18,5 +18,7 @@ namespace Franquicia.Domain.Models
         public DateTime DtVencimiento { get; set; }
         public Decimal DcmImporte { get; set; }
         public string VchAsunto { get; set; }
+        public Guid UidLigaAsociado { get; set; }
+        public Guid UidPromocion { get; set; }
     }
 }

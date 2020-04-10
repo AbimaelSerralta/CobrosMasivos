@@ -88,6 +88,26 @@ namespace Franquicia.Bussiness
         {
             return validacionesRepository.ExisteUsuario(Usuario);
         }
+
+        public bool ExisteUsuarioFranquicia(Guid UidFranquicia, Guid UidUsuario)
+        {
+            return validacionesRepository.ExisteUsuarioFranquicia(UidFranquicia, UidUsuario);
+        }
+
+        public bool ExisteUsuarioCliente(Guid UidCliente, Guid UidUsuario)
+        {
+            return validacionesRepository.ExisteUsuarioCliente(UidCliente, UidUsuario);
+        }
+
+        public bool ExisteDireccionUsuario(Guid UidUsuario)
+        {
+            return validacionesRepository.ExisteDireccionUsuario(UidUsuario);
+        }
+
+        public bool LigaAsociadoPagado(Guid UidLigaAsociado)
+        {
+            return validacionesRepository.LigaAsociadoPagado(UidLigaAsociado);
+        }
         #endregion
     }
 }

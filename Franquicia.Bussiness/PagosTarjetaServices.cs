@@ -33,5 +33,11 @@ namespace Franquicia.Bussiness
 
             lsPagosTarjetaDetalleGridViewModel = pagosTarjetaRepository.DetalleLiga(IdReferencia);
         }
+        public void DetalleLigaPromocion(Guid UidLigaAsociado)
+        {
+            lsPagosTarjetaDetalleGridViewModel = new List<PagosTarjetaDetalleGridViewModel>();
+
+            lsPagosTarjetaDetalleGridViewModel = pagosTarjetaRepository.DetalleLigaPromocion(UidLigaAsociado);
+        }
     }
 }

@@ -125,6 +125,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="assets\css\font-awesome.min.css" />
+    <Content Include="assets\css\MaterialIcons.css" />
     <Content Include="assets\css\material-dashboard-rtl.css" />
     <Content Include="assets\css\material-dashboard.css" />
     <Content Include="assets\css\material-dashboard.min.css" />
@@ -204,17 +206,29 @@
     <Content Include="Images\logoCobroscontarjetas.png" />
     <Content Include="Images\logoCobroscontarjetasLetras.png" />
     <Content Include="Images\mountain.png" />
+    <Content Include="Images\Multiple.PNG" />
+    <Content Include="Multiselect\css\bootstrap-multiselect.css" />
+    <Content Include="Multiselect\js\bootstrap-multiselect.min.js" />
+    <Content Include="Multiselect\js\jquery-3.3.1.min.js" />
     <Content Include="Views\AccesosUsuarios.aspx" />
     <Content Include="Views\AdministradoresFranquicias.aspx" />
     <Content Include="Views\AdministradoresClientes.aspx" />
     <Content Include="Views\ExportarAExcel.aspx" />
     <Content Include="Views\ExportarAExcelMultiple.aspx" />
     <Content Include="Views\ExportarAExcelReporteLigas.aspx" />
+    <Content Include="Views\GenerarLigasFranquicias.aspx" />
     <Content Include="Views\GenerarLigas.aspx" />
+    <Content Include="Views\GenerarLigasMultiplesFranquicias.aspx" />
     <Content Include="Views\GenerarLigasMultiples.aspx" />
+    <Content Include="Views\HistorialPagosComercio.aspx" />
+    <Content Include="Views\Multiselect.aspx" />
     <Content Include="Views\PageNoFound.aspx" />
+    <Content Include="Views\Promociones.aspx" />
+    <Content Include="Views\ReporteLigasFranquicias.aspx" />
     <Content Include="Views\ReporteLigas.aspx" />
+    <Content Include="Views\Tarifas.aspx" />
     <Content Include="Views\UsuariosClientes.aspx" />
+    <Content Include="Views\UsuariosFinalesFranquicias.aspx" />
     <Content Include="Views\UsuariosFranquicias.aspx" />
     <Content Include="Views\UsuariosPrincipal.aspx" />
     <Content Include="Views\UsuarioFinal.aspx" />
@@ -290,12 +304,26 @@
     <Compile Include="Views\ExportarAExcelReporteLigas.aspx.designer.cs">
       <DependentUpon>ExportarAExcelReporteLigas.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Views\GenerarLigasFranquicias.aspx.cs">
+      <DependentUpon>GenerarLigasFranquicias.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\GenerarLigasFranquicias.aspx.designer.cs">
+      <DependentUpon>GenerarLigasFranquicias.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Views\GenerarLigas.aspx.cs">
       <DependentUpon>GenerarLigas.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Views\GenerarLigas.aspx.designer.cs">
       <DependentUpon>GenerarLigas.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GenerarLigasMultiplesFranquicias.aspx.cs">
+      <DependentUpon>GenerarLigasMultiplesFranquicias.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\GenerarLigasMultiplesFranquicias.aspx.designer.cs">
+      <DependentUpon>GenerarLigasMultiplesFranquicias.aspx</DependentUpon>
     </Compile>
     <Compile Include="Views\GenerarLigasMultiples.aspx.cs">
       <DependentUpon>GenerarLigasMultiples.aspx</DependentUpon>
@@ -304,12 +332,40 @@
     <Compile Include="Views\GenerarLigasMultiples.aspx.designer.cs">
       <DependentUpon>GenerarLigasMultiples.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Views\HistorialPagosComercio.aspx.cs">
+      <DependentUpon>HistorialPagosComercio.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\HistorialPagosComercio.aspx.designer.cs">
+      <DependentUpon>HistorialPagosComercio.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Multiselect.aspx.cs">
+      <DependentUpon>Multiselect.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\Multiselect.aspx.designer.cs">
+      <DependentUpon>Multiselect.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Views\PageNoFound.aspx.cs">
       <DependentUpon>PageNoFound.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Views\PageNoFound.aspx.designer.cs">
       <DependentUpon>PageNoFound.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Promociones.aspx.cs">
+      <DependentUpon>Promociones.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\Promociones.aspx.designer.cs">
+      <DependentUpon>Promociones.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ReporteLigasFranquicias.aspx.cs">
+      <DependentUpon>ReporteLigasFranquicias.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\ReporteLigasFranquicias.aspx.designer.cs">
+      <DependentUpon>ReporteLigasFranquicias.aspx</DependentUpon>
     </Compile>
     <Compile Include="Views\ReporteLigas.aspx.cs">
       <DependentUpon>ReporteLigas.aspx</DependentUpon>
@@ -318,12 +374,26 @@
     <Compile Include="Views\ReporteLigas.aspx.designer.cs">
       <DependentUpon>ReporteLigas.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Views\Tarifas.aspx.cs">
+      <DependentUpon>Tarifas.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\Tarifas.aspx.designer.cs">
+      <DependentUpon>Tarifas.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Views\UsuariosClientes.aspx.cs">
       <DependentUpon>UsuariosClientes.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Views\UsuariosClientes.aspx.designer.cs">
       <DependentUpon>UsuariosClientes.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UsuariosFinalesFranquicias.aspx.cs">
+      <DependentUpon>UsuariosFinalesFranquicias.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\UsuariosFinalesFranquicias.aspx.designer.cs">
+      <DependentUpon>UsuariosFinalesFranquicias.aspx</DependentUpon>
     </Compile>
     <Compile Include="Views\UsuariosFranquicias.aspx.cs">
       <DependentUpon>UsuariosFranquicias.aspx</DependentUpon>
@@ -601,6 +671,21 @@
     <Content Include="bootstrap4.0.0\js\bootstrap.bundle.min.js.map" />
     <Content Include="bootstrap4.0.0\js\bootstrap.js.map" />
     <Content Include="bootstrap4.0.0\js\bootstrap.min.js.map" />
+    <Content Include="assets\MaterialIcons\flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2" />
+    <Content Include="assets\MaterialIcons\KFOlCnqEu92Fr1MmSU5fABc4EsA.woff2" />
+    <Content Include="assets\MaterialIcons\KFOlCnqEu92Fr1MmSU5fBBc4.woff2" />
+    <Content Include="assets\MaterialIcons\KFOlCnqEu92Fr1MmSU5fBxc4EsA.woff2" />
+    <Content Include="assets\MaterialIcons\KFOlCnqEu92Fr1MmSU5fCBc4EsA.woff2" />
+    <Content Include="assets\MaterialIcons\KFOlCnqEu92Fr1MmSU5fChc4EsA.woff2" />
+    <Content Include="assets\MaterialIcons\KFOlCnqEu92Fr1MmSU5fCRc4EsA.woff2" />
+    <Content Include="assets\MaterialIcons\KFOlCnqEu92Fr1MmSU5fCxc4EsA.woff2" />
+    <Content Include="assets\MaterialIcons\KFOmCnqEu92Fr1Mu4mxK.woff2" />
+    <Content Include="assets\MaterialIcons\KFOmCnqEu92Fr1Mu4WxKOzY.woff2" />
+    <Content Include="assets\MaterialIcons\KFOmCnqEu92Fr1Mu5mxKOzY.woff2" />
+    <Content Include="assets\MaterialIcons\KFOmCnqEu92Fr1Mu72xKOzY.woff2" />
+    <Content Include="assets\MaterialIcons\KFOmCnqEu92Fr1Mu7GxKOzY.woff2" />
+    <Content Include="assets\MaterialIcons\KFOmCnqEu92Fr1Mu7mxKOzY.woff2" />
+    <Content Include="assets\MaterialIcons\KFOmCnqEu92Fr1Mu7WxKOzY.woff2" />
     <None Include="packages.config" />
     <Content Include="Views\MasterPage.Master" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
@@ -625,6 +710,7 @@
       <Name>Franquicia.Domain</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

@@ -109,7 +109,7 @@ namespace Franquicia.WebForms.Views
                             if (Session["NombreClienteMaster"] == null)
                             {
                                 aMenuCliente.Attributes.Add("class", "dropdown-toggle disabled");
-                                lblDescripcionCliente.Text = "&nbsp;seleccione un cliente";
+                                lblDescripcionCliente.Text = "&nbsp;seleccione un comercio";
                             }
                             else if (Session["NombreClienteMaster"] != null)
                             {
@@ -140,7 +140,7 @@ namespace Franquicia.WebForms.Views
                             {
                                 Session["NombreComercial"] = lblNombreComercial.Text;
                                 Session["UidFranquiciaMaster"] = manejoSesionServices.usuarioCompletoRepository.franquiciatarios.UidFranquiciatarios;
-                                lblDescripcionCliente.Text = "&nbsp;seleccione un cliente";
+                                lblDescripcionCliente.Text = "&nbsp;seleccione un comercio";
                                 aMenuCliente.Attributes.Add("class", "dropdown-toggle disabled");
                             }
                             else if (Session["NombreClienteMaster"] != null)
@@ -307,6 +307,105 @@ namespace Franquicia.WebForms.Views
                 liMenuActivar.Attributes.Add("class", "nav-item active");
             }
 
+        }
+
+        protected void btnComprar_Click(object sender, EventArgs e)
+        {
+            TarifasServices tarifasServices = new TarifasServices();
+
+            tarifasServices.CargarTarifas();
+            lvTarifa.DataSource = tarifasServices.lsTarifasGridViewModel;
+            lvTarifa.DataBind();
+
+            if (tarifasServices.lsTarifasGridViewModel.Count >= 1)
+            {
+                foreach (var item in tarifasServices.lsTarifasGridViewModel)
+                {
+                    lblPrecioWhats.Text = item.DcmWhatsapp.ToString("N2");
+                    lblPrecioSms.Text = item.DcmSms.ToString("N2");
+                }
+            }
+
+            lblTituloModal.Text = "<strong>Paso 1</strong> cantidad a comprar.";
+
+            ScriptManager.RegisterStartupScript(Page, Page.GetType(), "ModalMasDeta", "$('#ModalMasDeta').modal();", true);
+            
+        }
+
+        public void Calcular()
+        {
+            decimal totalWhats = decimal.Parse(txtCantWhats.Text) * decimal.Parse(lblPrecioWhats.Text);
+
+            lblTotalWhats.Text = totalWhats.ToString("N2");
+
+            decimal totalSms = decimal.Parse(txtCantSms.Text) * decimal.Parse(lblPrecioSms.Text);
+
+            lblTotalSms.Text = totalSms.ToString("N2");
+
+            decimal sum = totalWhats + totalSms;
+
+            lblSumTotal.Text = sum.ToString("N2");
+        }
+
+        protected void btnCalcular_Click(object sender, EventArgs e)
+        {
+            Calcular();
+        }
+
+        protected void btnSiguiente_Click(object sender, EventArgs e)
+        {
+            if (pnlSeleccion.Visible == true)
+            {
+                lblTituloModal.Text = "<strong>Paso 2</strong> resumen de compra.";
+                
+
+                Calcular();
+
+                pnlSeleccion.Visible = false;
+                pnlResumen.Visible = true;
+                pnlIframe.Visible = false;
+
+                lblResumenTotal.Text = "Total: $" + lblSumTotal.Text;
+
+                lblResumenDesc.Text = "Usted va a comprar " + txtCantWhats.Text + " de Whatsapp y " + txtCantSms.Text + " de Sms.";
+            }
+            else if (pnlResumen.Visible == true)
+            {
+                lblTituloModal.Text = "<strong>Paso 3</strong> pagar compra.";
+
+                //lblUrl.Text = "www.goParkix.net";
+
+                //ScriptManager.RegisterStartupScript(this, this.GetType(), "Mu", "myFunction()", true);
+                ScriptManager.RegisterStartupScript(Page, Page.GetType(), "ModalMata", "myFunction()", true);
+
+                pnlSeleccion.Visible = false;
+                pnlResumen.Visible = false;
+                pnlIframe.Visible = true;
+            }
+            else if (pnlIframe.Visible == false)
+            {
+
+            }
+        }
+
+        protected void btnAnterior_Click(object sender, EventArgs e)
+        {
+            if (pnlResumen.Visible == true)
+            {
+                lblTituloModal.Text = "<strong>Paso 1</strong> cantidad a comprar.";
+
+                pnlSeleccion.Visible = true;
+                pnlResumen.Visible = false;
+                pnlIframe.Visible = false;
+            }
+            else if (pnlIframe.Visible == true)
+            {
+                lblTituloModal.Text = "<strong>Paso 2</strong> resumen de compra.";
+
+                pnlSeleccion.Visible = false;
+                pnlResumen.Visible = true;
+                pnlIframe.Visible = false;
+            }
         }
     }
 }

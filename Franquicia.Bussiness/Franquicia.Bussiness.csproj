@@ -50,6 +50,7 @@
     <Compile Include="DireccionesUsuariosServices.cs" />
     <Compile Include="DireccionesFranquiciatariosServices.cs" />
     <Compile Include="ClientesServices.cs" />
+    <Compile Include="TarifasServices.cs" />
     <Compile Include="PromocionesServices.cs" />
     <Compile Include="PagosTarjetaServices.cs" />
     <Compile Include="FranquiciatariosServices.cs" />

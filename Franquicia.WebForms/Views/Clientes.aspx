@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="Clientes.aspx.cs" Inherits="Franquicia.WebForms.Views.UsuariosClientes" %>
+﻿<%@ Page Title="" Culture="es-MX" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="Clientes.aspx.cs" Inherits="Franquicia.WebForms.Views.UsuariosClientes" %>
 
 <%@ MasterType VirtualPath="~/Views/MasterPage.Master" %>
 
@@ -20,12 +20,12 @@
                     <div class="row">
                         <div class="col-lg-12 col-md-12">
                             <div class="card">
-                                <div class="card-header card-header-tabs card-header-primary" style="padding-top: 0px; padding-bottom: 0px;">
+                                <div class="card-header card-header-tabs card-header-primary" style="background:#024693;padding-top: 0px; padding-bottom: 0px;">
                                     <div class="nav-tabs-navigation">
                                         <div class="nav-tabs-wrapper">
                                             <div class="form-group">
 
-                                                <asp:Label Text="Listado de Clientes" runat="server" />
+                                                <asp:Label Text="Listado de Comercio" runat="server" />
 
                                                 <div class="pull-right">
                                                     <asp:LinkButton ID="btnNuevo" OnClick="btnNuevo_Click" class="btn btn-lg btn-success btn-fab btn-fab-mini btn-round" runat="server">
@@ -41,7 +41,7 @@
                                         <div class="table-responsive">
                                             <asp:GridView ID="gvClientes" OnSelectedIndexChanged="gvClientes_SelectedIndexChanged" OnRowCommand="gvClientes_RowCommand" OnRowDataBound="gvClientes_RowDataBound" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidCliente" GridLines="None" border="0" runat="server">
                                                 <EmptyDataTemplate>
-                                                    <div class="alert alert-info">No hay clientes registrados</div>
+                                                    <div class="alert alert-info">No hay comercios registrados</div>
                                                 </EmptyDataTemplate>
                                                 <Columns>
                                                     <asp:ButtonField CommandName="Select" HeaderStyle-CssClass="hide" ItemStyle-CssClass="hide" />
@@ -130,7 +130,7 @@
                 <div class="modal-body pt-0" style="padding-bottom: 0px;">
                     <div class="row">
                         <div class="card card-nav-tabs">
-                            <div class="card-header card-header-primary">
+                            <div class="card-header card-header-primary" style="background:#024693;">
                                 <!-- colors: "header-primary", "header-info", "header-success", "header-warning", "header-danger" -->
                                 <div class="nav-tabs-navigation">
                                     <div class="nav-tabs-wrapper">
@@ -203,7 +203,7 @@
                                         <asp:UpdatePanel runat="server">
                                             <ContentTemplate>
                                                 <div class="row">
-                                                    <div class="form-group col-md-4 d-lg-none">
+                                                    <div class="form-group col-md-4" visible="false" runat="server">
                                                         <label for="txtIdentificador" style="color: black;">Identificador</label>
                                                         <asp:TextBox ID="txtIdentificador" CssClass="form-control" runat="server" />
                                                     </div>

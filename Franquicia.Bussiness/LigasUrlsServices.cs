@@ -34,11 +34,26 @@ namespace Franquicia.Bussiness
 
             return lsLigasUrlsGridViewModel = ligasUrlsRepository.ConsultarEstatusLiga(UidCliente);
         }
-        public List<LigasUrlsGridViewModel> BuscarLigas(Guid UidCliente, string Identificador, string Usuario, string Asunto, string Concepto, decimal ImporteMayor, decimal ImporteMenor, string VencimientoDesde, string VencimientoHasta)
+        public List<LigasUrlsGridViewModel> BuscarLigas(Guid UidCliente, string Identificador, string Nombre, string ApePaterno, string ApeMaterno, string Asunto, string Concepto, decimal ImporteMayor, decimal ImporteMenor, string RegistroDesde, string RegistroHasta, string VencimientoDesde, string VencimientoHasta, string Estatus)
         {
             lsLigasUrlsGridViewModel = new List<LigasUrlsGridViewModel>();
 
-            return lsLigasUrlsGridViewModel = ligasUrlsRepository.BuscarLigas(UidCliente, Identificador, Usuario, Asunto, Concepto, ImporteMayor, ImporteMenor, VencimientoDesde, VencimientoHasta);
+            return lsLigasUrlsGridViewModel = ligasUrlsRepository.BuscarLigas(UidCliente, Identificador, Nombre, ApePaterno, ApeMaterno, Asunto, Concepto, ImporteMayor, ImporteMenor, RegistroDesde, RegistroHasta, VencimientoDesde, VencimientoHasta, Estatus);
         }
+
+        #region LigasUrlFranquicias
+        public List<LigasUrlsGridViewModel> ConsultarEstatusLigaFranquicia(Guid UidFranquicia)
+        {
+            lsLigasUrlsGridViewModel = new List<LigasUrlsGridViewModel>();
+
+            return lsLigasUrlsGridViewModel = ligasUrlsRepository.ConsultarEstatusLigaFranquicia(UidFranquicia);
+        }
+        public List<LigasUrlsGridViewModel> BuscarLigasFranquicia(Guid UidFranquicia, string Identificador, string Nombre, string ApePaterno, string ApeMaterno, string Asunto, string Concepto, decimal ImporteMayor, decimal ImporteMenor, string RegistroDesde, string RegistroHasta, string VencimientoDesde, string VencimientoHasta, string Estatus)
+        {
+            lsLigasUrlsGridViewModel = new List<LigasUrlsGridViewModel>();
+
+            return lsLigasUrlsGridViewModel = ligasUrlsRepository.BuscarLigasFranquicia(UidFranquicia, Identificador, Nombre, ApePaterno, ApeMaterno, Asunto, Concepto, ImporteMayor, ImporteMenor, RegistroDesde, RegistroHasta, VencimientoDesde, VencimientoHasta, Estatus);
+        }
+        #endregion
     }
 }

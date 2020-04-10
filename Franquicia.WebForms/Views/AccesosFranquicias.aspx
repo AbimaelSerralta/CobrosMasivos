@@ -28,7 +28,7 @@
                     <div class="row">
                         <div class="col-lg-12 col-md-12">
                             <div class="card">
-                                <div class="card-header card-header-tabs card-header-primary" style="padding-top: 0px; padding-bottom: 0px;">
+                                <div class="card-header card-header-tabs card-header-primary" style="background:#024693;padding-top: 0px; padding-bottom: 0px;">
                                     <div class="nav-tabs-navigation">
                                         <div class="nav-tabs-wrapper">
                                             <div class="form-group">
@@ -136,7 +136,7 @@
                 <div class="modal-body pt-0" style="padding-bottom: 0px;">
                     <div class="row">
                         <div class="card card-nav-tabs">
-                            <div class="card-header card-header-primary">
+                            <div class="card-header card-header-primary" style="background:#024693;">
                                 <div class="nav-tabs-navigation">
                                     <div class="nav-tabs-wrapper">
                                         <ul class="nav nav-tabs" data-tabs="tabs">
@@ -170,7 +170,7 @@
                                                         <label for="txtNombre" style="color: black;">Nombre</label>
                                                         <asp:TextBox ID="txtNombre" CssClass="form-control" runat="server" />
                                                     </div>
-                                                    <div class="form-group col-md-6">
+                                                    <div class="form-group col-md-6" visible="false" runat="server">
                                                         <label for="ddlTipoPerfil" style="color: black;">Tipo Perfil</label>
                                                         <asp:DropDownList ID="ddlTipoPerfil" AutoPostBack="true" OnSelectedIndexChanged="ddlTipoPerfil_SelectedIndexChanged" CssClass="form-control" runat="server">
                                                             <asp:ListItem Text="Seleccione" />
@@ -193,11 +193,11 @@
                                         </asp:UpdatePanel>
                                     </div>
                                     <div class="tab-pane" id="accesos">
-                                        <asp:UpdatePanel runat="server">
-                                            <ContentTemplate>
+                                        <%--<asp:UpdatePanel runat="server">
+                                            <ContentTemplate>--%>
                                                 <ul class="nav nav-pills nav-pills-primary" role="tablist">
                                                     <li id="liFranquicias" class="nav-item" runat="server">
-                                                        <a id="aFranquicias" class="nav-link" data-toggle="tab" href="#franquicias" role="tablist" aria-expanded="false" runat="server">Franquicias
+                                                        <a id="aFranquicias" class="nav-link active show" data-toggle="tab" href="#franquicias" role="tablist" aria-expanded="true" runat="server">Franquicias
                                                         </a>
                                                     </li>
                                                     <li id="liClientes" class="nav-item" runat="server">
@@ -209,11 +209,11 @@
                                                         </a>
                                                     </li>
                                                 </ul>
-                                            </ContentTemplate>
-                                        </asp:UpdatePanel>
+                                            <%--</ContentTemplate>
+                                        </asp:UpdatePanel>--%>
 
                                         <div class="tab-content">
-                                            <div class="tab-pane" id="franquicias" aria-expanded="false">
+                                            <div class="tab-pane active" id="franquicias" aria-expanded="true">
                                                 <asp:UpdatePanel runat="server">
                                                     <ContentTemplate>
                                                         <div class="row">

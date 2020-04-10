@@ -17,7 +17,7 @@
                     <div class="row">
                         <div class="col-lg-12 col-md-12">
                             <div class="card">
-                                <div class="card-header card-header-tabs card-header-primary" style="padding-top: 0px; padding-bottom: 0px;">
+                                <div class="card-header card-header-tabs card-header-primary" style="background:#024693;padding-top: 0px; padding-bottom: 0px;">
                                     <div class="nav-tabs-navigation">
                                         <div class="nav-tabs-wrapper">
                                             <div class="form-group">
@@ -126,7 +126,7 @@
                 <div class="modal-body pt-0" style="padding-bottom: 0px;">
                     <div class="row">
                         <div class="card card-nav-tabs">
-                            <div class="card-header card-header-primary">
+                            <div class="card-header card-header-primary" style="background:#024693;">
                                 <!-- colors: "header-primary", "header-info", "header-success", "header-warning", "header-danger" -->
                                 <div class="nav-tabs-navigation">
                                     <div class="nav-tabs-wrapper">
@@ -195,7 +195,7 @@
                                                     </div>
                                                     <div class="form-group col-md-4">
                                                         <label for="txtPassword" style="color: black;">Contraseña</label>
-                                                        <asp:TextBox ID="txtPassword" TextMode="Password" CssClass="form-control" runat="server" />
+                                                        <asp:TextBox ID="txtPassword" autocomplete="new-password" TextMode="Password" CssClass="form-control" runat="server" />
                                                     </div>
                                                     <div class="form-group col-md-4">
                                                         <label for="txtRepetirPassword" style="color: black;">Repetir Contraseña</label>

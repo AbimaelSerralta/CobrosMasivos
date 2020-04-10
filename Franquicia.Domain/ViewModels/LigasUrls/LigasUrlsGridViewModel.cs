@@ -11,5 +11,11 @@ namespace Franquicia.Domain.ViewModels
     {
         public string VchEstatus { get; set; }
         public string VchColor { get; set; }
+        public decimal DcmImportePromocion { get; set; }
+        public string VchPromocion { get; set; }
+        public string VchNombre { get; set; }
+        public string VchApePaterno { get; set; }
+        public string VchApeMaterno { get; set; }
+        public string NombreCompleto { get { return VchNombre + " " + VchApePaterno + " " + VchApeMaterno; } }
     }
 }

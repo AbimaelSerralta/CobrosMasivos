@@ -15,10 +15,12 @@
     </style>
     <asp:UpdatePanel runat="server">
         <ContentTemplate>
-            <div id="divAlert" class="alert alert-danger alert-dismissible fade" role="alert" runat="server">
-                <asp:Label ID="lblMensajeAlert" runat="server" />
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            </div>
+            <asp:Panel ID="pnlAlert" Visible="false" runat="server">
+                <div id="divAlert" class="alert alert-danger alert-dismissible fade" role="alert" runat="server">
+                    <asp:Label ID="lblMensajeAlert" runat="server" />
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+            </asp:Panel>
         </ContentTemplate>
     </asp:UpdatePanel>
 

@@ -19,30 +19,42 @@ namespace Franquicia.WebForms.Views
             {
                 DateTime dateTime = DateTime.Now;
 
-                List<LigasMultiplesUsuariosGridViewModel> ls = (List<LigasMultiplesUsuariosGridViewModel>)Session["lsLigasMultiplesUsuariosGridViewModel"];
+                List<LigasMultiplesUsuariosGridViewModel> ls = (List<LigasMultiplesUsuariosGridViewModel>)Session["lsgvUsuariosSeleccionadosMultiple"];
+                List<LigasMultiplesUsuariosGridViewModel> lsError = (List<LigasMultiplesUsuariosGridViewModel>)Session["lsLigasUsuariosGridViewModelErrorMultiple"];
 
-                if (ls != null && ls.Where(x => x.blSeleccionado == true).ToList().Count >= 1)
+                if (lsError != null && lsError.Count >= 1)
                 {
-                    gvLigasMultiples.DataSource = ls.Where(x => x.blSeleccionado == true).ToList();
+                    gvLigasMultiples.DataSource = lsError;
                     gvLigasMultiples.DataBind();
 
-                    Expor(dateTime.ToString("ddMMyyyyHHmmssfff"));
+                    Expor("Error " + dateTime.ToString("ddMMyyyyHHmmssfff"), gvLigasMultiples);
                 }
                 else
                 {
-                    List<LigasMultiplesUsuariosGridViewModel> l = new List<LigasMultiplesUsuariosGridViewModel>();
 
-                    l.Add(new LigasMultiplesUsuariosGridViewModel
+                    if (ls != null && ls.Where(x => x.blSeleccionado == true).ToList().Count >= 1)
                     {
-                        StrNombre = "",
-                        DtVencimiento = dateTime,
-                        DcmImporte = 0
-                    });
+                        gvLigasMultiples.DataSource = ls.Where(x => x.blSeleccionado == true).ToList();
+                        gvLigasMultiples.DataBind();
 
-                    gvLigasMultiples.DataSource = l;
-                    gvLigasMultiples.DataBind();
+                        Expor(dateTime.ToString("ddMMyyyyHHmmssfff"), gvLigasMultiples);
+                    }
+                    else
+                    {
+                        List<LigasMultiplesUsuariosGridViewModel> l = new List<LigasMultiplesUsuariosGridViewModel>();
 
-                    Expor(dateTime.ToString("ddMMyyyyHHmmssfff"));
+                        l.Add(new LigasMultiplesUsuariosGridViewModel
+                        {
+                            StrNombre = "",
+                            DtVencimiento = dateTime,
+                            DcmImporte = 0
+                        });
+
+                        gvLigasMultiples.DataSource = l;
+                        gvLigasMultiples.DataBind();
+
+                        Expor(dateTime.ToString("ddMMyyyyHHmmssfff"), gvLigasMultiples);
+                    }
                 }
             }
             else
@@ -56,29 +68,29 @@ namespace Franquicia.WebForms.Views
 
         }
 
-        public void Expor(string dateTime)
+        public void Expor(string dateTime, GridView gridView)
         {
             DataTable data = new DataTable();
 
             string header = string.Empty;
             List<string> lsHeader = new List<string>();
 
-            for (int i = 0; i < gvLigasMultiples.Columns.Count; i++)
+            for (int i = 0; i < gridView.Columns.Count; i++)
             {
-                lsHeader.Add(gvLigasMultiples.HeaderRow.Cells[i].Text);
-                header = HttpUtility.HtmlDecode(gvLigasMultiples.HeaderRow.Cells[i].Text);
+                lsHeader.Add(gridView.HeaderRow.Cells[i].Text);
+                header = HttpUtility.HtmlDecode(gridView.HeaderRow.Cells[i].Text);
 
                 data.Columns.Add(header);
 
                 //data.Columns.Add("column" + i.ToString());
             }
-            foreach (GridViewRow row in gvLigasMultiples.Rows)
+            foreach (GridViewRow row in gridView.Rows)
             {
                 DataRow dr = data.NewRow();
 
-                for (int j = 0; j < gvLigasMultiples.Columns.Count; j++)
+                for (int j = 0; j < gridView.Columns.Count; j++)
                 {
-                    header = gvLigasMultiples.HeaderRow.Cells[j].Text;
+                    header = gridView.HeaderRow.Cells[j].Text;
 
                     dr[header] = HttpUtility.HtmlDecode(row.Cells[j].Text.Replace("&nbsp;", ""));
                 }

@@ -21,10 +21,37 @@ namespace Franquicia.WebForms.Views
 {
     public partial class GenerarLigas : System.Web.UI.Page
     {
+        #region Propiedades
+        // Nombre del servidor
+        string ServerName
+        {
+            get { return Request.ServerVariables["SERVER_NAME"].ToString(); }
+        }
+        // Puerto del servidor
+        string ServerPort
+        {
+            get { return Request.ServerVariables["SERVER_PORT"].ToString(); }
+        }
+
+        // Obtener URL Base
+        public string URLBase
+        {
+            get
+            {
+                if (ServerPort != string.Empty && ServerPort.Trim() != "")
+                { return "https://" + ServerName + ":" + ServerPort + "/"; }
+                else
+                { return "https://" + ServerName + "/"; }
+            }
+        }
+        #endregion
+
         UsuariosCompletosServices usuariosCompletosServices = new UsuariosCompletosServices();
         PagosTarjetaServices pagosServices = new PagosTarjetaServices();
         CorreosServices correosServices = new CorreosServices();
         ParametrosEntradaServices parametrosEntradaServices = new ParametrosEntradaServices();
+        PromocionesServices promocionesServices = new PromocionesServices();
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Session["UidClienteMaster"] != null)
@@ -36,6 +63,8 @@ namespace Franquicia.WebForms.Views
                 ViewState["UidClienteLocal"] = Guid.Empty;
             }
 
+            txtVencimiento.Attributes.Add("min", DateTime.Now.ToString("yyyy-MM-dd"));
+
             if (!IsPostBack)
             {
                 ViewState["gvUsuariosSeleccionados"] = SortDirection.Ascending;
@@ -46,6 +75,26 @@ namespace Franquicia.WebForms.Views
 
                 Session["usuariosCompletosServices"] = usuariosCompletosServices;
                 Session["parametrosEntradaServices"] = parametrosEntradaServices;
+                Session["promocionesServices"] = promocionesServices;
+
+                promocionesServices.lsCBLPromocionesModelCliente.Clear();
+                promocionesServices.CargarPromocionesClientes(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+                if (promocionesServices.lsCBLPromocionesModelCliente.Count >= 1)
+                {
+                    cblPromociones.DataSource = promocionesServices.lsCBLPromocionesModelCliente;
+                    cblPromociones.DataTextField = "VchDescripcion";
+                    cblPromociones.DataValueField = "UidPromocion";
+                    cblPromociones.DataBind();
+
+                    ListBoxSimple.DataSource = promocionesServices.lsCBLPromocionesModelCliente;
+                    ListBoxSimple.DataTextField = "VchDescripcion";
+                    ListBoxSimple.DataValueField = "UidPromocion";
+                    ListBoxSimple.DataBind();
+                }
+                else
+                {
+                    pnlPromociones.Visible = false;
+                }
 
                 //usuariosCompletosServices.CargarUsuariosFinalesPRUEBA(new Guid(ViewState["UidClienteLocal"].ToString()), new Guid("E39FF705-8A01-4302-829A-7CFB9615CC8F"));
                 //gvUsuariosSeleccionados.DataSource = usuariosCompletosServices.lsLigasUsuariosGridViewModel;
@@ -61,7 +110,8 @@ namespace Franquicia.WebForms.Views
             {
                 usuariosCompletosServices = (UsuariosCompletosServices)Session["usuariosCompletosServices"];
                 parametrosEntradaServices = (ParametrosEntradaServices)Session["parametrosEntradaServices"];
-
+                promocionesServices = (PromocionesServices)Session["promocionesServices"];
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "Mult", "multi()", true);
                 //pnlAlertImportarError.Visible = false;
                 //lblMnsjAlertImportarError.Text = "";
                 //divAlertImportarError.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
@@ -362,9 +412,9 @@ namespace Franquicia.WebForms.Views
 
         protected void btnGenerarLigas_Click(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(txtIdentificador.Text) && !string.IsNullOrEmpty(txtAsunto.Text) &&
-                !string.IsNullOrEmpty(txtConcepto.Text) && !string.IsNullOrEmpty(txtImporte.Text)
-                && !string.IsNullOrEmpty(txtVencimiento.Text))
+            if (!string.IsNullOrEmpty(txtIdentificador.Text.Trim()) && !string.IsNullOrEmpty(txtAsunto.Text.Trim()) &&
+                !string.IsNullOrEmpty(txtConcepto.Text.Trim()) && !string.IsNullOrEmpty(txtImporte.Text.Trim())
+                && !string.IsNullOrEmpty(txtVencimiento.Text.Trim()))
             {
                 if (usuariosCompletosServices.lsgvUsuariosSeleccionados.Count >= 1)
                 {
@@ -491,74 +541,117 @@ namespace Franquicia.WebForms.Views
             {
                 foreach (var item in usuariosCompletosServices.lsgvUsuariosSeleccionados)
                 {
-                    DateTime thisDay = DateTime.Now;
+                    bool VariasLigas = false;
+                    Guid UidLigaAsociado = Guid.NewGuid();
 
-                    string Referencia = item.IdCliente.ToString() + item.IdUsuario.ToString() + thisDay.ToString("ddMMyyyyHHmmssfff");
-
-                    string ArchivoXml = "" +
-                        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" +
-                        "<P>\r\n  " +
-                        "  <business>\r\n" +
-                        "    <id_company>" + id_company + "</id_company>\r\n" +
-                        "    <id_branch>" + id_branch + "</id_branch>\r\n" +
-                        "    <user>" + user + "</user>\r\n" +
-                        "    <pwd>" + pwd + "</pwd>\r\n" +
-                        "  </business>\r\n" +
-                        "  <url>\r\n" +
-                        "    <reference>" + Referencia + "</reference>\r\n" +
-                        "    <amount>" + txtImporte.Text + "</amount>\r\n" +
-                        "    <moneda>" + moneda + "</moneda>\r\n" +
-                        "    <canal>" + canal + "</canal>\r\n" +
-                        "    <omitir_notif_default>1</omitir_notif_default>\r\n" +
-                        "    <st_correo>1</st_correo>\r\n" +
-                        "    <fh_vigencia>" + DateTime.Parse(txtVencimiento.Text).ToString("dd/MM/yyyy") + "</fh_vigencia>\r\n" +
-                        "    <mail_cliente>" + item.StrCorreo + "</mail_cliente>\r\n" +
-                        "    <datos_adicionales>\r\n" +
-                        "      <data id=\"1\" display=\"true\">\r\n" +
-                        "        <label>Concepto:</label>\r\n" +
-                        "        <value>" + txtConcepto.Text + "</value>\r\n" +
-                        "      </data>\r\n" +
-                        "      <data id=\"2\" display=\"false\">\r\n" +
-                        "        <label>Color</label>\r\n" +
-                        "        <value>Azul</value>\r\n" +
-                        "      </data>\r\n" +
-                        "    </datos_adicionales>\r\n" +
-                        "  </url>\r\n" +
-                        "</P>\r\n";
-                    string originalString = ArchivoXml;
-                    string key = semillaAES;
-                    AESCrypto aesCrypto = new AESCrypto();
-                    string encryptedString = aesCrypto.encrypt(originalString, key);
-                    string finalString = encryptedString.Replace("%", "%25").Replace(" ", "%20").Replace("+", "%2B").Replace("=", "%3D").Replace("/", "%2F");
-
-                    string encodedString = HttpUtility.UrlEncode("<pgs><data0>" + data0 + "</data0><data>" + encryptedString + "</data></pgs>");
-                    string postParam = "xml=" + encodedString;
-
-                    var client = new RestClient(urlGen);
-                    var request = new RestRequest(Method.POST);
-                    request.AddHeader("cache-control", "no-cache");
-                    request.AddHeader("content-type", "application/x-www-form-urlencoded");
-                    request.AddParameter("application/x-www-form-urlencoded", postParam, ParameterType.RequestBody);
-
-                    IRestResponse response = client.Execute(request);
-                    var content = response.Content;
-
-                    string decryptedString = aesCrypto.decrypt(key, content);
-                    string str1 = decryptedString.Replace("<P_RESPONSE><cd_response>success</cd_response><nb_response></nb_response><nb_url>", "");
-                    url = str1.Replace("</nb_url></P_RESPONSE>", "");
-
-                    if (url.Contains("https://"))
+                    foreach (ListItem itPromo in cblPromociones.Items)
                     {
-                        //if (usuariosCompletosServices.GenerarLigasPagos(url, txtConcepto.Text, decimal.Parse(txtImporte.Text), Referencia, item.UidUsuario, txtIdentificador.Text, thisDay, DateTime.Parse(txtVencimiento.Text), txtAsunto.Text))
-                        //{
-                        //    correosServices.CorreoLiga(item.NombreCompleto, txtAsunto.Text, txtConcepto.Text, decimal.Parse(txtImporte.Text), DateTime.Parse(txtVencimiento.Text), url, item.StrCorreo);
-                            resu = true;
-                        //}
+                        if (itPromo.Selected)
+                        {
+                            VariasLigas = true;
+                        }
+                    }
+
+                    if (VariasLigas)
+                    {
+                        DateTime thisDay = DateTime.Now;
+                        string ReferenciaCobro = item.IdCliente.ToString() + item.IdUsuario.ToString() + thisDay.ToString("ddMMyyyyHHmmssfff");
+
+                        string urlCobro = GenLigaPara(id_company, id_branch, user, pwd, ReferenciaCobro, decimal.Parse(txtImporte.Text), moneda, canal, "C", item.StrCorreo, semillaAES, data0, urlGen);
+
+                        if (urlCobro.Contains("https://"))
+                        {
+                            if (usuariosCompletosServices.GenerarLigasPagos(urlCobro, txtConcepto.Text, decimal.Parse(txtImporte.Text), ReferenciaCobro, item.UidUsuario, txtIdentificador.Text, thisDay, DateTime.Parse(txtVencimiento.Text), txtAsunto.Text, UidLigaAsociado, Guid.Empty, Guid.Parse(ViewState["UidClienteLocal"].ToString())))
+                            {
+                                resu = true;
+                                foreach (ListItem itPromo in cblPromociones.Items)
+                                {
+                                    if (itPromo.Selected)
+                                    {
+                                        int i = promocionesServices.lsCBLPromocionesModelCliente.IndexOf(promocionesServices.lsCBLPromocionesModelCliente.First(x => x.UidPromocion == Guid.Parse(itPromo.Value)));
+                                        decimal cobro = promocionesServices.lsCBLPromocionesModelCliente[i].DcmComicion;
+
+                                        decimal Valor = cobro * decimal.Parse(txtImporte.Text) / 100;
+                                        decimal Importe = Valor + decimal.Parse(txtImporte.Text);
+
+                                        string promocion = itPromo.Text.Replace(" MESES", "");
+
+                                        DateTime thisDay2 = DateTime.Now;
+                                        string Referencia = item.IdCliente.ToString() + item.IdUsuario.ToString() + thisDay2.ToString("ddMMyyyyHHmmssfff");
+
+                                        url = GenLigaPara(id_company, id_branch, user, pwd, Referencia, Importe, moneda, canal, promocion, item.StrCorreo, semillaAES, data0, urlGen);
+
+                                        if (url.Contains("https://"))
+                                        {
+                                            if (usuariosCompletosServices.GenerarLigasPagos(url, txtConcepto.Text, Importe, Referencia, item.UidUsuario, txtIdentificador.Text, thisDay, DateTime.Parse(txtVencimiento.Text), txtAsunto.Text, UidLigaAsociado, Guid.Parse(itPromo.Value), Guid.Parse(ViewState["UidClienteLocal"].ToString())))
+                                            {
+                                                resu = true;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            resu = false;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            resu = false;
+                            break;
+                        }
+
+                        if (resu)
+                        {
+                            promocionesServices.CargarPromocionesValidas(UidLigaAsociado);
+
+                            string strPromociones = string.Empty;
+
+                            if (promocionesServices.lsLigasUrlsPromocionesModel.Count >= 1)
+                            {
+                                foreach (var itPromo in promocionesServices.lsLigasUrlsPromocionesModel)
+                                {
+                                    decimal promocion = int.Parse(itPromo.VchDescripcion.Replace(" MESES", ""));
+                                    decimal Final = itPromo.DcmImporte / promocion;
+
+                                    strPromociones +=
+                                    "\t\t\t\t\t\t\t\t<tr>\r\n" +
+                                    "\t\t\t\t\t\t\t\t\t<td width=\"50%\" style=\"color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;text-align: right;\">\r\n" +
+                                    "\t\t\t\t\t\t\t\t\t\t" + itPromo.VchDescripcion + " de $" + Final.ToString("N2") + "\r\n" +
+                                    "\t\t\t\t\t\t\t\t\t</td>\r\n" +
+                                    "\t\t\t\t\t\t\t\t\t<td width=\"50%\" style=\"color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;text-align: left;\">\r\n" +
+                                    "\t\t\t\t\t\t\t\t\t\t &nbsp;" + "<a style =\"display:block;color:#fff;font-weight:400;text-align:center;width:100px;font-size:15px;text-decoration:none;background:#28a745;margin:0 auto; padding:5px;\" href=" + URLBase + "Views/Promociones.aspx?CodigoPromocion=" + UidLigaAsociado + "&CodigoLiga=" + itPromo.IdReferencia + "> Pagar $" + itPromo.DcmImporte.ToString("N2") + "</a>" + "\r\n" +
+                                    "\t\t\t\t\t\t\t\t\t</td>\r\n" +
+                                    "\t\t\t\t\t\t\t\t</tr>\r\n";
+                                }
+                            }
+
+                            string LigaUrl = URLBase + "Views/Promociones.aspx?CodigoPromocion=" + UidLigaAsociado + "&CodigoLiga=" + ReferenciaCobro;
+                            correosServices.CorreoLiga(item.NombreCompleto, txtAsunto.Text, txtConcepto.Text, decimal.Parse(txtImporte.Text), DateTime.Parse(txtVencimiento.Text), LigaUrl, item.StrCorreo, strPromociones, true, item.VchNombreComercial);
+                        }
                     }
                     else
                     {
-                        resu = false;
-                        break;
+                        DateTime thisDay = DateTime.Now;
+                        string ReferenciaCobro = item.IdCliente.ToString() + item.IdUsuario.ToString() + thisDay.ToString("ddMMyyyyHHmmssfff");
+
+                        string urlCobro = GenLigaPara(id_company, id_branch, user, pwd, ReferenciaCobro, decimal.Parse(txtImporte.Text), moneda, canal, "C", item.StrCorreo, semillaAES, data0, urlGen);
+
+                        if (urlCobro.Contains("https://"))
+                        {
+                            if (usuariosCompletosServices.GenerarLigasPagos(urlCobro, txtConcepto.Text, decimal.Parse(txtImporte.Text), ReferenciaCobro, item.UidUsuario, txtIdentificador.Text, thisDay, DateTime.Parse(txtVencimiento.Text), txtAsunto.Text, Guid.Empty, Guid.Empty, Guid.Parse(ViewState["UidClienteLocal"].ToString())))
+                            {
+                            correosServices.CorreoLiga(item.NombreCompleto, txtAsunto.Text, txtConcepto.Text, decimal.Parse(txtImporte.Text), DateTime.Parse(txtVencimiento.Text), urlCobro, item.StrCorreo, "", false, item.VchNombreComercial);
+                            resu = true;
+                            }
+                        }
+                        else
+                        {
+                            resu = false;
+                            break;
+                        }
                     }
                 }
 
@@ -568,7 +661,7 @@ namespace Franquicia.WebForms.Views
                     lblCorreoUsado.Text = usuariosCompletosServices.lsgvUsuariosSeleccionados.Count.ToString();
 
                     LimpiarDatos();
-                    
+
                     pnlAlertModal.Visible = true;
                     divAlertModal.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
 
@@ -599,6 +692,66 @@ namespace Franquicia.WebForms.Views
                 lblResumen.Text = "<b>¡Lo sentimos! </b> Esta empresa no cuenta con credenciales para generar ligas, por favor contacte a los administradores.";
                 divAlertModal.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
             }
+        }
+        private string GenLigaPara(string id_company, string id_branch, string user, string pwd, string Referencia, decimal Importe,
+            string moneda, string canal, string promocion, string Correo, string semillaAES, string data0, string urlGen)
+        {
+            string url = string.Empty;
+
+            string ArchivoXml = "" +
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" +
+                "<P>\r\n  " +
+                "  <business>\r\n" +
+                "    <id_company>" + id_company + "</id_company>\r\n" +
+                "    <id_branch>" + id_branch + "</id_branch>\r\n" +
+                "    <user>" + user + "</user>\r\n" +
+                "    <pwd>" + pwd + "</pwd>\r\n" +
+                "  </business>\r\n" +
+                "  <url>\r\n" +
+                "    <reference>" + Referencia + "</reference>\r\n" +
+                "    <amount>" + Importe + "</amount>\r\n" +
+                "    <moneda>" + moneda + "</moneda>\r\n" +
+                "    <canal>" + canal + "</canal>\r\n" +
+                "    <omitir_notif_default>1</omitir_notif_default>\r\n" +
+                "    <promociones>" + promocion + "</promociones>\r\n" +
+                "    <st_correo>1</st_correo>\r\n" +
+                "    <fh_vigencia>" + DateTime.Parse(txtVencimiento.Text).ToString("dd/MM/yyyy") + "</fh_vigencia>\r\n" +
+                "    <mail_cliente>" + Correo + "</mail_cliente>\r\n" +
+                "    <datos_adicionales>\r\n" +
+                "      <data id=\"1\" display=\"true\">\r\n" +
+                "        <label>Concepto:</label>\r\n" +
+                "        <value>" + txtConcepto.Text + "</value>\r\n" +
+                "      </data>\r\n" +
+                "      <data id=\"2\" display=\"false\">\r\n" +
+                "        <label>Color</label>\r\n" +
+                "        <value>Azul</value>\r\n" +
+                "      </data>\r\n" +
+                "    </datos_adicionales>\r\n" +
+                "  </url>\r\n" +
+                "</P>\r\n";
+            string originalString = ArchivoXml;
+            string key = semillaAES;
+            AESCrypto aesCrypto = new AESCrypto();
+            string encryptedString = aesCrypto.encrypt(originalString, key);
+            string finalString = encryptedString.Replace("%", "%25").Replace(" ", "%20").Replace("+", "%2B").Replace("=", "%3D").Replace("/", "%2F");
+
+            string encodedString = HttpUtility.UrlEncode("<pgs><data0>" + data0 + "</data0><data>" + encryptedString + "</data></pgs>");
+            string postParam = "xml=" + encodedString;
+
+            var client = new RestClient(urlGen);
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("cache-control", "no-cache");
+            request.AddHeader("content-type", "application/x-www-form-urlencoded");
+            request.AddParameter("application/x-www-form-urlencoded", postParam, ParameterType.RequestBody);
+
+            IRestResponse response = client.Execute(request);
+            var content = response.Content;
+
+            string decryptedString = aesCrypto.decrypt(key, content);
+            string str1 = decryptedString.Replace("<P_RESPONSE><cd_response>success</cd_response><nb_response></nb_response><nb_url>", "");
+            url = str1.Replace("</nb_url></P_RESPONSE>", "");
+
+            return url;
         }
         protected void btnCancelar_Click(object sender, EventArgs e)
         {

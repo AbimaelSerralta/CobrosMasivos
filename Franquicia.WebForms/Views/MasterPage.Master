@@ -10,19 +10,19 @@
     <link href="../CSSPropio/BtnPaginacion.css" rel="stylesheet" />
     <link href="../CSSPropio/StyleVentanaModal.css" rel="stylesheet" />
     <link href="../CSSPropio/Loader.css" rel="stylesheet" />
+
     <!-- Required meta tags -->
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <!--     Fonts and icons     -->
-    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+    <%--<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />--%>
+    <link href="../assets/css/MaterialIcons.css" type="text/css" rel="stylesheet" />
+    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
     <!-- Material Kit CSS -->
     <link href="../assets/css/material-dashboard.css?v=2.1.1" rel="stylesheet" />
 
-
-
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title><%:Page.Title %></title>
+    <title><%= Page.Title %></title>
     <link rel="shortcut icon" href="../Images/logoCobroscontarjetas.png" />
     <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
@@ -32,6 +32,18 @@
         <%--<asp:UpdatePanel runat="server">
             <ContentTemplate>--%>
         <asp:ScriptManager runat="server" />
+
+        <asp:UpdateProgress runat="server">
+            <ProgressTemplate>
+                <div class="PogressModal">
+                    <div>
+                        <div class="loader"></div>
+                        <br />
+                        <asp:Label Text="Espere por favor..." Style="color: white;" runat="server" />
+                    </div>
+                </div>
+            </ProgressTemplate>
+        </asp:UpdateProgress>
 
         <div class="wrapper ">
             <div class="sidebar" data-color="purple" data-background-color="white" data-image="../assets/img/sidebar-1.jpg">
@@ -72,11 +84,11 @@
                 <!-- Navbar -->
                 <nav class="navbar navbar-expand-lg navbar-absolute fixed-top">
                     <div class="container-fluid">
-                        <asp:UpdateProgress runat="server">
+                        <%-- <asp:UpdateProgress runat="server">
                             <ProgressTemplate>
                                 <div class="loader"></div>
                             </ProgressTemplate>
-                        </asp:UpdateProgress>
+                        </asp:UpdateProgress>--%>
                         <div class="navbar-wrapper">
                             <a class="navbar-brand" href="#pablo"></a>
                         </div>
@@ -109,7 +121,7 @@
                                             <asp:Label ID="lblNombreComercial" Style="color: black;" CssClass="navbar-text" runat="server"></asp:Label>
                                         </li>
                                         <li class="dropdown" id="liMenuCliente" runat="server">
-                                            <a id="aMenuCliente" href="#" class="dropdown-toggle font-weight-bold" data-toggle="dropdown" runat="server">&nbsp; CLIENTES </a>
+                                            <a id="aMenuCliente" href="#" class="dropdown-toggle font-weight-bold" data-toggle="dropdown" runat="server">&nbsp; COMERCIOS </a>
                                             <ul class="dropdown-menu">
                                                 <asp:DataList ID="dlSubMenuCliente" Style="width: 100%;" RepeatDirection="Vertical" runat="server">
                                                     <ItemTemplate>
@@ -163,6 +175,7 @@
                                                 <a class="dropdown-item" href="#">Profile</a>
                                                 <a class="dropdown-item" href="#">Settings</a>
                                                 <div class="dropdown-divider"></div>
+                                                <asp:LinkButton ID="btnComprar" CssClass="dropdown-item" OnClick="btnComprar_Click" Text="Comprar Whats/Sms" runat="server" />
                                                 <asp:LinkButton ID="btnSalir" CssClass="dropdown-item" OnClick="btnSalir_Click" Text="Salir" runat="server" />
                                             </div>
                                         </li>
@@ -223,6 +236,163 @@
         <asp:ContentPlaceHolder ID="cBodyBottom" runat="server">
         </asp:ContentPlaceHolder>
 
+        <div id="ModalMasDeta" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <asp:UpdatePanel runat="server">
+                        <ContentTemplate>
+                            <div class="modal-header">
+                                <h5 class="modal-title" runat="server">
+                                    <asp:Label ID="lblTituloModal" Text="Selección" runat="server" /></h5>
+                                <%--<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>--%>
+                            </div>
+                        </ContentTemplate>
+                    </asp:UpdatePanel>
+                    <div class="modal-body pt-0" style="padding-bottom: 0px;">
+                        <div class="tab-content">
+                            <asp:UpdatePanel runat="server">
+                                <ContentTemplate>
+                                    <asp:Panel ID="pnlSeleccion" runat="server">
+                                        <div class="row">
+                                            <asp:ListView ID="lvTarifa" runat="server">
+                                                <ItemTemplate>
+                                                    <div class="col-lg-6 col-md-6 col-sm-6 col-6">
+                                                        <div class="card card-stats">
+                                                            <div class="card-header card-header-success card-header-icon">
+                                                                <div class="card-icon">
+                                                                    <img class="card-img-top" style="height: 50px; width: 50px" src="https://is5-ssl.mzstatic.com/image/thumb/Purple113/v4/b8/d8/7a/b8d87ae1-b9df-1cb6-bbce-c71932ac9ce7/AppIcon-0-0-1x_U007emarketing-0-0-0-6-0-0-85-220.png/246x0w.png" alt="whatsapp">
+                                                                </div>
+                                                                <p class="card-category">Whatsapp</p>
+                                                                <h3 class="card-title">
+                                                                    <asp:Label ID="lblDcmWhatsapp" runat="server"> <%# Eval("DcmWhatsapp", "{0:C}") %></asp:Label></h3>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-6 col-6">
+                                                        <div class="card card-stats">
+                                                            <div class="card-header card-header-warning card-header-icon">
+                                                                <div class="card-icon">
+                                                                    <img class="card-img-top" style="height: 50px; width: 50px" src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTZ5jK9GXD0SBrKIlY3X4RuVYp9xgvF1dpHPyvGmaYwq3bVXpWg&usqp=CAU" alt="sms">
+                                                                </div>
+                                                                <p class="card-category">Sms</p>
+                                                                <h3 class="card-title"><%# Eval("DcmSms", "{0:C}") %></h3>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </ItemTemplate>
+                                            </asp:ListView>
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Descripción</th>
+                                                        <th scope="col">Cantidad
+                                                            <asp:LinkButton ID="btnCalcular" OnClick="btnCalcular_Click" CssClass="btn btn-sm btn-success btn-round" runat="server">Calcular</asp:LinkButton></th>
+                                                        <th scope="col" class="text-right">Precio unitario</th>
+                                                        <th scope="col" class="text-right">Precio total</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <th scope="row">Whatsapp</th>
+                                                        <td>
+                                                            <asp:TextBox ID="txtCantWhats" Text="0" CssClass="form-control" runat="server"></asp:TextBox>
+                                                            <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars="" TargetControlID="txtCantWhats" runat="server" />
+                                                        </td>
+                                                        <td class="text-right">
+                                                            <asp:Label ID="lblPrecioWhats" runat="server" />
+                                                        </td>
+                                                        <td class="text-right">
+                                                            <asp:Label ID="lblTotalWhats" Text="0.00" runat="server" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">Sms</th>
+                                                        <td>
+                                                            <asp:TextBox ID="txtCantSms" Text="0" CssClass="form-control" runat="server"></asp:TextBox>
+                                                            <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars="" TargetControlID="txtCantSms" runat="server" />
+                                                        </td>
+                                                        <td class="text-right">
+                                                            <asp:Label ID="lblPrecioSms" runat="server" />
+                                                        </td>
+                                                        <td class="text-right">
+                                                            <asp:Label ID="lblTotalSms" Text="0.00" runat="server" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th></th>
+                                                        <td></td>
+                                                        <td class="text-right">Total</td>
+                                                        <td class="text-right">
+                                                            <asp:Label ID="lblSumTotal" Text="0.00" runat="server" />
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </asp:Panel>
+
+                                    <asp:Panel ID="pnlResumen" Visible="false" runat="server">
+                                        <div class="card text-white bg-success mb-3">
+                                            <div class="card-header">Resumen</div>
+                                            <div class="card-body">
+                                                <h5 class="card-title">
+                                                    <asp:Label ID="lblResumenTotal" runat="server" /></h5>
+                                                <p class="card-text">
+                                                    <asp:Label ID="lblResumenDesc" runat="server" />
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <asp:LinkButton ID="LinkButton1" CssClass="btn btn-success btn-round" runat="server">
+                            <i class="material-icons">link</i> Generar
+                                        </asp:LinkButton>
+                                    </asp:Panel>
+
+
+                                    <asp:Panel ID="pnlIframe" Visible="false" runat="server">
+                                        <asp:Label ID="lblUrl" Text="https://wppsandbox.mit.com.mx/i/SNDBX001" runat="server" />
+
+                                        <button onclick="myFunction()">Try it</button>
+
+                                        <div class="row">
+                                            <div style="width: 100%;">
+                                                <iframe id="ifrLiga" style="width: 80%; margin: 0 auto; display: block;" width="450px" height="479px" class="centrado" src="https://u.mitec.com.mx/p/i/EHXYPEKR" frameborder="0" seamless="seamless"></iframe>
+                                            </div>
+                                        </div>
+                                    </asp:Panel>
+                                </ContentTemplate>
+
+                            </asp:UpdatePanel>
+                        </div>
+                    </div>
+                    <asp:UpdatePanel runat="server" ID="upRegistro">
+                        <ContentTemplate>
+                            <div class="modal-footer justify-content-center">
+                                <asp:LinkButton ID="btnAnterior" OnClick="btnAnterior_Click" CssClass="btn btn-info btn-round" runat="server">
+                             <i class="material-icons">arrow_back</i>Anterior
+                                </asp:LinkButton>
+                                <asp:LinkButton ID="btnGenerar" Visible="false" CssClass="btn btn-success btn-round" runat="server">
+                            <i class="material-icons">link</i> Generar
+                                </asp:LinkButton>
+
+                                <asp:LinkButton ID="btnCancelar" class="close" data-dismiss="modal" aria-label="Close" CssClass="btn btn-danger btn-round" runat="server">
+                            <i class="material-icons">close</i> Cancelar
+                                </asp:LinkButton>
+
+                                <asp:LinkButton ID="btnSiguiente" OnClick="btnSiguiente_Click" CssClass="btn btn-info btn-round" runat="server">
+                             Siguiente <i class="material-icons">arrow_forward</i>
+                                </asp:LinkButton>
+                            </div>
+                        </ContentTemplate>
+                        <Triggers>
+                            <asp:AsyncPostBackTrigger ControlID="btnGenerar" EventName="Click" />
+                            <asp:AsyncPostBackTrigger ControlID="btnCancelar" EventName="Click" />
+                        </Triggers>
+                    </asp:UpdatePanel>
+                </div>
+            </div>
+        </div>
     </form>
 
 
@@ -233,8 +403,29 @@
             $("#wrapper").toggleClass("toggled");
         });
     </script>
+
+    <script src="../Multiselect/js/jquery-3.3.1.min.js"></script>
+    <%--<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/css/bootstrap-multiselect.css" rel="stylesheet" type="text/css" />--%>
+    <link href="../Multiselect/css/bootstrap-multiselect.css" rel="stylesheet" />
+    <%--<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/js/bootstrap-multiselect.min.js"></script>--%>
+    <script src="../Multiselect/js/bootstrap-multiselect.min.js"></script>
+    <script>
+        $(function () {
+            $('[id*=ListBox]').multiselect({
+                includeSelectAllOption: true
+            });
+        });
+    </script>
+
+    <script>
+        function myFunction() {
+            var x = document.getElementById("lblUrl").innerText;
+            document.getElementById("ifrLiga").src = x;
+        }
+    </script>
+
     <!--   Core JS Files   -->
-    <script src="../assets/js/core/jquery.min.js"></script>
+    <%--<script src="../assets/js/core/jquery.min.js"></script>--%>
     <script src="../assets/js/core/popper.min.js"></script>
     <script src="../assets/js/core/bootstrap-material-design.min.js"></script>
     <script src="../assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>

@@ -47,11 +47,14 @@
                                                 </EmptyDataTemplate>
                                                 <Columns>
                                                     <asp:BoundField SortExpression="VchIdentificador" DataField="VchIdentificador" HeaderText="IDENTIFICADOR" />
+                                                    <asp:BoundField SortExpression="NombreCompleto" DataField="NombreCompleto" HeaderText="CLIENTE" />
                                                     <asp:BoundField SortExpression="VchUrl" DataField="VchUrl" HeaderText="LIGA" />
                                                     <asp:BoundField SortExpression="VchAsunto" DataField="VchAsunto" HeaderText="ASUNTO" />
                                                     <asp:BoundField SortExpression="VchConcepto" DataField="VchConcepto" HeaderText="CONCEPTO" />
-                                                    <asp:BoundField SortExpression="DcmImporte" DataField="DcmImporte" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:C}" HeaderText="IMPORTE" />
+                                                    <asp:BoundField SortExpression="DcmImporte" DataField="DcmImporte" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:C}" HeaderText="SUBTOTAL" />
                                                     <asp:BoundField SortExpression="DtVencimiento" DataField="DtVencimiento" DataFormatString="{0:d}" HeaderText="VENCIMIENTO" />
+                                                    <asp:BoundField SortExpression="VchPromocion" DataField="VchPromocion" HeaderText="PROMOCIÓN" />
+                                                    <asp:BoundField SortExpression="DcmImportePromocion" DataField="DcmImportePromocion" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:C}" HeaderText="TOTAL" />
                                                     <%--<asp:BoundField SortExpression="VchEstatus" DataField="VchEstatus" HeaderText="ESTATUS" />--%>
                                                     <asp:TemplateField SortExpression="VchEstatus" HeaderText="ESTATUS">
                                                         <ItemTemplate>
@@ -204,19 +207,27 @@
                                                     <div class="form-group">
                                                         <asp:Label Text="Busqueda" runat="server" />
                                                         <div class="row">
-                                                            <div class="form-group col-md-6">
+                                                            <div class="form-group col-md-4">
                                                                 <label for="txtIdentificador" style="color: black;">Identificador</label>
                                                                 <asp:TextBox ID="txtIdentificador" CssClass="form-control" aria-label="Search" runat="server" />
                                                             </div>
-                                                            <div class="form-group col-md-6">
-                                                                <label for="txtUsuario" visible="false" style="color: black;"></label>
-                                                                <asp:TextBox ID="txtUsuario" Visible="false" CssClass="form-control" aria-label="Search" runat="server" />
+                                                            <div class="form-group col-md-4">
+                                                                <label for="txtNombre" style="color: black;">Nombre(s)</label>
+                                                                <asp:TextBox ID="txtNombre" CssClass="form-control" aria-label="Search" runat="server" />
                                                             </div>
-                                                            <div class="form-group col-md-6">
+                                                            <div class="form-group col-md-4">
+                                                                <label for="txtApePaterno" style="color: black;">Ape Paterno</label>
+                                                                <asp:TextBox ID="txtApePaterno" CssClass="form-control" aria-label="Search" runat="server" />
+                                                            </div>
+                                                            <div class="form-group col-md-4">
+                                                                <label for="txtApeMaterno" style="color: black;">Ape Materno</label>
+                                                                <asp:TextBox ID="txtApeMaterno" CssClass="form-control" aria-label="Search" runat="server" />
+                                                            </div>
+                                                            <div class="form-group col-md-4">
                                                                 <label for="txtAsunto" style="color: black;">Asunto</label>
                                                                 <asp:TextBox ID="txtAsunto" CssClass="form-control" aria-label="Search" runat="server" />
                                                             </div>
-                                                            <div class="form-group col-md-6">
+                                                            <div class="form-group col-md-4">
                                                                 <label for="txtConcepto" style="color: black;">Concepto</label>
                                                                 <asp:TextBox ID="txtConcepto" CssClass="form-control" aria-label="Search" runat="server" />
                                                             </div>
@@ -245,12 +256,30 @@
                                                                 <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtImporteMenor" runat="server" />
                                                             </div>
                                                             <div class="form-group col-md-6">
-                                                                <label for="txtVencimientoDesde" style="color: black;">Vencimiento</label>
+                                                                <label for="txtRegistroDesde" style="color: black;">Fecha Registro</label>
+                                                                <asp:TextBox ID="txtRegistroDesde" CssClass="form-control" TextMode="Date" aria-label="Search" runat="server" />
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label for="txtRegistroHasta" style="color: black;"></label>
+                                                                <asp:TextBox ID="txtRegistroHasta" CssClass="form-control" TextMode="Date" aria-label="Search" runat="server" />
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label for="txtVencimientoDesde" style="color: black;">Fecha Vencimiento</label>
                                                                 <asp:TextBox ID="txtVencimientoDesde" CssClass="form-control" TextMode="Date" aria-label="Search" runat="server" />
                                                             </div>
                                                             <div class="form-group col-md-6">
                                                                 <label for="txtVencimientoHasta" style="color: black;"></label>
                                                                 <asp:TextBox ID="txtVencimientoHasta" CssClass="form-control" TextMode="Date" aria-label="Search" runat="server" />
+                                                            </div>
+                                                            <div class="form-group col-md-3">
+                                                                <label for="ddlEstatus" style="color: black;">Estatus</label>
+                                                                <asp:DropDownList ID="ddlEstatus" CssClass="form-control" Style="margin-top: 6px;" runat="server">
+                                                                    <asp:ListItem Text="Todos" Value="" />
+                                                                    <asp:ListItem Text="approved" Value="approved" />
+                                                                    <asp:ListItem Text="denied" Value="denied" />
+                                                                    <asp:ListItem Text="error" Value="error" />
+                                                                    <asp:ListItem Text="Pendiente" Value="Pendiente" />
+                                                                </asp:DropDownList>
                                                             </div>
                                                         </div>
                                                     </div>

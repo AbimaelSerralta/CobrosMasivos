@@ -13,7 +13,7 @@ namespace Franquicia.WebForms
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            Response.Redirect(URLBase + "Views/Home.aspx");
+            Response.Redirect(URLBase + "Views/Login.aspx");
         }
     }
 }

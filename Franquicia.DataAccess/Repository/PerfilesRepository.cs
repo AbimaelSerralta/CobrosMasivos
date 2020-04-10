@@ -49,7 +49,7 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select sp.UidSegPerfil, sp.VchNombre, tp.UidTipoPerfil, sp.UidModuloInicial, tp.VchDescripcion as VchPerfil, es.VchDescripcion as VchEstatus, es.VchIcono from SegPerfiles sp, TiposPerfiles tp, Estatus es where sp.UidTipoPerfil = tp.UidTipoPerfil and sp.UidEstatus = es.UidEstatus and tp.UidAppWeb = '514433C7-4439-42F5-ABE4-6BF1C330F0CA'";
+            query.CommandText = "select sp.UidSegPerfil, sp.VchNombre, tp.UidTipoPerfil, sp.UidModuloInicial, tp.VchDescripcion as VchPerfil, es.VchDescripcion as VchEstatus, es.VchIcono from SegPerfiles sp, TiposPerfiles tp, Estatus es where sp.UidSegPerfil != '17BB8F08-9D5F-425C-9B9B-1CA230C07C7F' and sp.UidSegPerfil != '18523B2B-C671-44AE-A3F6-F0255C4D11A8' and sp.UidTipoPerfil = tp.UidTipoPerfil and sp.UidEstatus = es.UidEstatus and tp.UidAppWeb = '514433C7-4439-42F5-ABE4-6BF1C330F0CA'";
 
             DataTable dt = this.Busquedas(query);
 
@@ -79,7 +79,7 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select sp.UidSegPerfil, sp.VchNombre, tp.VchDescripcion as VchPerfil, es.VchDescripcion as VchEstatus, es.VchIcono  from SegPerfiles sp, TiposPerfiles tp, Estatus es where sp.UidTipoPerfil = tp.UidTipoPerfil and sp.UidEstatus = es.UidEstatus and tp.UidTipoPerfil = '"+ UidSegPerfil + "'";
+            query.CommandText = "select sp.UidSegPerfil, sp.VchNombre, tp.VchDescripcion as VchPerfil, es.VchDescripcion as VchEstatus, es.VchIcono  from SegPerfiles sp, TiposPerfiles tp, Estatus es where sp.UidSegPerfil != '17BB8F08-9D5F-425C-9B9B-1CA230C07C7F' and sp.UidTipoPerfil = tp.UidTipoPerfil and sp.UidEstatus = es.UidEstatus and tp.UidTipoPerfil = '" + UidSegPerfil + "'";
 
             DataTable dt = this.Busquedas(query);
 
@@ -205,7 +205,7 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select sp.UidSegPerfil, sp.VchNombre, tp.UidTipoPerfil, sp.UidModuloInicial, tp.VchDescripcion as VchPerfil, es.VchDescripcion as VchEstatus, es.VchIcono from SegPerfiles sp, TiposPerfiles tp, Estatus es where sp.UidTipoPerfil = tp.UidTipoPerfil and sp.UidEstatus = es.UidEstatus and tp.UidAppWeb = '6D70F88D-3CE0-4C8B-87A1-92666039F5B2' and sp.UidFranquiciatario = '" + UidFranquiciatario +"'";
+            query.CommandText = "select sp.UidSegPerfil, sp.VchNombre, tp.UidTipoPerfil, sp.UidModuloInicial, tp.VchDescripcion as VchPerfil, es.VchDescripcion as VchEstatus, es.VchIcono from SegPerfiles sp, TiposPerfiles tp, Estatus es where sp.UidSegPerfil != 'D2C80D47-C14C-4677-A63D-C46BCB50FE17' and sp.UidTipoPerfil = tp.UidTipoPerfil and sp.UidEstatus = es.UidEstatus and tp.UidAppWeb = '6D70F88D-3CE0-4C8B-87A1-92666039F5B2' and sp.UidFranquiciatario = '" + UidFranquiciatario +"'";
 
             DataTable dt = this.Busquedas(query);
 

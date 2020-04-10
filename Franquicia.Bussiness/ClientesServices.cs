@@ -18,7 +18,12 @@ namespace Franquicia.Bussiness
             set { _clientes = value; }
         }
 
-        ClientesRepository clientesRepository = new ClientesRepository();
+        private ClientesRepository _clientesRepository = new ClientesRepository();
+        public ClientesRepository clientesRepository
+        {
+            get { return _clientesRepository; }
+            set { _clientesRepository = value; }
+        }
 
         public List<Clientes> lsClientes = new List<Clientes>();
         public List<ClientesGridViewModel> lsClientesGridViewModel = new List<ClientesGridViewModel>();
@@ -137,5 +142,11 @@ namespace Franquicia.Bussiness
         }
         #endregion
 
+        #region AdminCliente
+        public void ObtenerClientes(Guid UidAdministrador)
+        {
+            clientesRepository.ObtenerClientes(UidAdministrador);
+        }
+        #endregion
     }
 }

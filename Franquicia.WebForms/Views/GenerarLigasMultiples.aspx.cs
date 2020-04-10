@@ -1,4 +1,5 @@
-﻿using ClosedXML.Excel;
+﻿using AjaxControlToolkit;
+using ClosedXML.Excel;
 using Franquicia.Bussiness;
 using RestSharp;
 using System;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -16,10 +18,39 @@ namespace Franquicia.WebForms.Views
 {
     public partial class GenerarLigasMultiples : System.Web.UI.Page
     {
+        #region Propiedades
+        // Nombre del servidor
+        string ServerName
+        {
+            get { return Request.ServerVariables["SERVER_NAME"].ToString(); }
+        }
+        // Puerto del servidor
+        string ServerPort
+        {
+            get { return Request.ServerVariables["SERVER_PORT"].ToString(); }
+        }
+
+        // Obtener URL Base
+        public string URLBase
+        {
+            get
+            {
+                if (ServerPort != string.Empty && ServerPort.Trim() != "")
+                { return "https://" + ServerName + ":" + ServerPort + "/"; }
+                else
+                { return "https://" + ServerName + "/"; }
+            }
+        }
+        #endregion
+
         UsuariosCompletosServices usuariosCompletosServices = new UsuariosCompletosServices();
         PagosTarjetaServices pagosServices = new PagosTarjetaServices();
         CorreosServices correosServices = new CorreosServices();
         ParametrosEntradaServices parametrosEntradaServices = new ParametrosEntradaServices();
+        PromocionesServices promocionesServices = new PromocionesServices();
+
+        List<string> listPromocionesSeleccionados = new List<string>();
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Session["UidClienteMaster"] != null)
@@ -36,14 +67,26 @@ namespace Franquicia.WebForms.Views
                 ViewState["gvUsuariosSeleccionados"] = SortDirection.Ascending;
                 ViewState["gvUsuarios"] = SortDirection.Ascending;
 
+                ViewState["listPromocionesSeleccionados"] = listPromocionesSeleccionados;
+
                 btnCargarExcel.Attributes.Add("onclick", "document.getElementById('" + fuSelecionarExcel.ClientID + "').click(); return false;");
                 fuSelecionarExcel.Attributes["onchange"] = "UploadFile(this)";
 
                 Session["usuariosCompletosServices"] = usuariosCompletosServices;
+                Session["promocionesServices"] = promocionesServices;
+
+                promocionesServices.lsCBLPromocionesModelCliente.Clear();
+                promocionesServices.CargarPromocionesClientes(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+
             }
             else
             {
                 usuariosCompletosServices = (UsuariosCompletosServices)Session["usuariosCompletosServices"];
+                promocionesServices = (PromocionesServices)Session["promocionesServices"];
+                listPromocionesSeleccionados = (List<string>)ViewState["listPromocionesSeleccionados"];
+
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "Mult", "multi()", true);
+
                 pnlAlert.Visible = false;
                 lblMensajeAlert.Text = "";
                 divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
@@ -191,10 +234,57 @@ namespace Franquicia.WebForms.Views
                             }
                         }
                     }
-                    usuariosCompletosServices.ExcelToListMultiple(dt, Guid.Parse(ViewState["UidClienteLocal"].ToString()));
 
-                    gvUsuariosSeleccionados.DataSource = usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel;
-                    gvUsuariosSeleccionados.DataBind();
+                    if (dt.Columns.Contains("NOMBRE(S)".Trim()) && dt.Columns.Contains("APEPATERNO".Trim()) && dt.Columns.Contains("APEMATERNO".Trim())
+                        && dt.Columns.Contains("CORREO".Trim()) && dt.Columns.Contains("CELULAR".Trim()) && dt.Columns.Contains("ASUNTO".Trim()) && dt.Columns.Contains("CONCEPTO".Trim())
+                        && dt.Columns.Contains("IMPORTE".Trim()) && dt.Columns.Contains("VENCIMIENTO".Trim()) && dt.Columns.Contains("PROMOCION(ES)".Trim()))
+                    {
+
+                        usuariosCompletosServices.ValidarExcelToListMultiple(dt, promocionesServices.lsCBLPromocionesModelCliente);
+
+                        if (usuariosCompletosServices.lsLigasInsertarMultiple.Count >= 1)
+                        {
+                            usuariosCompletosServices.ExcelToListMultiple(usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple, usuariosCompletosServices.lsLigasInsertarMultiple, Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+
+                            foreach (var item in usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple)
+                            {
+                                promocionesServices.lsLigasMultiplePromocionesModel.RemoveAll(x => x.IdUsuario == item.IdUsuario);
+
+                                foreach (var it in promocionesServices.lsCBLPromocionesModelCliente)
+                                {
+                                    string[] arPromo = Regex.Split(item.StrPromociones, ",");
+
+                                    for (int i = 0; i < arPromo.Length; i++)
+                                    {
+                                        if (it.VchDescripcion.Trim() == arPromo[i].Trim())
+                                        {
+                                            promocionesServices.PromocionesMultiples(it.UidPromocion.ToString(), item.IdUsuario, it.VchDescripcion);
+                                        }
+                                    }
+                                }
+                            }
+
+                            gvUsuariosSeleccionados.DataSource = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple;
+                            gvUsuariosSeleccionados.DataBind();
+                        }
+
+                        if (usuariosCompletosServices.lsLigasErroresMultiple.Count >= 1)
+                        {
+                            btnDescargarError.Visible = true;
+                            btnMasDetalle.Visible = true;
+                            pnlAlertImportarError.Visible = true;
+                            lblMnsjAlertImportarError.Text = "<strong>!Lo sentimos¡</strong> algunos usuarios no se han importado. **Recuerde que todos los campos son obligatorios**";
+                            divAlertImportarError.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                        }
+                    }
+                    else
+                    {
+                        btnDescargarError.Visible = false;
+                        btnMasDetalle.Visible = true;
+                        pnlAlertImportarError.Visible = true;
+                        lblMnsjAlertImportarError.Text = "<strong>!Lo sentimos¡</strong> el archivo no tiene las columnas correctas.";
+                        divAlertImportarError.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                    }
                 }
                 else
                 {
@@ -206,8 +296,8 @@ namespace Franquicia.WebForms.Views
         }
         protected void btnSeleccionar_Click(object sender, EventArgs e)
         {
-            usuariosCompletosServices.CargarUsuariosFinalesMultiples(usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel, new Guid(ViewState["UidClienteLocal"].ToString()), new Guid("E39FF705-8A01-4302-829A-7CFB9615CC8F"));
-            gvUsuarios.DataSource = usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel.Where(x => x.blSeleccionado == false).ToList();
+            usuariosCompletosServices.CargarUsuariosFinalesMultiples(usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple, new Guid(ViewState["UidClienteLocal"].ToString()), new Guid("E39FF705-8A01-4302-829A-7CFB9615CC8F"));
+            gvUsuarios.DataSource = usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel;
             gvUsuarios.DataBind();
 
             ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalSeleccionar()", true);
@@ -229,7 +319,9 @@ namespace Franquicia.WebForms.Views
 
         protected void btnExportarLista_Click(object sender, EventArgs e)
         {
-            Session["lsLigasMultiplesUsuariosGridViewModel"] = usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel;
+            Session["lsgvUsuariosSeleccionadosMultiple"] = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple;
+            Session["lsLigasUsuariosGridViewModelErrorMultiple"] = null;
+
             string _open = "window.open('ExportarAExcelMultiple.aspx', '_blank');";
             ScriptManager.RegisterStartupScript(this, this.GetType(), Guid.NewGuid().ToString(), _open, true);
         }
@@ -257,7 +349,12 @@ namespace Franquicia.WebForms.Views
 
         protected void btnAceptar_Click(object sender, EventArgs e)
         {
-            gvUsuariosSeleccionados.DataSource = usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel.Where(x => x.blSeleccionado == true).ToList(); ;
+            //gvUsuariosSeleccionados.DataSource = usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel;
+            //gvUsuariosSeleccionados.DataSource = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple;
+            //gvUsuariosSeleccionados.DataBind();
+
+            usuariosCompletosServices.gvUsuariosSeleccionadosMultiple(usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel);
+            gvUsuariosSeleccionados.DataSource = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple;
             gvUsuariosSeleccionados.DataBind();
 
             ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModalSeleccionar()", true);
@@ -286,9 +383,9 @@ namespace Franquicia.WebForms.Views
 
         protected void btnGenerarLigas_Click(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(txtIdentificador.Text))
+            if (!string.IsNullOrEmpty(txtIdentificador.Text.Trim()))
             {
-                if (usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel.Where(x => x.blSeleccionado == true).ToList().Count >= 1)
+                if (usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple.Count >= 1)
                 {
                     bool Accion = true;
                     foreach (GridViewRow row in gvUsuariosSeleccionados.Rows)
@@ -298,7 +395,7 @@ namespace Franquicia.WebForms.Views
                         TextBox txtGvImporte = row.FindControl("txtGvImporte") as TextBox;
                         TextBox txtGvVencimiento = row.FindControl("txtGvVencimiento") as TextBox;
 
-                        if (txtGvAsunto.Text == string.Empty || txtGvConcepto.Text == string.Empty || txtGvImporte.Text == string.Empty || txtGvVencimiento.Text == string.Empty)
+                        if (txtGvAsunto.Text.Trim() == string.Empty || txtGvConcepto.Text.Trim() == string.Empty || txtGvImporte.Text.Trim() == string.Empty || txtGvVencimiento.Text.Trim() == string.Empty)
                         {
                             Accion = false;
                             break;
@@ -346,6 +443,11 @@ namespace Franquicia.WebForms.Views
 
             gvUsuariosSeleccionados.DataSource = null;
             gvUsuariosSeleccionados.DataBind();
+
+            usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple.Clear();
+            Session["lsgvUsuariosSeleccionadosMultiple"] = null;
+
+            promocionesServices.lsLigasMultiplePromocionesModel.Clear();
         }
 
         protected void gvUsuarios_PageIndexChanging(object sender, GridViewPageEventArgs e)
@@ -357,7 +459,6 @@ namespace Franquicia.WebForms.Views
 
         protected void gvUsuariosSeleccionados_RowCommand(object sender, GridViewCommandEventArgs e)
         {
-
             if (e.CommandName == "btnEditar")
             {
                 GridViewRow wor = (GridViewRow)(((LinkButton)e.CommandSource).NamingContainer);
@@ -368,7 +469,17 @@ namespace Franquicia.WebForms.Views
                 TextBox GvImporte = (TextBox)wor.FindControl("txtGvImporte");
                 ViewState["GvImporte"] = GvImporte.Text;
                 TextBox GvVencimiento = (TextBox)wor.FindControl("txtGvVencimiento");
+                GvVencimiento.Attributes.Add("min", DateTime.Now.ToString("yyyy-MM-dd"));
                 ViewState["GvVencimiento"] = GvVencimiento.Text;
+
+                //ListBox GvListBoxMultiple = (ListBox)wor.FindControl("ListBoxMultiple");
+                //foreach (ListItem item in GvListBoxMultiple.Items)
+                //{
+                //    if (item.Selected)
+                //    {
+                //        listPromocionesSeleccionados.Add(item.Value);
+                //    }
+                //}
             }
 
             if (e.CommandName == "btnEditar")
@@ -388,7 +499,7 @@ namespace Franquicia.WebForms.Views
                 TextBox txtGvConcepto = (TextBox)row.FindControl("txtGvConcepto");
                 TextBox txtGvImporte = (TextBox)row.FindControl("txtGvImporte");
                 TextBox txtGvVencimiento = (TextBox)row.FindControl("txtGvVencimiento");
-
+                
                 btnAceptar.Visible = true;
                 btnCancelar.Visible = true;
                 btnEditar.Visible = false;
@@ -413,6 +524,8 @@ namespace Franquicia.WebForms.Views
                 GridViewRow Seleccionado = gvUsuariosSeleccionados.Rows[index];
                 GridView valor = (GridView)sender;
                 int dataKey = int.Parse(valor.DataKeys[Seleccionado.RowIndex].Value.ToString());
+                ViewState["UidUsuariosSeleccionadoEditar"] = dataKey;
+                ListBox GvListBoxMultiple = (ListBox)row.FindControl("ListBoxMultiple");
 
                 LinkButton btnAceptar = (LinkButton)row.FindControl("btnAceptar");
                 LinkButton btnCancelar = (LinkButton)row.FindControl("btnCancelar");
@@ -438,8 +551,41 @@ namespace Franquicia.WebForms.Views
                 txtGvImporte.BorderStyle = BorderStyle.None;
                 txtGvVencimiento.BorderStyle = BorderStyle.None;
 
-                usuariosCompletosServices.ActualizarListaGvUsuariosMultiple(usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel, dataKey, true, txtGvAsunto.Text, txtGvConcepto.Text, decimal.Parse(txtGvImporte.Text), DateTime.Parse(txtGvVencimiento.Text));
-                gvUsuariosSeleccionados.DataSource = usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel.Where(x => x.blSeleccionado == true).ToList();
+                string Promociones = "";
+
+                foreach (ListItem item in GvListBoxMultiple.Items)
+                {
+                    if (promocionesServices.lsLigasMultiplePromocionesModel.Exists(x => x.UidPromocion == Guid.Parse(item.Value) && x.IdUsuario == dataKey))
+                    {
+                        if (item.Selected == false)
+                        {
+                            promocionesServices.lsLigasMultiplePromocionesModel.RemoveAt(promocionesServices.lsLigasMultiplePromocionesModel.FindIndex(x => x.UidPromocion == Guid.Parse(item.Value) && x.IdUsuario == dataKey));
+                        }
+                    }
+                    else
+                    {
+                        if (item.Selected == true)
+                        {
+                            listPromocionesSeleccionados.Add(item.Value);
+                            promocionesServices.PromocionesMultiples(item.Value, dataKey, item.Text);
+                        }
+                    }
+                }
+
+                foreach (var item in promocionesServices.lsLigasMultiplePromocionesModel.Where(x => x.IdUsuario == dataKey).ToList())
+                {
+                    if (string.IsNullOrEmpty(Promociones))
+                    {
+                        Promociones = item.VchDescripcion;
+                    }
+                    else
+                    {
+                        Promociones += ", " + item.VchDescripcion;
+                    }
+                }
+
+                usuariosCompletosServices.ActualizarListaGvUsuariosMultiple(usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple, dataKey, true, txtGvAsunto.Text, txtGvConcepto.Text, decimal.Parse(txtGvImporte.Text), DateTime.Parse(txtGvVencimiento.Text), Promociones);
+                gvUsuariosSeleccionados.DataSource = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple;
                 gvUsuariosSeleccionados.DataBind();
             }
 
@@ -489,8 +635,13 @@ namespace Franquicia.WebForms.Views
                 GridView valor = (GridView)sender;
                 int dataKey = int.Parse(valor.DataKeys[Seleccionado.RowIndex].Value.ToString());
 
-                usuariosCompletosServices.ActualizarListaUsuariosMultiple(usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel, dataKey, false);
-                gvUsuariosSeleccionados.DataSource = usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel.Where(x => x.blSeleccionado == true).ToList();
+                //usuariosCompletosServices.ActualizarListaUsuariosMultiple(usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel, dataKey, false);
+                //gvUsuariosSeleccionados.DataSource = usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel.Where(x => x.blSeleccionado == true).ToList();
+                //gvUsuariosSeleccionados.DataBind();
+
+                usuariosCompletosServices.EliminarItemgvUsuariosSeleccionadosMultiple(dataKey);
+                promocionesServices.EliminarPromocionesMultiples(dataKey);
+                gvUsuariosSeleccionados.DataSource = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple;
                 gvUsuariosSeleccionados.DataBind();
             }
         }
@@ -514,87 +665,122 @@ namespace Franquicia.WebForms.Views
 
             if (!string.IsNullOrEmpty(id_company) && !string.IsNullOrEmpty(id_branch) && !string.IsNullOrEmpty(user) && !string.IsNullOrEmpty(pwd) && !string.IsNullOrEmpty(moneda) && !string.IsNullOrEmpty(canal) && !string.IsNullOrEmpty(semillaAES) && !string.IsNullOrEmpty(urlGen) && !string.IsNullOrEmpty(data0))
             {
-                foreach (var item in usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel.Where(x => x.blSeleccionado == true).ToList())
+                foreach (var item in usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple)
                 {
-                    DateTime thisDay = DateTime.Now;
+                    bool VariasLigas = false;
+                    Guid UidLigaAsociado = Guid.NewGuid();
 
-                    string Referencia = item.IdCliente.ToString() + item.IdUsuario.ToString() + thisDay.ToString("ddMMyyyyHHmmssfff");
-
-                    string ArchivoXml = "" +
-                        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" +
-                        "<P>\r\n  " +
-                        "  <business>\r\n" +
-                        "    <id_company>" + id_company + "</id_company>\r\n" +
-                        "    <id_branch>" + id_branch + "</id_branch>\r\n" +
-                        "    <user>" + user + "</user>\r\n" +
-                        "    <pwd>" + pwd + "</pwd>\r\n" +
-                        "  </business>\r\n" +
-                        "  <url>\r\n" +
-                        "    <reference>" + Referencia + "</reference>\r\n" +
-                        "    <amount>" + item.DcmImporte + "</amount>\r\n" +
-                        "    <moneda>" + moneda + "</moneda>\r\n" +
-                        "    <canal>" + canal + "</canal>\r\n" +
-                        "    <omitir_notif_default>1</omitir_notif_default>\r\n" +
-                        "    <st_correo>1</st_correo>\r\n" +
-                        "    <fh_vigencia>" + item.DtVencimiento.ToString("dd/MM/yyyy") + "</fh_vigencia>\r\n" +
-                        "    <mail_cliente>" + item.StrCorreo + "</mail_cliente>\r\n" +
-                        "    <datos_adicionales>\r\n" +
-                        "      <data id=\"1\" display=\"true\">\r\n" +
-                        "        <label>Concepto:</label>\r\n" +
-                        "        <value>" + item.StrConcepto + "</value>\r\n" +
-                        "      </data>\r\n" +
-                        "      <data id=\"2\" display=\"false\">\r\n" +
-                        "        <label>Color</label>\r\n" +
-                        "        <value>Azul</value>\r\n" +
-                        "      </data>\r\n" +
-                        "    </datos_adicionales>\r\n" +
-                        "  </url>\r\n" +
-                        "</P>\r\n";
-                    string originalString = ArchivoXml;
-                    string key = semillaAES;
-                    AESCrypto aesCrypto = new AESCrypto();
-                    string encryptedString = aesCrypto.encrypt(originalString, key);
-                    string finalString = encryptedString.Replace("%", "%25").Replace(" ", "%20").Replace("+", "%2B").Replace("=", "%3D").Replace("/", "%2F");
-
-                    string encodedString = HttpUtility.UrlEncode("<pgs><data0>" + data0 + "</data0><data>" + encryptedString + "</data></pgs>");
-                    string postParam = "xml=" + encodedString;
-
-                    var client = new RestClient(urlGen);
-                    var request = new RestRequest(Method.POST);
-                    request.AddHeader("cache-control", "no-cache");
-                    request.AddHeader("content-type", "application/x-www-form-urlencoded");
-                    request.AddParameter("application/x-www-form-urlencoded", postParam, ParameterType.RequestBody);
-
-                    IRestResponse response = client.Execute(request);
-                    var content = response.Content;
-
-                    string decryptedString = aesCrypto.decrypt(key, content);
-                    string str1 = decryptedString.Replace("<P_RESPONSE><cd_response>success</cd_response><nb_response></nb_response><nb_url>", "");
-                    url = str1.Replace("</nb_url></P_RESPONSE>", "");
-
-                    if (url.Contains("https://"))
+                    if (promocionesServices.lsLigasMultiplePromocionesModel.Where(x => x.IdUsuario == item.IdUsuario).ToList().Count >= 1)
                     {
-                        if (usuariosCompletosServices.GenerarLigasPagos(url, item.StrConcepto, item.DcmImporte, Referencia, item.UidUsuario, txtIdentificador.Text, thisDay, item.DtVencimiento, item.StrAsunto))
+                        VariasLigas = true;
+                    }
+
+                    if (VariasLigas)
+                    {
+                        DateTime thisDay = DateTime.Now;
+                        string ReferenciaCobro = item.IdCliente.ToString() + item.IdUsuario.ToString() + thisDay.ToString("ddMMyyyyHHmmssfff");
+
+                        string urlCobro = GenLigaPara(id_company, id_branch, user, pwd, ReferenciaCobro, item.DcmImporte, moneda, canal, "C", item.DtVencimiento, item.StrCorreo, item.StrConcepto, semillaAES, data0, urlGen);
+
+                        if (urlCobro.Contains("https://"))
                         {
-                            correosServices.CorreoLiga(item.NombreCompleto, item.StrAsunto, item.StrConcepto, item.DcmImporte, item.DtVencimiento, url, item.StrCorreo);
-                            resu = true;
+                            if (usuariosCompletosServices.GenerarLigasPagos(urlCobro, item.StrConcepto, item.DcmImporte, ReferenciaCobro, item.UidUsuario, txtIdentificador.Text, thisDay, item.DtVencimiento, item.StrAsunto, UidLigaAsociado, Guid.Empty, Guid.Parse(ViewState["UidClienteLocal"].ToString())))
+                            {
+                                resu = true;
+                                foreach (var itPromo in promocionesServices.lsLigasMultiplePromocionesModel.Where(x => x.IdUsuario == item.IdUsuario).ToList())
+                                {
+                                    int i = promocionesServices.lsCBLPromocionesModelCliente.IndexOf(promocionesServices.lsCBLPromocionesModelCliente.First(x => x.UidPromocion == itPromo.UidPromocion));
+                                    decimal cobro = promocionesServices.lsCBLPromocionesModelCliente[i].DcmComicion;
+
+                                    decimal Valor = cobro * item.DcmImporte / 100;
+                                    decimal Importe = Valor + item.DcmImporte;
+
+                                    string promocion = itPromo.VchDescripcion.Replace(" MESES", "");
+
+                                    DateTime thisDay2 = DateTime.Now;
+                                    string Referencia = item.IdCliente.ToString() + item.IdUsuario.ToString() + thisDay2.ToString("ddMMyyyyHHmmssfff");
+
+                                    url = GenLigaPara(id_company, id_branch, user, pwd, Referencia, Importe, moneda, canal, promocion, item.DtVencimiento, item.StrCorreo, item.StrConcepto, semillaAES, data0, urlGen);
+
+                                    if (url.Contains("https://"))
+                                    {
+                                        if (usuariosCompletosServices.GenerarLigasPagos(url, item.StrConcepto, Importe, Referencia, item.UidUsuario, txtIdentificador.Text, thisDay, item.DtVencimiento, item.StrAsunto, UidLigaAsociado, itPromo.UidPromocion, Guid.Parse(ViewState["UidClienteLocal"].ToString())))
+                                        {
+                                            resu = true;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        resu = false;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            resu = false;
+                            break;
+                        }
+
+                        if (resu)
+                        {
+                            promocionesServices.CargarPromocionesValidas(UidLigaAsociado);
+
+                            string strPromociones = string.Empty;
+
+                            if (promocionesServices.lsLigasUrlsPromocionesModel.Count >= 1)
+                            {
+                                foreach (var itPromo in promocionesServices.lsLigasUrlsPromocionesModel)
+                                {
+                                    decimal promocion = int.Parse(itPromo.VchDescripcion.Replace(" MESES", ""));
+                                    decimal Final = itPromo.DcmImporte / promocion;
+
+                                    strPromociones +=
+                                    "\t\t\t\t\t\t\t\t<tr>\r\n" +
+                                    "\t\t\t\t\t\t\t\t\t<td width=\"50%\" style=\"color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;text-align: right;\">\r\n" +
+                                    "\t\t\t\t\t\t\t\t\t\t" + itPromo.VchDescripcion + " de $" + Final.ToString("N2") + "\r\n" +
+                                    "\t\t\t\t\t\t\t\t\t</td>\r\n" +
+                                    "\t\t\t\t\t\t\t\t\t<td width=\"50%\" style=\"color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;text-align: left;\">\r\n" +
+                                    "\t\t\t\t\t\t\t\t\t\t &nbsp;" + "<a style =\"display:block;color:#fff;font-weight:400;text-align:center;width:100px;font-size:15px;text-decoration:none;background:#28a745;margin:0 auto; padding:5px;\" href=" + URLBase + "Views/Promociones.aspx?CodigoPromocion=" + UidLigaAsociado + "&CodigoLiga=" + itPromo.IdReferencia + "> Pagar $" + itPromo.DcmImporte.ToString("N2") + "</a>" + "\r\n" +
+                                    "\t\t\t\t\t\t\t\t\t</td>\r\n" +
+                                    "\t\t\t\t\t\t\t\t</tr>\r\n";
+                                }
+                            }
+
+                            string LigaUrl = URLBase + "Views/Promociones.aspx?CodigoPromocion=" + UidLigaAsociado + "&CodigoLiga=" + ReferenciaCobro;
+                            correosServices.CorreoLiga(item.NombreCompleto, item.StrAsunto, item.StrConcepto, item.DcmImporte, item.DtVencimiento, LigaUrl, item.StrCorreo, strPromociones, true, item.VchNombreComercial);
                         }
                     }
                     else
                     {
-                        resu = false;
-                        break;
+                        DateTime thisDay = DateTime.Now;
+                        string ReferenciaCobro = item.IdCliente.ToString() + item.IdUsuario.ToString() + thisDay.ToString("ddMMyyyyHHmmssfff");
+
+                        string urlCobro = GenLigaPara(id_company, id_branch, user, pwd, ReferenciaCobro, item.DcmImporte, moneda, canal, "C", item.DtVencimiento, item.StrCorreo, item.StrConcepto, semillaAES, data0, urlGen);
+
+                        if (urlCobro.Contains("https://"))
+                        {
+                            if (usuariosCompletosServices.GenerarLigasPagos(urlCobro, item.StrConcepto, item.DcmImporte, ReferenciaCobro, item.UidUsuario, txtIdentificador.Text, thisDay, item.DtVencimiento, item.StrAsunto, Guid.Empty, Guid.Empty, Guid.Parse(ViewState["UidClienteLocal"].ToString())))
+                            {
+                                correosServices.CorreoLiga(item.NombreCompleto, item.StrAsunto, item.StrConcepto, item.DcmImporte, item.DtVencimiento, urlCobro, item.StrCorreo, "", false, item.VchNombreComercial);
+                                resu = true;
+                            }
+                        }
+                        else
+                        {
+                            resu = false;
+                            break;
+                        }
                     }
                 }
 
                 if (resu)
                 {
-                    lblResumen.Text = "Se han generado: " + usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel.Where(x => x.blSeleccionado == true).ToList().Count.ToString() + " liga(s) exitosamente.";
-                    lblCorreoUsado.Text = usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel.Where(x => x.blSeleccionado == true).ToList().Count.ToString();
+                    lblResumen.Text = " Se han generado: " + usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple.Count.ToString() + " liga(s) exitosamente.";
+                    lblCorreoUsado.Text = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple.Count.ToString();
 
                     LimpiarDatos();
-                    Session["lsLigasMultiplesUsuariosGridViewModel"] = null;
-                    usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel.Clear();
 
                     pnlAlertModal.Visible = true;
                     divAlertModal.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
@@ -627,6 +813,67 @@ namespace Franquicia.WebForms.Views
                 divAlertModal.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
             }
         }
+        private string GenLigaPara(string id_company, string id_branch, string user, string pwd, string Referencia, decimal Importe,
+            string moneda, string canal, string promocion, DateTime Vencimiento, string Correo, string Concepto, string semillaAES, string data0, string urlGen)
+        {
+            string url = string.Empty;
+
+            string ArchivoXml = "" +
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" +
+                "<P>\r\n  " +
+                "  <business>\r\n" +
+                "    <id_company>" + id_company + "</id_company>\r\n" +
+                "    <id_branch>" + id_branch + "</id_branch>\r\n" +
+                "    <user>" + user + "</user>\r\n" +
+                "    <pwd>" + pwd + "</pwd>\r\n" +
+                "  </business>\r\n" +
+                "  <url>\r\n" +
+                "    <reference>" + Referencia + "</reference>\r\n" +
+                "    <amount>" + Importe + "</amount>\r\n" +
+                "    <moneda>" + moneda + "</moneda>\r\n" +
+                "    <canal>" + canal + "</canal>\r\n" +
+                "    <omitir_notif_default>1</omitir_notif_default>\r\n" +
+                "    <promociones>" + promocion + "</promociones>\r\n" +
+                "    <st_correo>1</st_correo>\r\n" +
+                "    <fh_vigencia>" + Vencimiento.ToString("dd/MM/yyyy") + "</fh_vigencia>\r\n" +
+                "    <mail_cliente>" + Correo + "</mail_cliente>\r\n" +
+                "    <datos_adicionales>\r\n" +
+                "      <data id=\"1\" display=\"true\">\r\n" +
+                "        <label>Concepto:</label>\r\n" +
+                "        <value>" + Concepto + "</value>\r\n" +
+                "      </data>\r\n" +
+                "      <data id=\"2\" display=\"false\">\r\n" +
+                "        <label>Color</label>\r\n" +
+                "        <value>Azul</value>\r\n" +
+                "      </data>\r\n" +
+                "    </datos_adicionales>\r\n" +
+                "  </url>\r\n" +
+                "</P>\r\n";
+            string originalString = ArchivoXml;
+            string key = semillaAES;
+            AESCrypto aesCrypto = new AESCrypto();
+            string encryptedString = aesCrypto.encrypt(originalString, key);
+            string finalString = encryptedString.Replace("%", "%25").Replace(" ", "%20").Replace("+", "%2B").Replace("=", "%3D").Replace("/", "%2F");
+
+            string encodedString = HttpUtility.UrlEncode("<pgs><data0>" + data0 + "</data0><data>" + encryptedString + "</data></pgs>");
+            string postParam = "xml=" + encodedString;
+
+            var client = new RestClient(urlGen);
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("cache-control", "no-cache");
+            request.AddHeader("content-type", "application/x-www-form-urlencoded");
+            request.AddParameter("application/x-www-form-urlencoded", postParam, ParameterType.RequestBody);
+
+            IRestResponse response = client.Execute(request);
+            var content = response.Content;
+
+            string decryptedString = aesCrypto.decrypt(key, content);
+            string str1 = decryptedString.Replace("<P_RESPONSE><cd_response>success</cd_response><nb_response></nb_response><nb_url>", "");
+            url = str1.Replace("</nb_url></P_RESPONSE>", "");
+
+            return url;
+        }
+
         protected void btnCancelar_Click(object sender, EventArgs e)
         {
             ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
@@ -825,8 +1072,32 @@ namespace Franquicia.WebForms.Views
             LimpiarDatos();
         }
 
+        protected void btnDescargarError_Click(object sender, EventArgs e)
+        {
+            Session["lsgvUsuariosSeleccionadosMultiple"] = null;
+            Session["lsLigasUsuariosGridViewModelErrorMultiple"] = usuariosCompletosServices.lsLigasErroresMultiple;
+
+            string _open = "window.open('ExportarAExcelMultiple.aspx', '_blank');";
+            ScriptManager.RegisterStartupScript(this, this.GetType(), Guid.NewGuid().ToString(), _open, true);
+        }
+
+        protected void btnMasDetalle_Click(object sender, EventArgs e)
+        {
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalMasDetalle()", true);
+        }
+
+        protected void btnCloseAlertImportarError_Click(object sender, EventArgs e)
+        {
+            pnlAlertImportarError.Visible = false;
+            lblMnsjAlertImportarError.Text = "";
+            divAlertImportarError.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
+            Session["lsLigasUsuariosGridViewModelErrorMultiple"] = null;
+        }
+
         protected void BTNdEs_Click(object sender, EventArgs e)
         {
+            //correosServices.CorreoCadena("finalString " + txtCadena.Text, "serralta2008@gmail.com");
+
             //string key = "5DCC67393750523CD165F17E1EFADD21";
             string key = "7AACFE849FABD796F6DCB947FD4D5268";
             AESCrypto o = new AESCrypto();
@@ -944,6 +1215,47 @@ namespace Franquicia.WebForms.Views
             else
             {
                 //respuesta.Data = "Lo sentimos, no hemos podido desifrar la cadena. " + cadena;
+            }
+        }
+
+        protected void gvUsuariosSeleccionados_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                //e.Row.Attributes["onclick"] = Page.ClientScript.GetPostBackClientHyperlink(gvFranquiciatarios, "Select$" + e.Row.RowIndex);
+
+
+                string DataKey = gvUsuariosSeleccionados.DataKeys[e.Row.RowIndex].Values[0].ToString();
+
+                ListBox GvListBoxMultiple = (ListBox)e.Row.FindControl("ListBoxMultiple");
+
+                if (promocionesServices.lsCBLPromocionesModelCliente.Count >= 1)
+                {
+                    GvListBoxMultiple.DataSource = promocionesServices.lsCBLPromocionesModelCliente;
+                    GvListBoxMultiple.DataTextField = "VchDescripcion";
+                    GvListBoxMultiple.DataValueField = "UidPromocion";
+                    GvListBoxMultiple.DataBind();
+                }
+                else
+                {
+                    //pnlPromociones.Visible = false;
+                }
+
+
+                foreach (ListItem item in GvListBoxMultiple.Items)
+                {
+                    foreach (var it in promocionesServices.lsLigasMultiplePromocionesModel)
+                    {
+                        if (it.IdUsuario == int.Parse(DataKey))
+                        {
+                            if (item.Value == it.UidPromocion.ToString())
+                            {
+                                item.Selected = true;
+                            }
+                        }
+                    }
+                }
+
             }
         }
     }

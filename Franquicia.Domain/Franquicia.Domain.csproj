@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\Tarifas.cs" />
     <Compile Include="Models\Accesos.cs" />
     <Compile Include="Models\AppWeb.cs" />
     <Compile Include="Models\Ciudades.cs" />
@@ -73,6 +74,10 @@
     <Compile Include="Models\UsuariosCompletos.cs" />
     <Compile Include="Models\Usuarios.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\LigasUrls\LigasUrlsPayCardModel.cs" />
+    <Compile Include="ViewModels\LigasUrls\LigasUrlsPromocionesModel.cs" />
+    <Compile Include="ViewModels\Promociones\FranquiciasCBLPromocionesModel.cs" />
+    <Compile Include="ViewModels\Promociones\LigasMultiplePromocionesModel.cs" />
     <Compile Include="ViewModels\Promociones\ClientesCBLPromocionesModel.cs" />
     <Compile Include="ViewModels\Clientes\ClientesGridViewEmpresasModel.cs" />
     <Compile Include="ViewModels\Clientes\ClientesGridViewModel.cs" />
@@ -84,6 +89,7 @@
     <Compile Include="ViewModels\PagosTarjeta\PagosTarjetaDetalleGridViewModel.cs" />
     <Compile Include="ViewModels\Perfiles\PerfilesDropDownListModel.cs" />
     <Compile Include="ViewModels\Perfiles\PerfilesGridViewModel.cs" />
+    <Compile Include="ViewModels\Tarifas\TarifasGridViewModel.cs" />
     <Compile Include="ViewModels\Usuarios\LigasMultiplesUsuariosGridViewModel.cs" />
     <Compile Include="ViewModels\Usuarios\LigasUsuariosGridViewModel.cs" />
     <Compile Include="ViewModels\Usuarios\UsuarioGridViewModel.cs" />

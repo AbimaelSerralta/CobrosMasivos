@@ -18,7 +18,13 @@ namespace Franquicia.Bussiness
             set { _franquiciatarios = value; }
         }
 
-        FranquiciatariosRepository franquiciatariosRepository = new FranquiciatariosRepository();
+        private FranquiciatariosRepository _franquiciatariosRepository = new FranquiciatariosRepository();
+        public FranquiciatariosRepository franquiciatariosRepository
+        {
+            get { return _franquiciatariosRepository; }
+            set { _franquiciatariosRepository = value; }
+        }
+
 
         public List<Franquiciatarios> lsFranquiciatarios = new List<Franquiciatarios>();
         public List<FranquiciasGridViewModel> lsFranquiciasGridViewModel = new List<FranquiciasGridViewModel>();
@@ -126,5 +132,12 @@ namespace Franquicia.Bussiness
             }
             return result;
         }
+
+        #region AdminFranquicias
+        public void ObtenerFranquicia(Guid UidAdministrador)
+        {
+            franquiciatariosRepository.ObtenerFranquicia(UidAdministrador);
+        }
+        #endregion
     }
 }

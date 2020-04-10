@@ -114,6 +114,15 @@ namespace Franquicia.WebForms.Views
         protected global::System.Web.UI.WebControls.Button btnImportarExcel;
 
         /// <summary>
+        /// Control btnFiltros.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnFiltros;
+
+        /// <summary>
         /// Control btnCargarExcel.
         /// </summary>
         /// <remarks>
@@ -211,6 +220,33 @@ namespace Franquicia.WebForms.Views
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtVencimiento;
+
+        /// <summary>
+        /// Control pnlPromociones.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlPromociones;
+
+        /// <summary>
+        /// Control ListBoxSimple.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListBox ListBoxSimple;
+
+        /// <summary>
+        /// Control cblPromociones.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBoxList cblPromociones;
 
         /// <summary>
         /// Control gvUsuariosSeleccionados.

@@ -136,7 +136,24 @@ namespace Franquicia.WebForms.Controller
                         amount = "0";
                         break;
                 }
-                respuesta.Data = pagosServices.AgregarInformacionTarjeta(auth, reference, fechaRegistro, response, cc_type, tp_operation, nb_company, bn_merchant, id_url, cd_error, nb_error, cc_number, cc_mask, foliocpagos, decimal.Parse(amount), DtFechaOperacion);
+
+                if (pagosServices.AgregarInformacionTarjeta(auth, reference, fechaRegistro, response, cc_type, tp_operation, nb_company, bn_merchant, id_url, cd_error, nb_error, cc_number, cc_mask, foliocpagos, decimal.Parse(amount), DtFechaOperacion))
+                {
+                    respuesta.Data = true;
+
+                    if (response == "approved")
+                    {
+                        pagosServices.ConsultarPromocionLiga(reference);
+
+                        if (pagosServices.lsLigasUrlsPayCardModel.Count >= 1)
+                        {
+                            foreach (var item in pagosServices.lsLigasUrlsPayCardModel)
+                            {
+                                pagosServices.AgregarInformacionTarjeta("canceled", item.IdReferencia, fechaRegistro.AddMinutes(-30), "canceled", "canceled", "canceled", "", "", "", "", "", "", "", "", decimal.Parse("0"), DtFechaOperacion.AddMinutes(-20));
+                            }
+                        }
+                    }
+                }
             }
             else
             {
