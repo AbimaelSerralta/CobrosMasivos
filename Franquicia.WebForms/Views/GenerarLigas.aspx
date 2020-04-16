@@ -76,31 +76,40 @@
                                 <div class="card-header card-header-tabs card-header-primary" style="padding-top: 0px; padding-bottom: 0px;">
                                     <div class="nav-tabs-navigation">
                                         <div class="nav-tabs-wrapper">
-                                            <div class="form-group" style="margin-top: 0px; padding-bottom: 0px;">
-                                                <asp:LinkButton ID="btnFiltros" Visible="false" ToolTip="Filtros de busqueda." BackColor="#4db6ac" class="btn btn-lg btn-fab btn-fab-mini btn-round" runat="server">
+                                            <div class="row">
+                                                <table style="width: 100%">
+                                                    <tr>
+                                                        <td style="width: 40%">
+                                                            <asp:LinkButton ID="btnFiltros" Visible="false" ToolTip="Filtros de busqueda." BackColor="#4db6ac" class="btn btn-lg btn-fab btn-fab-mini btn-round" runat="server">
                                                         <i class="material-icons">search</i>
-                                                </asp:LinkButton>
-                                                <asp:Label Text="Listado de Usuarios" runat="server" />
-
-                                                <div class="pull-right">
-                                                    <asp:LinkButton ID="btnCargarExcel" ToolTip="Importar usuarios a excel." class="btn btn-lg btn-ligh btn-fab btn-fab-mini btn-round" runat="server">
+                                                            </asp:LinkButton>
+                                                            <asp:Label Text="Listado de Usuarios" runat="server" />
+                                                        </td>
+                                                        <td style="width: 20%">
+                                                            <asp:Label ID="lblGvSaldo" CssClass="text-center" runat="server" /></td>
+                                                        <td style="width: 40%">
+                                                            <div class="pull-right">
+                                                                <asp:LinkButton ID="btnCargarExcel" ToolTip="Importar usuarios a excel." class="btn btn-lg btn-ligh btn-fab btn-fab-mini btn-round" runat="server">
                                                         <i class="material-icons">file_upload</i>
-                                                    </asp:LinkButton>
-                                                    <asp:LinkButton ID="btnExportarLista" OnClick="btnExportarLista_Click" ToolTip="Exportar usuarios de excel." class="btn btn-lg btn-warning btn-fab btn-fab-mini btn-round" runat="server">
+                                                                </asp:LinkButton>
+                                                                <asp:LinkButton ID="btnExportarLista" OnClick="btnExportarLista_Click" ToolTip="Exportar usuarios de excel." class="btn btn-lg btn-warning btn-fab btn-fab-mini btn-round" runat="server">
                                                         <i class="material-icons">file_download</i>
-                                                    </asp:LinkButton>
-                                                    ||
+                                                                </asp:LinkButton>
+                                                                ||
                                                     <asp:LinkButton ID="btnReiniciar" ToolTip="Reiniciar todo." OnClick="btnReiniciar_Click" class="btn btn-lg btn-danger btn-fab btn-fab-mini btn-round" runat="server">
                                                         <i class="material-icons">refresh</i>
                                                     </asp:LinkButton>
-                                                    <asp:LinkButton ID="btnSeleccionar" OnClick="btnSeleccionar_Click" ToolTip="Agregar usuarios." class="btn btn-lg btn-info btn-fab btn-fab-mini btn-round" runat="server">
+                                                                <asp:LinkButton ID="btnSeleccionar" OnClick="btnSeleccionar_Click" ToolTip="Agregar usuarios." class="btn btn-lg btn-info btn-fab btn-fab-mini btn-round" runat="server">
                                                         <i class="material-icons">add</i>
-                                                    </asp:LinkButton>
-                                                    ||
+                                                                </asp:LinkButton>
+                                                                ||
                                                     <asp:LinkButton ID="btnGenerarLigas" OnClick="btnGenerarLigas_Click" ToolTip="Generar ligas." class="btn btn-lg btn-success btn-fab btn-fab-mini btn-round" runat="server">
                                                         <i class="material-icons">link</i>
                                                     </asp:LinkButton>
-                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
                                             </div>
                                         </div>
                                     </div>

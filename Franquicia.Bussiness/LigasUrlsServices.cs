@@ -41,6 +41,13 @@ namespace Franquicia.Bussiness
             return lsLigasUrlsGridViewModel = ligasUrlsRepository.BuscarLigas(UidCliente, Identificador, Nombre, ApePaterno, ApeMaterno, Asunto, Concepto, ImporteMayor, ImporteMenor, RegistroDesde, RegistroHasta, VencimientoDesde, VencimientoHasta, Estatus);
         }
 
+        #region ClientePayCard
+        public void ObtenerDatosUrl(string IdReferencia)
+        {
+            ligasUrlsRepository.ObtenerDatosUrl(IdReferencia);
+        }
+        #endregion
+
         #region LigasUrlFranquicias
         public List<LigasUrlsGridViewModel> ConsultarEstatusLigaFranquicia(Guid UidFranquicia)
         {

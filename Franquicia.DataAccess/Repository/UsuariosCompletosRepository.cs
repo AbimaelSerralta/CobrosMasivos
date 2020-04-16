@@ -961,7 +961,7 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@UidSegPerfil", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidSegPerfil"].Value = usuariosCompletos.UidSegPerfil;
-                
+
                 //===========================TELEFONO==================================================
 
                 comando.Parameters.Add("@VchTelefono", SqlDbType.VarChar, 50);
@@ -1108,7 +1108,7 @@ namespace Franquicia.DataAccess.Repository
             }
             return Resultado;
         }
-        public bool ActualizarFranquiciasUsuarios(UsuariosCompletos usuariosCompletos,  TelefonosUsuarios telefonosUsuarios, Guid UidFranquicia)
+        public bool ActualizarFranquiciasUsuarios(UsuariosCompletos usuariosCompletos, TelefonosUsuarios telefonosUsuarios, Guid UidFranquicia)
         {
             bool Resultado = false;
 
@@ -1144,7 +1144,7 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@UidSegPerfil", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidSegPerfil"].Value = usuariosCompletos.UidSegPerfil;
-                
+
                 //===========================TELEFONO==================================================
 
                 comando.Parameters.Add("@VchTelefono", SqlDbType.VarChar, 50);
@@ -1562,6 +1562,39 @@ namespace Franquicia.DataAccess.Repository
             return resultado;
 
         }
+
+        #region Pagos
+        public List<LigasUsuariosGridViewModel> SeleccionarUsuariosCliente(Guid UidUsuario)
+        {
+            List<LigasUsuariosGridViewModel> lsLigasUsuariosGridViewModel = new List<LigasUsuariosGridViewModel>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select us.*, cl.IdCliente, cl.VchNombreComercial, tu.VchTelefono from TelefonosUsuarios tu, SegUsuarios su, SegPerfiles sp, Estatus es, ClientesUsuarios cu, Clientes cl, Usuarios us where tu.UidUsuario = us.UidUsuario and sp.UidSegPerfil = su.UidSegPerfil and su.UidUsuario = us.UidUsuario and es.UidEstatus = us.UidEstatus and cu.UidCliente = cl.UidCliente and cu.UidUsuario = us.UidUsuario and us.UidUsuario = '" + UidUsuario + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                lsLigasUsuariosGridViewModel.Add(new LigasUsuariosGridViewModel()
+                {
+                    UidUsuario = new Guid(item["UidUsuario"].ToString()),
+                    IdUsuario = int.Parse(item["IdUsuario"].ToString()),
+                    StrNombre = item["VchNombre"].ToString(),
+                    StrApePaterno = item["VchApePaterno"].ToString(),
+                    StrApeMaterno = item["VchApeMaterno"].ToString(),
+                    StrCorreo = item["VchCorreo"].ToString(),
+                    UidEstatus = new Guid(item["UidEstatus"].ToString()),
+                    StrTelefono = item["VchTelefono"].ToString(),
+                    IdCliente = int.Parse(item["IdCliente"].ToString()),
+                    VchNombreComercial = item["VchNombreComercial"].ToString()
+                });
+            }
+
+            return lsLigasUsuariosGridViewModel;
+        }
+        #endregion
         #endregion
 
         #region MetodosUsuarios

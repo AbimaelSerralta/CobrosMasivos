@@ -40,6 +40,7 @@ namespace Franquicia.Bussiness
         public List<LigasMultiplesUsuariosGridViewModel> lsLigasInsertarMultiple = new List<LigasMultiplesUsuariosGridViewModel>();
         public List<LigasMultiplesUsuariosGridViewModel> lsLigasErroresMultiple = new List<LigasMultiplesUsuariosGridViewModel>();
 
+        public List<LigasUsuariosGridViewModel> lsPagoLiga = new List<LigasUsuariosGridViewModel>();
 
         public void CargarAdministradores(Guid UidTipoPerfil)
         {
@@ -599,6 +600,11 @@ namespace Franquicia.Bussiness
             }
             return result;
         }
+        public void SeleccionarUsuariosCliente(Guid UidUsuario)
+        {
+            lsPagoLiga = usuariosCompletosRepository.SeleccionarUsuariosCliente(UidUsuario);
+        }
+
         #endregion
 
         #region MetodosUsuarios
@@ -735,7 +741,6 @@ namespace Franquicia.Bussiness
         }
         #endregion
 
-
         #region MetodosExel
         #region Clientes
         #region Simple
@@ -843,7 +848,7 @@ namespace Franquicia.Bussiness
         {
             lsgvUsuariosSeleccionadosMultiple = usuariosCompletosRepository.ActualizarListaGvUsuariosMultiple(lsLigasUsuarios, IdUsuario, accion, Asunto, Concepto, Importe, Vencimiento, Promociones);
         }
-        
+
 
         public void ValidarExcelToListMultiple(DataTable dataTable, List<CBLPromocionesModel> lsCBLPromocionesModelCliente)
         {

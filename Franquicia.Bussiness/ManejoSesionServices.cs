@@ -17,6 +17,7 @@ namespace Franquicia.Bussiness
             get { return _accesosRepository; }
             set { _accesosRepository = value; }
         }
+        
         ModulosRepository _modulosRepository = new ModulosRepository();
         public ModulosRepository modulosRepository
         {
@@ -36,6 +37,13 @@ namespace Franquicia.Bussiness
         {
             get { return _perfilesRepository; }
             set { _perfilesRepository = value; }
+        }
+
+        private ClienteCuentaRepository _clienteCuentaRepository = new ClienteCuentaRepository();
+        public ClienteCuentaRepository clienteCuentaRepository
+        {
+            get { return _clienteCuentaRepository; }
+            set { _clienteCuentaRepository = value; }
         }
 
         private bool _BolStatusSesion;
@@ -222,6 +230,11 @@ namespace Franquicia.Bussiness
         public void ObtenerFranquiciaClienteUsuario()
         {
             usuarioCompletoRepository.ObtenerFranquiciaClienteUsuario(usuarioCompletoRepository.usuarioCompleto.UidUsuario);
+        }
+
+        public void ObtenerDineroCuentaCliente(Guid UidCliente)
+        {
+            clienteCuentaRepository.ObtenerDineroCuentaCliente(UidCliente);
         }
         #endregion
     }

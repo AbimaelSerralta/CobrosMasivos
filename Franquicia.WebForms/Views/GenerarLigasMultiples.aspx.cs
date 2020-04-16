@@ -48,6 +48,7 @@ namespace Franquicia.WebForms.Views
         CorreosServices correosServices = new CorreosServices();
         ParametrosEntradaServices parametrosEntradaServices = new ParametrosEntradaServices();
         PromocionesServices promocionesServices = new PromocionesServices();
+        ClienteCuentaServices clienteCuentaServices = new ClienteCuentaServices();
 
         List<string> listPromocionesSeleccionados = new List<string>();
 
@@ -61,6 +62,9 @@ namespace Franquicia.WebForms.Views
             {
                 ViewState["UidClienteLocal"] = Guid.Empty;
             }
+
+            clienteCuentaServices.ObtenerDineroCuentaCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+            lblGvSaldo.Text = "Saldo: $ " + clienteCuentaServices.clienteCuentaRepository.clienteCuenta.DcmDineroCuenta.ToString("N2");
 
             if (!IsPostBack)
             {
@@ -211,25 +215,31 @@ namespace Franquicia.WebForms.Views
                     using (XLWorkbook workbook = new XLWorkbook(stream2))
                     {
                         IXLWorksheet sheet = workbook.Worksheet(1);
-                        bool firRow = true;
-                        foreach (IXLRow row in sheet.Rows())
+                        bool FirstRow = true;
+                        string readRange = "1:1";
+                        foreach (IXLRow row in sheet.RowsUsed())
                         {
-                            if (firRow)
+                            //If Reading the First Row (used) then add them as column name  
+                            if (FirstRow)
                             {
-                                foreach (IXLCell cell in row.Cells())
+                                //Checking the Last cellused for column generation in datatable  
+                                readRange = string.Format("{0}:{1}", 1, row.LastCellUsed().Address.ColumnNumber);
+                                foreach (IXLCell cell in row.Cells(readRange))
                                 {
                                     dt.Columns.Add(cell.Value.ToString());
                                 }
-                                firRow = false;
+                                FirstRow = false;
                             }
                             else
                             {
+                                //Adding a Row in datatable  
                                 dt.Rows.Add();
-                                int i = 0;
-                                foreach (IXLCell cell in row.Cells())
+                                int cellIndex = 0;
+                                //Updating the values of datatable  
+                                foreach (IXLCell cell in row.Cells(readRange))
                                 {
-                                    dt.Rows[dt.Rows.Count - 1][i] = cell.Value.ToString();
-                                    i++;
+                                    dt.Rows[dt.Rows.Count - 1][cellIndex] = cell.Value.ToString();
+                                    cellIndex++;
                                 }
                             }
                         }

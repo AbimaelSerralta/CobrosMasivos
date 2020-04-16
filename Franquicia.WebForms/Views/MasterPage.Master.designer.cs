@@ -69,6 +69,15 @@ namespace Franquicia.WebForms.Views
         protected global::System.Web.UI.WebControls.Label lblversion;
 
         /// <summary>
+        /// Control lblGvSaldo.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblGvSaldo;
+
+        /// <summary>
         /// Control liMenuFranquicia.
         /// </summary>
         /// <remarks>

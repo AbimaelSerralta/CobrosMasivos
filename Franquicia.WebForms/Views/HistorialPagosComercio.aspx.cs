@@ -15,6 +15,9 @@ namespace Franquicia.WebForms.Views
     {
         TarifasServices tarifasServices = new TarifasServices();
         UsuariosCompletosServices usuariosCompletosServices = new UsuariosCompletosServices();
+        HistorialPagosServices historialPagosServices = new HistorialPagosServices();
+        ClienteCuentaServices clienteCuentaServices = new ClienteCuentaServices();
+        ValidacionesServices validacionesServices = new ValidacionesServices();
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Session["UidClienteMaster"] != null)
@@ -26,13 +29,30 @@ namespace Franquicia.WebForms.Views
                 ViewState["UidClienteLocal"] = Guid.Empty;
             }
 
+            txtImporte.Attributes.Add("onchange", "button_click(this,'" + btnCalcular.ClientID + "')");
+            txtCantidadWA.Attributes.Add("onchange", "button_click(this,'" + btnCalcularWA.ClientID + "')");
+            txtCantidadSms.Attributes.Add("onchange", "button_click(this,'" + btnCalcularSms.ClientID + "')");
+
+            clienteCuentaServices.ObtenerDineroCuentaCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+            lblGvSaldo.Text = "Saldo: $ " + clienteCuentaServices.clienteCuentaRepository.clienteCuenta.DcmDineroCuenta.ToString("N2");
+            Master.GvSaldo.Text = "Saldo: $ " + clienteCuentaServices.clienteCuentaRepository.clienteCuenta.DcmDineroCuenta.ToString("N2");
+
             if (!IsPostBack)
             {
                 Session["usuariosCompletosServices"] = usuariosCompletosServices;
+                tmValidar.Enabled = false;
+
+                historialPagosServices.CargarMovimientos(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+                gvHistorial.DataSource = historialPagosServices.lsHistorialPagosGridViewModel;
+                gvHistorial.DataBind();
             }
             else
             {
                 usuariosCompletosServices = (UsuariosCompletosServices)Session["usuariosCompletosServices"];
+
+                pnlAlert.Visible = false;
+                lblMensajeAlert.Text = "";
+                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
             }
         }
         private string GenLigaPara(string id_company, string id_branch, string user, string pwd, string Referencia, decimal Importe,
@@ -97,47 +117,273 @@ namespace Franquicia.WebForms.Views
         }
         protected void btnNuevo_Click(object sender, EventArgs e)
         {
+            if (Session["UidUsuarioMaster"] != null)
+            {
+                ViewState["UidUsuarioLocal"] = Session["UidUsuarioMaster"];
+            }
+            else
+            {
+                ViewState["UidUsuarioLocal"] = Guid.Empty;
+            }
+
             tarifasServices.CargarTarifas();
-            lvTarifa.DataSource = tarifasServices.lsTarifasGridViewModel;
-            lvTarifa.DataBind();
+
+            foreach (var item in tarifasServices.lsTarifasGridViewModel)
+            {
+                lblDcmWhatsapp.Text = item.DcmWhatsapp.ToString("N2");
+                lblDcmSms.Text = item.DcmSms.ToString("N2");
+            }
+
+            clienteCuentaServices.ObtenerDineroCuentaCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+
+            txtSaldo.Text = clienteCuentaServices.clienteCuentaRepository.clienteCuenta.DcmDineroCuenta.ToString("N2");
 
             txtVencimiento.Text = DateTime.Now.ToString("yyyy-MM-dd");
 
-            lblTituloModal.Text = "<strong>Paso 1</strong> cantidad a comprar.";
+            lblTituloModal.Text = "<strong>Paso 1</strong> cantidad de recarga.";
+
+            LimpiarTodo();
 
             ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
         }
 
+        public void LimpiarTodo()
+        {
+            txtCantidadWA.Text = string.Empty;
+            txtResultadoWA.Text = string.Empty;
+            btnAgregarWa.Visible = false;
+
+            txtCantidadSms.Text = string.Empty;
+            txtResultadoSms.Text = string.Empty;
+            btnAgregarSms.Visible = false;
+
+            txtImporte.Text = string.Empty;
+            txtNuevoSaldo.Text = string.Empty;
+
+            pnlSeleccion.Visible = true;
+            pnlIframe.Visible = false;
+            pnlValidar.Visible = false;
+
+            btnCerrar.Visible = false;
+            btnGenerar.Visible = true;
+            btnCancelar.Visible = true;
+
+            btnGenerar.Enabled = false;
+            lblValidar.Text = string.Empty;
+        }
+
         protected void btnGenerar_Click(object sender, EventArgs e)
         {
-            if (txtImporte.EmptyTextBox())
+            if (ViewState["val2"].ToString() != txtImporte.Text)
             {
-                lblValidar.Text = "El campo Importe es obligatorio";
+                lblValidar.Text = "Parece que el monto ha cambiado, por favor calcule de nuevo para continuar";
+                btnGenerar.Enabled = false;
                 return;
             }
 
-            string id_company = "";
-            string id_branch = "";
-            string user = "";
-            string pwd = "";
-            string moneda = "";
-            string canal = "";
-            string semillaAES = "";
-            string urlGen = "";
-            string data0 = "";
+            if (txtImporte.EmptyTextBox())
+            {
+                lblValidar.Text = "El campo Monto es obligatorio";
+                return;
+            }
 
-            foreach (var item in usuariosCompletosServices.lsgvUsuariosSeleccionados)
+            if (!string.IsNullOrEmpty(lblValidar.Text))
+            {
+                lblValidar.Text = string.Empty;
+            }
+
+            string id_company = "SNBX";
+            string id_branch = "01SNBXBRNCH";
+            string user = "SNBXUSR01";
+            string pwd = "SECRETO";
+            string moneda = "MXN";
+            string canal = "W";
+            string semillaAES = "5DCC67393750523CD165F17E1EFADD21";
+            string urlGen = "https://wppsandbox.mit.com.mx/gen";
+            string data0 = "SNDBX123";
+
+            lblTituloModal.Text = "<strong>Paso 2</strong> pagar";
+
+            usuariosCompletosServices.SeleccionarUsuariosCliente(Guid.Parse(ViewState["UidUsuarioLocal"].ToString()));
+
+            foreach (var item in usuariosCompletosServices.lsPagoLiga)
             {
                 string ReferenciaCobro = item.IdCliente.ToString() + item.IdUsuario.ToString() + DateTime.Now.ToString("ddMMyyyyHHmmssfff");
+
+                pnlSeleccion.Visible = false;
+                pnlIframe.Visible = true;
+                pnlValidar.Visible = false;
+
+                btnCerrar.Visible = true;
+                btnGenerar.Visible = false;
+                btnCancelar.Visible = false;
+
+                string urlCobro = GenLigaPara(id_company, id_branch, user, pwd, ReferenciaCobro, decimal.Parse(txtImporte.Text), moneda, canal, "C", item.StrCorreo, semillaAES, data0, urlGen);
+
+                if (urlCobro.Contains("https://"))
+                {
+                    if (usuariosCompletosServices.GenerarLigasPagos(urlCobro, "Recarga para Whatsapp y sms", decimal.Parse(txtImporte.Text), ReferenciaCobro, item.UidUsuario, "Recarga para Whatsapp y sms", DateTime.Now, DateTime.Parse(txtVencimiento.Text), "Recarga para Whatsapp y sms", Guid.Empty, Guid.Empty, Guid.Parse(ViewState["UidClienteLocal"].ToString())))
+                    {
+                        //clienteCuentaServices.RegistrarDineroCuentaCliente(decimal.Parse(txtImporte.Text), Guid.Parse(ViewState["UidClienteLocal"].ToString()), ReferenciaCobro);
+                        historialPagosServices.RegistrarHistorialPago(decimal.Parse(txtSaldo.Text), decimal.Parse(txtImporte.Text), decimal.Parse(txtNuevoSaldo.Text), ReferenciaCobro);
+                        ViewState["IdReferenciaCobro"] = ReferenciaCobro;
+                        ifrLiga.Src = urlCobro;
+                    }
+                }
             }
+        }
+
+        protected void btnCalcular_Click(object sender, EventArgs e)
+        {
+            Calcular();
+        }
+
+        private void Calcular()
+        {
+            lblValidar.Text = string.Empty;
+
+            if (txtImporte.Text != string.Empty)
+            {
+                decimal val = decimal.Parse(txtSaldo.Text);
+                decimal val2 = decimal.Parse(txtImporte.Text);
+                decimal val3 = val + val2;
+
+                txtImporte.Text = val2.ToString("N2");
+                txtNuevoSaldo.Text = val3.ToString("N2");
+
+                ViewState["val2"] = val2.ToString("N2");
+
+                if (val2 >= 50)
+                {
+                    btnGenerar.Enabled = true;
+                }
+                else
+                {
+                    lblValidar.Text = "Lo sentimos, el monto minimo es de $50";
+                }
+            }
+            else
+            {
+                txtNuevoSaldo.Text = "0.00";
+            }
+        }
+
+        protected void btnCalcularWA_Click(object sender, EventArgs e)
+        {
+            if (txtCantidadWA.Text != string.Empty)
+            {
+                btnAgregarWa.Visible = true;
+
+                decimal val = decimal.Parse(txtCantidadWA.Text);
+                decimal val2 = decimal.Parse(lblDcmWhatsapp.Text);
+                decimal val3 = val * val2;
+
+                txtResultadoWA.Text = val3.ToString("N2");
+            }
+            else
+            {
+                btnAgregarWa.Visible = false;
+                txtResultadoWA.Text = "0.00";
+            }
+
+        }
+        protected void btnCalcularSms_Click(object sender, EventArgs e)
+        {
+            if (txtCantidadSms.Text != string.Empty)
+            {
+                btnAgregarSms.Visible = true;
+                decimal val = decimal.Parse(txtCantidadSms.Text);
+                decimal val2 = decimal.Parse(lblDcmSms.Text);
+                decimal val3 = val * val2;
+
+                txtResultadoSms.Text = val3.ToString("N2");
+            }
+            else
+            {
+                btnAgregarSms.Visible = false;
+                txtResultadoSms.Text = "0.00";
+            }
+        }
+
+        protected void tmValidar_Tick(object sender, EventArgs e)
+        {
+            if (DateTime.Compare(DateTime.Now, DateTime.Parse(Session["tmValidar"].ToString())) <= 0)
+            {
+                ltMnsj.Text = "Verificando...: " + (((Int32)DateTime.Parse(Session["tmValidar"].ToString()).Subtract(DateTime.Now).TotalSeconds) % 60).ToString();
+
+                if (!validacionesServices.ValidarPagoCliente(ViewState["IdReferenciaCobro"].ToString()))
+                {
+                    tmValidar.Enabled = false;
+
+                    pnlAlert.Visible = true;
+                    lblMensajeAlert.Text = "<b>Felicidades,</b> su pago se proceso exitosamente.";
+                    divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
+
+                    historialPagosServices.CargarMovimientos(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+                    gvHistorial.DataSource = historialPagosServices.lsHistorialPagosGridViewModel;
+                    gvHistorial.DataBind();
+                }
+            }
+            else
+            {
+                tmValidar.Enabled = false;
+
+                historialPagosServices.EliminarHistorialPagoLigas(ViewState["IdReferenciaCobro"].ToString());
+
+                pnlAlert.Visible = true;
+                lblMensajeAlert.Text = "<b>Lo sentimos,</b> no se ha podido procesar su pago.";
+                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
+            }
+        }
+
+        protected void btnCerrar_Click(object sender, EventArgs e)
+        {
+            lblTituloModal.Text = "<strong>Paso final</strong> validar pago";
 
             pnlSeleccion.Visible = false;
-            pnlIframe.Visible = true;
+            pnlIframe.Visible = false;
+            pnlValidar.Visible = true;
 
-            if (true)
+            btnCerrar.Visible = false;
+            btnGenerar.Visible = false;
+            btnCancelar.Visible = false;
+
+            tmValidar.Enabled = true;
+            Session["tmValidar"] = DateTime.Now.AddSeconds(18).ToString();
+        }
+
+        protected void btnAgregarWa_Click(object sender, EventArgs e)
+        {
+            decimal val = decimal.Parse(txtResultadoWA.Text);
+            decimal val2 = 0;
+            if (txtImporte.Text != string.Empty)
             {
-                ifrLiga.Src = GenLigaPara(id_company, id_branch, user, pwd, ReferenciaCobro, decimal.Parse(txtImporte.Text), moneda, canal, "C", item.StrCorreo, semillaAES, data0, urlGen);
+                val2 = decimal.Parse(txtImporte.Text);
             }
+
+            decimal result = val + val2;
+
+            txtImporte.Text = result.ToString("N2");
+
+            Calcular();
+        }
+
+        protected void btnAgregarSms_Click(object sender, EventArgs e)
+        {
+            decimal val = decimal.Parse(txtResultadoSms.Text);
+            decimal val2 = 0;
+            if (txtImporte.Text != string.Empty)
+            {
+                val2 = decimal.Parse(txtImporte.Text);
+            }
+
+            decimal result = val + val2;
+
+            txtImporte.Text = result.ToString("N2");
+
+            Calcular();
         }
     }
 }

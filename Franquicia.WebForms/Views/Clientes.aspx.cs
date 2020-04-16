@@ -463,12 +463,15 @@ namespace Franquicia.WebForms.Views
         {
             Guid UidCliente = new Guid(gvClientes.SelectedDataKey.Value.ToString());
 
-            Session["UidClienteMaster"] = UidCliente;
+            if (Guid.Parse(Session["UidClienteMaster"].ToString()) != UidCliente)
+            {
+                Session["UidClienteMaster"] = UidCliente;
 
-            clientesServices.ObtenerCliente(UidCliente);
-            Master.NombreCliente.Text = "<< " + clientesServices.clientes.VchNombreComercial + " >>";
-            Session["NombreClienteMaster"] = clientesServices.clientes.VchNombreComercial;
-            Master.MenuCliente.Attributes.Add("class", "dropdown-toggle font-weight-bold");
+                clientesServices.ObtenerCliente(UidCliente);
+                Master.NombreCliente.Text = "<< " + clientesServices.clientes.VchNombreComercial + " >>";
+                Session["NombreClienteMaster"] = clientesServices.clientes.VchNombreComercial;
+                Master.MenuCliente.Attributes.Add("class", "dropdown-toggle font-weight-bold");
+            }
         }
         private void ManejoDatos(Guid dataKeys)
         {

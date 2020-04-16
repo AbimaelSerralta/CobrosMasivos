@@ -666,14 +666,19 @@ namespace Franquicia.WebForms.Views
         {
             Guid UidFranquicia = new Guid(gvFranquiciatarios.SelectedDataKey.Value.ToString());
 
-            Session["UidFranquiciaMaster"] = UidFranquicia;
+            if (Guid.Parse(Session["UidFranquiciaMaster"].ToString()) != UidFranquicia)
+            {
+                Session["UidFranquiciaMaster"] = UidFranquicia;
+                franquiciatariosServices.ObtenerFraquiciatario(UidFranquicia);
+                Master.NombreComercial.Text = "<< " + franquiciatariosServices.franquiciatarios.VchNombreComercial + " >>";
+                Session["NombreComercial"] = franquiciatariosServices.franquiciatarios.VchNombreComercial;
+                Master.MenuFranquicia.Attributes.Add("class", "dropdown-toggle font-weight-bold");
 
-            franquiciatariosServices.ObtenerFraquiciatario(UidFranquicia);
-            Master.NombreComercial.Text = "<< " + franquiciatariosServices.franquiciatarios.VchNombreComercial + " >>";
-            Session["NombreComercial"] = franquiciatariosServices.franquiciatarios.VchNombreComercial;
-            Master.MenuFranquicia.Attributes.Add("class", "dropdown-toggle font-weight-bold");
+                Master.NombreCliente.Text = "seleccione un comercio";
+                Session["NombreClienteMaster"] = null;
+                Master.MenuCliente.Attributes.Add("class", "dropdown-toggle disabled");
+            }
         }
-
 
         protected void btnValidarCorreo_Click(object sender, EventArgs e)
         {

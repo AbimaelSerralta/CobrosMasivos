@@ -30,7 +30,7 @@
                                                 <asp:Label Text="Tarifa" runat="server" />
 
                                                 <div class="pull-right">
-                                                    <asp:LinkButton ID="btnNuevo" OnClick="btnNuevo_Click" class="btn btn-lg btn-success btn-fab btn-fab-mini btn-round" runat="server">
+                                                    <asp:LinkButton ID="btnNuevo" Visible="false" OnClick="btnNuevo_Click" class="btn btn-lg btn-success btn-fab btn-fab-mini btn-round" runat="server">
                                             <i class="material-icons">add</i>
                                                     </asp:LinkButton>
                                                 </div>
@@ -40,8 +40,81 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
+                                        <div class="form-group col-sm-12 col-md-12 col-lg-6">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-4">
+                                                            <img class="card-img-top" style="height: 100px; width: 100px" src="../Images/icoWhats.png" alt="whatsapp">
+                                                        </div>
+                                                        <div class="col-8">
+                                                            <h5 class="card-title">Whatsapp</h5>
+                                                            <div class="form-group col-md-12" style="padding-left: 0px;">
+                                                                <div class="input-group">
+                                                                    <div class="input-group-prepend">
+                                                                        <span class="input-group-text" style="padding-left: 0px;padding-right:5px;">
+                                                                            <i class="material-icons">$</i>
+                                                                        </span>
+                                                                    </div>
+                                                                    <asp:TextBox ID="txtWhats" Text="0.00" CssClass="form-control" TextMode="Phone" runat="server" />
+                                                                </div>
+
+                                                                <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtWhats" runat="server" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-sm-12 col-md-12 col-lg-6">
+                                            <div class="card" style="padding-top: 0px;padding-bottom: 0px;">
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-4">
+                                                            <img class="card-img-top" style="height: 100px; width: 100px" src="../Images/icoSms.jpg" alt="sms">
+                                                        </div>
+                                                        <div class="col-8">
+                                                            <h5 class="card-title">SMS</h5>
+                                                            <div class="form-group col-md-12" style="padding-left: 0px;">
+                                                                <div class="input-group">
+                                                                    <div class="input-group-prepend">
+                                                                        <span class="input-group-text" style="padding-left: 0px;padding-right:5px;">
+                                                                            <i class="material-icons">$</i>
+                                                                        </span>
+                                                                    </div>
+                                                                    <asp:TextBox ID="txtSms" Text="0.00" CssClass="form-control" TextMode="Phone" runat="server" />
+                                                                </div>
+
+                                                                <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtSms" runat="server" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <asp:UpdatePanel runat="server" ID="upRegistro">
+                                        <ContentTemplate>
+                                            <div class="modal-footer justify-content-center">
+                                                <asp:LinkButton ID="btnGuardar" OnClick="btnGuardar_Click" CssClass="btn btn-success btn-round" runat="server">
+                            <i class="material-icons">check</i> Guardar
+                                                </asp:LinkButton>
+                                                <asp:LinkButton ID="btnCancelar" OnClick="btnCancelar_Click" CssClass="btn btn-danger btn-round" runat="server">
+                            <i class="material-icons">close</i> Cancelar
+                                                </asp:LinkButton>
+                                                <asp:LinkButton ID="btnEditar" OnClick="btnEditar_Click" CssClass="btn btn-info btn-round" runat="server">
+                            <i class="material-icons">refresh</i> Editar
+                                                </asp:LinkButton>
+                                            </div>
+                                        </ContentTemplate>
+                                        <Triggers>
+                                            <asp:AsyncPostBackTrigger ControlID="btnGuardar" EventName="Click" />
+                                        </Triggers>
+                                    </asp:UpdatePanel>
+
+                                    <div class="row">
                                         <div class="table-responsive">
-                                            <asp:GridView ID="gvTarifas" OnRowCommand="gvTarifas_RowCommand" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidTarifa" GridLines="None" border="0" runat="server">
+                                            <asp:GridView ID="gvTarifas" Visible="false" OnRowCommand="gvTarifas_RowCommand" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidTarifa" GridLines="None" border="0" runat="server">
                                                 <EmptyDataTemplate>
                                                     <div class="alert alert-info">No hay tarifa</div>
                                                 </EmptyDataTemplate>
@@ -167,77 +240,7 @@
                             <asp:Label CssClass="text-danger" runat="server" ID="lblValidar" />
                         </ContentTemplate>
                     </asp:UpdatePanel>
-
-                    <div class="row">
-                        <div class="form-group col-sm-12 col-md-12 col-lg-6">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-4">
-                                            <img class="card-img-top" style="height: 100px; width: 100px" src="https://is5-ssl.mzstatic.com/image/thumb/Purple113/v4/b8/d8/7a/b8d87ae1-b9df-1cb6-bbce-c71932ac9ce7/AppIcon-0-0-1x_U007emarketing-0-0-0-6-0-0-85-220.png/246x0w.png" alt="whatsapp">
-                                        </div>
-                                        <div class="col-8">
-                                            <h5 class="card-title">Whatsapp</h5>
-                                            <div class="form-group col-md-12" style="padding-left: 0px;">
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text">
-                                                            <i class="material-icons">$</i>
-                                                        </span>
-                                                    </div>
-                                                    <asp:TextBox ID="txtWhats" Text="0.00" CssClass="form-control" TextMode="Phone" runat="server" />
-                                                </div>
-
-                                                <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtWhats" runat="server" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group col-sm-12 col-md-12 col-lg-6">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-4">
-                                            <img class="card-img-top" style="height: 100px; width: 100px" src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTZ5jK9GXD0SBrKIlY3X4RuVYp9xgvF1dpHPyvGmaYwq3bVXpWg&usqp=CAU" alt="sms">
-                                        </div>
-                                        <div class="col-8">
-                                            <h5 class="card-title">SMS</h5>
-                                            <div class="form-group col-md-12" style="padding-left: 0px;">
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text">
-                                                            <i class="material-icons">$</i>
-                                                        </span>
-                                                    </div>
-                                                    <asp:TextBox ID="txtSms" Text="0.00" CssClass="form-control" TextMode="Phone" runat="server" />
-                                                </div>
-
-                                                <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtSms" runat="server" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
-                <asp:UpdatePanel runat="server" ID="upRegistro">
-                    <ContentTemplate>
-                        <div class="modal-footer justify-content-center">
-                            <asp:LinkButton ID="btnGuardar" OnClick="btnGuardar_Click" CssClass="btn btn-success btn-round" runat="server">
-                            <i class="material-icons">check</i> Guardar
-                            </asp:LinkButton>
-                            <asp:LinkButton ID="btnCancelar" data-dismiss="modal" aria-label="Close" CssClass="btn btn-danger btn-round" runat="server">
-                            <i class="material-icons">close</i> Cancelar
-                            </asp:LinkButton>
-                        </div>
-                    </ContentTemplate>
-                    <Triggers>
-                        <asp:AsyncPostBackTrigger ControlID="btnGuardar" EventName="Click" />
-                    </Triggers>
-                </asp:UpdatePanel>
             </div>
         </div>
     </div>

@@ -1,10 +1,21 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="HistorialPagosComercio.aspx.cs" Inherits="Franquicia.WebForms.Views.HistorialPagosComercio" %>
 
+<%@ MasterType VirtualPath="~/Views/MasterPage.Master" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="CPHCaja" runat="server">
+
+    <script>
+        function button_click(objTextBox, objBtnID) {
+            if (window.event.keyCode != 13) {
+                document.getElementById(objBtnID).focus();
+                document.getElementById(objBtnID).click();
+            }
+        }
+    </script>
+
     <asp:UpdatePanel runat="server">
         <ContentTemplate>
             <asp:Panel ID="pnlAlert" Visible="false" runat="server">
@@ -25,15 +36,25 @@
                                 <div class="card-header card-header-tabs card-header-primary" style="padding-top: 0px; padding-bottom: 0px;">
                                     <div class="nav-tabs-navigation">
                                         <div class="nav-tabs-wrapper">
-                                            <div class="form-group" style="margin-top: 0px; padding-bottom: 0px;">
-                                                <asp:LinkButton ID="btnFiltros" ToolTip="Filtros de busqueda." BackColor="#4db6ac" class="btn btn-lg btn-fab btn-fab-mini btn-round" runat="server">
-                                                        <i class="material-icons">search</i>
-                                                </asp:LinkButton>
-                                                <asp:Label Text="Historial de pagos" runat="server" />
+                                            <div class="row">
+                                                <table style="width:100%">
+                                                    <tr>
+                                                        <td style="width:40%">
+                                                            <asp:LinkButton ID="btnFiltros" ToolTip="Filtros de busqueda." BackColor="#4db6ac" class="btn btn-lg btn-fab btn-fab-mini btn-round" runat="server">
+                                                                <i class="material-icons">search</i>
+                                                            </asp:LinkButton>
+                                                            <asp:Label Text="Historial de pagos" runat="server" />
 
-                                                <asp:LinkButton ID="btnNuevo" OnClick="btnNuevo_Click" ToolTip="Nueva recarga." class="btn btn-lg btn-success btn-fab btn-fab-mini btn-round pull-right" runat="server">
+                                                        </td>
+                                                        <td style="width: 20%">
+                                                            <asp:Label ID="lblGvSaldo" CssClass="text-center" runat="server" /></td>
+                                                        <td style="width:40%">
+                                                            <asp:LinkButton ID="btnNuevo" OnClick="btnNuevo_Click" ToolTip="Nueva recarga." class="btn btn-lg btn-success btn-fab btn-fab-mini btn-round pull-right" runat="server">
                                                         <i class="material-icons">add</i>
-                                                </asp:LinkButton>
+                                                            </asp:LinkButton>
+                                                        </td>
+                                                    </tr>
+                                                </table>
                                             </div>
                                         </div>
                                     </div>
@@ -41,26 +62,17 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="table-responsive">
-                                            <asp:GridView ID="gvHistorial" DataKeyNames="UidHistorial" AutoGenerateColumns="false" CssClass="table table-hover" GridLines="None" border="0" runat="server">
+                                            <asp:GridView ID="gvHistorial" DataKeyNames="UidHistorialPago" AutoGenerateColumns="false" CssClass="table table-hover" GridLines="None" border="0" runat="server">
                                                 <EmptyDataTemplate>
                                                     <div class="alert alert-info">Su historial esta vacio</div>
                                                 </EmptyDataTemplate>
                                                 <Columns>
-                                                    <asp:BoundField SortExpression="NombreCompleto" DataField="NombreCompleto" HeaderText="NOMBRE COMPLETO" />
-                                                    <asp:BoundField SortExpression="VchUsuario" DataField="VchUsuario" HeaderText="USUARIO" />
-                                                    <asp:BoundField SortExpression="VchNombrePerfil" DataField="VchNombrePerfil" HeaderText="PERFIL" />
-                                                    <asp:TemplateField SortExpression="UidEstatus" HeaderText="ESTATUS">
-                                                        <ItemTemplate>
-                                                            <div class="col-md-6">
-                                                                <asp:Label ToolTip='<%#Eval("VchDescripcion")%>' runat="server">
-                                                                <i class="large material-icons">
-                                                                    <%#Eval("VchIcono")%>
-                                                                </i>
-                                                                </asp:Label>
-                                                            </div>
-                                                        </ItemTemplate>
-                                                    </asp:TemplateField>
-                                                    <asp:TemplateField>
+                                                    <asp:BoundField DataField="DtRegistro" HeaderText="FECHA" />
+                                                    <asp:BoundField DataField="VchIdentificador" HeaderText="IDENTIFICADOR" />
+                                                    <asp:BoundField DataField="DcmSaldo" HeaderText="SALDO" />
+                                                    <asp:BoundField DataField="DcmOperacion" HeaderText="IMPORTE" />
+                                                    <asp:BoundField DataField="DcmNuevoSaldo" HeaderText="NUEVO SALDO" />
+                                                    <%--<asp:TemplateField>
                                                         <ItemTemplate>
                                                             <table>
                                                                 <tbody>
@@ -84,7 +96,7 @@
                                                                 </tbody>
                                                             </table>
                                                         </ItemTemplate>
-                                                    </asp:TemplateField>
+                                                    </asp:TemplateField>--%>
                                                 </Columns>
                                                 <PagerStyle CssClass="pagination-ys" />
                                             </asp:GridView>
@@ -124,67 +136,136 @@
                     <div class="tab-content">
                         <asp:UpdatePanel runat="server">
                             <ContentTemplate>
-                                <asp:Label ID="lblValidar" runat="server" />
                                 <asp:Panel ID="pnlSeleccion" runat="server">
                                     <div class="row">
-                                        <asp:ListView ID="lvTarifa" runat="server">
-                                            <ItemTemplate>
-
-                                                <div class="col-12 col-sm-6 col-md-6 col-lg-6">
-                                                    <div class="card card-stats">
-                                                        <div class="card-header card-header-success card-header-icon">
-                                                            <div class="card-icon">
-                                                                <img class="card-img-top" style="height: 50px; width: 50px" src="https://is5-ssl.mzstatic.com/image/thumb/Purple113/v4/b8/d8/7a/b8d87ae1-b9df-1cb6-bbce-c71932ac9ce7/AppIcon-0-0-1x_U007emarketing-0-0-0-6-0-0-85-220.png/246x0w.png" alt="whatsapp">
-                                                            </div>
-                                                            <p class="card-category">Whatsapp</p>
-                                                            <h3 class="card-title">
-                                                                <asp:Label ID="lblDcmWhatsapp" runat="server"> <%# Eval("DcmWhatsapp", "{0:C}") %></asp:Label></h3>
-                                                        </div>
+                                        <style>
+                                            .card-stats .card-header.card-header-icon, .card-stats .card-header.card-header-text {
+                                                text-align: left;
+                                            }
+                                        </style>
+                                        <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                                            <div class="card card-stats">
+                                                <div class="card-header card-header-success card-header-icon">
+                                                    <div class="card-icon">
+                                                        <img class="card-img-top" style="height: 50px; width: 50px" src="../Images/icoWhats.png" alt="whatsapp">
                                                     </div>
+                                                    <table>
+                                                        <tr>
+                                                            <td style="width: 25%">
+                                                                <label for="txtCantidadWA" style="color: black;">Cantidad</label>
+                                                                <asp:TextBox ID="txtCantidadWA" CssClass="form-control" runat="server" />
+                                                                <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars="" TargetControlID="txtCantidadWA" runat="server" />
+                                                            </td>
+                                                            <td style="width: 25%">
+                                                                <p class="card-category">Whatsapp</p>
+                                                                <h3 class="card-title">
+                                                                    <asp:Label ID="lblDcmWhatsapp" runat="server"> <%# Eval("DcmWhatsapp", "{0:C}") %></asp:Label>
+                                                                </h3>
+                                                            </td>
+                                                            <td style="width: 25%">
+                                                                <label for="txtResultadoWA" style="color: black;">Total</label>
+                                                                <asp:TextBox ID="txtResultadoWA" Enabled="false" CssClass="form-control" runat="server" /></td>
+                                                            <td style="width: 25%">
+                                                                <asp:LinkButton ID="btnAgregarWa" Visible="false" OnClick="btnAgregarWa_Click" CssClass="btn btn-info btn-sm btn-round" Style="padding-left: 0px; padding-right: 0px;" runat="server">
+                                                                            <i class="material-icons">check</i>
+                                                                </asp:LinkButton>
+                                                                <asp:LinkButton ID="btnCalcularWA" OnClick="btnCalcularWA_Click" runat="server" />
+                                                            </td>
+                                                        </tr>
+                                                    </table>
                                                 </div>
-                                                <div class="col-12 col-sm-6 col-md-6 col-lg-6">
-                                                    <div class="card card-stats">
-                                                        <div class="card-header card-header-warning card-header-icon">
-                                                            <div class="card-icon">
-                                                                <img class="card-img-top" style="height: 50px; width: 50px" src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTZ5jK9GXD0SBrKIlY3X4RuVYp9xgvF1dpHPyvGmaYwq3bVXpWg&usqp=CAU" alt="sms">
-                                                            </div>
-                                                            <p class="card-category">Sms</p>
-                                                            <h3 class="card-title"><%# Eval("DcmSms", "{0:C}") %></h3>
-                                                        </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm-12 col-md-12 col-lg-12 ">
+                                            <div class="card card-stats">
+                                                <div class="card-header card-header-warning card-header-icon">
+                                                    <div class="card-icon">
+                                                        <img class="card-img-top" style="height: 50px; width: 50px" src="../Images/icoSms.jpg" alt="sms">
                                                     </div>
+                                                    <table>
+                                                        <tr>
+                                                            <td style="width: 25%">
+                                                                <label for="txtCantidadSms" style="color: black;">Cantidad</label>
+                                                                <asp:TextBox ID="txtCantidadSms" CssClass="form-control" runat="server" />
+                                                                <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars="" TargetControlID="txtCantidadSms" runat="server" />
+                                                            </td>
+                                                            <td style="width: 25%">
+                                                                <p class="card-category">Sms</p>
+                                                                <h3 class="card-title">
+                                                                    <asp:Label ID="lblDcmSms" runat="server"> <%# Eval("DcmSms", "{0:C}") %></asp:Label></h3>
+                                                            </td>
+                                                            <td style="width: 25%">
+                                                                <label for="txtResultadoSms" style="color: black;">Total</label>
+                                                                <asp:TextBox ID="txtResultadoSms" Enabled="false" CssClass="form-control" runat="server" />
+                                                            </td>
+                                                            <td style="width: 25%">
+                                                                <asp:LinkButton ID="btnAgregarSms" Visible="false" OnClick="btnAgregarSms_Click" CssClass="btn btn-info btn-sm btn-round" Style="padding-left: 0px; padding-right: 0px;" runat="server">
+                                                                            <i class="material-icons">check</i>
+                                                                </asp:LinkButton>
+                                                                <asp:LinkButton ID="btnCalcularSms" OnClick="btnCalcularSms_Click" runat="server" />
+                                                            </td>
+                                                        </tr>
+                                                    </table>
                                                 </div>
-                                            </ItemTemplate>
-                                        </asp:ListView>
+                                            </div>
+                                        </div>
                                     </div>
                                     <asp:Panel ID="pnlForm" runat="server">
                                         <div class="row justify-content-center align-items-center h-100">
                                             <div class="col col-sm-12 col-md-12 col-lg-8 col-xl-8">
-                                                <div class="form-group col-md-12" style="padding-left: 0px;">
+                                                <asp:Label ID="lblValidar" ForeColor="Red" runat="server" />
+                                                <div class="form-group col-md-12" visible="false" style="padding-left: 0px;" runat="server">
                                                     <label for="txtIdentificador" style="color: black;">Identificador</label>
                                                     <asp:TextBox ID="txtIdentificador" Enabled="false" Text="Recarga" CssClass="form-control" runat="server" />
                                                 </div>
-                                                <div class="form-group col-md-12" style="padding-left: 0px;">
+                                                <div class="form-group col-md-12" visible="false" style="padding-left: 0px;" runat="server">
                                                     <label for="txtConcepto" style="color: black;">Concepto</label>
                                                     <asp:TextBox ID="txtConcepto" Enabled="false" Text="Recarga para Whatsapp y sms" CssClass="form-control" runat="server" />
                                                 </div>
-                                                <div class="form-group col-md-12" style="padding-left: 0px;">
+                                                <div class="form-group col-md-12" visible="false" style="padding-left: 0px;" runat="server">
                                                     <label for="txtVencimiento" style="color: black;">Vencimiento</label>
                                                     <asp:TextBox ID="txtVencimiento" Enabled="false" TextMode="Date" CssClass="form-control" runat="server" />
                                                 </div>
                                                 <div class="form-group col-md-12" style="padding-left: 0px;">
-                                                    <label for="txtImporte" style="color: black;">Importe *</label>
+                                                    <label for="txtImporte" style="color: black;">Saldo disponible</label>
                                                     <div class="input-group">
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text" style="padding-left: 0px; padding-right: 5px;">
                                                                 <i class="material-icons">$</i>
                                                             </span>
                                                         </div>
-                                                        <asp:TextBox ID="txtImporte" CssClass="form-control" TextMode="Phone" runat="server" />
+                                                        <asp:TextBox ID="txtSaldo" Enabled="false" CssClass="form-control" TextMode="Phone" runat="server" />
+                                                    </div>
+
+                                                    <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtSaldo" runat="server" />
+                                                </div>
+                                                <div class="form-group col-md-12" style="padding-left: 0px;">
+                                                    <label for="txtImporte" style="color: black;">Monto *</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text" style="padding-left: 0px; padding-right: 5px;">
+                                                                <i class="material-icons">$</i>
+                                                            </span>
+                                                        </div>
+                                                        <asp:TextBox ID="txtImporte" PlaceHolder="Monto minimo $50" CssClass="form-control" TextMode="Phone" runat="server" />
+                                                        <asp:LinkButton ID="btnCalcular" OnClick="btnCalcular_Click" runat="server" />
                                                     </div>
 
                                                     <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtImporte" runat="server" />
                                                 </div>
+                                                <div class="form-group col-md-12" style="padding-left: 0px;">
+                                                    <label for="txtImporte" style="color: black;">Nuevo saldo</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text" style="padding-left: 0px; padding-right: 5px;">
+                                                                <i class="material-icons">$</i>
+                                                            </span>
+                                                        </div>
+                                                        <asp:TextBox ID="txtNuevoSaldo" Enabled="false" CssClass="form-control" TextMode="Phone" runat="server" />
+                                                    </div>
 
+                                                    <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtNuevoSaldo" runat="server" />
+                                                </div>
                                             </div>
                                         </div>
                                     </asp:Panel>
@@ -192,31 +273,56 @@
 
                                 <asp:Panel ID="pnlIframe" Visible="false" runat="server">
                                     <div class="row">
+                                        <strong>
+                                            <asp:Label Text="Pague la liga con el monto correspondiente, una vez pagada, por favor haga clic en cerrar para validar el pago." runat="server" /></strong>
                                         <div style="width: 100%;">
                                             <iframe id="ifrLiga" style="width: 80%; margin: 0 auto; display: block;" width="450px" height="479px" class="centrado" src="https://u.mitec.com.mx/p/i/EHXYPEKR" frameborder="0" seamless="seamless" runat="server"></iframe>
                                         </div>
                                     </div>
                                 </asp:Panel>
-                            </ContentTemplate>
 
+                                <asp:Panel ID="pnlValidar" Visible="false" runat="server">
+                                    <asp:Timer ID="tmValidar" OnTick="tmValidar_Tick" runat="server" Interval="1000" />
+                                    <asp:UpdatePanel ID="upValidar" UpdateMode="Conditional" runat="server">
+                                        <ContentTemplate>
+
+                                            <div style="height: 100%; width: 100%; display: flex; justify-content: center; align-items: center;">
+                                                <div>
+                                                    <div class="loader"></div>
+                                                    <strong>
+                                                        <asp:Literal ID="ltMnsj" Text="Verificando..." runat="server" /></strong>
+                                                </div>
+                                            </div>
+                                        </ContentTemplate>
+                                        <Triggers>
+                                            <asp:AsyncPostBackTrigger ControlID="tmValidar" EventName="tick" />
+                                        </Triggers>
+                                    </asp:UpdatePanel>
+                                </asp:Panel>
+                            </ContentTemplate>
                         </asp:UpdatePanel>
                     </div>
                 </div>
                 <asp:UpdatePanel runat="server" ID="upRegistro">
                     <ContentTemplate>
                         <div class="modal-footer justify-content-center">
-                            <asp:LinkButton ID="btnGenerar" OnClick="btnGenerar_Click" CssClass="btn btn-success btn-round" runat="server">
+                            <asp:LinkButton ID="btnGenerar" Enabled="false" OnClick="btnGenerar_Click" CssClass="btn btn-success btn-round" runat="server">
                             <i class="material-icons">link</i> Generar liga
                             </asp:LinkButton>
 
                             <asp:LinkButton ID="btnCancelar" class="close" data-dismiss="modal" aria-label="Close" CssClass="btn btn-danger btn-round" runat="server">
                             <i class="material-icons">close</i> Cancelar
                             </asp:LinkButton>
+
+                            <asp:LinkButton ID="btnCerrar" Visible="false" OnClick="btnCerrar_Click" CssClass="btn btn-info btn-round" runat="server">
+                            <i class="material-icons">close</i> Finalizar
+                            </asp:LinkButton>
                         </div>
                     </ContentTemplate>
                     <Triggers>
                         <asp:AsyncPostBackTrigger ControlID="btnGenerar" EventName="Click" />
                         <asp:AsyncPostBackTrigger ControlID="btnCancelar" EventName="Click" />
+                        <asp:AsyncPostBackTrigger ControlID="btnCerrar" EventName="Click" />
                     </Triggers>
                 </asp:UpdatePanel>
             </div>

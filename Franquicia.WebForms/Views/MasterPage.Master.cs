@@ -80,6 +80,7 @@ namespace Franquicia.WebForms.Views
                         {
                             lblTitleMenu.Text = "Panel Administrativo";
 
+                            ViewState["ColorSide"] = "#b9504c";
 
                             dlMenu.DataSource = manejoSesionServices.lsAccesosPermitidos.Where(x => x.UidAppWeb == new Guid("514433C7-4439-42F5-ABE4-6BF1C330F0CA")).ToList().OrderBy(x => x.IntGerarquia);
                             dlMenu.DataBind();
@@ -90,24 +91,21 @@ namespace Franquicia.WebForms.Views
                             dlSubMenuCliente.DataSource = manejoSesionServices.lsAccesosPermitidos.Where(x => x.UidAppWeb == new Guid("0D910772-AE62-467A-A7A3-79540F0445CB")).ToList().OrderBy(x => x.IntGerarquia);
                             dlSubMenuCliente.DataBind();
 
-
                             if (Session["NombreComercial"] == null)
                             {
+                                Session["UidFranquiciaMaster"] = Guid.Empty;
                                 aMenuFranquicia.Attributes.Add("class", "dropdown-toggle disabled");
                                 lblNombreComercial.Text = "&nbsp;seleccione una franquicia";
                             }
                             else if (Session["NombreComercial"] != null)
                             {
-                                //string RFC = Session["RFC"].ToString();
-                                //string RazonSocial = Session["RazonSocial"].ToString();
-                                //string IdEmpresa = Session["IdEmpresa"].ToString();
                                 aMenuFranquicia.Attributes.Add("class", "dropdown-toggle font-weight-bold");
                                 lblNombreComercial.Text = Session["NombreComercial"].ToString();
                             }
 
-
                             if (Session["NombreClienteMaster"] == null)
                             {
+                                Session["UidClienteMaster"] = Guid.Empty;
                                 aMenuCliente.Attributes.Add("class", "dropdown-toggle disabled");
                                 lblDescripcionCliente.Text = "&nbsp;seleccione un comercio";
                             }
@@ -115,15 +113,14 @@ namespace Franquicia.WebForms.Views
                             {
                                 aMenuCliente.Attributes.Add("class", "dropdown-toggle font-weight-bold");
                                 lblDescripcionCliente.Text = Session["NombreClienteMaster"].ToString();
-                                //string DescripcionSucursal = Session["DescripcionSucursal"].ToString();
-                                //string Identificador = Session["Identificador"].ToString();
-                                //string IdSucursal = Session["IdSucursal"].ToString();
                             }
                         }
 
                         else if (manejoSesionServices.perfilesRepository.appWebRepository.appWeb.IntGerarquia == 2)
                         {
                             lblTitleMenu.Text = "Panel Franquicia";
+
+                            ViewState["ColorSide"] = "#024693";
 
                             liMenuFranquicia.Visible = false;
                             dlMenu.DataSource = manejoSesionServices.lsAccesosPermitidos.Where(x => x.UidAppWeb == new Guid("6d70f88d-3ce0-4c8b-87a1-92666039f5b2")).ToList().OrderBy(x => x.IntGerarquia);
@@ -142,6 +139,8 @@ namespace Franquicia.WebForms.Views
                                 Session["UidFranquiciaMaster"] = manejoSesionServices.usuarioCompletoRepository.franquiciatarios.UidFranquiciatarios;
                                 lblDescripcionCliente.Text = "&nbsp;seleccione un comercio";
                                 aMenuCliente.Attributes.Add("class", "dropdown-toggle disabled");
+
+                                Session["UidClienteMaster"] = Guid.Empty;
                             }
                             else if (Session["NombreClienteMaster"] != null)
                             {
@@ -154,7 +153,9 @@ namespace Franquicia.WebForms.Views
 
                         else if (manejoSesionServices.perfilesRepository.appWebRepository.appWeb.IntGerarquia == 3)
                         {
-                            lblTitleMenu.Text = "Panel Empresa";
+                            lblTitleMenu.Text = "Panel Comercio";
+
+                            ViewState["ColorSide"] = "#a33eb7";
 
                             liMenuFranquicia.Visible = false;
                             liMenuCliente.Visible = false;
@@ -164,8 +165,12 @@ namespace Franquicia.WebForms.Views
 
                             manejoSesionServices.ObtenerFranquiciaClienteUsuario();
                             lblNombreComercial.Text = "<b>FRANQUICIA:</b>&nbsp;" + manejoSesionServices.usuarioCompletoRepository.franquiciatarios.VchNombreComercial;
-                            lblDescripcionCliente.Text = "&nbsp;<b>CLIENTE:</b>&nbsp;" + manejoSesionServices.usuarioCompletoRepository.clientes.VchNombreComercial;
+                            lblDescripcionCliente.Text = "&nbsp;<b>COMERCIO:</b>&nbsp;" + manejoSesionServices.usuarioCompletoRepository.clientes.VchNombreComercial;
                             Session["UidClienteMaster"] = manejoSesionServices.usuarioCompletoRepository.clientes.UidCliente;
+                            Session["UidUsuarioMaster"] = manejoSesionServices.usuarioCompletoRepository.usuarioCompleto.UidUsuario;
+                            
+                            manejoSesionServices.clienteCuentaRepository.ObtenerDineroCuentaCliente(manejoSesionServices.usuarioCompletoRepository.clientes.UidCliente);
+                            lblGvSaldo.Text = "Saldo: $ " + manejoSesionServices.clienteCuentaRepository.clienteCuenta.DcmDineroCuenta.ToString("N2");
                         }
                         else if (manejoSesionServices.perfilesRepository.appWebRepository.appWeb.IntGerarquia == 4)
                         {
@@ -206,6 +211,11 @@ namespace Franquicia.WebForms.Views
             #endregion Validaciones iniciales antes de cargar la página
         }
 
+        public Label GvSaldo
+        {
+            get { return lblGvSaldo; }
+            set { lblGvSaldo = value; }
+        }
         public Label NombreComercial
         {
             get { return lblNombreComercial; }
@@ -301,9 +311,11 @@ namespace Franquicia.WebForms.Views
 
             Label lblUrl = (Label)e.Item.FindControl("lblUrl");
             HtmlGenericControl liMenuActivar = (HtmlGenericControl)e.Item.FindControl("liMenuActivar");
+            HtmlAnchor aActive = (HtmlAnchor)e.Item.FindControl("aActive");
 
             if (Url == lblUrl.Text)
             {
+                aActive.Attributes.Add("style", "background-color:" + ViewState["ColorSide"].ToString());
                 liMenuActivar.Attributes.Add("class", "nav-item active");
             }
 

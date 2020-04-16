@@ -77,29 +77,37 @@
                                 <div class="card-header card-header-tabs card-header-primary" style="padding-top: 0px; padding-bottom: 0px;">
                                     <div class="nav-tabs-navigation">
                                         <div class="nav-tabs-wrapper">
-                                            <div class="form-group">
-
-                                                <asp:Label Text="Listado de Usuarios" runat="server" />
-
-                                                <div class="pull-right">
-                                                    <asp:LinkButton ID="btnCargarExcel" ToolTip="Importar usuarios a excel." class="btn btn-lg btn-ligh btn-fab btn-fab-mini btn-round" runat="server">
+                                            <div class="row">
+                                                <table style="width: 100%">
+                                                    <tr>
+                                                        <td style="width: 40%">
+                                                            <asp:Label Text="Listado de Usuarios" runat="server" />
+                                                        </td>
+                                                        <td style="width: 20%">
+                                                            <asp:Label ID="lblGvSaldo" CssClass="text-center" runat="server" /></td>
+                                                        <td style="width: 40%">
+                                                            <div class="pull-right">
+                                                                <asp:LinkButton ID="btnCargarExcel" ToolTip="Importar usuarios a excel." class="btn btn-lg btn-ligh btn-fab btn-fab-mini btn-round" runat="server">
                                                         <i class="material-icons">file_upload</i>
-                                                    </asp:LinkButton>
-                                                    <asp:LinkButton ID="btnExportarLista" OnClick="btnExportarLista_Click" ToolTip="Exportar usuarios de excel." class="btn btn-lg btn-warning btn-fab btn-fab-mini btn-round" runat="server">
+                                                                </asp:LinkButton>
+                                                                <asp:LinkButton ID="btnExportarLista" OnClick="btnExportarLista_Click" ToolTip="Exportar usuarios de excel." class="btn btn-lg btn-warning btn-fab btn-fab-mini btn-round" runat="server">
                                                         <i class="material-icons">file_download</i>
-                                                    </asp:LinkButton>
-                                                    ||
+                                                                </asp:LinkButton>
+                                                                ||
                                                     <asp:LinkButton ID="btnReiniciar" ToolTip="Reiniciar todo." OnClick="btnReiniciar_Click" class="btn btn-lg btn-danger btn-fab btn-fab-mini btn-round" runat="server">
                                                         <i class="material-icons">refresh</i>
                                                     </asp:LinkButton>
-                                                    <asp:LinkButton ID="btnSeleccionar" OnClick="btnSeleccionar_Click" ToolTip="Agregar usuarios." class="btn btn-lg btn-info btn-fab btn-fab-mini btn-round" runat="server">
+                                                                <asp:LinkButton ID="btnSeleccionar" OnClick="btnSeleccionar_Click" ToolTip="Agregar usuarios." class="btn btn-lg btn-info btn-fab btn-fab-mini btn-round" runat="server">
                                                         <i class="material-icons">add</i>
-                                                    </asp:LinkButton>
-                                                    ||
+                                                                </asp:LinkButton>
+                                                                ||
                                                     <asp:LinkButton ID="btnGenerarLigas" OnClick="btnGenerarLigas_Click" ToolTip="Generar ligas." class="btn btn-lg btn-success btn-fab btn-fab-mini btn-round" runat="server">
                                                         <i class="material-icons">link</i>
                                                     </asp:LinkButton>
-                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
                                             </div>
                                         </div>
                                     </div>
@@ -644,7 +652,7 @@
                             <ContentTemplate>
                                 <asp:Panel ID="Panel1" runat="server">
                                     <div class="row">
-                                        <div class="card" style="margin-top: 0px;margin-bottom: 0px;">
+                                        <div class="card" style="margin-top: 0px; margin-bottom: 0px;">
                                             <img src="../Images/LigaSimple.PNG" class="card-img-top" alt="...">
                                             <div class="card-body">
                                                 <h5 class="card-title"><strong>Campos obligatorios *</strong></h5>
@@ -671,16 +679,14 @@
                                                                 <td class="td-name">
                                                                     <p class="card-text">Celular *.</p>
                                                                 </td>
-                                                                <td>
-                                                                    
-                                                                </td>
+                                                                <td></td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="card" style="margin-top: 0px;margin-bottom: 0px;">
+                                        <div class="card" style="margin-top: 0px; margin-bottom: 0px;">
                                             <img src="../Images/Multiple.PNG" class="card-img-top" alt="...">
                                             <div class="card-body">
                                                 <h5 class="card-title"><strong>Campos obligatorios *</strong></h5>
@@ -707,14 +713,12 @@
                                                                 <td class="td-name">
                                                                     <p class="card-text">Promocion(es) (Opcional).</p>
                                                                 </td>
-                                                                <td>
-                                                                    
-                                                                </td>
+                                                                <td></td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
                                                 </div>
-                                                
+
                                                 <h5 class="card-title"><strong>¿Agrego promociones?</strong></h5>
                                                 <p class="card-text">Por favor revice que las promociones ingresadas en el campo (PROMOCION(ES)) se encuentre en las permitidas.</p>
                                             </div>

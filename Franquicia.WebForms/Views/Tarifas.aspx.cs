@@ -18,18 +18,9 @@ namespace Franquicia.WebForms.Views
             {
                 Session["tarifasServices"] = tarifasServices;
 
-                tarifasServices.CargarTarifas();
-                gvTarifas.DataSource = tarifasServices.lsTarifasGridViewModel;
-                gvTarifas.DataBind();
-
-                if (tarifasServices.lsTarifasGridViewModel.Count >= 1)
-                {
-                    btnNuevo.Visible = false;
-                }
-                else
-                {
-                    btnNuevo.Visible = true;
-                }
+                CargarTarifas();
+                //gvTarifas.DataSource = tarifasServices.lsTarifasGridViewModel;
+                //gvTarifas.DataBind();
             }
             else
             {
@@ -59,33 +50,54 @@ namespace Franquicia.WebForms.Views
         {
             if (txtWhats.EmptyTextBox())
             {
-                lblValidar.Text = "El campo Whatsapp es obligatorio";
+                pnlAlert.Visible = true;
+                lblMensajeAlert.Text = "El campo Whatsapp es obligatorio.";
+                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                 return;
             }
             if (txtSms.EmptyTextBox())
             {
-                lblValidar.Text = "El campo Sms es obligatorio";
+                pnlAlert.Visible = true;
+                lblMensajeAlert.Text = "El campo Sms es obligatorio.";
+                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                 return;
             }
 
-            if (tarifasServices.RegistrarTarifas(decimal.Parse(txtWhats.Text), decimal.Parse(txtSms.Text)))
+            if (ViewState["Accion"].ToString() == "Guardar")
             {
-                pnlAlert.Visible = true;
-                lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
-                divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                if (tarifasServices.RegistrarTarifas(decimal.Parse(txtWhats.Text), decimal.Parse(txtSms.Text)))
+                {
+                    pnlAlert.Visible = true;
+                    lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
+                    divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
 
-                tarifasServices.CargarTarifas();
-                gvTarifas.DataSource = tarifasServices.lsTarifasGridViewModel;
-                gvTarifas.DataBind();
+                    CargarTarifas();
+                }
+                else
+                {
+                    pnlAlert.Visible = true;
+                    lblMensajeAlert.Text = "<b>¡Lo sentimos! </b> no se ha podido registar, por favor intentelo de nuevo, si el problema persiste, favor de contactar a los admnistradores.";
+                    divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                }
             }
-            else
+            else if (ViewState["Accion"].ToString() == "Actualizar")
             {
-                pnlAlert.Visible = true;
-                lblMensajeAlert.Text = "<b>¡Lo sentimos! </b> no se ha podido registar, por favor intentelo de nuevo, si el problema persiste, favor de contactar a los admnistradores.";
-                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
-            }
+                if (tarifasServices.ActualizarTarifas(Guid.Parse(ViewState["item.UidTarifa"].ToString()), decimal.Parse(txtWhats.Text), decimal.Parse(txtSms.Text)))
+                {
+                    pnlAlert.Visible = true;
+                    lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha actualizado exitosamente.";
+                    divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
 
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
+                    CargarTarifas();
+                }
+                else
+                {
+                    pnlAlert.Visible = true;
+                    lblMensajeAlert.Text = "<b>¡Lo sentimos! </b> no se ha podido actualizar, por favor intentelo de nuevo, si el problema persiste, favor de contactar a los admnistradores.";
+                    divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                }
+            }
+            //ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
         }
 
         public void LimpiarCampos()
@@ -207,6 +219,63 @@ namespace Franquicia.WebForms.Views
 
                 txtGvWhatsapp.Text = ViewState["GvWhatsapp"].ToString();
                 txtGvSms.Text = ViewState["GvSms"].ToString();
+            }
+        }
+
+        protected void btnCancelar_Click(object sender, EventArgs e)
+        {
+            btnGuardar.Visible = false;
+            btnCancelar.Visible = false;
+            btnEditar.Visible = true;
+
+            txtWhats.Enabled = false;
+            txtSms.Enabled = false;
+        }
+
+        protected void btnEditar_Click(object sender, EventArgs e)
+        {
+            btnGuardar.Visible = true;
+            btnCancelar.Visible = true;
+            btnEditar.Visible = false;
+
+            txtWhats.Enabled = true;
+            txtSms.Enabled = true;
+        }
+
+        private void CargarTarifas()
+        {
+            tarifasServices.CargarTarifas();
+            //gvTarifas.DataSource = tarifasServices.lsTarifasGridViewModel;
+            //gvTarifas.DataBind();
+
+            foreach (var item in tarifasServices.lsTarifasGridViewModel)
+            {
+                ViewState["item.UidTarifa"] = item.UidTarifa;
+                txtWhats.Text = item.DcmWhatsapp.ToString("N2");
+                txtSms.Text = item.DcmSms.ToString("N2");
+            }
+
+            if (tarifasServices.lsTarifasGridViewModel.Count >= 1)
+            {
+                ViewState["Accion"] = "Actualizar";
+                btnGuardar.Text = "<i class=" + "material-icons>" + "refresh </i> Actualizar";
+                btnGuardar.Visible = false;
+                btnCancelar.Visible = false;
+                btnEditar.Visible = true;
+
+                txtWhats.Enabled = false;
+                txtSms.Enabled = false;
+            }
+            else
+            {
+                ViewState["Accion"] = "Guardar";
+                btnGuardar.Text = "<i class=" + "material-icons>" + "check </i> Guardar";
+                btnGuardar.Visible = true;
+                btnCancelar.Visible = false;
+                btnEditar.Visible = false;
+
+                txtWhats.Enabled = true;
+                txtSms.Enabled = true;
             }
         }
     }

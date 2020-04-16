@@ -108,6 +108,18 @@ namespace Franquicia.Bussiness
         {
             return validacionesRepository.LigaAsociadoPagado(UidLigaAsociado);
         }
+        public bool ValidarPagoCliente(string IdReferencia)
+        {
+            return validacionesRepository.ValidarPagoCliente(IdReferencia);
+        }
+        public bool ValidarPagoClientePayCard(string IdReferencia)
+        {
+            return validacionesRepository.ValidarPagoClientePayCard(IdReferencia);
+        }
+        public bool ExisteCuentaDineroCliente(Guid UidCliente)
+        {
+            return validacionesRepository.ExisteCuentaDineroCliente(UidCliente);
+        }
         #endregion
     }
 }

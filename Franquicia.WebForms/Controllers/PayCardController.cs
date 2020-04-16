@@ -14,7 +14,9 @@ namespace Franquicia.WebForms.Controller
         public ResponseHelpers PostPagosTarjeta([FromBody] RespuestaPago strResponse)
         {
             CorreosServices correosServices = new CorreosServices();
-
+            ValidacionesServices validacionesServices = new ValidacionesServices();
+            ClienteCuentaServices clienteCuentaServices = new ClienteCuentaServices();
+            LigasUrlsServices ligasUrlsServices = new LigasUrlsServices();
 
             strResponse.StrResponse = HttpUtility.HtmlEncode(strResponse.StrResponse);
             var respuesta = new ResponseHelpers();
@@ -22,10 +24,10 @@ namespace Franquicia.WebForms.Controller
             // key con produccion
             string cadena = finalString;
 
-            correosServices.CorreoCadena("finalString " + cadena, "serralta2008@gmail.com");
+            //correosServices.CorreoCadena("finalString " + cadena, "serralta2008@gmail.com");
 
-            //string key = "5DCC67393750523CD165F17E1EFADD21"; //Credenciales sanbox 
-            string key = "7AACFE849FABD796F6DCB947FD4D5268";
+            string key = "5DCC67393750523CD165F17E1EFADD21"; //Credenciales sanbox 
+            //string key = "7AACFE849FABD796F6DCB947FD4D5268";
             AESCrypto o = new AESCrypto();
             string decryptedString = o.decrypt(key, cadena);
             if (!string.IsNullOrEmpty(decryptedString))
@@ -72,7 +74,7 @@ namespace Franquicia.WebForms.Controller
                             cd_error = RespuestaWebPayPlus[0].ChildNodes[i].InnerText;
                             break;
                         case "reference":
-                            reference = RespuestaWebPayPlus[0].ChildNodes[i].InnerText;
+                            reference = "1215042020193115411" /*RespuestaWebPayPlus[0].ChildNodes[i].InnerText*/;
                             break;
                         case "response":
                             response = RespuestaWebPayPlus[0].ChildNodes[i].InnerText;
@@ -110,7 +112,7 @@ namespace Franquicia.WebForms.Controller
                     }
                 }
                 PagosServices pagosServices = new PagosServices();
-                
+
                 DateTime fechaRegistro = DateTime.MinValue;
                 switch (response)
                 {
@@ -150,6 +152,26 @@ namespace Franquicia.WebForms.Controller
                             foreach (var item in pagosServices.lsLigasUrlsPayCardModel)
                             {
                                 pagosServices.AgregarInformacionTarjeta("canceled", item.IdReferencia, fechaRegistro.AddMinutes(-30), "canceled", "canceled", "canceled", "", "", "", "", "", "", "", "", decimal.Parse("0"), DtFechaOperacion.AddMinutes(-20));
+                            }
+                        }
+                        else
+                        {
+                            if (validacionesServices.ValidarPagoClientePayCard(reference))
+                            {
+                                ligasUrlsServices.ObtenerDatosUrl(reference);
+
+                                if (validacionesServices.ExisteCuentaDineroCliente(ligasUrlsServices.ligasUrlsRepository.ligasUrlsGridViewModel.UidPropietario))
+                                {
+                                    clienteCuentaServices.ObtenerDineroCuentaCliente(ligasUrlsServices.ligasUrlsRepository.ligasUrlsGridViewModel.UidPropietario);
+
+                                    decimal NuevoSaldo = clienteCuentaServices.clienteCuentaRepository.clienteCuenta.DcmDineroCuenta + ligasUrlsServices.ligasUrlsRepository.ligasUrlsGridViewModel.DcmImporte;
+
+                                    clienteCuentaServices.ActualizarDineroCuentaCliente(NuevoSaldo, ligasUrlsServices.ligasUrlsRepository.ligasUrlsGridViewModel.UidPropietario, reference);
+                                }
+                                else
+                                {
+                                    clienteCuentaServices.RegistrarDineroCuentaCliente(ligasUrlsServices.ligasUrlsRepository.ligasUrlsGridViewModel.DcmImporte, ligasUrlsServices.ligasUrlsRepository.ligasUrlsGridViewModel.UidPropietario, reference);
+                                }
                             }
                         }
                     }
