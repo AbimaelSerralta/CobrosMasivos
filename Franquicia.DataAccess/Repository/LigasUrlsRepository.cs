@@ -13,6 +13,13 @@ namespace Franquicia.DataAccess.Repository
 {
     public class LigasUrlsRepository : SqlDataRepository
     {
+        LigasUrlsConstruirLigaModel _ligasUrlsConstruirLigaModel = new LigasUrlsConstruirLigaModel();
+        public LigasUrlsConstruirLigaModel ligasUrlsConstruirLigaModel
+        {
+            get { return _ligasUrlsConstruirLigaModel; }
+            set { _ligasUrlsConstruirLigaModel = value; }
+        }
+
         LigasUrlsListViewModel _ligasUrlsListViewModel = new LigasUrlsListViewModel();
         public LigasUrlsListViewModel ligasUrlsListViewModel
         {
@@ -48,6 +55,8 @@ namespace Franquicia.DataAccess.Repository
 
             return lsLigasUrlsListViewModel;
         }
+
+        #region Clientes
         public List<LigasUrlsGridViewModel> ConsultarEstatusLiga(Guid UidCliente)
         {
             List<LigasUrlsGridViewModel> lsLigasUrlsGridViewModel = new List<LigasUrlsGridViewModel>();
@@ -260,6 +269,28 @@ namespace Franquicia.DataAccess.Repository
                 throw;
             }
         }
+        public void ContruirLiga(Guid UidCliente, string IdReferencia)
+        {
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+            query.CommandText = "select lu.VchUrl, lu.VchConcepto, lu.DcmImporte, lu.DtVencimiento, us.VchNombre, us.VchApePaterno, us.VchApeMaterno, cl.VchNombreComercial from LigasUrls lu, Usuarios us, Clientes cl where lu.UidUsuario = us.UidUsuario and cl.UidCliente = lu.UidPropietario and UidPropietario = '" + UidCliente + "' and IdReferencia = '" + IdReferencia + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                ligasUrlsConstruirLigaModel.VchUrl = item["VchUrl"].ToString();
+                ligasUrlsConstruirLigaModel.VchConcepto = item["VchConcepto"].ToString();
+                ligasUrlsConstruirLigaModel.DcmImporte = decimal.Parse(item["DcmImporte"].ToString());
+                ligasUrlsConstruirLigaModel.DtVencimiento = DateTime.Parse(item["DtVencimiento"].ToString());
+                ligasUrlsConstruirLigaModel.VchNombre = item["VchNombre"].ToString();
+                ligasUrlsConstruirLigaModel.VchApePaterno = item["VchApePaterno"].ToString();
+                ligasUrlsConstruirLigaModel.VchApeMaterno = item["VchApeMaterno"].ToString();
+                ligasUrlsConstruirLigaModel.VchNombreComercial = item["VchNombreComercial"].ToString();
+            }
+        }
+        #endregion
+
 
         #region ClientePayCard
         public void ObtenerDatosUrl(string IdReferencia)

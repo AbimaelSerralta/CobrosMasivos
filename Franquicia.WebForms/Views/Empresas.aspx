@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="Empresas.aspx.cs" Inherits="Franquicia.WebForms.Views.Empresas" %>
+﻿<%@ Page Title="Empresas" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="Empresas.aspx.cs" Inherits="Franquicia.WebForms.Views.Empresas" %>
 
 <%@ MasterType VirtualPath="~/Views/MasterPage.Master" %>
 

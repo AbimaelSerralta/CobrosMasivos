@@ -15,6 +15,8 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
+using Twilio;
+using Twilio.Rest.Api.V2010.Account;
 using WebApplication1.Vista;
 
 namespace Franquicia.WebForms.Views
@@ -52,6 +54,7 @@ namespace Franquicia.WebForms.Views
         ParametrosEntradaServices parametrosEntradaServices = new ParametrosEntradaServices();
         PromocionesServices promocionesServices = new PromocionesServices();
         ClienteCuentaServices clienteCuentaServices = new ClienteCuentaServices();
+        TarifasServices tarifasServices = new TarifasServices();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -80,6 +83,7 @@ namespace Franquicia.WebForms.Views
                 Session["usuariosCompletosServices"] = usuariosCompletosServices;
                 Session["parametrosEntradaServices"] = parametrosEntradaServices;
                 Session["promocionesServices"] = promocionesServices;
+                Session["tarifasServices"] = tarifasServices;
 
                 promocionesServices.lsCBLPromocionesModelCliente.Clear();
                 promocionesServices.CargarPromocionesClientes(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
@@ -115,6 +119,7 @@ namespace Franquicia.WebForms.Views
                 usuariosCompletosServices = (UsuariosCompletosServices)Session["usuariosCompletosServices"];
                 parametrosEntradaServices = (ParametrosEntradaServices)Session["parametrosEntradaServices"];
                 promocionesServices = (PromocionesServices)Session["promocionesServices"];
+                tarifasServices = (TarifasServices)Session["tarifasServices"];
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Mult", "multi()", true);
                 //pnlAlertImportarError.Visible = false;
                 //lblMnsjAlertImportarError.Text = "";
@@ -428,6 +433,17 @@ namespace Franquicia.WebForms.Views
             {
                 if (usuariosCompletosServices.lsgvUsuariosSeleccionados.Count >= 1)
                 {
+                    tarifasServices.CargarTarifas();
+
+                    foreach (var item in tarifasServices.lsTarifasGridViewModel)
+                    {
+                        lblDcmWhatsapp.Text = item.DcmWhatsapp.ToString("N2");
+                        lblDcmSms.Text = item.DcmSms.ToString("N2");
+                    }
+
+                    lblDcmCuenta.Text = clienteCuentaServices.clienteCuentaRepository.clienteCuenta.DcmDineroCuenta.ToString("N2");
+                    lblDcmSaldo.Text = clienteCuentaServices.clienteCuentaRepository.clienteCuenta.DcmDineroCuenta.ToString("N2");
+
                     lblTituloModal.Text = "Selección de envio de  ligas";
                     pnlAlertModal.Visible = false;
                     lblResumen.Text = "";
@@ -535,6 +551,9 @@ namespace Franquicia.WebForms.Views
             string url = string.Empty;
             bool resu = false;
 
+            string accountSid = "ACc7561cb09df3180ee1368e40055eedf5";
+            string authToken = "0f47ce2d28c9211ac6a9ae42f630d1d6";
+
             parametrosEntradaServices.ObtenerParametrosEntradaCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
 
             string id_company = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.IdCompany;
@@ -546,6 +565,7 @@ namespace Franquicia.WebForms.Views
             string semillaAES = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchSemillaAES;
             string urlGen = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchUrl;
             string data0 = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchData0;
+
 
             if (!string.IsNullOrEmpty(id_company) && !string.IsNullOrEmpty(id_branch) && !string.IsNullOrEmpty(user) && !string.IsNullOrEmpty(pwd) && !string.IsNullOrEmpty(moneda) && !string.IsNullOrEmpty(canal) && !string.IsNullOrEmpty(semillaAES) && !string.IsNullOrEmpty(urlGen) && !string.IsNullOrEmpty(data0))
             {
@@ -627,14 +647,14 @@ namespace Franquicia.WebForms.Views
                                     decimal Final = itPromo.DcmImporte / promocion;
 
                                     strPromociones +=
-                                    "\t\t\t\t\t\t\t\t<tr>\r\n" +
-                                    "\t\t\t\t\t\t\t\t\t<td width=\"50%\" style=\"color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;text-align: right;\">\r\n" +
-                                    "\t\t\t\t\t\t\t\t\t\t" + itPromo.VchDescripcion + " de $" + Final.ToString("N2") + "\r\n" +
-                                    "\t\t\t\t\t\t\t\t\t</td>\r\n" +
-                                    "\t\t\t\t\t\t\t\t\t<td width=\"50%\" style=\"color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;text-align: left;\">\r\n" +
-                                    "\t\t\t\t\t\t\t\t\t\t &nbsp;" + "<a style =\"display:block;color:#fff;font-weight:400;text-align:center;width:100px;font-size:15px;text-decoration:none;background:#28a745;margin:0 auto; padding:5px;\" href=" + URLBase + "Views/Promociones.aspx?CodigoPromocion=" + UidLigaAsociado + "&CodigoLiga=" + itPromo.IdReferencia + "> Pagar $" + itPromo.DcmImporte.ToString("N2") + "</a>" + "\r\n" +
-                                    "\t\t\t\t\t\t\t\t\t</td>\r\n" +
-                                    "\t\t\t\t\t\t\t\t</tr>\r\n";
+                                                                        "\t\t\t\t\t\t\t\t<tr>\r\n" +
+                                                                        "\t\t\t\t\t\t\t\t\t<td width=\"50%\" style=\"color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;text-align: right;\">\r\n" +
+                                                                        "\t\t\t\t\t\t\t\t\t\t" + itPromo.VchDescripcion + " de $" + Final.ToString("N2") + "\r\n" +
+                                                                        "\t\t\t\t\t\t\t\t\t</td>\r\n" +
+                                                                        "\t\t\t\t\t\t\t\t\t<td width=\"50%\" style=\"color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;text-align: left;\">\r\n" +
+                                                                        "\t\t\t\t\t\t\t\t\t\t &nbsp;" + "<a style =\"display:block;color:#fff;font-weight:400;text-align:center;width:100px;font-size:15px;text-decoration:none;background:#28a745;margin:0 auto; padding:5px;\" href=" + URLBase + "Views/Promociones.aspx?CodigoPromocion=" + UidLigaAsociado + "&CodigoLiga=" + itPromo.IdReferencia + "> Pagar $" + itPromo.DcmImporte.ToString("N2") + "</a>" + "\r\n" +
+                                                                        "\t\t\t\t\t\t\t\t\t</td>\r\n" +
+                                                                        "\t\t\t\t\t\t\t\t</tr>\r\n";
                                 }
                             }
 
@@ -653,8 +673,44 @@ namespace Franquicia.WebForms.Views
                         {
                             if (usuariosCompletosServices.GenerarLigasPagos(urlCobro, txtConcepto.Text, decimal.Parse(txtImporte.Text), ReferenciaCobro, item.UidUsuario, txtIdentificador.Text, thisDay, DateTime.Parse(txtVencimiento.Text), txtAsunto.Text, Guid.Empty, Guid.Empty, Guid.Parse(ViewState["UidClienteLocal"].ToString())))
                             {
-                            correosServices.CorreoLiga(item.NombreCompleto, txtAsunto.Text, txtConcepto.Text, decimal.Parse(txtImporte.Text), DateTime.Parse(txtVencimiento.Text), urlCobro, item.StrCorreo, "", false, item.VchNombreComercial);
-                            resu = true;
+                                correosServices.CorreoLiga(item.NombreCompleto, txtAsunto.Text, txtConcepto.Text, decimal.Parse(txtImporte.Text), DateTime.Parse(txtVencimiento.Text), urlCobro, item.StrCorreo, "", false, item.VchNombreComercial);
+
+                                TwilioClient.Init(accountSid, authToken);
+
+                                string body = "Hola, " + item.NombreCompleto +
+                                    "\r\n" + item.VchNombreComercial + " le ha enviado su liga de pago: " +
+                                    //"\r\nConcepto: " + txtConcepto.Text +
+                                    //"\r\nImporte: " + decimal.Parse(txtImporte.Text) +
+                                    //"\r\nVencimiento: " + DateTime.Parse(txtVencimiento.Text).ToString("dd/MM/yyyy") +
+                                    "\r\n" + "https://cobrosmasivos.com/" + "Views/SeleccionPago.aspx?CodigoPromocion=" + Guid.Parse(ViewState["UidClienteLocal"].ToString()) + "&CodigoLiga=" + ReferenciaCobro;
+
+                                
+                                if (cbSms.Checked)
+                                {
+                                    TwilioClient.Init(accountSid, authToken);
+
+                                    var message = MessageResource.Create(
+                                    body: body,
+                                    from: new Twilio.Types.PhoneNumber("+14158739087"),
+                                    to: new Twilio.Types.PhoneNumber("+529841651607")
+                                    );
+
+                                    string mnsj = message.Sid;
+                                }
+
+                                if (cbWhats.Checked)
+                                {
+                                    TwilioClient.Init(accountSid, authToken);
+
+                                    var message = MessageResource.Create(
+                                        body: body,
+                                        from: new Twilio.Types.PhoneNumber("whatsapp:+14155238886"),
+                                        to: new Twilio.Types.PhoneNumber("whatsapp:+5219841651607")
+                                    );
+
+                                    string mnsj = message.Sid;
+                                }
+                                resu = true;
                             }
                         }
                         else
@@ -924,6 +980,106 @@ namespace Franquicia.WebForms.Views
             lblMnsjAlertImportarError.Text = "";
             divAlertImportarError.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
             Session["lsLigasUsuariosGridViewModelError"] = null;
+        }
+
+        protected void cbWhats_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbWhats.Checked)
+            {
+                int aUtilizar = usuariosCompletosServices.lsgvUsuariosSeleccionados.Count;
+                decimal tarifaWA = decimal.Parse(lblDcmWhatsapp.Text);
+
+                decimal tariUtizaWA = aUtilizar * tarifaWA;
+                decimal cuenta = decimal.Parse(lblDcmCuenta.Text);
+
+                decimal tarifaSms = decimal.Parse(lblDcmSms.Text);
+                int aUtilizarSms = int.Parse(lblAUtilizarSms.Text);
+                decimal tariUtizaSms = aUtilizarSms * tarifaSms;
+
+                decimal sumWASm = tariUtizaWA + tariUtizaSms;
+
+                decimal nuevoSaldo = cuenta - sumWASm;
+
+                lblAUtilizarWA.Text = aUtilizar.ToString();
+                lblTotalUtilizarWA.Text = "$" + tariUtizaWA.ToString("N2");
+                lblDcmSaldo.Text = nuevoSaldo.ToString("N2");
+
+                lblAUtilizarSms.Text = aUtilizarSms.ToString();
+            }
+            else
+            {
+                lblDcmSaldo.Text = "0";
+
+                int aUtilizar = 0;
+                decimal tarifaWA = decimal.Parse(lblDcmWhatsapp.Text);
+
+                decimal tariUtizaWA = aUtilizar * tarifaWA;
+                decimal cuenta = decimal.Parse(lblDcmCuenta.Text);
+
+                decimal tarifaSms = decimal.Parse(lblDcmSms.Text);
+                int aUtilizarSms = int.Parse(lblAUtilizarSms.Text);
+                decimal tariUtizaSms = aUtilizarSms * tarifaSms;
+
+                decimal sumWASm = tariUtizaWA + tariUtizaSms;
+
+                decimal nuevoSaldo = cuenta - sumWASm;
+
+                lblAUtilizarWA.Text = "0";
+                lblTotalUtilizarWA.Text = "$" + "0.00";
+                lblDcmSaldo.Text = nuevoSaldo.ToString("N2");
+
+                lblAUtilizarSms.Text = aUtilizarSms.ToString();
+            }
+        }
+
+        protected void cbSms_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbSms.Checked)
+            {
+                int aUtilizar = int.Parse(lblAUtilizarWA.Text);
+                decimal tarifaWA = decimal.Parse(lblDcmWhatsapp.Text);
+
+                decimal tariUtizaWA = aUtilizar * tarifaWA;
+                decimal cuenta = decimal.Parse(lblDcmCuenta.Text);
+
+                decimal tarifaSms = decimal.Parse(lblDcmSms.Text);
+                int aUtilizarSms = usuariosCompletosServices.lsgvUsuariosSeleccionados.Count;
+                decimal tariUtizaSms = aUtilizarSms * tarifaSms;
+
+                decimal sumWASm = tariUtizaWA + tariUtizaSms;
+
+                decimal nuevoSaldo = cuenta - sumWASm;
+
+                lblAUtilizarSms.Text = aUtilizarSms.ToString();
+                lblTotalUtilizarSms.Text = "$" + tariUtizaSms.ToString("N2");
+                lblDcmSaldo.Text = nuevoSaldo.ToString("N2");
+
+                lblAUtilizarWA.Text = aUtilizar.ToString();
+            }
+            else
+            {
+                lblDcmSaldo.Text = "0";
+
+                int aUtilizar = int.Parse(lblAUtilizarWA.Text);
+                decimal tarifaWA = decimal.Parse(lblDcmWhatsapp.Text);
+
+                decimal tariUtizaWA = aUtilizar * tarifaWA;
+                decimal cuenta = decimal.Parse(lblDcmCuenta.Text);
+
+                decimal tarifaSms = decimal.Parse(lblDcmSms.Text);
+                int aUtilizarSms = 0;
+                decimal tariUtizaSms = aUtilizarSms * tarifaSms;
+
+                decimal sumWASm = tariUtizaWA + tariUtizaSms;
+
+                decimal nuevoSaldo = cuenta - sumWASm;
+
+                lblAUtilizarSms.Text = "0";
+                lblTotalUtilizarSms.Text = "$" + "0.00";
+                lblDcmSaldo.Text = nuevoSaldo.ToString("N2");
+
+                lblAUtilizarWA.Text = aUtilizar.ToString();
+            }
         }
     }
 }

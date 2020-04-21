@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Culture="es-MX" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="Franquicias.aspx.cs" Inherits="Franquicia.WebForms.Views.Franquicias" %>
+﻿<%@ Page Title="Franquicias" Culture="es-MX" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="Franquicias.aspx.cs" Inherits="Franquicia.WebForms.Views.Franquicias" %>
 
 <%@ MasterType VirtualPath="~/Views/MasterPage.Master" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>

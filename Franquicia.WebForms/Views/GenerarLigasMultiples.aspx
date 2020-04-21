@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Culture="es-MX" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="GenerarLigasMultiples.aspx.cs" Inherits="Franquicia.WebForms.Views.GenerarLigasMultiples" %>
+﻿<%@ Page Title="GenerarLigasMultiples" Culture="es-MX" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="GenerarLigasMultiples.aspx.cs" Inherits="Franquicia.WebForms.Views.GenerarLigasMultiples" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 

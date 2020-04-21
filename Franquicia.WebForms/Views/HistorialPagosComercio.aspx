@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="HistorialPagosComercio.aspx.cs" Inherits="Franquicia.WebForms.Views.HistorialPagosComercio" %>
+﻿<%@ Page Title="HistorialPagosComercio" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="HistorialPagosComercio.aspx.cs" Inherits="Franquicia.WebForms.Views.HistorialPagosComercio" %>
 
 <%@ MasterType VirtualPath="~/Views/MasterPage.Master" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
@@ -37,9 +37,9 @@
                                     <div class="nav-tabs-navigation">
                                         <div class="nav-tabs-wrapper">
                                             <div class="row">
-                                                <table style="width:100%">
+                                                <table style="width: 100%">
                                                     <tr>
-                                                        <td style="width:40%">
+                                                        <td style="width: 40%">
                                                             <asp:LinkButton ID="btnFiltros" ToolTip="Filtros de busqueda." BackColor="#4db6ac" class="btn btn-lg btn-fab btn-fab-mini btn-round" runat="server">
                                                                 <i class="material-icons">search</i>
                                                             </asp:LinkButton>
@@ -48,7 +48,7 @@
                                                         </td>
                                                         <td style="width: 20%">
                                                             <asp:Label ID="lblGvSaldo" CssClass="text-center" runat="server" /></td>
-                                                        <td style="width:40%">
+                                                        <td style="width: 40%">
                                                             <asp:LinkButton ID="btnNuevo" OnClick="btnNuevo_Click" ToolTip="Nueva recarga." class="btn btn-lg btn-success btn-fab btn-fab-mini btn-round pull-right" runat="server">
                                                         <i class="material-icons">add</i>
                                                             </asp:LinkButton>
@@ -123,12 +123,15 @@
             <div class="modal-content">
                 <asp:UpdatePanel runat="server">
                     <ContentTemplate>
-                        <div class="modal-header">
+                        <div class="modal-header" style="padding-bottom: 0px; padding-top: 0px;">
                             <h5 class="modal-title" runat="server">
                                 <asp:Label ID="lblTituloModal" Text="Selección" runat="server" /></h5>
                             <%--<button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>--%>
+                            <asp:LinkButton ID="btnCerrar" Visible="false" OnClick="btnCerrar_Click" CssClass="btn btn-info btn-round" Style="padding-bottom: 5px; padding-top: 5px; padding-left: 5px; padding-right: 5px;" runat="server">
+                            <i class="material-icons">close</i> Finalizar
+                            </asp:LinkButton>
                         </div>
                     </ContentTemplate>
                 </asp:UpdatePanel>
@@ -166,8 +169,8 @@
                                                                 <label for="txtResultadoWA" style="color: black;">Total</label>
                                                                 <asp:TextBox ID="txtResultadoWA" Enabled="false" CssClass="form-control" runat="server" /></td>
                                                             <td style="width: 25%">
-                                                                <asp:LinkButton ID="btnAgregarWa" Visible="false" OnClick="btnAgregarWa_Click" CssClass="btn btn-info btn-sm btn-round" Style="padding-left: 0px; padding-right: 0px;" runat="server">
-                                                                            <i class="material-icons">check</i>
+                                                                <asp:LinkButton ID="btnAgregarWa" Visible="false" OnClick="btnAgregarWa_Click" CssClass="btn btn-success btn-sm btn-round" Style="padding-left: 0px; padding-right: 0px;" runat="server">
+                                                                            <i class="material-icons">add</i>
                                                                 </asp:LinkButton>
                                                                 <asp:LinkButton ID="btnCalcularWA" OnClick="btnCalcularWA_Click" runat="server" />
                                                             </td>
@@ -199,8 +202,8 @@
                                                                 <asp:TextBox ID="txtResultadoSms" Enabled="false" CssClass="form-control" runat="server" />
                                                             </td>
                                                             <td style="width: 25%">
-                                                                <asp:LinkButton ID="btnAgregarSms" Visible="false" OnClick="btnAgregarSms_Click" CssClass="btn btn-info btn-sm btn-round" Style="padding-left: 0px; padding-right: 0px;" runat="server">
-                                                                            <i class="material-icons">check</i>
+                                                                <asp:LinkButton ID="btnAgregarSms" Visible="false" OnClick="btnAgregarSms_Click" CssClass="btn btn-success btn-sm btn-round" Style="padding-left: 0px; padding-right: 0px;" runat="server">
+                                                                            <i class="material-icons">add</i>
                                                                 </asp:LinkButton>
                                                                 <asp:LinkButton ID="btnCalcularSms" OnClick="btnCalcularSms_Click" runat="server" />
                                                             </td>
@@ -240,7 +243,7 @@
                                                     <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtSaldo" runat="server" />
                                                 </div>
                                                 <div class="form-group col-md-12" style="padding-left: 0px;">
-                                                    <label for="txtImporte" style="color: black;">Monto *</label>
+                                                    <label for="txtImporte" style="color: black;">Monto a pagar *</label>
                                                     <div class="input-group">
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text" style="padding-left: 0px; padding-right: 5px;">
@@ -273,10 +276,8 @@
 
                                 <asp:Panel ID="pnlIframe" Visible="false" runat="server">
                                     <div class="row">
-                                        <strong>
-                                            <asp:Label Text="Pague la liga con el monto correspondiente, una vez pagada, por favor haga clic en cerrar para validar el pago." runat="server" /></strong>
                                         <div style="width: 100%;">
-                                            <iframe id="ifrLiga" style="width: 80%; margin: 0 auto; display: block;" width="450px" height="479px" class="centrado" src="https://u.mitec.com.mx/p/i/EHXYPEKR" frameborder="0" seamless="seamless" runat="server"></iframe>
+                                            <iframe id="ifrLiga" style="width: 80%; margin: 0 auto; display: block;" width="450px" height="650px" class="centrado" src="https://wppsandbox.mit.com.mx/i/SNDBX001" frameborder="0" seamless="seamless" runat="server"></iframe>
                                         </div>
                                     </div>
                                 </asp:Panel>
@@ -307,22 +308,17 @@
                     <ContentTemplate>
                         <div class="modal-footer justify-content-center">
                             <asp:LinkButton ID="btnGenerar" Enabled="false" OnClick="btnGenerar_Click" CssClass="btn btn-success btn-round" runat="server">
-                            <i class="material-icons">link</i> Generar liga
+                            <i class="material-icons">link</i> Generar pago
                             </asp:LinkButton>
 
                             <asp:LinkButton ID="btnCancelar" class="close" data-dismiss="modal" aria-label="Close" CssClass="btn btn-danger btn-round" runat="server">
                             <i class="material-icons">close</i> Cancelar
-                            </asp:LinkButton>
-
-                            <asp:LinkButton ID="btnCerrar" Visible="false" OnClick="btnCerrar_Click" CssClass="btn btn-info btn-round" runat="server">
-                            <i class="material-icons">close</i> Finalizar
                             </asp:LinkButton>
                         </div>
                     </ContentTemplate>
                     <Triggers>
                         <asp:AsyncPostBackTrigger ControlID="btnGenerar" EventName="Click" />
                         <asp:AsyncPostBackTrigger ControlID="btnCancelar" EventName="Click" />
-                        <asp:AsyncPostBackTrigger ControlID="btnCerrar" EventName="Click" />
                     </Triggers>
                 </asp:UpdatePanel>
             </div>
@@ -413,6 +409,57 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="ModalDialog" tabindex="-1" role="dialog" data-backdrop="static" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <asp:UpdatePanel runat="server">
+                    <ContentTemplate>
+                        <div class="modal-header" style="background-color: #45abad; padding-bottom: 0px; padding-top: 3px;">
+
+                            <div class="row">
+                                <div style="width: 100%; background-color: #45abad;">
+                                    <img src="https://image.flaticon.com/icons/svg/1814/1814030.svg" style="width: 30%; margin: 0 auto; display: block;" height="100" width="100" class="img-fluid align-items-center" alt="Responsive image">
+                                </div>
+                            </div>
+                            <%--<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>--%>
+                        </div>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+                <div class="modal-body pt-0" style="padding-bottom: 0px;">
+                    <div class="tab-content text-center">
+                        <asp:UpdatePanel runat="server">
+                            <ContentTemplate>
+                                <h5 class="modal-title" runat="server">
+                                    <asp:Label ID="lblTitleDialog" runat="server" />
+                                </h5>
+                                    <asp:Label ID="lblMnsjDialog" runat="server" />
+                            </ContentTemplate>
+                        </asp:UpdatePanel>
+                    </div>
+                </div>
+                <asp:UpdatePanel runat="server" ID="UpdatePanel2">
+                    <ContentTemplate>
+                        <div class="modal-footer justify-content-center">
+                            <asp:LinkButton ID="btnSi" OnClick="btnSi_Click" CssClass="btn btn-success btn-round" runat="server">
+                            <i class="material-icons">check</i> SI
+                            </asp:LinkButton>
+
+                            <asp:LinkButton ID="LinkButton8" class="close" data-dismiss="modal" aria-label="Close" CssClass="btn btn-danger btn-round" runat="server">
+                            <i class="material-icons">close</i> NO
+                            </asp:LinkButton>
+                        </div>
+                    </ContentTemplate>
+                    <Triggers>
+                        <asp:AsyncPostBackTrigger ControlID="btnGenerar" EventName="Click" />
+                        <asp:AsyncPostBackTrigger ControlID="btnCancelar" EventName="Click" />
+                    </Triggers>
+                </asp:UpdatePanel>
+            </div>
+        </div>
+    </div>
     <!--END MODAL-->
 
     <script>
@@ -431,6 +478,15 @@
 
         function hideModalBusqueda() {
             $('#ModalBusqueda').modal('hide');
+        }
+    </script>
+    <script>
+        function showModalDialog() {
+            $('#ModalDialog').modal('show');
+        }
+
+        function hideModalDialog() {
+            $('#ModalDialog').modal('hide');
         }
     </script>
 </asp:Content>

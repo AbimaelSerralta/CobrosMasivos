@@ -1,4 +1,4 @@
-﻿<%@ Page Culture="es-MX" Title="" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="GenerarLigas.aspx.cs" Inherits="Franquicia.WebForms.Views.GenerarLigas" %>
+﻿<%@ Page Culture="es-MX" Title="GenerarLigas" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="GenerarLigas.aspx.cs" Inherits="Franquicia.WebForms.Views.GenerarLigas" %>
 
 <%@ MasterType VirtualPath="~/Views/MasterPage.Master" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
@@ -364,50 +364,71 @@
                                     </div>
                                 </asp:Panel>
                                 <div class="row">
-                                    <div class="col-lg-12 col-md-12">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <div class="row">
-                                                    <div class="table-responsive">
-                                                        <table class="table">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th class="text-center"></th>
-                                                                    <th class="text-center"></th>
-                                                                    <th class="text-center">Disponible</th>
-                                                                    <th class="text-center">Usado</th>
-                                                                    <th class="text-center">Saldo</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td class="text-center">
-                                                                        <asp:CheckBox Checked="true" runat="server" /></td>
-                                                                    <td class="text-center">Correo</td>
-                                                                    <td class="text-center">Ilimitado</td>
-                                                                    <td class="text-center">
-                                                                        <asp:Label ID="lblCorreoUsado" Text="0" runat="server" /></td>
-                                                                    <td class="text-center">Ilimitado</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td class="text-center">
-                                                                        <asp:CheckBox Enabled="false" runat="server" /></td>
-                                                                    <td class="text-center">SMS</td>
-                                                                    <td class="text-center">0</td>
-                                                                    <td class="text-center">0</td>
-                                                                    <td class="text-center">0</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td class="text-center">
-                                                                        <asp:CheckBox Enabled="false" runat="server" /></td>
-                                                                    <td class="text-center">WhatsApp</td>
-                                                                    <td class="text-center">0</td>
-                                                                    <td class="text-center">0</td>
-                                                                    <td class="text-center">0</td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
+                                    <div class="card" style="margin-top: 0px; margin-bottom: 0px;">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-12 col-sm-6 col-md-6 col-lg-6">
+                                                    <div class="card card-stats">
+                                                        <div class="card-header card-header-success card-header-icon">
+                                                            <div class="card-icon">
+                                                                <img class="card-img-top" style="height: 50px; width: 50px" src="../Images/icoWhats.png" alt="whatsapp">
+                                                            </div>
+                                                            <p class="card-category">Whatsapp</p>
+                                                            <h3 class="card-title">
+                                                                <asp:Label ID="lblDcmWhatsapp" runat="server">$2,000.00 <%--<%# Eval("DcmWhatsapp", "{0:C}") %>--%></asp:Label>
+                                                            </h3>
+                                                        </div>
                                                     </div>
+                                                </div>
+                                                <div class="col-12 col-sm-6 col-md-6 col-lg-6">
+                                                    <div class="card card-stats">
+                                                        <div class="card-header card-header-warning card-header-icon">
+                                                            <div class="card-icon">
+                                                                <img class="card-img-top" style="height: 50px; width: 50px" src="../Images/icoSms.jpg" alt="sms">
+                                                            </div>
+                                                            <p class="card-category">Sms</p>
+                                                            <h3 class="card-title">
+                                                                <asp:Label ID="lblDcmSms" runat="server">2,000.00 <%--<%# Eval("DcmSms", "{0:C}") %>--%></asp:Label></h3>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="table-responsive">
+                                                    <table class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="text-center"></th>
+                                                                <th class="text-center"></th>
+                                                                <th class="text-center">Disponible</th>
+                                                                <th class="text-center">A utilizar</th>
+                                                                <th class="text-center">Saldo</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td class="text-center">
+                                                                    <asp:CheckBox Checked="true" runat="server" /></td>
+                                                                <td class="text-center">Correo</td>
+                                                                <td class="text-center">Ilimitado</td>
+                                                                <td class="text-center">
+                                                                    <asp:Label ID="lblCorreoUsado" Text="0" runat="server" /></td>
+                                                                <td class="text-center">Ilimitado</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="text-center">
+                                                                    <asp:CheckBox ID="cbSms" AutoPostBack="true" OnCheckedChanged="cbSms_CheckedChanged" runat="server" /></td>
+                                                                <td class="text-center">SMS</td>
+                                                                <td rowspan="2" class="text-center"><asp:Label Text="$" runat="server" /><asp:Label ID="lblDcmCuenta" runat="server" /></td>
+                                                                <td class="text-center"><asp:Label ID="lblAUtilizarSms" Visible="false" Text="0" runat="server" /><asp:Label ID="lblTotalUtilizarSms" runat="server" /></td>
+                                                                <td rowspan="2" class="text-center"><asp:Label Text="$" runat="server" /><asp:Label ID="lblDcmSaldo" Text="0.00" runat="server" /></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="text-center">
+                                                                    <asp:CheckBox ID="cbWhats" AutoPostBack="true" OnCheckedChanged="cbWhats_CheckedChanged" runat="server" /></td>
+                                                                <td class="text-center">WhatsApp</td>
+                                                                <td class="text-center"><asp:Label ID="lblAUtilizarWA" Visible="false" Text="0" runat="server" /><asp:Label ID="lblTotalUtilizarWA" runat="server" /></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
                                                 </div>
                                             </div>
                                         </div>

@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="Tarifas.aspx.cs" Inherits="Franquicia.WebForms.Views.Tarifas" %>
+﻿<%@ Page Title="Tarifas" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="Tarifas.aspx.cs" Inherits="Franquicia.WebForms.Views.Tarifas" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 

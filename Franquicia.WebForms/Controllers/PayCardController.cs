@@ -74,7 +74,7 @@ namespace Franquicia.WebForms.Controller
                             cd_error = RespuestaWebPayPlus[0].ChildNodes[i].InnerText;
                             break;
                         case "reference":
-                            reference = "1215042020193115411" /*RespuestaWebPayPlus[0].ChildNodes[i].InnerText*/;
+                            reference = "1216042020172833956" /*RespuestaWebPayPlus[0].ChildNodes[i].InnerText*/;
                             break;
                         case "response":
                             response = RespuestaWebPayPlus[0].ChildNodes[i].InnerText;

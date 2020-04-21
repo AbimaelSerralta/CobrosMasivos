@@ -183,6 +183,8 @@
                                     <asp:Button Text="WhatsApp" CssClass="btn btn-success" runat="server" ID="btnSendWhatsApp" OnClick="btnSendWhatsApp_Click" />
                                 </div>
 
+                                <asp:TextBox ID="taMensaje" Height="500px" Width="1000px" TextMode="MultiLine" runat="server" />
+
                                 <asp:TextBox runat="server" ID="txtMessage" CssClass="form-control" />
 
                                 <div class="input-group-append">
@@ -239,7 +241,7 @@
             </footer>
         </div>
     </div>
-    <div class="fixed-plugin">
+    <%--<div class="fixed-plugin">
         <div class="dropdown show-dropdown">
             <a href="#" data-toggle="dropdown">
                 <i class="fa fa-cog fa-2x"></i>
@@ -305,7 +307,7 @@
                 </li>
             </ul>
         </div>
-    </div>
+    </div>--%>
     <!--   Core JS Files   -->
     <%--<script src="../assets/js/core/jquery.min.js"></script>--%>
     <script src="../assets/js/core/popper.min.js"></script>

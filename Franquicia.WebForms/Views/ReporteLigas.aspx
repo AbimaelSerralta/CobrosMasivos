@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="ReporteLigas.aspx.cs" Inherits="Franquicia.WebForms.Views.ReporteLigas" %>
+﻿<%@ Page Title="ReporteLigas" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="ReporteLigas.aspx.cs" Inherits="Franquicia.WebForms.Views.ReporteLigas" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 

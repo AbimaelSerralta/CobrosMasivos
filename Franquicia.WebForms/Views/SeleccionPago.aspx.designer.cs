@@ -11,70 +11,61 @@ namespace Franquicia.WebForms.Views
 {
 
 
-    public partial class solo
+    public partial class SeleccionPago
     {
 
         /// <summary>
-        /// Control form1.
+        /// Control lblNombreComp.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlForm form1;
+        protected global::System.Web.UI.WebControls.Label lblNombreComp;
 
         /// <summary>
-        /// Control btnSendWhatsApp.
+        /// Control lblNombreComercial.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnSendWhatsApp;
+        protected global::System.Web.UI.WebControls.Label lblNombreComercial;
 
         /// <summary>
-        /// Control taMensaje.
+        /// Control lblConcepto.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox taMensaje;
+        protected global::System.Web.UI.WebControls.Label lblConcepto;
 
         /// <summary>
-        /// Control txtMessage.
+        /// Control lblImporte.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtMessage;
+        protected global::System.Web.UI.WebControls.Label lblImporte;
 
         /// <summary>
-        /// Control btnSendMessage.
+        /// Control lblVencimiento.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnSendMessage;
+        protected global::System.Web.UI.WebControls.Label lblVencimiento;
 
         /// <summary>
-        /// Control lblResponse.
+        /// Control aPagar.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblResponse;
-
-        /// <summary>
-        /// Control ListBox1.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.ListBox ListBox1;
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor aPagar;
     }
 }

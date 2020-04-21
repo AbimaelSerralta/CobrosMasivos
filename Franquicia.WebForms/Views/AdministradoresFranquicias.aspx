@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="AdministradoresFranquicias.aspx.cs" Inherits="Franquicia.WebForms.Views.Administradores" %>
+﻿<%@ Page Title="AdministradoresFranquicias" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="AdministradoresFranquicias.aspx.cs" Inherits="Franquicia.WebForms.Views.Administradores" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>

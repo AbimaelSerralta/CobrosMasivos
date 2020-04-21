@@ -35,7 +35,6 @@ namespace Franquicia.WebForms.Views
 
             clienteCuentaServices.ObtenerDineroCuentaCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
             lblGvSaldo.Text = "Saldo: $ " + clienteCuentaServices.clienteCuentaRepository.clienteCuenta.DcmDineroCuenta.ToString("N2");
-            Master.GvSaldo.Text = "Saldo: $ " + clienteCuentaServices.clienteCuentaRepository.clienteCuenta.DcmDineroCuenta.ToString("N2");
 
             if (!IsPostBack)
             {
@@ -323,6 +322,9 @@ namespace Franquicia.WebForms.Views
                     historialPagosServices.CargarMovimientos(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
                     gvHistorial.DataSource = historialPagosServices.lsHistorialPagosGridViewModel;
                     gvHistorial.DataBind();
+
+                    clienteCuentaServices.ObtenerDineroCuentaCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+                    Master.GvSaldo.Text = "Saldo: $ " + clienteCuentaServices.clienteCuentaRepository.clienteCuenta.DcmDineroCuenta.ToString("N2");
                 }
             }
             else
@@ -335,6 +337,9 @@ namespace Franquicia.WebForms.Views
                 lblMensajeAlert.Text = "<b>Lo sentimos,</b> no se ha podido procesar su pago.";
                 divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
+
+                clienteCuentaServices.ObtenerDineroCuentaCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+                Master.GvSaldo.Text = "Saldo: $ prueba " + clienteCuentaServices.clienteCuentaRepository.clienteCuenta.DcmDineroCuenta.ToString("N2");
             }
         }
 
@@ -356,34 +361,67 @@ namespace Franquicia.WebForms.Views
 
         protected void btnAgregarWa_Click(object sender, EventArgs e)
         {
-            decimal val = decimal.Parse(txtResultadoWA.Text);
-            decimal val2 = 0;
-            if (txtImporte.Text != string.Empty)
-            {
-                val2 = decimal.Parse(txtImporte.Text);
-            }
+            ViewState["ModalDialog"] = "DialogWA";
 
-            decimal result = val + val2;
-
-            txtImporte.Text = result.ToString("N2");
-
-            Calcular();
+            lblMnsjDialog.Text = "Esta apunto de agregar <strong>" 
+                + "$" + decimal.Parse(txtResultadoWA.Text).ToString("N2") +
+                "</strong> al monto final. <br/><br/> ¿Esta seguro que desea continuar?";
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalDialog()", true);
         }
 
         protected void btnAgregarSms_Click(object sender, EventArgs e)
         {
-            decimal val = decimal.Parse(txtResultadoSms.Text);
-            decimal val2 = 0;
-            if (txtImporte.Text != string.Empty)
+            ViewState["ModalDialog"] = "DialogSms";
+
+            lblMnsjDialog.Text = "Esta apunto de agregar <strong>"
+                + "$" + decimal.Parse(txtResultadoSms.Text).ToString("N2") +
+                "</strong> al monto final. <br/><br/> ¿Esta seguro que desea continuar?";
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalDialog()", true);
+        }
+
+        protected void btnSi_Click(object sender, EventArgs e)
+        {
+            if (ViewState["ModalDialog"].ToString() == "DialogWA")
             {
-                val2 = decimal.Parse(txtImporte.Text);
+                decimal val = decimal.Parse(txtResultadoWA.Text);
+                decimal val2 = 0;
+                if (txtImporte.Text != string.Empty)
+                {
+                    val2 = decimal.Parse(txtImporte.Text);
+                }
+
+                decimal result = val + val2;
+
+                txtImporte.Text = result.ToString("N2");
+
+                Calcular();
+
+                txtCantidadWA.Text = string.Empty;
+                txtResultadoWA.Text = string.Empty;
+                btnAgregarWa.Visible = false;
+            }
+            else if(ViewState["ModalDialog"].ToString() == "DialogSms")
+            {
+                decimal val = decimal.Parse(txtResultadoSms.Text);
+                decimal val2 = 0;
+                if (txtImporte.Text != string.Empty)
+                {
+                    val2 = decimal.Parse(txtImporte.Text);
+                }
+
+                decimal result = val + val2;
+
+                txtImporte.Text = result.ToString("N2");
+
+                Calcular();
+
+                txtCantidadSms.Text = string.Empty;
+                txtResultadoSms.Text = string.Empty;
+                btnAgregarSms.Visible = false;
+
             }
 
-            decimal result = val + val2;
-
-            txtImporte.Text = result.ToString("N2");
-
-            Calcular();
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModalDialog()", true);
         }
     }
 }

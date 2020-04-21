@@ -28,6 +28,7 @@ namespace Franquicia.Bussiness
             return lsLigasUrlsListViewModel = ligasUrlsRepository.TotalEnvioLigas(UidCliente);
         }
 
+        #region Cliente
         public List<LigasUrlsGridViewModel> ConsultarEstatusLiga(Guid UidCliente)
         {
             lsLigasUrlsGridViewModel = new List<LigasUrlsGridViewModel>();
@@ -40,6 +41,12 @@ namespace Franquicia.Bussiness
 
             return lsLigasUrlsGridViewModel = ligasUrlsRepository.BuscarLigas(UidCliente, Identificador, Nombre, ApePaterno, ApeMaterno, Asunto, Concepto, ImporteMayor, ImporteMenor, RegistroDesde, RegistroHasta, VencimientoDesde, VencimientoHasta, Estatus);
         }
+        public void ContruirLiga(Guid UidCliente, string IdReferencia)
+        {
+            ligasUrlsRepository.ContruirLiga(UidCliente, IdReferencia);
+        }
+
+        #endregion
 
         #region ClientePayCard
         public void ObtenerDatosUrl(string IdReferencia)
