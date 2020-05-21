@@ -137,7 +137,7 @@
                                                             <i class="material-icons">$</i>
                                                         </span>
                                                     </div>
-                                                    <asp:TextBox ID="txtImporte" CssClass="form-control" TextMode="Phone" runat="server" />
+                                                    <asp:TextBox ID="txtImporte" Text="50" PlaceHolder="Min $50" CssClass="form-control" TextMode="Phone" runat="server" />
                                                 </div>
 
                                                 <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtImporte" runat="server" />
@@ -189,7 +189,7 @@
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                 </Columns>
-                                                <PagerStyle CssClass="pagination-ys" />
+                                                <PagerStyle HorizontalAlign="Center" CssClass="pagination-ys" />
                                             </asp:GridView>
 
                                             <asp:GridView ID="gridview" AutoGenerateColumns="false" CssClass="table table-hover" GridLines="None" border="0" runat="server">
@@ -399,18 +399,20 @@
                                                                 <th class="text-center"></th>
                                                                 <th class="text-center"></th>
                                                                 <th class="text-center">Disponible</th>
-                                                                <th class="text-center">A utilizar</th>
+                                                                <th class="text-center">Utilizado</th>
+                                                                <th class="text-center">Error(es)</th>
                                                                 <th class="text-center">Saldo</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
                                                             <tr>
                                                                 <td class="text-center">
-                                                                    <asp:CheckBox Checked="true" runat="server" /></td>
+                                                                    <asp:CheckBox ID="cbCorreo" Checked="true" runat="server" /></td>
                                                                 <td class="text-center">Correo</td>
                                                                 <td class="text-center">Ilimitado</td>
                                                                 <td class="text-center">
                                                                     <asp:Label ID="lblCorreoUsado" Text="0" runat="server" /></td>
+                                                                <td class="text-center"><asp:Label ID="lblErrorCorreo" Text="0" runat="server" /></td>
                                                                 <td class="text-center">Ilimitado</td>
                                                             </tr>
                                                             <tr>
@@ -418,14 +420,16 @@
                                                                     <asp:CheckBox ID="cbSms" AutoPostBack="true" OnCheckedChanged="cbSms_CheckedChanged" runat="server" /></td>
                                                                 <td class="text-center">SMS</td>
                                                                 <td rowspan="2" class="text-center"><asp:Label Text="$" runat="server" /><asp:Label ID="lblDcmCuenta" runat="server" /></td>
-                                                                <td class="text-center"><asp:Label ID="lblAUtilizarSms" Visible="false" Text="0" runat="server" /><asp:Label ID="lblTotalUtilizarSms" runat="server" /></td>
+                                                                <td class="text-center"><asp:Label ID="lblAUtilizarSms" Visible="false" Text="0" runat="server" /><asp:Label Text="$" runat="server" /><asp:Label ID="lblTotalUtilizarSms" runat="server" /></td>
+                                                                <td class="text-center"><asp:Label ID="lblErrorSms" Text="0" runat="server" /></td>
                                                                 <td rowspan="2" class="text-center"><asp:Label Text="$" runat="server" /><asp:Label ID="lblDcmSaldo" Text="0.00" runat="server" /></td>
                                                             </tr>
                                                             <tr>
                                                                 <td class="text-center">
-                                                                    <asp:CheckBox ID="cbWhats" AutoPostBack="true" OnCheckedChanged="cbWhats_CheckedChanged" runat="server" /></td>
+                                                                    <asp:CheckBox ID="cbWhats" Visible="false" Checked="false" AutoPostBack="true" OnCheckedChanged="cbWhats_CheckedChanged" runat="server" /></td>
                                                                 <td class="text-center">WhatsApp</td>
-                                                                <td class="text-center"><asp:Label ID="lblAUtilizarWA" Visible="false" Text="0" runat="server" /><asp:Label ID="lblTotalUtilizarWA" runat="server" /></td>
+                                                                <td class="text-center"><asp:Label ID="lblAUtilizarWA" Visible="false" Text="0" runat="server" /><asp:Label Text="$" runat="server" /><asp:Label ID="lblTotalUtilizarWA" runat="server" /></td>
+                                                                <td class="text-center"><asp:Label ID="lblErrorWA" Text="0" runat="server" /></td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
@@ -589,7 +593,7 @@
                                                             <asp:BoundField SortExpression="StrCorreo" DataField="StrCorreo" HeaderText="CORREO" />
                                                             <asp:BoundField SortExpression="StrTelefono" DataField="StrTelefono" HeaderText="CELULAR" />
                                                         </Columns>
-                                                        <PagerStyle CssClass="pagination-ys" />
+                                                        <PagerStyle HorizontalAlign="Center" CssClass="pagination-ys" />
                                                     </asp:GridView>
                                                 </div>
                                             </div>

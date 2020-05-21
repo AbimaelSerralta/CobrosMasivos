@@ -15,8 +15,8 @@
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <!--     Fonts and icons     -->
-    <%--<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />--%>
-    <link href="../assets/css/MaterialIcons.css" type="text/css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+    <%--<link href="../assets/css/MaterialIcons.css" type="text/css" rel="stylesheet" />--%>
     <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
     <!-- Material Kit CSS -->
     <link href="../assets/css/material-dashboard.css?v=2.1.1" rel="stylesheet" />
@@ -37,7 +37,8 @@
             <ProgressTemplate>
                 <div class="PogressModal">
                     <div>
-                        <div class="loader"></div>
+                        <img height="150" width="150" src="../CSSPropio/loader.gif" alt="imgCobrosMasivos" />
+                        <%--<div class="loader"></div>--%>
                         <br />
                         <asp:Label Text="Espere por favor..." Style="color: white;" runat="server" />
                     </div>
@@ -180,7 +181,7 @@
                                                 <a class="dropdown-item" href="#">Profile</a>
                                                 <a class="dropdown-item" href="#">Settings</a>
                                                 <div class="dropdown-divider"></div>
-                                                <asp:LinkButton ID="btnComprar" CssClass="dropdown-item" OnClick="btnComprar_Click" Text="Comprar Whats/Sms" runat="server" />
+                                                <asp:LinkButton ID="btnComprar" Visible="false" CssClass="dropdown-item" OnClick="btnComprar_Click" Text="Comprar Whats/Sms" runat="server" />
                                                 <asp:LinkButton ID="btnSalir" CssClass="dropdown-item" OnClick="btnSalir_Click" Text="Salir" runat="server" />
                                             </div>
                                         </li>
@@ -427,6 +428,18 @@
             var x = document.getElementById("lblUrl").innerText;
             document.getElementById("ifrLiga").src = x;
         }
+    </script>
+
+   <script>
+        $('.copyboard').on('click', function (e) {
+            e.preventDefault();
+
+            var copyText = $(this).attr('data-text');
+            var el = $('<input style="position: absolute; bottom: -120%" type="text" value="' + copyText + '"/>').appendTo('body');
+            el[0].select();
+            document.execCommand("copy");
+            el.remove();
+        })
     </script>
 
     <!--   Core JS Files   -->

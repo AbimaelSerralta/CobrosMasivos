@@ -1,5 +1,7 @@
 ﻿using ClosedXML.Excel;
 using Franquicia.Bussiness;
+using Franquicia.Domain.ViewModels;
+using Franquicia.WebForms.Util;
 using OfficeOpenXml;
 using RestSharp;
 using System;
@@ -10,6 +12,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Web;
 using System.Web.UI;
@@ -55,6 +58,7 @@ namespace Franquicia.WebForms.Views
         PromocionesServices promocionesServices = new PromocionesServices();
         ClienteCuentaServices clienteCuentaServices = new ClienteCuentaServices();
         TarifasServices tarifasServices = new TarifasServices();
+        TicketsServices ticketsServices = new TicketsServices();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -68,12 +72,24 @@ namespace Franquicia.WebForms.Views
             }
 
             txtVencimiento.Attributes.Add("min", DateTime.Now.ToString("yyyy-MM-dd"));
+            txtVencimiento.Attributes.Add("max", DateTime.Now.AddDays(89).ToString("yyyy-MM-dd"));
 
             clienteCuentaServices.ObtenerDineroCuentaCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
             lblGvSaldo.Text = "Saldo: $ " + clienteCuentaServices.clienteCuentaRepository.clienteCuenta.DcmDineroCuenta.ToString("N2");
 
             if (!IsPostBack)
             {
+                ////PRUEBA
+                //if (Session["PosbackExcelSimple"] != null)
+                //{
+                //    List<LigasUsuariosGridViewModel> lsRecovery = (List<LigasUsuariosGridViewModel>)Session["PosbackExcelSimple"];
+                //    gvUsuariosSeleccionados.DataSource = lsRecovery;
+                //    gvUsuariosSeleccionados.DataBind();
+
+                //    Session["PosbackExcelSimple"] = null;
+                //}
+
+
                 ViewState["gvUsuariosSeleccionados"] = SortDirection.Ascending;
                 ViewState["gvUsuarios"] = SortDirection.Ascending;
 
@@ -128,6 +144,10 @@ namespace Franquicia.WebForms.Views
                 pnlAlert.Visible = false;
                 lblMensajeAlert.Text = "";
                 divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
+
+                pnlAlertModal.Visible = false;
+                lblResumen.Text = "";
+                divAlertModal.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
             }
         }
         public void GenerarLiga()
@@ -237,106 +257,102 @@ namespace Franquicia.WebForms.Views
             if (fuSelecionarExcel.HasFile)
             {
                 if (".xlsx" == Path.GetExtension(fuSelecionarExcel.FileName))
-
                 {
-                    byte[] buffer = new byte[fuSelecionarExcel.FileBytes.Length];
-                    fuSelecionarExcel.FileContent.Seek(0, SeekOrigin.Begin);
-                    fuSelecionarExcel.FileContent.Read(buffer, 0, Convert.ToInt32(fuSelecionarExcel.FileContent.Length));
-
-                    Stream stream2 = new MemoryStream(buffer);
-
-                    DataTable dt = new DataTable();
-                    using (XLWorkbook workbook = new XLWorkbook(stream2))
+                    try
                     {
-                        IXLWorksheet sheet = workbook.Worksheet(1);
-                        bool FirstRow = true;
-                        string readRange = "1:1";
-                        foreach (IXLRow row in sheet.RowsUsed())
+                        byte[] buffer = new byte[fuSelecionarExcel.FileBytes.Length];
+                        fuSelecionarExcel.FileContent.Seek(0, SeekOrigin.Begin);
+                        fuSelecionarExcel.FileContent.Read(buffer, 0, Convert.ToInt32(fuSelecionarExcel.FileContent.Length));
+
+                        Stream stream2 = new MemoryStream(buffer);
+
+                        DataTable dt = new DataTable();
+                        using (XLWorkbook workbook = new XLWorkbook(stream2))
                         {
-                            //If Reading the First Row (used) then add them as column name  
-                            if (FirstRow)
+                            IXLWorksheet sheet = workbook.Worksheet(1);
+                            bool FirstRow = true;
+                            string readRange = "1:1";
+                            foreach (IXLRow row in sheet.RowsUsed())
                             {
-                                //Checking the Last cellused for column generation in datatable  
-                                readRange = string.Format("{0}:{1}", 1, row.LastCellUsed().Address.ColumnNumber);
-                                foreach (IXLCell cell in row.Cells(readRange))
+                                //If Reading the First Row (used) then add them as column name  
+                                if (FirstRow)
                                 {
-                                    dt.Columns.Add(cell.Value.ToString());
+                                    //Checking the Last cellused for column generation in datatable  
+                                    readRange = string.Format("{0}:{1}", 1, row.LastCellUsed().Address.ColumnNumber);
+                                    foreach (IXLCell cell in row.Cells(readRange))
+                                    {
+                                        dt.Columns.Add(cell.Value.ToString());
+                                    }
+                                    FirstRow = false;
                                 }
-                                FirstRow = false;
-                            }
-                            else
-                            {
-                                //Adding a Row in datatable  
-                                dt.Rows.Add();
-                                int cellIndex = 0;
-                                //Updating the values of datatable  
-                                foreach (IXLCell cell in row.Cells(readRange))
+                                else
                                 {
-                                    dt.Rows[dt.Rows.Count - 1][cellIndex] = cell.Value.ToString();
-                                    cellIndex++;
+                                    //Adding a Row in datatable  
+                                    dt.Rows.Add();
+                                    int cellIndex = 0;
+                                    //Updating the values of datatable  
+                                    foreach (IXLCell cell in row.Cells(readRange))
+                                    {
+                                        dt.Rows[dt.Rows.Count - 1][cellIndex] = cell.Value.ToString();
+                                        cellIndex++;
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    if (dt.Columns.Contains("NOMBRE(S)".Trim()) && dt.Columns.Contains("APEPATERNO".Trim()) && dt.Columns.Contains("APEMATERNO".Trim())
-                        && dt.Columns.Contains("CORREO".Trim()) && dt.Columns.Contains("CELULAR".Trim()))
-                    {
-                        usuariosCompletosServices.ValidarExcelToList(dt);
-
-                        if (usuariosCompletosServices.lsLigasInsertar.Count >= 1)
+                        if (dt.Columns.Contains("NOMBRE(S)".Trim()) && dt.Columns.Contains("APEPATERNO".Trim()) && dt.Columns.Contains("APEMATERNO".Trim())
+                            && dt.Columns.Contains("CORREO".Trim()) && dt.Columns.Contains("CELULAR".Trim()))
                         {
-                            usuariosCompletosServices.ExcelToList(usuariosCompletosServices.lsgvUsuariosSeleccionados, usuariosCompletosServices.lsLigasInsertar, Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+                            usuariosCompletosServices.ValidarExcelToList(dt);
 
-                            gvUsuariosSeleccionados.DataSource = usuariosCompletosServices.lsgvUsuariosSeleccionados;
-                            gvUsuariosSeleccionados.DataBind();
+                            if (usuariosCompletosServices.lsLigasInsertar.Count >= 1)
+                            {
+                                usuariosCompletosServices.ExcelToList(usuariosCompletosServices.lsgvUsuariosSeleccionados, usuariosCompletosServices.lsLigasInsertar, Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+
+                                gvUsuariosSeleccionados.DataSource = usuariosCompletosServices.lsgvUsuariosSeleccionados;
+                                gvUsuariosSeleccionados.DataBind();
+
+                                //Session["PosbackExcelSimple"] = usuariosCompletosServices.lsgvUsuariosSeleccionados;
+                            }
+
+                            if (usuariosCompletosServices.lsLigasErrores.Count >= 1)
+                            {
+                                btnDescargarError.Visible = true;
+                                btnMasDetalle.Visible = false;
+                                pnlAlertImportarError.Visible = true;
+                                lblMnsjAlertImportarError.Text = "<strong>!Lo sentimos¡</strong> algunos usuarios no se han importado. **Recuerde que todos los campos son obligatorios**";
+                                divAlertImportarError.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                            }
                         }
-
-                        if (usuariosCompletosServices.lsLigasErrores.Count >= 1)
+                        else
                         {
-                            btnDescargarError.Visible = true;
+                            btnDescargarError.Visible = false;
                             btnMasDetalle.Visible = true;
                             pnlAlertImportarError.Visible = true;
-                            lblMnsjAlertImportarError.Text = "<strong>!Lo sentimos¡</strong> algunos usuarios no se han importado. **Recuerde que todos los campos son obligatorios**";
+                            lblMnsjAlertImportarError.Text = "<strong>!Lo sentimos¡</strong> el archivo no tiene las columnas correctas.";
                             divAlertImportarError.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                         }
+
+                        //Response.Write("");
+                        //Page.Response.Redirect(Page.Request.Url.ToString(), true); RESUELVE TEMPORALMENTE EL LOADING(REVISAR)
+                        //StringBuilder sbScript = new StringBuilder();
+                        //sbScript.Append("<script language='JavaScript' type='text/javascript'>\n");
+                        //sbScript.Append("<!--\n");
+                        //sbScript.Append(this.GetPostBackEventReference(this, "PBArg") + ";\n");
+                        //sbScript.Append("// -->\n");
+                        //sbScript.Append("</script>\n");
+                        //this.RegisterStartupScript("AutoPostBackScript", sbScript.ToString());
+                        //ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "DoPostBack", "__doPostBack(sender, e)", true);
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        btnDescargarError.Visible = false;
-                        btnMasDetalle.Visible = true;
-                        pnlAlertImportarError.Visible = true;
-                        lblMnsjAlertImportarError.Text = "<strong>!Lo sentimos¡</strong> el archivo no tiene las columnas correctas.";
-                        divAlertImportarError.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                        pnlAlert.Visible = true;
+                        lblMensajeAlert.Text = ex.Message;
+                        divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                     }
                 }
                 else
                 {
-                    //    byte[] buffer = new byte[fuSelecionarExcel.FileBytes.Length];
-                    //    fuSelecionarExcel.FileContent.Seek(0, SeekOrigin.Begin);
-                    //    fuSelecionarExcel.FileContent.Read(buffer, 0, Convert.ToInt32(fuSelecionarExcel.FileContent.Length));
-                    //    Stream stream2 = new MemoryStream(buffer);
-                    //    int f = 0;
-                    //    using (var reader = new StreamReader(stream2))
-
-                    //        f = reader.ReadAllLines();
-
-                    //    int f2 = '"' + ',' + '"';
-
-                    //    //txtAsunto.Text = f.Replace("\r\n", txtAsunto.Text);
-
-                    //    string ll = txtAsunto.Text.Replace(@"\\", "-");
-
-                    //    string fio = "";
-
-                    //    string lol = txtAsunto.Text.Replace("\\", "-");
-
-                    //    string fi00o = "";
-
-                    //    gridview.DataSource = (DataTable)ReadToEnd(txtAsunto.Text.Replace(@"\", ""));
-                    //    gridview.DataBind();
-
-
                     pnlAlert.Visible = true;
                     lblMensajeAlert.Text = "Solo se admite los formatos xlsx";
                     divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
@@ -427,46 +443,190 @@ namespace Franquicia.WebForms.Views
 
         protected void btnGenerarLigas_Click(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(txtIdentificador.Text.Trim()) && !string.IsNullOrEmpty(txtAsunto.Text.Trim()) &&
-                !string.IsNullOrEmpty(txtConcepto.Text.Trim()) && !string.IsNullOrEmpty(txtImporte.Text.Trim())
-                && !string.IsNullOrEmpty(txtVencimiento.Text.Trim()))
+            DateTime fecha;
+
+            if (DateTime.TryParse(txtVencimiento.Text, out fecha))
             {
-                if (usuariosCompletosServices.lsgvUsuariosSeleccionados.Count >= 1)
-                {
-                    tarifasServices.CargarTarifas();
+                txtVencimiento.Text = fecha.ToString("yyyy-MM-dd");
+            }
+            else
+            {
+                txtVencimiento.Text = DateTime.Now.ToString("yyyy-MM-dd");
+            }
 
-                    foreach (var item in tarifasServices.lsTarifasGridViewModel)
-                    {
-                        lblDcmWhatsapp.Text = item.DcmWhatsapp.ToString("N2");
-                        lblDcmSms.Text = item.DcmSms.ToString("N2");
-                    }
+            DateTime date = DateTime.Parse(txtVencimiento.Text);
+            DateTime hoy = DateTime.Parse(DateTime.Now.ToString("dd/MM/yyyy"));
+            DateTime hoyMas = DateTime.Parse(DateTime.Now.AddDays(89).ToString("dd/MM/yyyy"));
+            DateTime date2 = DateTime.Parse(txtVencimiento.Text);
 
-                    lblDcmCuenta.Text = clienteCuentaServices.clienteCuentaRepository.clienteCuenta.DcmDineroCuenta.ToString("N2");
-                    lblDcmSaldo.Text = clienteCuentaServices.clienteCuentaRepository.clienteCuenta.DcmDineroCuenta.ToString("N2");
-
-                    lblTituloModal.Text = "Selección de envio de  ligas";
-                    pnlAlertModal.Visible = false;
-                    lblResumen.Text = "";
-                    divAlertModal.Attributes.Add("class", "alert alert-success alert-dismissible fade");
-                    btnGenerar.Visible = true;
-                    btnGenerar.Visible = true;
-                    btnCancelar.Visible = true;
-                    btnAceptar2.Visible = false;
-                    ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
-                }
-                else
-                {
-                    pnlAlert.Visible = true;
-                    lblMensajeAlert.Text = "Para enviar las ligas, debe de haber almenos un usuario agregado.";
-                    divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
-                }
+            if (txtIdentificador.EmptyTextBox())
+            {
+                pnlAlert.Visible = true;
+                lblMensajeAlert.Text = "Para generar liga(s) simple(s) es necesario corregir los siguientes errores: <br /> => El Identificador es obligatorio.";
+                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                return;
+            }
+            if (txtAsunto.EmptyTextBox())
+            {
+                pnlAlert.Visible = true;
+                lblMensajeAlert.Text = "Para generar liga(s) simple(s) es necesario corregir los siguientes errores: <br /> => El campo Asunto es obligatorio.";
+                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                return;
+            }
+            if (txtConcepto.EmptyTextBox())
+            {
+                pnlAlert.Visible = true;
+                lblMensajeAlert.Text = "Para generar liga(s) simple(s) es necesario corregir los siguientes errores: <br /> => El campo Concepto es obligatorio.";
+                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                return;
+            }
+            if (txtImporte.EmptyTextBox())
+            {
+                pnlAlert.Visible = true;
+                lblMensajeAlert.Text = "Para generar liga(s) simple(s) es necesario corregir los siguientes errores: <br /> => El campo Importe es obligatorio.";
+                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                return;
+            }
+            if (decimal.Parse(txtImporte.Text) >= 50 && decimal.Parse(txtImporte.Text) <= 15000)
+            {
             }
             else
             {
                 pnlAlert.Visible = true;
-                lblMensajeAlert.Text = "Los campos con * son obligatorios.";
+                lblMensajeAlert.Text = "Para generar liga(s) simple(s) es necesario corregir los siguientes errores: <br /> => El importe mínimo es de $50.00 y el máximo es de $15,000.00.";
+                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                return;
+            }
+            if (txtVencimiento.EmptyTextBox())
+            {
+                pnlAlert.Visible = true;
+                lblMensajeAlert.Text = "Para generar liga(s) simple(s) el campo Vencimiento es obligatorio.";
+                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                return;
+            }
+
+            if (date >= hoy && date2 <= hoyMas)
+            {
+            }
+            else
+            {
+                pnlAlert.Visible = true;
+                lblMensajeAlert.Text = "Para generar liga(s) simple(s) es necesario corregir los siguientes errores: <br /> => La fecha mínima es el día de hoy y la máxima son 90 días.";
+                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                return;
+            }
+
+            if (usuariosCompletosServices.lsgvUsuariosSeleccionados.Count >= 1)
+            {
+                ViewState["nuevoSaldo"] = 0;
+
+                tarifasServices.CargarTarifas();
+
+                decimal DcmWhatsapp = 0;
+                decimal DcmSms = 0;
+                decimal Cuenta = 0;
+                foreach (var item in tarifasServices.lsTarifasGridViewModel)
+                {
+                    lblDcmWhatsapp.Text = item.DcmWhatsapp.ToString("N2");
+                    DcmWhatsapp = item.DcmWhatsapp;
+                    ViewState["item.DcmWhatsapp"] = item.DcmWhatsapp.ToString("N2");
+                    lblDcmSms.Text = item.DcmSms.ToString("N2");
+                    DcmSms = item.DcmSms;
+                    ViewState["item.DcmSms"] = item.DcmSms.ToString("N2");
+                }
+
+                lblDcmCuenta.Text = clienteCuentaServices.clienteCuentaRepository.clienteCuenta.DcmDineroCuenta.ToString("N2");
+                lblDcmSaldo.Text = clienteCuentaServices.clienteCuentaRepository.clienteCuenta.DcmDineroCuenta.ToString("N2");
+                Cuenta = clienteCuentaServices.clienteCuentaRepository.clienteCuenta.DcmDineroCuenta;
+
+                lblTituloModal.Text = "Selección de envio de  ligas";
+                pnlAlertModal.Visible = false;
+                lblResumen.Text = "";
+                divAlertModal.Attributes.Add("class", "alert alert-success alert-dismissible fade");
+                btnGenerar.Visible = true;
+                btnGenerar.Visible = true;
+                btnCancelar.Visible = true;
+                btnAceptar2.Visible = false;
+
+                cbSms.Checked = false;
+                cbWhats.Checked = false;
+                lblAUtilizarSms.Text = "0";
+                lblAUtilizarWA.Text = "0";
+                lblTotalUtilizarSms.Text = "0.00";
+                lblTotalUtilizarWA.Text = "0.00";
+
+
+                string Mnsj = string.Empty;
+
+                if (Cuenta >= DcmWhatsapp && Cuenta != 0)
+                {
+                    cbWhats.Enabled = true;
+                    ViewState["MontoCuentaWA"] = true;
+                }
+                else
+                {
+                    cbWhats.Enabled = false;
+                    ViewState["MontoCuentaWA"] = false;
+                }
+
+                if (Cuenta >= DcmSms && Cuenta != 0)
+                {
+                    cbSms.Enabled = true;
+                    ViewState["MontoCuentaSMS"] = true;
+                }
+                else
+                {
+                    cbSms.Enabled = false;
+                    ViewState["MontoCuentaSMS"] = false;
+                }
+
+                if (Cuenta == 0)
+                {
+                    pnlAlertModal.Visible = true;
+                    lblResumen.Text = "Actualmente no cuenta con saldo para enviar la(s) liga(s) por WhatsApp y/o SMS.";
+                    divAlertModal.Attributes.Add("class", "alert alert-info alert-dismissible fade show");
+                }
+                else
+                {
+                    string mnsj = string.Empty;
+                    bool error = false;
+
+                    if (DcmSms > Cuenta)
+                    {
+                        mnsj = "El saldo no es suficiente para enviar la(s) liga(s) por SMS.";
+                        error = true;
+                    }
+
+                    if (DcmWhatsapp > Cuenta)
+                    {
+                        if (mnsj != string.Empty)
+                        {
+                            mnsj += "<br />El saldo no es suficiente para enviar la(s) liga(s) por WhatsApp.";
+                        }
+                        else
+                        {
+                            mnsj = "El saldo no es suficiente para enviar la(s) liga(s) por WhatsApp.";
+                        }
+                        error = true;
+                    }
+
+                    if (error)
+                    {
+                        pnlAlertModal.Visible = true;
+                        lblResumen.Text = mnsj;
+                        divAlertModal.Attributes.Add("class", "alert alert-info alert-dismissible fade show");
+                    }
+                }
+
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
+            }
+            else
+            {
+                pnlAlert.Visible = true;
+                lblMensajeAlert.Text = "Para generar liga(s) simple(s) es necesario corregir los siguientes errores: <br /> => Agregue almenos un usuario.";
                 divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
             }
+
         }
 
         public void LimpiarDatos()
@@ -527,7 +687,7 @@ namespace Franquicia.WebForms.Views
         protected void gvUsuarios_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             gvUsuarios.PageIndex = e.NewPageIndex;
-            gvUsuarios.DataSource = usuariosCompletosServices.lsLigasUsuariosGridViewModel.Where(x => x.blSeleccionado == false).ToList();
+            gvUsuarios.DataSource = usuariosCompletosServices.lsLigasUsuariosGridViewModel;
             gvUsuarios.DataBind();
         }
 
@@ -540,7 +700,7 @@ namespace Franquicia.WebForms.Views
                 GridView valor = (GridView)sender;
                 int dataKey = int.Parse(valor.DataKeys[Seleccionado.RowIndex].Value.ToString());
 
-                usuariosCompletosServices.EliminarItemgvUsuariosSeleccionados(dataKey);
+                usuariosCompletosServices.EliminarItemgvUsuariosSeleccionados(dataKey, index);
                 gvUsuariosSeleccionados.DataSource = usuariosCompletosServices.lsgvUsuariosSeleccionados;
                 gvUsuariosSeleccionados.DataBind();
             }
@@ -551,212 +711,451 @@ namespace Franquicia.WebForms.Views
             string url = string.Empty;
             bool resu = false;
 
-            string accountSid = "ACc7561cb09df3180ee1368e40055eedf5";
-            string authToken = "0f47ce2d28c9211ac6a9ae42f630d1d6";
+            //Configuracion de Twilio
+            string accountSid = "ACcf4d1380ccb0be6d47e78a73036a29ab";
+            string authToken = "30401e7bf2b7b3a2ab24c0a22203acc1";
+            string NumberFrom = "+14582243212";
 
-            parametrosEntradaServices.ObtenerParametrosEntradaCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+            //string accountSid = "ACc7561cb09df3180ee1368e40055eedf5";
+            //string authToken = "0f47ce2d28c9211ac6a9ae42f630d1d6";
+            //string NumberFrom = "+14158739087";
 
-            string id_company = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.IdCompany;
-            string id_branch = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.IdBranch;
-            string user = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchUsuario;
-            string pwd = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchPassword;
-            string moneda = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchModena;
-            string canal = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchCanal;
-            string semillaAES = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchSemillaAES;
-            string urlGen = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchUrl;
-            string data0 = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchData0;
-
-
-            if (!string.IsNullOrEmpty(id_company) && !string.IsNullOrEmpty(id_branch) && !string.IsNullOrEmpty(user) && !string.IsNullOrEmpty(pwd) && !string.IsNullOrEmpty(moneda) && !string.IsNullOrEmpty(canal) && !string.IsNullOrEmpty(semillaAES) && !string.IsNullOrEmpty(urlGen) && !string.IsNullOrEmpty(data0))
+            if (cbCorreo.Checked == false && cbSms.Checked == false && cbWhats.Checked == false)
             {
-                foreach (var item in usuariosCompletosServices.lsgvUsuariosSeleccionados)
+                pnlAlertModal.Visible = true;
+                lblResumen.Text = "Para generar liga(s) simples(s) es necesario corregir los siguientes errores: <br /> => Seleccione almenos uno de los tres tipos de envios.";
+                divAlertModal.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+            }
+            else
+            {
+                if (decimal.Parse(ViewState["nuevoSaldo"].ToString()) >= 0)
                 {
-                    bool VariasLigas = false;
-                    Guid UidLigaAsociado = Guid.NewGuid();
+                    parametrosEntradaServices.ObtenerParametrosEntradaCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
 
-                    foreach (ListItem itPromo in cblPromociones.Items)
+                    string id_company = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.IdCompany;
+                    string id_branch = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.IdBranch;
+                    string user = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchUsuario;
+                    string pwd = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchPassword;
+                    string moneda = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchModena;
+                    string canal = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchCanal;
+                    string semillaAES = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchSemillaAES;
+                    string urlGen = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchUrl;
+                    string data0 = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchData0;
+
+                    if (!string.IsNullOrEmpty(id_company) && !string.IsNullOrEmpty(id_branch) && !string.IsNullOrEmpty(user) && !string.IsNullOrEmpty(pwd) && !string.IsNullOrEmpty(moneda) && !string.IsNullOrEmpty(canal) && !string.IsNullOrEmpty(semillaAES) && !string.IsNullOrEmpty(urlGen) && !string.IsNullOrEmpty(data0))
                     {
-                        if (itPromo.Selected)
+                        int ErrorCorreo = 0;
+                        int ErrorSms = 0;
+                        int ErrorWA = 0;
+
+                        foreach (var item in usuariosCompletosServices.lsgvUsuariosSeleccionados)
                         {
-                            VariasLigas = true;
-                        }
-                    }
+                            bool VariasLigas = false;
+                            Guid UidLigaAsociado = Guid.NewGuid();
 
-                    if (VariasLigas)
-                    {
-                        DateTime thisDay = DateTime.Now;
-                        string ReferenciaCobro = item.IdCliente.ToString() + item.IdUsuario.ToString() + thisDay.ToString("ddMMyyyyHHmmssfff");
-
-                        string urlCobro = GenLigaPara(id_company, id_branch, user, pwd, ReferenciaCobro, decimal.Parse(txtImporte.Text), moneda, canal, "C", item.StrCorreo, semillaAES, data0, urlGen);
-
-                        if (urlCobro.Contains("https://"))
-                        {
-                            if (usuariosCompletosServices.GenerarLigasPagos(urlCobro, txtConcepto.Text, decimal.Parse(txtImporte.Text), ReferenciaCobro, item.UidUsuario, txtIdentificador.Text, thisDay, DateTime.Parse(txtVencimiento.Text), txtAsunto.Text, UidLigaAsociado, Guid.Empty, Guid.Parse(ViewState["UidClienteLocal"].ToString())))
+                            foreach (ListItem itPromo in cblPromociones.Items)
                             {
-                                resu = true;
-                                foreach (ListItem itPromo in cblPromociones.Items)
+                                if (itPromo.Selected)
                                 {
-                                    if (itPromo.Selected)
+                                    VariasLigas = true;
+                                }
+                            }
+
+                            if (VariasLigas)
+                            {
+                                DateTime thisDay = DateTime.Now;
+                                string ReferenciaCobro = item.IdCliente.ToString() + item.IdUsuario.ToString() + thisDay.ToString("ddMMyyyyHHmmssfff");
+                                Guid UidLigaUrl = Guid.NewGuid();
+                                string urlCobro = GenLigaPara(id_company, id_branch, user, pwd, ReferenciaCobro, decimal.Parse(txtImporte.Text), moneda, canal, "C", item.StrCorreo, semillaAES, data0, urlGen);
+
+                                if (urlCobro.Contains("https://"))
+                                {
+                                    if (usuariosCompletosServices.GenerarLigasPagosTemp(UidLigaUrl, urlCobro, txtConcepto.Text, decimal.Parse(txtImporte.Text), ReferenciaCobro, item.UidUsuario, txtIdentificador.Text, thisDay, DateTime.Parse(txtVencimiento.Text), txtAsunto.Text, UidLigaAsociado, Guid.Empty, Guid.Parse(ViewState["UidClienteLocal"].ToString())))
                                     {
-                                        int i = promocionesServices.lsCBLPromocionesModelCliente.IndexOf(promocionesServices.lsCBLPromocionesModelCliente.First(x => x.UidPromocion == Guid.Parse(itPromo.Value)));
-                                        decimal cobro = promocionesServices.lsCBLPromocionesModelCliente[i].DcmComicion;
-
-                                        decimal Valor = cobro * decimal.Parse(txtImporte.Text) / 100;
-                                        decimal Importe = Valor + decimal.Parse(txtImporte.Text);
-
-                                        string promocion = itPromo.Text.Replace(" MESES", "");
-
-                                        DateTime thisDay2 = DateTime.Now;
-                                        string Referencia = item.IdCliente.ToString() + item.IdUsuario.ToString() + thisDay2.ToString("ddMMyyyyHHmmssfff");
-
-                                        url = GenLigaPara(id_company, id_branch, user, pwd, Referencia, Importe, moneda, canal, promocion, item.StrCorreo, semillaAES, data0, urlGen);
-
-                                        if (url.Contains("https://"))
+                                        resu = true;
+                                        foreach (ListItem itPromo in cblPromociones.Items)
                                         {
-                                            if (usuariosCompletosServices.GenerarLigasPagos(url, txtConcepto.Text, Importe, Referencia, item.UidUsuario, txtIdentificador.Text, thisDay, DateTime.Parse(txtVencimiento.Text), txtAsunto.Text, UidLigaAsociado, Guid.Parse(itPromo.Value), Guid.Parse(ViewState["UidClienteLocal"].ToString())))
+                                            if (itPromo.Selected)
                                             {
-                                                resu = true;
+                                                int i = promocionesServices.lsCBLPromocionesModelCliente.IndexOf(promocionesServices.lsCBLPromocionesModelCliente.First(x => x.UidPromocion == Guid.Parse(itPromo.Value)));
+                                                decimal cobro = promocionesServices.lsCBLPromocionesModelCliente[i].DcmComicion;
+
+                                                decimal Valor = cobro * decimal.Parse(txtImporte.Text) / 100;
+                                                decimal Importe = Valor + decimal.Parse(txtImporte.Text);
+
+                                                string promocion = itPromo.Text.Replace(" MESES", "");
+
+                                                DateTime thisDay2 = DateTime.Now;
+                                                string Referencia = item.IdCliente.ToString() + item.IdUsuario.ToString() + thisDay2.ToString("ddMMyyyyHHmmssfff");
+
+                                                url = GenLigaPara(id_company, id_branch, user, pwd, Referencia, Importe, moneda, canal, promocion, item.StrCorreo, semillaAES, data0, urlGen);
+
+                                                if (url.Contains("https://"))
+                                                {
+                                                    if (usuariosCompletosServices.GenerarLigasPagos(url, txtConcepto.Text, Importe, Referencia, item.UidUsuario, txtIdentificador.Text, thisDay, DateTime.Parse(txtVencimiento.Text), txtAsunto.Text, UidLigaAsociado, Guid.Parse(itPromo.Value), Guid.Parse(ViewState["UidClienteLocal"].ToString())))
+                                                    {
+                                                        resu = true;
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    resu = false;
+                                                    break;
+                                                }
                                             }
-                                        }
-                                        else
-                                        {
-                                            resu = false;
-                                            break;
                                         }
                                     }
                                 }
+                                else
+                                {
+                                    resu = false;
+                                    break;
+                                }
+
+                                if (resu)
+                                {
+                                    promocionesServices.CargarPromocionesValidas(UidLigaAsociado);
+
+                                    string strPromociones = string.Empty;
+
+                                    if (promocionesServices.lsLigasUrlsPromocionesModel.Count >= 1)
+                                    {
+                                        foreach (var itPromo in promocionesServices.lsLigasUrlsPromocionesModel)
+                                        {
+                                            decimal promocion = int.Parse(itPromo.VchDescripcion.Replace(" MESES", ""));
+                                            decimal Final = itPromo.DcmImporte / promocion;
+
+                                            strPromociones +=
+                                                                                "\t\t\t\t\t\t\t\t<tr>\r\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t<td width=\"50%\" style=\"color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;text-align: right;\">\r\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t" + itPromo.VchDescripcion + " de $" + Final.ToString("N2") + "\r\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t</td>\r\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t<td width=\"50%\" style=\"color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;text-align: left;\">\r\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t &nbsp;" + "<a style =\"display:block;color:#fff;font-weight:400;text-align:center;width:100px;font-size:15px;text-decoration:none;background:#28a745;margin:0 auto; padding:5px;\" href=" + URLBase + "Views/Promociones.aspx?CodigoPromocion=" + UidLigaAsociado + "&CodigoLiga=" + itPromo.IdReferencia + "> Pagar $" + itPromo.DcmImporte.ToString("N2") + "</a>" + "\r\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t</td>\r\n" +
+                                                                                "\t\t\t\t\t\t\t\t</tr>\r\n";
+                                        }
+                                    }
+
+                                    string LigaUrl = URLBase + "Views/Promociones.aspx?CodigoPromocion=" + UidLigaAsociado + "&CodigoLiga=" + ReferenciaCobro;
+
+                                    int intCorreo = 0;
+
+                                    if (cbCorreo.Checked)
+                                    {
+                                        try
+                                        {
+                                            correosServices.CorreoLiga(item.NombreCompleto, txtAsunto.Text, txtConcepto.Text, decimal.Parse(txtImporte.Text), DateTime.Parse(txtVencimiento.Text), LigaUrl, item.StrCorreo, strPromociones, true, item.VchNombreComercial);
+                                            intCorreo = 1;
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            //lblResumen.Text += "Correo: " + ex.Message;
+                                            int error = ErrorCorreo + 1;
+                                            lblErrorCorreo.Text = error.ToString();
+                                        }
+                                    }
+
+                                    #region ===>Generar WA y SMS<===
+                                    decimal DcmOperacion = 0;
+                                    string VchDescripcion = string.Empty;
+                                    int intWA = 0;
+                                    int intSMS = 0;
+                                    string nombreTrun = string.Empty;
+                                    string NumberTo = item.StrTelefono.Replace("(", "").Replace(")", "");
+
+                                    string[] Descripcion = Regex.Split(item.StrNombre, " ");
+
+                                    if (Descripcion.Length >= 2)
+                                    {
+                                        nombreTrun = Descripcion[0];
+                                    }
+                                    else
+                                    {
+                                        nombreTrun = item.StrNombre;
+                                    }
+
+                                    if (nombreTrun.Count() >= 11)
+                                    {
+                                        nombreTrun = nombreTrun.Remove(7) + "...";
+                                    }
+
+                                    string body = "Hola, " + nombreTrun +
+                                        "\r\n" + item.VchNombreComercial + " le ha enviado su liga de pago:" +
+                                        "\r\n" + "https://cobrosmasivos.com/" + "Views/Pago.aspx?CodigoLiga=" + UidLigaUrl;
+
+                                    if (cbSms.Checked)
+                                    {
+                                        TwilioClient.Init(accountSid, authToken);
+
+                                        try
+                                        {
+                                            var message = MessageResource.Create(
+                                        body: body,
+                                        from: new Twilio.Types.PhoneNumber(NumberFrom),
+                                        to: new Twilio.Types.PhoneNumber(NumberTo)
+                                        );
+
+                                            string mnsj = message.Sid;
+
+                                            DcmOperacion = DcmOperacion + decimal.Parse(ViewState["item.DcmSms"].ToString());
+                                            VchDescripcion = "Pago de SMS";
+                                            intSMS = 1;
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            //lblResumen.Text += "SMS: " + ex.Message;
+                                            cbSms.Checked = false;
+                                            int error = ErrorSms + 1;
+                                            lblErrorSms.Text = error.ToString();
+                                        }
+                                    }
+
+                                    if (cbWhats.Checked)
+                                    {
+                                        TwilioClient.Init(accountSid, authToken);
+
+                                        try
+                                        {
+                                            var message = MessageResource.Create(
+                                            body: body,
+                                            from: new Twilio.Types.PhoneNumber("whatsapp:+14155238886"),
+                                            to: new Twilio.Types.PhoneNumber("whatsapp:" + NumberTo)
+                                        );
+
+                                            string mnsj = message.Sid;
+
+                                            DcmOperacion = DcmOperacion + decimal.Parse(ViewState["item.DcmWhatsapp"].ToString());
+
+                                            if (!string.IsNullOrEmpty(VchDescripcion))
+                                            {
+                                                VchDescripcion += " y WhatsApp";
+                                            }
+                                            else
+                                            {
+                                                VchDescripcion += "Pago de WhatsApp";
+                                            }
+                                            intWA = 1;
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            //lblResumen.Text += "WhatsApp: " + ex.Message;
+                                            cbWhats.Checked = false;
+                                            int error = ErrorWA + 1;
+                                            lblErrorWA.Text = error.ToString();
+                                        }
+                                    }
+
+                                    if (cbSms.Checked || cbWhats.Checked)
+                                    {
+                                        clienteCuentaServices.ObtenerDineroCuentaCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+                                        decimal DcmCuenta = clienteCuentaServices.clienteCuentaRepository.clienteCuenta.DcmDineroCuenta;
+
+                                        decimal NuevoSaldo = DcmCuenta - DcmOperacion;
+
+                                        string Folio = item.IdCliente.ToString() + item.IdUsuario.ToString() + DateTime.Now.ToString("ddMMyyyyHHmmssfff");
+
+                                        if (ticketsServices.RegistrarTicketPago(Folio, DcmOperacion, 0, DcmOperacion, VchDescripcion, Guid.Parse(ViewState["UidClienteLocal"].ToString()), DateTime.Now, intWA, intSMS, intCorreo, DcmCuenta, DcmOperacion, NuevoSaldo))
+                                        {
+                                            clienteCuentaServices.ActualizarDineroCuentaCliente(NuevoSaldo, Guid.Parse(ViewState["UidClienteLocal"].ToString()), "");
+                                        }
+                                    }
+                                    #endregion
+                                }
                             }
-                        }
-                        else
-                        {
-                            resu = false;
-                            break;
+                            else
+                            {
+                                DateTime thisDay = DateTime.Now;
+                                string ReferenciaCobro = item.IdCliente.ToString() + item.IdUsuario.ToString() + thisDay.ToString("ddMMyyyyHHmmssfff");
+
+                                string urlCobro = GenLigaPara(id_company, id_branch, user, pwd, ReferenciaCobro, decimal.Parse(txtImporte.Text), moneda, canal, "C", item.StrCorreo, semillaAES, data0, urlGen);
+
+                                if (urlCobro.Contains("https://"))
+                                {
+                                    Guid UidLigaUrl = Guid.NewGuid();
+                                    if (usuariosCompletosServices.GenerarLigasPagosTemp(UidLigaUrl, urlCobro, txtConcepto.Text, decimal.Parse(txtImporte.Text), ReferenciaCobro, item.UidUsuario, txtIdentificador.Text, thisDay, DateTime.Parse(txtVencimiento.Text), txtAsunto.Text, Guid.Empty, Guid.Empty, Guid.Parse(ViewState["UidClienteLocal"].ToString())))
+                                    {
+                                        int intCorreo = 0;
+
+                                        if (cbCorreo.Checked)
+                                        {
+                                            try
+                                            {
+                                                correosServices.CorreoLiga(item.NombreCompleto, txtAsunto.Text, txtConcepto.Text, decimal.Parse(txtImporte.Text), DateTime.Parse(txtVencimiento.Text), urlCobro, item.StrCorreo, "", false, item.VchNombreComercial);
+                                                intCorreo = 1;
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                //lblResumen.Text += "Correo: " + ex.Message;
+                                                int error = ErrorCorreo + 1;
+                                                lblErrorCorreo.Text = error.ToString();
+                                            }
+                                        }
+
+                                        #region ===>Generar WA y SMS<===
+                                        decimal DcmOperacion = 0;
+                                        string VchDescripcion = string.Empty;
+                                        int intWA = 0;
+                                        int intSMS = 0;
+                                        string nombreTrun = string.Empty;
+                                        string NumberTo = item.StrTelefono.Replace("(", "").Replace(")", "");
+
+                                        string[] Descripcion = Regex.Split(item.StrNombre, " ");
+
+                                        if (Descripcion.Length >= 2)
+                                        {
+                                            nombreTrun = Descripcion[0];
+                                        }
+                                        else
+                                        {
+                                            nombreTrun = item.StrNombre;
+                                        }
+
+                                        if (nombreTrun.Count() >= 11)
+                                        {
+                                            nombreTrun = nombreTrun.Remove(7) + "...";
+                                        }
+
+                                        string body = "Hola, " + nombreTrun +
+                                            "\r\n" + item.VchNombreComercial + " le ha enviado su liga de pago:" +
+                                            "\r\n" + "https://cobrosmasivos.com/" + "Views/Pago.aspx?CodigoLiga=" + UidLigaUrl;
+
+                                        if (cbSms.Checked)
+                                        {
+                                            TwilioClient.Init(accountSid, authToken);
+
+                                            try
+                                            {
+                                                var message = MessageResource.Create(
+                                            body: body,
+                                            from: new Twilio.Types.PhoneNumber(NumberFrom),
+                                            to: new Twilio.Types.PhoneNumber(NumberTo)
+                                            );
+
+                                                string mnsj = message.Sid;
+
+                                                DcmOperacion = DcmOperacion + decimal.Parse(ViewState["item.DcmSms"].ToString());
+                                                VchDescripcion = "Pago de SMS";
+                                                intSMS = 1;
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                //lblResumen.Text += "SMS: " + ex.Message;
+                                                cbSms.Checked = false;
+                                                int error = ErrorSms + 1;
+                                                lblErrorSms.Text = error.ToString();
+                                            }
+                                        }
+
+                                        if (cbWhats.Checked)
+                                        {
+                                            TwilioClient.Init(accountSid, authToken);
+
+                                            try
+                                            {
+                                                var message = MessageResource.Create(
+                                                body: body,
+                                                from: new Twilio.Types.PhoneNumber("whatsapp:+14155238886"),
+                                                to: new Twilio.Types.PhoneNumber("whatsapp:" + NumberTo)
+                                            );
+
+                                                string mnsj = message.Sid;
+
+                                                DcmOperacion = DcmOperacion + decimal.Parse(ViewState["item.DcmWhatsapp"].ToString());
+
+                                                if (!string.IsNullOrEmpty(VchDescripcion))
+                                                {
+                                                    VchDescripcion += " y WhatsApp";
+                                                }
+                                                else
+                                                {
+                                                    VchDescripcion += "Pago de WhatsApp";
+                                                }
+                                                intWA = 1;
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                //lblResumen.Text += "WhatsApp: " + ex.Message;
+                                                cbWhats.Checked = false;
+                                                int error = ErrorWA + 1;
+                                                lblErrorWA.Text = error.ToString();
+                                            }
+                                        }
+
+                                        if (cbSms.Checked || cbWhats.Checked)
+                                        {
+                                            clienteCuentaServices.ObtenerDineroCuentaCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+                                            decimal DcmCuenta = clienteCuentaServices.clienteCuentaRepository.clienteCuenta.DcmDineroCuenta;
+
+                                            decimal NuevoSaldo = DcmCuenta - DcmOperacion;
+
+                                            string Folio = item.IdCliente.ToString() + item.IdUsuario.ToString() + DateTime.Now.ToString("ddMMyyyyHHmmssfff");
+
+                                            if (ticketsServices.RegistrarTicketPago(Folio, DcmOperacion, 0, DcmOperacion, VchDescripcion, Guid.Parse(ViewState["UidClienteLocal"].ToString()), DateTime.Now, intWA, intSMS, intCorreo, DcmCuenta, DcmOperacion, NuevoSaldo))
+                                            {
+                                                clienteCuentaServices.ActualizarDineroCuentaCliente(NuevoSaldo, Guid.Parse(ViewState["UidClienteLocal"].ToString()), "");
+                                            }
+                                        }
+                                        #endregion
+
+                                        resu = true;
+                                    }
+                                }
+                                else
+                                {
+                                    resu = false;
+                                    break;
+                                }
+                            }
                         }
 
                         if (resu)
                         {
-                            promocionesServices.CargarPromocionesValidas(UidLigaAsociado);
+                            lblResumen.Text = " Se han generado: " + usuariosCompletosServices.lsgvUsuariosSeleccionados.Count.ToString() + " liga(s) exitosamente.";
+                            lblCorreoUsado.Text = usuariosCompletosServices.lsgvUsuariosSeleccionados.Count.ToString();
 
-                            string strPromociones = string.Empty;
+                            LimpiarDatos();
 
-                            if (promocionesServices.lsLigasUrlsPromocionesModel.Count >= 1)
-                            {
-                                foreach (var itPromo in promocionesServices.lsLigasUrlsPromocionesModel)
-                                {
-                                    decimal promocion = int.Parse(itPromo.VchDescripcion.Replace(" MESES", ""));
-                                    decimal Final = itPromo.DcmImporte / promocion;
+                            clienteCuentaServices.ObtenerDineroCuentaCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+                            Master.GvSaldo.Text = "Saldo: $ " + clienteCuentaServices.clienteCuentaRepository.clienteCuenta.DcmDineroCuenta.ToString("N2");
 
-                                    strPromociones +=
-                                                                        "\t\t\t\t\t\t\t\t<tr>\r\n" +
-                                                                        "\t\t\t\t\t\t\t\t\t<td width=\"50%\" style=\"color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;text-align: right;\">\r\n" +
-                                                                        "\t\t\t\t\t\t\t\t\t\t" + itPromo.VchDescripcion + " de $" + Final.ToString("N2") + "\r\n" +
-                                                                        "\t\t\t\t\t\t\t\t\t</td>\r\n" +
-                                                                        "\t\t\t\t\t\t\t\t\t<td width=\"50%\" style=\"color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;text-align: left;\">\r\n" +
-                                                                        "\t\t\t\t\t\t\t\t\t\t &nbsp;" + "<a style =\"display:block;color:#fff;font-weight:400;text-align:center;width:100px;font-size:15px;text-decoration:none;background:#28a745;margin:0 auto; padding:5px;\" href=" + URLBase + "Views/Promociones.aspx?CodigoPromocion=" + UidLigaAsociado + "&CodigoLiga=" + itPromo.IdReferencia + "> Pagar $" + itPromo.DcmImporte.ToString("N2") + "</a>" + "\r\n" +
-                                                                        "\t\t\t\t\t\t\t\t\t</td>\r\n" +
-                                                                        "\t\t\t\t\t\t\t\t</tr>\r\n";
-                                }
-                            }
+                            pnlAlertModal.Visible = true;
+                            divAlertModal.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
 
-                            string LigaUrl = URLBase + "Views/Promociones.aspx?CodigoPromocion=" + UidLigaAsociado + "&CodigoLiga=" + ReferenciaCobro;
-                            correosServices.CorreoLiga(item.NombreCompleto, txtAsunto.Text, txtConcepto.Text, decimal.Parse(txtImporte.Text), DateTime.Parse(txtVencimiento.Text), LigaUrl, item.StrCorreo, strPromociones, true, item.VchNombreComercial);
-                        }
-                    }
-                    else
-                    {
-                        DateTime thisDay = DateTime.Now;
-                        string ReferenciaCobro = item.IdCliente.ToString() + item.IdUsuario.ToString() + thisDay.ToString("ddMMyyyyHHmmssfff");
-
-                        string urlCobro = GenLigaPara(id_company, id_branch, user, pwd, ReferenciaCobro, decimal.Parse(txtImporte.Text), moneda, canal, "C", item.StrCorreo, semillaAES, data0, urlGen);
-
-                        if (urlCobro.Contains("https://"))
-                        {
-                            if (usuariosCompletosServices.GenerarLigasPagos(urlCobro, txtConcepto.Text, decimal.Parse(txtImporte.Text), ReferenciaCobro, item.UidUsuario, txtIdentificador.Text, thisDay, DateTime.Parse(txtVencimiento.Text), txtAsunto.Text, Guid.Empty, Guid.Empty, Guid.Parse(ViewState["UidClienteLocal"].ToString())))
-                            {
-                                correosServices.CorreoLiga(item.NombreCompleto, txtAsunto.Text, txtConcepto.Text, decimal.Parse(txtImporte.Text), DateTime.Parse(txtVencimiento.Text), urlCobro, item.StrCorreo, "", false, item.VchNombreComercial);
-
-                                TwilioClient.Init(accountSid, authToken);
-
-                                string body = "Hola, " + item.NombreCompleto +
-                                    "\r\n" + item.VchNombreComercial + " le ha enviado su liga de pago: " +
-                                    //"\r\nConcepto: " + txtConcepto.Text +
-                                    //"\r\nImporte: " + decimal.Parse(txtImporte.Text) +
-                                    //"\r\nVencimiento: " + DateTime.Parse(txtVencimiento.Text).ToString("dd/MM/yyyy") +
-                                    "\r\n" + "https://cobrosmasivos.com/" + "Views/SeleccionPago.aspx?CodigoPromocion=" + Guid.Parse(ViewState["UidClienteLocal"].ToString()) + "&CodigoLiga=" + ReferenciaCobro;
-
-                                
-                                if (cbSms.Checked)
-                                {
-                                    TwilioClient.Init(accountSid, authToken);
-
-                                    var message = MessageResource.Create(
-                                    body: body,
-                                    from: new Twilio.Types.PhoneNumber("+14158739087"),
-                                    to: new Twilio.Types.PhoneNumber("+529841651607")
-                                    );
-
-                                    string mnsj = message.Sid;
-                                }
-
-                                if (cbWhats.Checked)
-                                {
-                                    TwilioClient.Init(accountSid, authToken);
-
-                                    var message = MessageResource.Create(
-                                        body: body,
-                                        from: new Twilio.Types.PhoneNumber("whatsapp:+14155238886"),
-                                        to: new Twilio.Types.PhoneNumber("whatsapp:+5219841651607")
-                                    );
-
-                                    string mnsj = message.Sid;
-                                }
-                                resu = true;
-                            }
+                            lblTituloModal.Text = "Resumen de envio de ligas";
+                            btnGenerar.Visible = false;
+                            btnCancelar.Visible = false;
+                            btnAceptar2.Visible = true;
                         }
                         else
                         {
-                            resu = false;
-                            break;
+                            if (!string.IsNullOrEmpty(url))
+                            {
+                                pnlAlertModal.Visible = true;
+                                lblResumen.Text = "<b>¡Lo sentimos! </b> " + url + "." + "<br /> Las credenciales proporcionadas no son correctos, por favor contacte a los administradores.";
+                                divAlertModal.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                            }
+                            else
+                            {
+                                pnlAlertModal.Visible = true;
+                                lblResumen.Text = "<b>¡Lo sentimos! </b> Las credenciales proporcionadas no son correctos, por favor contacte a los administradores.";
+                                divAlertModal.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                            }
                         }
-                    }
-                }
-
-                if (resu)
-                {
-                    lblResumen.Text = " Se han generado: " + usuariosCompletosServices.lsgvUsuariosSeleccionados.Count.ToString() + " liga(s) exitosamente.";
-                    lblCorreoUsado.Text = usuariosCompletosServices.lsgvUsuariosSeleccionados.Count.ToString();
-
-                    LimpiarDatos();
-
-                    pnlAlertModal.Visible = true;
-                    divAlertModal.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
-
-                    lblTituloModal.Text = "Resumen de envio de ligas";
-                    btnGenerar.Visible = false;
-                    btnCancelar.Visible = false;
-                    btnAceptar2.Visible = true;
-                }
-                else
-                {
-                    if (!string.IsNullOrEmpty(url))
-                    {
-                        pnlAlertModal.Visible = true;
-                        lblResumen.Text = "<b>¡Lo sentimos! </b> " + url + "." + "<br /> Las credenciales proporcionadas no son correctos, por favor contacte a los administradores.";
-                        divAlertModal.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                     }
                     else
                     {
                         pnlAlertModal.Visible = true;
-                        lblResumen.Text = "<b>¡Lo sentimos! </b> Las credenciales proporcionadas no son correctos, por favor contacte a los administradores.";
+                        lblResumen.Text = "<b>¡Lo sentimos! </b> Esta empresa no cuenta con credenciales para generar ligas, por favor contacte a los administradores.";
                         divAlertModal.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                     }
                 }
-            }
-            else
-            {
-                pnlAlertModal.Visible = true;
-                lblResumen.Text = "<b>¡Lo sentimos! </b> Esta empresa no cuenta con credenciales para generar ligas, por favor contacte a los administradores.";
-                divAlertModal.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                else
+                {
+                    pnlAlertModal.Visible = true;
+                    lblResumen.Text = "El saldo no es suficiente para enviar la(s) liga(s) por WhatsApp y/o SMS.";
+                    divAlertModal.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                }
             }
         }
         private string GenLigaPara(string id_company, string id_branch, string user, string pwd, string Referencia, decimal Importe,
@@ -834,7 +1233,7 @@ namespace Franquicia.WebForms.Views
         protected void gvUsuariosSeleccionados_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             gvUsuariosSeleccionados.PageIndex = e.NewPageIndex;
-            gvUsuariosSeleccionados.DataSource = usuariosCompletosServices.lsLigasUsuariosGridViewModel.Where(x => x.blSeleccionado == true).ToList();
+            gvUsuariosSeleccionados.DataSource = usuariosCompletosServices.lsgvUsuariosSeleccionados;
             gvUsuariosSeleccionados.DataBind();
         }
 
@@ -863,36 +1262,36 @@ namespace Franquicia.WebForms.Views
                     case "NombreCompleto":
                         if (Orden == "ASC")
                         {
-                            usuariosCompletosServices.lsLigasUsuariosGridViewModel = usuariosCompletosServices.lsLigasUsuariosGridViewModel.OrderBy(x => x.NombreCompleto).ToList();
+                            usuariosCompletosServices.lsgvUsuariosSeleccionados = usuariosCompletosServices.lsgvUsuariosSeleccionados.OrderBy(x => x.NombreCompleto).ToList();
                         }
                         else
                         {
-                            usuariosCompletosServices.lsLigasUsuariosGridViewModel = usuariosCompletosServices.lsLigasUsuariosGridViewModel.OrderByDescending(x => x.NombreCompleto).ToList();
+                            usuariosCompletosServices.lsgvUsuariosSeleccionados = usuariosCompletosServices.lsgvUsuariosSeleccionados.OrderByDescending(x => x.NombreCompleto).ToList();
                         }
                         break;
                     case "StrCorreo":
                         if (Orden == "ASC")
                         {
-                            usuariosCompletosServices.lsLigasUsuariosGridViewModel = usuariosCompletosServices.lsLigasUsuariosGridViewModel.OrderBy(x => x.StrCorreo).ToList();
+                            usuariosCompletosServices.lsgvUsuariosSeleccionados = usuariosCompletosServices.lsgvUsuariosSeleccionados.OrderBy(x => x.StrCorreo).ToList();
                         }
                         else
                         {
-                            usuariosCompletosServices.lsLigasUsuariosGridViewModel = usuariosCompletosServices.lsLigasUsuariosGridViewModel.OrderByDescending(x => x.StrCorreo).ToList();
+                            usuariosCompletosServices.lsgvUsuariosSeleccionados = usuariosCompletosServices.lsgvUsuariosSeleccionados.OrderByDescending(x => x.StrCorreo).ToList();
                         }
                         break;
                     case "StrTelefono":
                         if (Orden == "ASC")
                         {
-                            usuariosCompletosServices.lsLigasUsuariosGridViewModel = usuariosCompletosServices.lsLigasUsuariosGridViewModel.OrderBy(x => x.StrTelefono).ToList();
+                            usuariosCompletosServices.lsgvUsuariosSeleccionados = usuariosCompletosServices.lsgvUsuariosSeleccionados.OrderBy(x => x.StrTelefono).ToList();
                         }
                         else
                         {
-                            usuariosCompletosServices.lsLigasUsuariosGridViewModel = usuariosCompletosServices.lsLigasUsuariosGridViewModel.OrderByDescending(x => x.StrTelefono).ToList();
+                            usuariosCompletosServices.lsgvUsuariosSeleccionados = usuariosCompletosServices.lsgvUsuariosSeleccionados.OrderByDescending(x => x.StrTelefono).ToList();
                         }
                         break;
                 }
 
-                gvUsuariosSeleccionados.DataSource = usuariosCompletosServices.lsLigasUsuariosGridViewModel.Where(x => x.blSeleccionado == true).ToList(); ;
+                gvUsuariosSeleccionados.DataSource = usuariosCompletosServices.lsgvUsuariosSeleccionados;
                 gvUsuariosSeleccionados.DataBind();
             }
         }
@@ -951,7 +1350,7 @@ namespace Franquicia.WebForms.Views
                         break;
                 }
 
-                gvUsuarios.DataSource = usuariosCompletosServices.lsLigasUsuariosGridViewModel.Where(x => x.blSeleccionado == false).ToList();
+                gvUsuarios.DataSource = usuariosCompletosServices.lsLigasUsuariosGridViewModel;
                 gvUsuarios.DataBind();
             }
         }
@@ -984,101 +1383,119 @@ namespace Franquicia.WebForms.Views
 
         protected void cbWhats_CheckedChanged(object sender, EventArgs e)
         {
-            if (cbWhats.Checked)
+            if ((bool)ViewState["MontoCuentaWA"])
             {
-                int aUtilizar = usuariosCompletosServices.lsgvUsuariosSeleccionados.Count;
-                decimal tarifaWA = decimal.Parse(lblDcmWhatsapp.Text);
+                if (cbWhats.Checked)
+                {
+                    int aUtilizar = usuariosCompletosServices.lsgvUsuariosSeleccionados.Count;
+                    decimal tarifaWA = decimal.Parse(lblDcmWhatsapp.Text);
 
-                decimal tariUtizaWA = aUtilizar * tarifaWA;
-                decimal cuenta = decimal.Parse(lblDcmCuenta.Text);
+                    decimal tariUtizaWA = aUtilizar * tarifaWA;
+                    decimal cuenta = decimal.Parse(lblDcmCuenta.Text);
 
-                decimal tarifaSms = decimal.Parse(lblDcmSms.Text);
-                int aUtilizarSms = int.Parse(lblAUtilizarSms.Text);
-                decimal tariUtizaSms = aUtilizarSms * tarifaSms;
+                    decimal tarifaSms = decimal.Parse(lblDcmSms.Text);
+                    int aUtilizarSms = int.Parse(lblAUtilizarSms.Text);
+                    decimal tariUtizaSms = aUtilizarSms * tarifaSms;
 
-                decimal sumWASm = tariUtizaWA + tariUtizaSms;
+                    decimal sumWASm = tariUtizaWA + tariUtizaSms;
 
-                decimal nuevoSaldo = cuenta - sumWASm;
+                    decimal nuevoSaldo = cuenta - sumWASm;
 
-                lblAUtilizarWA.Text = aUtilizar.ToString();
-                lblTotalUtilizarWA.Text = "$" + tariUtizaWA.ToString("N2");
-                lblDcmSaldo.Text = nuevoSaldo.ToString("N2");
+                    lblAUtilizarWA.Text = aUtilizar.ToString();
+                    lblTotalUtilizarWA.Text = tariUtizaWA.ToString("N2");
+                    lblDcmSaldo.Text = nuevoSaldo.ToString("N2");
+                    ViewState["nuevoSaldo"] = nuevoSaldo.ToString("N2");
 
-                lblAUtilizarSms.Text = aUtilizarSms.ToString();
+                    lblAUtilizarSms.Text = aUtilizarSms.ToString();
+                }
+                else
+                {
+                    lblDcmSaldo.Text = "0";
+
+                    int aUtilizar = 0;
+                    decimal tarifaWA = decimal.Parse(lblDcmWhatsapp.Text);
+
+                    decimal tariUtizaWA = aUtilizar * tarifaWA;
+                    decimal cuenta = decimal.Parse(lblDcmCuenta.Text);
+
+                    decimal tarifaSms = decimal.Parse(lblDcmSms.Text);
+                    int aUtilizarSms = int.Parse(lblAUtilizarSms.Text);
+                    decimal tariUtizaSms = aUtilizarSms * tarifaSms;
+
+                    decimal sumWASm = tariUtizaWA + tariUtizaSms;
+
+                    decimal nuevoSaldo = cuenta - sumWASm;
+
+                    lblAUtilizarWA.Text = "0";
+                    lblTotalUtilizarWA.Text = "0.00";
+                    lblDcmSaldo.Text = nuevoSaldo.ToString("N2");
+                    ViewState["nuevoSaldo"] = nuevoSaldo.ToString("N2");
+
+                    lblAUtilizarSms.Text = aUtilizarSms.ToString();
+                }
             }
             else
             {
-                lblDcmSaldo.Text = "0";
-
-                int aUtilizar = 0;
-                decimal tarifaWA = decimal.Parse(lblDcmWhatsapp.Text);
-
-                decimal tariUtizaWA = aUtilizar * tarifaWA;
-                decimal cuenta = decimal.Parse(lblDcmCuenta.Text);
-
-                decimal tarifaSms = decimal.Parse(lblDcmSms.Text);
-                int aUtilizarSms = int.Parse(lblAUtilizarSms.Text);
-                decimal tariUtizaSms = aUtilizarSms * tarifaSms;
-
-                decimal sumWASm = tariUtizaWA + tariUtizaSms;
-
-                decimal nuevoSaldo = cuenta - sumWASm;
-
-                lblAUtilizarWA.Text = "0";
-                lblTotalUtilizarWA.Text = "$" + "0.00";
-                lblDcmSaldo.Text = nuevoSaldo.ToString("N2");
-
-                lblAUtilizarSms.Text = aUtilizarSms.ToString();
+                cbWhats.Checked = false;
             }
         }
 
         protected void cbSms_CheckedChanged(object sender, EventArgs e)
         {
-            if (cbSms.Checked)
+            if ((bool)ViewState["MontoCuentaSMS"])
             {
-                int aUtilizar = int.Parse(lblAUtilizarWA.Text);
-                decimal tarifaWA = decimal.Parse(lblDcmWhatsapp.Text);
+                if (cbSms.Checked)
+                {
+                    int aUtilizar = int.Parse(lblAUtilizarWA.Text);
+                    decimal tarifaWA = decimal.Parse(lblDcmWhatsapp.Text);
 
-                decimal tariUtizaWA = aUtilizar * tarifaWA;
-                decimal cuenta = decimal.Parse(lblDcmCuenta.Text);
+                    decimal tariUtizaWA = aUtilizar * tarifaWA;
+                    decimal cuenta = decimal.Parse(lblDcmCuenta.Text);
 
-                decimal tarifaSms = decimal.Parse(lblDcmSms.Text);
-                int aUtilizarSms = usuariosCompletosServices.lsgvUsuariosSeleccionados.Count;
-                decimal tariUtizaSms = aUtilizarSms * tarifaSms;
+                    decimal tarifaSms = decimal.Parse(lblDcmSms.Text);
+                    int aUtilizarSms = usuariosCompletosServices.lsgvUsuariosSeleccionados.Count;
+                    decimal tariUtizaSms = aUtilizarSms * tarifaSms;
 
-                decimal sumWASm = tariUtizaWA + tariUtizaSms;
+                    decimal sumWASm = tariUtizaWA + tariUtizaSms;
 
-                decimal nuevoSaldo = cuenta - sumWASm;
+                    decimal nuevoSaldo = cuenta - sumWASm;
 
-                lblAUtilizarSms.Text = aUtilizarSms.ToString();
-                lblTotalUtilizarSms.Text = "$" + tariUtizaSms.ToString("N2");
-                lblDcmSaldo.Text = nuevoSaldo.ToString("N2");
+                    lblAUtilizarSms.Text = aUtilizarSms.ToString();
+                    lblTotalUtilizarSms.Text = tariUtizaSms.ToString("N2");
+                    lblDcmSaldo.Text = nuevoSaldo.ToString("N2");
+                    ViewState["nuevoSaldo"] = nuevoSaldo.ToString("N2");
 
-                lblAUtilizarWA.Text = aUtilizar.ToString();
+                    lblAUtilizarWA.Text = aUtilizar.ToString();
+                }
+                else
+                {
+                    lblDcmSaldo.Text = "0";
+
+                    int aUtilizar = int.Parse(lblAUtilizarWA.Text);
+                    decimal tarifaWA = decimal.Parse(lblDcmWhatsapp.Text);
+
+                    decimal tariUtizaWA = aUtilizar * tarifaWA;
+                    decimal cuenta = decimal.Parse(lblDcmCuenta.Text);
+
+                    decimal tarifaSms = decimal.Parse(lblDcmSms.Text);
+                    int aUtilizarSms = 0;
+                    decimal tariUtizaSms = aUtilizarSms * tarifaSms;
+
+                    decimal sumWASm = tariUtizaWA + tariUtizaSms;
+
+                    decimal nuevoSaldo = cuenta - sumWASm;
+
+                    lblAUtilizarSms.Text = "0";
+                    lblTotalUtilizarSms.Text = "0.00";
+                    lblDcmSaldo.Text = nuevoSaldo.ToString("N2");
+                    ViewState["nuevoSaldo"] = nuevoSaldo.ToString("N2");
+
+                    lblAUtilizarWA.Text = aUtilizar.ToString();
+                }
             }
             else
             {
-                lblDcmSaldo.Text = "0";
-
-                int aUtilizar = int.Parse(lblAUtilizarWA.Text);
-                decimal tarifaWA = decimal.Parse(lblDcmWhatsapp.Text);
-
-                decimal tariUtizaWA = aUtilizar * tarifaWA;
-                decimal cuenta = decimal.Parse(lblDcmCuenta.Text);
-
-                decimal tarifaSms = decimal.Parse(lblDcmSms.Text);
-                int aUtilizarSms = 0;
-                decimal tariUtizaSms = aUtilizarSms * tarifaSms;
-
-                decimal sumWASm = tariUtizaWA + tariUtizaSms;
-
-                decimal nuevoSaldo = cuenta - sumWASm;
-
-                lblAUtilizarSms.Text = "0";
-                lblTotalUtilizarSms.Text = "$" + "0.00";
-                lblDcmSaldo.Text = nuevoSaldo.ToString("N2");
-
-                lblAUtilizarWA.Text = aUtilizar.ToString();
+                cbSms.Checked = false;
             }
         }
     }

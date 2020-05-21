@@ -191,15 +191,15 @@ namespace Franquicia.WebForms.Views
                 lblValidar.Text = string.Empty;
             }
 
-            string id_company = "SNBX";
-            string id_branch = "01SNBXBRNCH";
-            string user = "SNBXUSR01";
-            string pwd = "SECRETO";
+            string id_company = "Z937";
+            string id_branch = "851";
+            string user = "Z937SIUS21";
+            string pwd = "C0BR05T4RJ3TA";
             string moneda = "MXN";
             string canal = "W";
-            string semillaAES = "5DCC67393750523CD165F17E1EFADD21";
-            string urlGen = "https://wppsandbox.mit.com.mx/gen";
-            string data0 = "SNDBX123";
+            string semillaAES = "7AACFE849FABD796F6DCB947FD4D5268";
+            string urlGen = "https://bc.mitec.com.mx/p/gen";
+            string data0 = "9265655113";
 
             lblTituloModal.Text = "<strong>Paso 2</strong> pagar";
 

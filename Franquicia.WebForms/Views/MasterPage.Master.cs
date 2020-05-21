@@ -122,6 +122,8 @@ namespace Franquicia.WebForms.Views
 
                             ViewState["ColorSide"] = "#024693";
 
+                            lblGvSaldo.Text = "Saldo: $0.00";
+
                             liMenuFranquicia.Visible = false;
                             dlMenu.DataSource = manejoSesionServices.lsAccesosPermitidos.Where(x => x.UidAppWeb == new Guid("6d70f88d-3ce0-4c8b-87a1-92666039f5b2")).ToList().OrderBy(x => x.IntGerarquia);
                             dlMenu.DataBind();

@@ -1595,6 +1595,39 @@ namespace Franquicia.DataAccess.Repository
             return lsLigasUsuariosGridViewModel;
         }
         #endregion
+        
+        #region Eventos
+        public List<LigasUsuariosGridViewModel> SelectUsClienteEvento(Guid UidUsuario)
+        {
+            List<LigasUsuariosGridViewModel> lsLigasUsuariosGridViewModel = new List<LigasUsuariosGridViewModel>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select us.*, cl.IdCliente, cl.VchNombreComercial, tu.VchTelefono from TelefonosUsuarios tu, SegUsuarios su, SegPerfiles sp, Estatus es, ClientesUsuarios cu, Clientes cl, Usuarios us where tu.UidUsuario = us.UidUsuario and sp.UidSegPerfil = su.UidSegPerfil and su.UidUsuario = us.UidUsuario and es.UidEstatus = us.UidEstatus and cu.UidCliente = cl.UidCliente and cu.UidUsuario = us.UidUsuario and us.UidUsuario = '" + UidUsuario + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                lsLigasUsuariosGridViewModel.Add(new LigasUsuariosGridViewModel()
+                {
+                    UidUsuario = new Guid(item["UidUsuario"].ToString()),
+                    IdUsuario = int.Parse(item["IdUsuario"].ToString()),
+                    StrNombre = item["VchNombre"].ToString(),
+                    StrApePaterno = item["VchApePaterno"].ToString(),
+                    StrApeMaterno = item["VchApeMaterno"].ToString(),
+                    StrCorreo = item["VchCorreo"].ToString(),
+                    UidEstatus = new Guid(item["UidEstatus"].ToString()),
+                    StrTelefono = item["VchTelefono"].ToString(),
+                    IdCliente = int.Parse(item["IdCliente"].ToString()),
+                    VchNombreComercial = item["VchNombreComercial"].ToString()
+                });
+            }
+
+            return lsLigasUsuariosGridViewModel;
+        }
+        #endregion
         #endregion
 
         #region MetodosUsuarios
@@ -1671,6 +1704,9 @@ namespace Franquicia.DataAccess.Repository
                 comando.Parameters.Add("@UidTipoTelefono", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidTipoTelefono"].Value = telefonosUsuarios.UidTipoTelefono;
 
+                comando.Parameters.Add("@UidPrefijo", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidPrefijo"].Value = telefonosUsuarios.UidPrefijo;
+
                 comando.Parameters.Add("@UidCliente", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidCliente"].Value = UidCliente;
 
@@ -1727,6 +1763,9 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@UidTipoTelefono", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidTipoTelefono"].Value = telefonosUsuarios.UidTipoTelefono;
+
+                comando.Parameters.Add("@UidPrefijo", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidPrefijo"].Value = telefonosUsuarios.UidPrefijo;
 
                 comando.Parameters.Add("@UidCliente", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidCliente"].Value = UidCliente;
@@ -2016,7 +2055,8 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select us.*, cl.IdCliente, cl.VchNombreComercial, tu.VchTelefono from TelefonosUsuarios tu, SegUsuarios su, SegPerfiles sp, Estatus es, ClientesUsuarios cu, Clientes cl, Usuarios us where tu.UidUsuario = us.UidUsuario and sp.UidSegPerfil = su.UidSegPerfil and su.UidUsuario = us.UidUsuario and es.UidEstatus = us.UidEstatus and cu.UidCliente = cl.UidCliente and cu.UidUsuario = us.UidUsuario and cl.UidCliente = '" + UidCliente + "' and sp.UidTipoPerfil = '" + UidTipoPerfil + "'";
+            //query.CommandText = "select us.*, cl.IdCliente, cl.VchNombreComercial, tu.VchTelefono from TelefonosUsuarios tu, SegUsuarios su, SegPerfiles sp, Estatus es, ClientesUsuarios cu, Clientes cl, Usuarios us where tu.UidUsuario = us.UidUsuario and sp.UidSegPerfil = su.UidSegPerfil and su.UidUsuario = us.UidUsuario and es.UidEstatus = us.UidEstatus and cu.UidCliente = cl.UidCliente and cu.UidUsuario = us.UidUsuario and cl.UidCliente = '" + UidCliente + "' and sp.UidTipoPerfil = '" + UidTipoPerfil + "'";
+            query.CommandText = "select us.*, cl.IdCliente, cl.VchIdWAySMS, pt.Prefijo, tu.VchTelefono from TelefonosUsuarios tu, SegUsuarios su, SegPerfiles sp, Estatus es, ClientesUsuarios cu, Clientes cl, Usuarios us, PrefijosTelefonicos pt where pt.UidPrefijo = tu.UidPrefijo and tu.UidUsuario = us.UidUsuario and sp.UidSegPerfil = su.UidSegPerfil and su.UidUsuario = us.UidUsuario and es.UidEstatus = us.UidEstatus and cu.UidCliente = cl.UidCliente and cu.UidUsuario = us.UidUsuario and cl.UidCliente = '" + UidCliente + "' and sp.UidTipoPerfil = '" + UidTipoPerfil + "'";
 
             DataTable dt = this.Busquedas(query);
 
@@ -2024,13 +2064,13 @@ namespace Franquicia.DataAccess.Repository
             {
                 bool accion = false;
 
-                foreach (var it in lsLigasUsuarios)
-                {
-                    if (it.IdUsuario == int.Parse(item["IdUsuario"].ToString()))
-                    {
-                        accion = it.blSeleccionado;
-                    }
-                }
+                //foreach (var it in lsLigasUsuarios)
+                //{
+                //    if (it.IdUsuario == int.Parse(item["IdUsuario"].ToString()))
+                //    {
+                //        accion = it.blSeleccionado;
+                //    }
+                //}
 
                 if (accion != true)
                 {
@@ -2043,10 +2083,10 @@ namespace Franquicia.DataAccess.Repository
                         StrApeMaterno = item["VchApeMaterno"].ToString(),
                         StrCorreo = item["VchCorreo"].ToString(),
                         UidEstatus = new Guid(item["UidEstatus"].ToString()),
-                        StrTelefono = item["VchTelefono"].ToString(),
+                        StrTelefono = "(" + item["Prefijo"].ToString() + ")" + item["VchTelefono"].ToString(),
                         blSeleccionado = accion,
                         IdCliente = int.Parse(item["IdCliente"].ToString()),
-                        VchNombreComercial = item["VchNombreComercial"].ToString()
+                        VchNombreComercial = item["VchIdWAySMS"].ToString()
                     });
                 }
             }
@@ -2197,14 +2237,15 @@ namespace Franquicia.DataAccess.Repository
                             new TelefonosUsuarios
                             {
                                 UidTipoTelefono = new Guid("B1055882-BCBA-4AB7-94FA-90E57647E607"),
-                                VchTelefono = item.StrTelefono
+                                VchTelefono = item.StrTelefono,
+                                UidPrefijo = item.UidPrefijo
                             },
                             UidCliente);
                     }
                 }
             }
 
-            lsLigasUsuariosGridViewModel = RecuperarUsuariosExcel(lsLigasUsuariosGridView, lsLigasInsertar);
+            lsLigasUsuariosGridViewModel = RecuperarUsuariosExcel(lsLigasUsuariosGridView, lsLigasInsertar, UidCliente);
             return lsLigasUsuariosGridViewModel;
         }
         public bool RegistrarUsuariosExcel(UsuariosCompletos usuariosCompletos, TelefonosUsuarios telefonosUsuarios, Guid UidCliente)
@@ -2246,6 +2287,9 @@ namespace Franquicia.DataAccess.Repository
                 comando.Parameters.Add("@UidTipoTelefono", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidTipoTelefono"].Value = telefonosUsuarios.UidTipoTelefono;
 
+                comando.Parameters.Add("@UidPrefijo", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidPrefijo"].Value = telefonosUsuarios.UidPrefijo;
+
                 comando.Parameters.Add("@UidCliente", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidCliente"].Value = UidCliente;
 
@@ -2258,7 +2302,7 @@ namespace Franquicia.DataAccess.Repository
             }
             return Resultado;
         }
-        public List<LigasUsuariosGridViewModel> RecuperarUsuariosExcel(List<LigasUsuariosGridViewModel> lsLigasUsuariosGridView, List<LigasUsuariosGridViewModel> lsLigasInsertar)
+        public List<LigasUsuariosGridViewModel> RecuperarUsuariosExcel(List<LigasUsuariosGridViewModel> lsLigasUsuariosGridView, List<LigasUsuariosGridViewModel> lsLigasInsertar, Guid UidCliente)
         {
             List<LigasUsuariosGridViewModel> lsLigasUsuariosGridViewModel = new List<LigasUsuariosGridViewModel>();
 
@@ -2269,14 +2313,15 @@ namespace Franquicia.DataAccess.Repository
                 SqlCommand query = new SqlCommand();
                 query.CommandType = CommandType.Text;
 
-                query.CommandText = "select us.*, cl.IdCliente, cl.VchNombreComercial, tu.VchTelefono from TelefonosUsuarios tu, SegUsuarios su, SegPerfiles sp, Estatus es, ClientesUsuarios cu, Clientes cl, Usuarios us where tu.UidUsuario = us.UidUsuario and sp.UidSegPerfil = su.UidSegPerfil and su.UidUsuario = us.UidUsuario and es.UidEstatus = us.UidEstatus and cu.UidCliente = cl.UidCliente and cu.UidUsuario = us.UidUsuario and us.VchCorreo = '" + item.StrCorreo + "'";
+                //query.CommandText = "select us.*, cl.IdCliente, cl.VchNombreComercial, tu.VchTelefono from TelefonosUsuarios tu, SegUsuarios su, SegPerfiles sp, Estatus es, ClientesUsuarios cu, Clientes cl, Usuarios us where tu.UidUsuario = us.UidUsuario and sp.UidSegPerfil = su.UidSegPerfil and su.UidUsuario = us.UidUsuario and es.UidEstatus = us.UidEstatus and cu.UidCliente = cl.UidCliente and cu.UidUsuario = us.UidUsuario and us.VchCorreo = '" + item.StrCorreo + "'";
+                query.CommandText = "select us.*, cl.IdCliente, cl.VchIdWAySMS, pt.Prefijo, tu.VchTelefono from TelefonosUsuarios tu, SegUsuarios su, SegPerfiles sp, Estatus es, ClientesUsuarios cu, Clientes cl, Usuarios us, PrefijosTelefonicos pt where pt.UidPrefijo = tu.UidPrefijo and tu.UidUsuario = us.UidUsuario and sp.UidSegPerfil = su.UidSegPerfil and su.UidUsuario = us.UidUsuario and es.UidEstatus = us.UidEstatus and cu.UidCliente = cl.UidCliente and cu.UidUsuario = us.UidUsuario and cl.UidCliente = '" + UidCliente + "' and us.VchCorreo = '" + item.StrCorreo + "'";
 
                 DataTable dt = this.Busquedas(query);
 
                 foreach (DataRow us in dt.Rows)
                 {
-                    if (!lsLigasUsuariosGridViewModel.Exists(x => x.StrCorreo == us["VchCorreo"].ToString()))
-                    {
+                    //if (!lsLigasUsuariosGridViewModel.Exists(x => x.StrCorreo == us["VchCorreo"].ToString()))
+                    //{
                         lsLigasUsuariosGridViewModel.Add(new LigasUsuariosGridViewModel()
                         {
                             UidUsuario = new Guid(us["UidUsuario"].ToString()),
@@ -2286,16 +2331,16 @@ namespace Franquicia.DataAccess.Repository
                             StrApeMaterno = us["VchApeMaterno"].ToString(),
                             StrCorreo = us["VchCorreo"].ToString(),
                             UidEstatus = new Guid(us["UidEstatus"].ToString()),
-                            StrTelefono = us["VchTelefono"].ToString(),
+                            StrTelefono = "(" + us["Prefijo"].ToString() + ")" + us["VchTelefono"].ToString(),
                             blSeleccionado = true,
                             IdCliente = int.Parse(us["IdCliente"].ToString()),
-                            VchNombreComercial = us["VchNombreComercial"].ToString()
+                            VchNombreComercial = us["VchIdWAySMS"].ToString()
                         });
-                    }
-                    else
-                    {
+                    //}
+                    //else
+                    //{
 
-                    }
+                    //}
                 }
             }
 
@@ -2336,7 +2381,8 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select us.*, cl.IdCliente, cl.VchNombreComercial, tu.VchTelefono from TelefonosUsuarios tu, SegUsuarios su, SegPerfiles sp, Estatus es, ClientesUsuarios cu, Clientes cl, Usuarios us where tu.UidUsuario = us.UidUsuario and sp.UidSegPerfil = su.UidSegPerfil and su.UidUsuario = us.UidUsuario and es.UidEstatus = us.UidEstatus and cu.UidCliente = cl.UidCliente and cu.UidUsuario = us.UidUsuario and cl.UidCliente = '" + UidCliente + "' and sp.UidTipoPerfil = '" + UidTipoPerfil + "'";
+            //query.CommandText = "select us.*, cl.IdCliente, cl.VchNombreComercial, tu.VchTelefono from TelefonosUsuarios tu, SegUsuarios su, SegPerfiles sp, Estatus es, ClientesUsuarios cu, Clientes cl, Usuarios us where tu.UidUsuario = us.UidUsuario and sp.UidSegPerfil = su.UidSegPerfil and su.UidUsuario = us.UidUsuario and es.UidEstatus = us.UidEstatus and cu.UidCliente = cl.UidCliente and cu.UidUsuario = us.UidUsuario and cl.UidCliente = '" + UidCliente + "' and sp.UidTipoPerfil = '" + UidTipoPerfil + "'";
+            query.CommandText = "select us.*, cl.IdCliente, cl.VchIdWAySMS, pt.Prefijo, tu.VchTelefono from TelefonosUsuarios tu, SegUsuarios su, SegPerfiles sp, Estatus es, ClientesUsuarios cu, Clientes cl, Usuarios us, PrefijosTelefonicos pt where pt.UidPrefijo = tu.UidPrefijo and tu.UidUsuario = us.UidUsuario and sp.UidSegPerfil = su.UidSegPerfil and su.UidUsuario = us.UidUsuario and es.UidEstatus = us.UidEstatus and cu.UidCliente = cl.UidCliente and cu.UidUsuario = us.UidUsuario and cl.UidCliente = '" + UidCliente + "' and sp.UidTipoPerfil = '" + UidTipoPerfil + "'";
 
             DataTable dt = this.Busquedas(query);
 
@@ -2348,17 +2394,17 @@ namespace Franquicia.DataAccess.Repository
                 Decimal Importe = 0;
                 DateTime Vencimiento = DateTime.Now;
 
-                foreach (var it in lsLigasUsuarios)
-                {
-                    if (it.IdUsuario == int.Parse(item["IdUsuario"].ToString()))
-                    {
-                        accion = it.blSeleccionado;
-                        Asunto = it.StrAsunto;
-                        Concepto = it.StrConcepto;
-                        Importe = it.DcmImporte;
-                        Vencimiento = it.DtVencimiento;
-                    }
-                }
+                //foreach (var it in lsLigasUsuarios)
+                //{
+                //    if (it.IdUsuario == int.Parse(item["IdUsuario"].ToString()))
+                //    {
+                //        accion = it.blSeleccionado;
+                //        Asunto = it.StrAsunto;
+                //        Concepto = it.StrConcepto;
+                //        Importe = it.DcmImporte;
+                //        Vencimiento = it.DtVencimiento;
+                //    }
+                //}
                 if (accion != true)
                 {
                     lsLigasMultiplesUsuariosGridViewModel.Add(new LigasMultiplesUsuariosGridViewModel()
@@ -2370,10 +2416,10 @@ namespace Franquicia.DataAccess.Repository
                         StrApeMaterno = item["VchApeMaterno"].ToString(),
                         StrCorreo = item["VchCorreo"].ToString(),
                         UidEstatus = new Guid(item["UidEstatus"].ToString()),
-                        StrTelefono = item["VchTelefono"].ToString(),
+                        StrTelefono = "(" + item["Prefijo"].ToString() + ")" + item["VchTelefono"].ToString(),
                         blSeleccionado = accion,
                         IdCliente = int.Parse(item["IdCliente"].ToString()),
-                        VchNombreComercial = item["VchNombreComercial"].ToString(),
+                        VchNombreComercial = item["VchIdWAySMS"].ToString(),
                         StrAsunto = Asunto,
                         StrConcepto = Concepto,
                         DcmImporte = Importe,
@@ -2408,59 +2454,10 @@ namespace Franquicia.DataAccess.Repository
                         StrAsunto = item.StrAsunto,
                         StrConcepto = item.StrConcepto,
                         DcmImporte = item.DcmImporte,
-                        DtVencimiento = item.DtVencimiento
-                    });
-                }
-                else
-                {
-                    lsLigasMultiplesUsuariosGridViewModel.Add(new LigasMultiplesUsuariosGridViewModel()
-                    {
-                        UidUsuario = item.UidUsuario,
-                        IdUsuario = item.IdUsuario,
-                        StrNombre = item.StrNombre,
-                        StrApePaterno = item.StrApePaterno,
-                        StrApeMaterno = item.StrApeMaterno,
-                        StrCorreo = item.StrCorreo,
-                        UidEstatus = item.UidEstatus,
-                        StrTelefono = item.StrTelefono,
-                        blSeleccionado = item.blSeleccionado,
-                        IdCliente = item.IdCliente,
-                        VchNombreComercial = item.VchNombreComercial,
-                        StrAsunto = item.StrAsunto,
-                        StrConcepto = item.StrConcepto,
-                        DcmImporte = item.DcmImporte,
-                        DtVencimiento = item.DtVencimiento
-                    });
-                }
-            }
-            return lsLigasMultiplesUsuariosGridViewModel;
-        }
-        public List<LigasMultiplesUsuariosGridViewModel> ActualizarListaGvUsuariosMultiple(List<LigasMultiplesUsuariosGridViewModel> lsLigasUsuarios, int IdUsuario, bool accion, string Asunto, string Concepto, decimal Importe, DateTime Vencimiento, string Promociones)
-        {
-            List<LigasMultiplesUsuariosGridViewModel> lsLigasMultiplesUsuariosGridViewModel = new List<LigasMultiplesUsuariosGridViewModel>();
-
-            foreach (var item in lsLigasUsuarios)
-            {
-                if (item.IdUsuario == IdUsuario)
-                {
-                    lsLigasMultiplesUsuariosGridViewModel.Add(new LigasMultiplesUsuariosGridViewModel()
-                    {
-                        UidUsuario = item.UidUsuario,
-                        IdUsuario = item.IdUsuario,
-                        StrNombre = item.StrNombre,
-                        StrApePaterno = item.StrApePaterno,
-                        StrApeMaterno = item.StrApeMaterno,
-                        StrCorreo = item.StrCorreo,
-                        UidEstatus = item.UidEstatus,
-                        StrTelefono = item.StrTelefono,
-                        blSeleccionado = accion,
-                        IdCliente = item.IdCliente,
-                        VchNombreComercial = item.VchNombreComercial,
-                        StrAsunto = Asunto,
-                        StrConcepto = Concepto,
-                        DcmImporte = Importe,
-                        DtVencimiento = Vencimiento,
-                        StrPromociones = Promociones
+                        DtVencimiento = item.DtVencimiento,
+                        CBCorreo = accion,
+                        CBWhatsApp = false, //Cambiarlo cuando activen whatsApp
+                        CBSms = accion
                     });
                 }
                 else
@@ -2482,10 +2479,130 @@ namespace Franquicia.DataAccess.Repository
                         StrConcepto = item.StrConcepto,
                         DcmImporte = item.DcmImporte,
                         DtVencimiento = item.DtVencimiento,
-                        StrPromociones = item.StrPromociones
+                        CBCorreo = accion,
+                        CBWhatsApp = false, //Cambiarlo cuando activen whatsApp
+                        CBSms = accion
                     });
                 }
             }
+            return lsLigasMultiplesUsuariosGridViewModel;
+        }
+        public List<LigasMultiplesUsuariosGridViewModel> ActualizarListaGvUsuariosMultiple(List<LigasMultiplesUsuariosGridViewModel> lsLigasUsuarios, int IdUsuario, bool accion, string Asunto, string Concepto, decimal Importe, DateTime Vencimiento, string Promociones, bool CBCorreo, bool CBSms, bool CBWhatsApp, int Index)
+        {
+            List<LigasMultiplesUsuariosGridViewModel> lsLigasMultiplesUsuariosGridViewModel = new List<LigasMultiplesUsuariosGridViewModel>();
+
+            for (int i = 0; i < lsLigasUsuarios.Count; i++)
+            {
+                if (i == Index)
+                {
+                    lsLigasMultiplesUsuariosGridViewModel.Add(new LigasMultiplesUsuariosGridViewModel()
+                    {
+                        UidUsuario = lsLigasUsuarios[Index].UidUsuario,
+                        IdUsuario = lsLigasUsuarios[Index].IdUsuario,
+                        StrNombre = lsLigasUsuarios[Index].StrNombre,
+                        StrApePaterno = lsLigasUsuarios[Index].StrApePaterno,
+                        StrApeMaterno = lsLigasUsuarios[Index].StrApeMaterno,
+                        StrCorreo = lsLigasUsuarios[Index].StrCorreo,
+                        UidEstatus = lsLigasUsuarios[Index].UidEstatus,
+                        StrTelefono = lsLigasUsuarios[Index].StrTelefono,
+                        blSeleccionado = accion,
+                        IdCliente = lsLigasUsuarios[Index].IdCliente,
+                        VchNombreComercial = lsLigasUsuarios[Index].VchNombreComercial,
+                        StrAsunto = Asunto,
+                        StrConcepto = Concepto,
+                        DcmImporte = Importe,
+                        DtVencimiento = Vencimiento,
+                        StrPromociones = Promociones,
+                        CBCorreo = CBCorreo,
+                        CBSms = CBSms,
+                        CBWhatsApp = CBWhatsApp,
+                        IntAuxiliar = lsLigasUsuarios[Index].IntAuxiliar
+                    });
+                }
+                else
+                {
+                    lsLigasMultiplesUsuariosGridViewModel.Add(new LigasMultiplesUsuariosGridViewModel()
+                    {
+                        UidUsuario = lsLigasUsuarios[i].UidUsuario,
+                        IdUsuario = lsLigasUsuarios[i].IdUsuario,
+                        StrNombre = lsLigasUsuarios[i].StrNombre,
+                        StrApePaterno = lsLigasUsuarios[i].StrApePaterno,
+                        StrApeMaterno = lsLigasUsuarios[i].StrApeMaterno,
+                        StrCorreo = lsLigasUsuarios[i].StrCorreo,
+                        UidEstatus = lsLigasUsuarios[i].UidEstatus,
+                        StrTelefono = lsLigasUsuarios[i].StrTelefono,
+                        blSeleccionado = lsLigasUsuarios[i].blSeleccionado,
+                        IdCliente = lsLigasUsuarios[i].IdCliente,
+                        VchNombreComercial = lsLigasUsuarios[i].VchNombreComercial,
+                        StrAsunto = lsLigasUsuarios[i].StrAsunto,
+                        StrConcepto = lsLigasUsuarios[i].StrConcepto,
+                        DcmImporte = lsLigasUsuarios[i].DcmImporte,
+                        DtVencimiento = lsLigasUsuarios[i].DtVencimiento,
+                        StrPromociones = lsLigasUsuarios[i].StrPromociones,
+                        CBCorreo = lsLigasUsuarios[i].CBCorreo,
+                        CBSms = lsLigasUsuarios[i].CBSms,
+                        CBWhatsApp = lsLigasUsuarios[i].CBWhatsApp,
+                        IntAuxiliar = lsLigasUsuarios[i].IntAuxiliar
+                    });
+                }
+            }
+
+
+            //foreach (var item in lsLigasUsuarios)
+            //{
+            //    int Inde = lsLigasUsuarios.IndexOf(lsLigasUsuarios.Find(x => x.IdUsuario == item.IdUsuario));
+
+            //    if (Inde == Index)
+            //    {
+            //        lsLigasMultiplesUsuariosGridViewModel.Add(new LigasMultiplesUsuariosGridViewModel()
+            //        {
+            //            UidUsuario = lsLigasUsuarios[Index].UidUsuario,
+            //            IdUsuario = lsLigasUsuarios[Index].IdUsuario,
+            //            StrNombre = lsLigasUsuarios[Index].StrNombre,
+            //            StrApePaterno = lsLigasUsuarios[Index].StrApePaterno,
+            //            StrApeMaterno = lsLigasUsuarios[Index].StrApeMaterno,
+            //            StrCorreo = lsLigasUsuarios[Index].StrCorreo,
+            //            UidEstatus = lsLigasUsuarios[Index].UidEstatus,
+            //            StrTelefono = lsLigasUsuarios[Index].StrTelefono,
+            //            blSeleccionado = accion,
+            //            IdCliente = lsLigasUsuarios[Index].IdCliente,
+            //            VchNombreComercial = lsLigasUsuarios[Index].VchNombreComercial,
+            //            StrAsunto = Asunto,
+            //            StrConcepto = Concepto,
+            //            DcmImporte = Importe,
+            //            DtVencimiento = Vencimiento,
+            //            StrPromociones = Promociones,
+            //            CBCorreo = CBCorreo,
+            //            CBSms = CBSms,
+            //            CBWhatsApp = CBWhatsApp
+            //        });
+            //    }
+            //    else
+            //    {
+            //        lsLigasMultiplesUsuariosGridViewModel.Add(new LigasMultiplesUsuariosGridViewModel()
+            //        {
+            //            UidUsuario = item.UidUsuario,
+            //            IdUsuario = item.IdUsuario,
+            //            StrNombre = item.StrNombre,
+            //            StrApePaterno = item.StrApePaterno,
+            //            StrApeMaterno = item.StrApeMaterno,
+            //            StrCorreo = item.StrCorreo,
+            //            UidEstatus = item.UidEstatus,
+            //            StrTelefono = item.StrTelefono,
+            //            blSeleccionado = item.blSeleccionado,
+            //            IdCliente = item.IdCliente,
+            //            VchNombreComercial = item.VchNombreComercial,
+            //            StrAsunto = item.StrAsunto,
+            //            StrConcepto = item.StrConcepto,
+            //            DcmImporte = item.DcmImporte,
+            //            DtVencimiento = item.DtVencimiento,
+            //            StrPromociones = item.StrPromociones,
+            //            CBCorreo = item.CBCorreo,
+            //            CBSms = item.CBSms,
+            //            CBWhatsApp = item.CBWhatsApp
+            //        });
+            //    }
+            //}
             return lsLigasMultiplesUsuariosGridViewModel;
         }
         public List<LigasMultiplesUsuariosGridViewModel> ExcelToListMultiple(List<LigasMultiplesUsuariosGridViewModel> lsLigasMultiplesUsuariosGridView, List<LigasMultiplesUsuariosGridViewModel> lsLigasInsertarMultiple, Guid UidCliente)
@@ -2584,79 +2701,90 @@ namespace Franquicia.DataAccess.Repository
                             new TelefonosUsuarios
                             {
                                 UidTipoTelefono = new Guid("B1055882-BCBA-4AB7-94FA-90E57647E607"),
-                                VchTelefono = item.StrTelefono
+                                VchTelefono = item.StrTelefono,
+                                UidPrefijo = item.UidPrefijo
                             },
                             UidCliente);
                     }
                 }
             }
 
-            LsLigasMultiplesUsuariosGridViewModel = RecuperarUsuariosExcelMultiple(lsLigasMultiplesUsuariosGridView, lsLigasInsertarMultiple);
+            LsLigasMultiplesUsuariosGridViewModel = RecuperarUsuariosExcelMultiple(lsLigasMultiplesUsuariosGridView, lsLigasInsertarMultiple, UidCliente);
             return LsLigasMultiplesUsuariosGridViewModel;
         }
-        public List<LigasMultiplesUsuariosGridViewModel> RecuperarUsuariosExcelMultiple(List<LigasMultiplesUsuariosGridViewModel> lsMultipleLigasUsuariosGridView, List<LigasMultiplesUsuariosGridViewModel> lsLigasInsertarMultiple)
+        public List<LigasMultiplesUsuariosGridViewModel> RecuperarUsuariosExcelMultiple(List<LigasMultiplesUsuariosGridViewModel> lsMultipleLigasUsuariosGridView, List<LigasMultiplesUsuariosGridViewModel> lsLigasInsertarMultiple, Guid UidCliente)
         {
+            Random random = new Random();
             List<LigasMultiplesUsuariosGridViewModel> lsLigasMultiplesUsuariosGridViewModel = new List<LigasMultiplesUsuariosGridViewModel>();
 
             lsLigasMultiplesUsuariosGridViewModel = lsMultipleLigasUsuariosGridView;
 
             foreach (var item in lsLigasInsertarMultiple)
             {
+                DateTime dtAuxiliar = DateTime.Now.AddSeconds(3).AddMilliseconds(5);
                 SqlCommand query = new SqlCommand();
                 query.CommandType = CommandType.Text;
 
-                query.CommandText = "select us.*, cl.IdCliente, cl.VchNombreComercial, tu.VchTelefono from TelefonosUsuarios tu, SegUsuarios su, SegPerfiles sp, Estatus es, ClientesUsuarios cu, Clientes cl, Usuarios us where tu.UidUsuario = us.UidUsuario and sp.UidSegPerfil = su.UidSegPerfil and su.UidUsuario = us.UidUsuario and es.UidEstatus = us.UidEstatus and cu.UidCliente = cl.UidCliente and cu.UidUsuario = us.UidUsuario and us.VchCorreo = '" + item.StrCorreo + "'";
+                //query.CommandText = "select us.*, cl.IdCliente, cl.VchNombreComercial, tu.VchTelefono from TelefonosUsuarios tu, SegUsuarios su, SegPerfiles sp, Estatus es, ClientesUsuarios cu, Clientes cl, Usuarios us where tu.UidUsuario = us.UidUsuario and sp.UidSegPerfil = su.UidSegPerfil and su.UidUsuario = us.UidUsuario and es.UidEstatus = us.UidEstatus and cu.UidCliente = cl.UidCliente and cu.UidUsuario = us.UidUsuario and us.VchCorreo = '" + item.StrCorreo + "'";
+                query.CommandText = "select us.*, cl.IdCliente, cl.VchIdWAySMS, pt.Prefijo, tu.VchTelefono from TelefonosUsuarios tu, SegUsuarios su, SegPerfiles sp, Estatus es, ClientesUsuarios cu, Clientes cl, Usuarios us, PrefijosTelefonicos pt where pt.UidPrefijo = tu.UidPrefijo and tu.UidUsuario = us.UidUsuario and sp.UidSegPerfil = su.UidSegPerfil and su.UidUsuario = us.UidUsuario and es.UidEstatus = us.UidEstatus and cu.UidCliente = cl.UidCliente and cu.UidUsuario = us.UidUsuario and cl.UidCliente = '" + UidCliente + "' and us.VchCorreo = '" + item.StrCorreo + "'";
 
                 DataTable dt = this.Busquedas(query);
 
                 foreach (DataRow us in dt.Rows)
                 {
-                    if (!lsLigasMultiplesUsuariosGridViewModel.Exists(x => x.StrCorreo == us["VchCorreo"].ToString()))
-                    {
+                    //if (!lsLigasMultiplesUsuariosGridViewModel.Exists(x => x.StrCorreo == us["VchCorreo"].ToString()))
+                    //{
                         lsLigasMultiplesUsuariosGridViewModel.Add(new LigasMultiplesUsuariosGridViewModel()
                         {
-                            UidUsuario = new Guid(us["UidUsuario"].ToString()),
+                            UidUsuario = Guid.Parse(us["UidUsuario"].ToString()),
                             IdUsuario = int.Parse(us["IdUsuario"].ToString()),
                             StrNombre = us["VchNombre"].ToString(),
                             StrApePaterno = us["VchApePaterno"].ToString(),
                             StrApeMaterno = us["VchApeMaterno"].ToString(),
                             StrCorreo = us["VchCorreo"].ToString(),
-                            UidEstatus = new Guid(us["UidEstatus"].ToString()),
-                            StrTelefono = us["VchTelefono"].ToString(),
+                            UidEstatus = Guid.Parse(us["UidEstatus"].ToString()),
+                            StrTelefono = "(" + us["Prefijo"].ToString() + ")" + us["VchTelefono"].ToString(),
                             blSeleccionado = true,
                             IdCliente = int.Parse(us["IdCliente"].ToString()),
-                            VchNombreComercial = us["VchNombreComercial"].ToString(),
+                            VchNombreComercial = us["VchIdWAySMS"].ToString(),
                             StrAsunto = item.StrAsunto,
                             StrConcepto = item.StrConcepto,
                             DcmImporte = item.DcmImporte,
                             DtVencimiento = item.DtVencimiento,
-                            StrPromociones = item.StrPromociones
+                            CBCorreo = item.CBCorreo,
+                            CBWhatsApp = item.CBWhatsApp,
+                            CBSms = item.CBSms,
+                            StrPromociones = item.StrPromociones,
+                            IntAuxiliar = dtAuxiliar.ToString("ssfff") + random.Next(10000000, 100000001).ToString()
                         });
-                    }
-                    else
-                    {
-                        lsLigasMultiplesUsuariosGridViewModel.RemoveAt(lsLigasMultiplesUsuariosGridViewModel.FindIndex(x => x.StrCorreo == us["VchCorreo"].ToString()));
+                    //}
+                    //else
+                    //{
+                    //    lsLigasMultiplesUsuariosGridViewModel.RemoveAt(lsLigasMultiplesUsuariosGridViewModel.FindIndex(x => x.StrCorreo == us["VchCorreo"].ToString()));
 
-                        lsLigasMultiplesUsuariosGridViewModel.Add(new LigasMultiplesUsuariosGridViewModel()
-                        {
-                            UidUsuario = new Guid(us["UidUsuario"].ToString()),
-                            IdUsuario = int.Parse(us["IdUsuario"].ToString()),
-                            StrNombre = us["VchNombre"].ToString(),
-                            StrApePaterno = us["VchApePaterno"].ToString(),
-                            StrApeMaterno = us["VchApeMaterno"].ToString(),
-                            StrCorreo = us["VchCorreo"].ToString(),
-                            UidEstatus = new Guid(us["UidEstatus"].ToString()),
-                            StrTelefono = us["VchTelefono"].ToString(),
-                            blSeleccionado = true,
-                            IdCliente = int.Parse(us["IdCliente"].ToString()),
-                            VchNombreComercial = us["VchNombreComercial"].ToString(),
-                            StrAsunto = item.StrAsunto,
-                            StrConcepto = item.StrConcepto,
-                            DcmImporte = item.DcmImporte,
-                            DtVencimiento = item.DtVencimiento,
-                            StrPromociones = item.StrPromociones
-                        });
-                    }
+                    //    lsLigasMultiplesUsuariosGridViewModel.Add(new LigasMultiplesUsuariosGridViewModel()
+                    //    {
+                    //        UidUsuario = Guid.Parse(us["UidUsuario"].ToString()),
+                    //        IdUsuario = int.Parse(us["IdUsuario"].ToString()),
+                    //        StrNombre = us["VchNombre"].ToString(),
+                    //        StrApePaterno = us["VchApePaterno"].ToString(),
+                    //        StrApeMaterno = us["VchApeMaterno"].ToString(),
+                    //        StrCorreo = us["VchCorreo"].ToString(),
+                    //        UidEstatus = Guid.Parse(us["UidEstatus"].ToString()),
+                    //        StrTelefono = "(" + us["Prefijo"].ToString() + ")" + us["VchTelefono"].ToString(),
+                    //        blSeleccionado = true,
+                    //        IdCliente = int.Parse(us["IdCliente"].ToString()),
+                    //        VchNombreComercial = us["VchIdWAySMS"].ToString(),
+                    //        StrAsunto = item.StrAsunto,
+                    //        StrConcepto = item.StrConcepto,
+                    //        DcmImporte = item.DcmImporte,
+                    //        DtVencimiento = item.DtVencimiento,
+                    //        CBCorreo = item.CBCorreo,
+                    //        CBWhatsApp = item.CBWhatsApp,
+                    //        CBSms = item.CBSms,
+                    //        StrPromociones = item.StrPromociones
+                    //    });
+                    //}
                 }
             }
 

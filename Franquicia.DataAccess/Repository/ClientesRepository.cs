@@ -42,7 +42,8 @@ namespace Franquicia.DataAccess.Repository
                     VchCorreoElectronico = item["VchCorreoElectronico"].ToString(),
                     UidEstatus = new Guid(item["UidEstatus"].ToString()),
                     VchEstatus = item["VchDescripcion"].ToString(),
-                    VchIcono = item["VchIcono"].ToString()
+                    VchIcono = item["VchIcono"].ToString(),
+                    VchIdWAySMS = item["VchIdWAySMS"].ToString()
                 });
             }
 
@@ -77,9 +78,12 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@VchCorreoElectronico", SqlDbType.VarChar, 50);
                 comando.Parameters["@VchCorreoElectronico"].Value = clientes.VchCorreoElectronico;
-
+               
                 comando.Parameters.Add("@UidFranquiciatario", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidFranquiciatario"].Value = clientes.UidFranquiciatario;
+
+                comando.Parameters.Add("@VchIdWAySMS", SqlDbType.VarChar, 50);
+                comando.Parameters["@VchIdWAySMS"].Value = clientes.VchIdWAySMS;
 
                 //===========================DIRECCION==================================================
 
@@ -167,6 +171,9 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@UidEstatus", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidEstatus"].Value = clientes.UidEstatus;
+
+                comando.Parameters.Add("@VchIdWAySMS", SqlDbType.VarChar, 50);
+                comando.Parameters["@VchIdWAySMS"].Value = clientes.VchIdWAySMS;
 
                 //===========================DIRECCION==================================================
 

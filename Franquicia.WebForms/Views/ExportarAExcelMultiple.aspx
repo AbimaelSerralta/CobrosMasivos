@@ -20,6 +20,9 @@
                 <asp:BoundField DataField="StrConcepto" HeaderText="CONCEPTO" />
                 <asp:BoundField DataField="DcmImporte" HeaderText="IMPORTE" />
                 <asp:BoundField DataField="DtVencimiento" HeaderText="VENCIMIENTO" DataFormatString="{0:d}" />
+                <asp:BoundField DataField="CBCorreo" HeaderText="EMAIL" />
+                <asp:BoundField DataField="CBWhatsApp" HeaderText="WHATS" />
+                <asp:BoundField DataField="CBSms" HeaderText="SMS" />
                 <asp:BoundField DataField="StrPromociones" HeaderText="PROMOCION(ES)" />
             </Columns>
         </asp:GridView>

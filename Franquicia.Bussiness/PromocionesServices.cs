@@ -22,6 +22,9 @@ namespace Franquicia.Bussiness
         
         public List<FranquiciasCBLPromocionesModel> lsFranquiciasCBLPromocionesModel = new List<FranquiciasCBLPromocionesModel>();
 
+        public List<EventosGenerarLigasModel> lsEventosGenerarLigasModel = new List<EventosGenerarLigasModel>();
+        public List<EventosPromocionesModel> lsEventosPromocionesModel = new List<EventosPromocionesModel>();
+
         public void CargarPromociones()
         {
             lsPromociones = new List<Promociones>();
@@ -110,6 +113,19 @@ namespace Franquicia.Bussiness
         {
             return lsCBLPromocionesModelCliente = promocionesRepository.CargarPromocionesClientes(UidCliente);
         }
+
+        #region Eventos
+        public void CargarPromocionesEvento(Guid UidCliente, Guid UidEvento)
+        {
+            lsEventosGenerarLigasModel = new List<EventosGenerarLigasModel>();
+
+            lsEventosGenerarLigasModel = promocionesRepository.CargarPromocionesEvento(UidCliente, UidEvento);
+        }
+        public List<EventosPromocionesModel> ObtenerPromocionesEvento(Guid UidCliente)
+        {
+            return lsEventosPromocionesModel = promocionesRepository.ObtenerPromocionesEvento(UidCliente);
+        }
+        #endregion
         #endregion
 
         #region PromocionesValidas
@@ -133,6 +149,21 @@ namespace Franquicia.Bussiness
             lsLigasMultiplePromocionesModel.Add(new LigasMultiplePromocionesModel { UidPromocion = Guid.Parse(Value), IdUsuario = IdUsuario, VchDescripcion = VchDescripcion });
 
             return lsLigasMultiplePromocionesModel;
+        }
+        public List<LigasMultiplePromocionesModel> PromocionesMultiplesTemporal(string Value, int IdUsuario, string VchDescripcion, string IntAuxiliar)
+        {
+            lsLigasMultiplePromocionesModel.Add(new LigasMultiplePromocionesModel { UidPromocion = Guid.Parse(Value), IdUsuario = IdUsuario, VchDescripcion = VchDescripcion, IntAuxiliar = IntAuxiliar });
+
+            return lsLigasMultiplePromocionesModel;
+        }
+        public void EliminarPromocionesMultiplesTemporal(int IdUsuario, string IntAuxiliar)
+        {
+            List<LigasMultiplePromocionesModel> lsLigasMultiplePromocionesModelCopia = lsLigasMultiplePromocionesModel.Where(x => x.IdUsuario == IdUsuario && x.IntAuxiliar == IntAuxiliar).ToList();
+
+            foreach (var item in lsLigasMultiplePromocionesModelCopia)
+            {
+                lsLigasMultiplePromocionesModel.RemoveAt(lsLigasMultiplePromocionesModel.FindIndex(x => x.IdUsuario == item.IdUsuario && x.IntAuxiliar == IntAuxiliar));
+            }
         }
         public void EliminarPromocionesMultiples(int IdUsuario)
         {

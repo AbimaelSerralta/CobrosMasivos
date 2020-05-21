@@ -260,7 +260,7 @@ namespace Franquicia.WebForms.Views
                     if (item.Agregar)
                     {
                         if (clientesServices.RegistrarClientes(
-                txtRFC.Text.Trim(), txtRazonSocial.Text.Trim(), txtNombreComercial.Text.Trim(), DateTime.Parse(thisDay.ToString("dd/MM/yyyy HH:mm:ss")), txtCorreo.Text.Trim(),
+                txtRFC.Text.Trim(), txtRazonSocial.Text.Trim(), txtNombreComercial.Text.Trim(), DateTime.Parse(thisDay.ToString("dd/MM/yyyy HH:mm:ss")), txtCorreo.Text.Trim(), txtIdentificadorWASMS.Text.Trim(),
                 txtIdentificador.Text.Trim(), new Guid(ddlPais.SelectedValue), new Guid(ddlEstado.SelectedValue), new Guid(ddlMunicipio.SelectedValue), new Guid(ddlCiudad.SelectedValue), new Guid(ddlColonia.SelectedValue), txtCalle.Text.Trim(), txtEntreCalle.Text.Trim(), txtYCalle.Text.Trim(), txtNumeroExterior.Text.Trim(), txtNumeroInterior.Text.Trim(), txtCodigoPostal.Text.Trim(), txtReferencia.Text.Trim(),
                 txtNumero.Text.Trim(), new Guid(ddlTipoTelefono.SelectedValue), new Guid(ViewState["UidFranquiciaLocal"].ToString())
                 ))
@@ -287,7 +287,7 @@ namespace Franquicia.WebForms.Views
                     if (item.Actualizar)
                     {
                         if (clientesServices.ActualizarClientes(
-                new Guid(ViewState["UidFranquiciatario"].ToString()), txtRFC.Text.Trim().ToUpper(), txtRazonSocial.Text.Trim().ToUpper(), txtNombreComercial.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), new Guid(ddlEstatus.SelectedValue),
+                new Guid(ViewState["UidFranquiciatario"].ToString()), txtRFC.Text.Trim().ToUpper(), txtRazonSocial.Text.Trim().ToUpper(), txtNombreComercial.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), new Guid(ddlEstatus.SelectedValue), txtIdentificadorWASMS.Text.Trim(),
                 txtIdentificador.Text.Trim().ToUpper(), new Guid(ddlPais.SelectedValue), new Guid(ddlEstado.SelectedValue), new Guid(ddlMunicipio.SelectedValue), new Guid(ddlCiudad.SelectedValue), new Guid(ddlColonia.SelectedValue), txtCalle.Text.Trim().ToUpper(), txtEntreCalle.Text.Trim().ToUpper(), txtYCalle.Text.Trim().ToUpper(), txtNumeroExterior.Text.Trim().ToUpper(), txtNumeroInterior.Text.Trim().ToUpper(), txtCodigoPostal.Text.Trim(), txtReferencia.Text.Trim().ToUpper(),
                 txtNumero.Text.Trim(), new Guid(ddlTipoTelefono.SelectedValue)
                 ))
@@ -329,6 +329,7 @@ namespace Franquicia.WebForms.Views
 
         private void BloquearCampos()
         {
+            txtIdentificadorWASMS.Enabled = false;
             txtRFC.Enabled = false;
             txtRazonSocial.Enabled = false;
             txtNombreComercial.Enabled = false;
@@ -355,6 +356,7 @@ namespace Franquicia.WebForms.Views
         }
         private void DesbloquearCampos()
         {
+            txtIdentificadorWASMS.Enabled = true;
             txtRFC.Enabled = true;
             txtRazonSocial.Enabled = true;
             txtNombreComercial.Enabled = true;
@@ -381,6 +383,7 @@ namespace Franquicia.WebForms.Views
         }
         private void LimpiarCampos()
         {
+            txtIdentificadorWASMS.Text = string.Empty;
             txtRFC.Text = string.Empty;
             txtRazonSocial.Text = string.Empty;
             txtNombreComercial.Text = string.Empty;
@@ -477,6 +480,7 @@ namespace Franquicia.WebForms.Views
         {
             //==================FRANQUICIATARIO============================
             clientesServices.ObtenerCliente(dataKeys);
+            txtIdentificadorWASMS.Text = clientesServices.clientes.VchIdWAySMS;
             txtRFC.Text = clientesServices.clientes.VchRFC;
             txtRazonSocial.Text = clientesServices.clientes.VchRazonSocial;
             txtNombreComercial.Text = clientesServices.clientes.VchNombreComercial;

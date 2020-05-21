@@ -51,6 +51,24 @@ namespace Franquicia.Bussiness
             }
             return result;
         }
+        public bool RegistrarHistorialPagoTicket(Guid UidHistorialPago, decimal DcmSaldo, decimal DcmOperacion, decimal DcmNuevoSaldo, string IdReferencia)
+        {
+            bool result = false;
+            if (historialPagosRepository.RegistrarHistorialPago(
+                new HistorialPagos
+                {
+                    UidHistorialPago = UidHistorialPago,
+                    DcmSaldo = DcmSaldo,
+                    DcmOperacion = DcmOperacion,
+                    DcmNuevoSaldo = DcmNuevoSaldo,
+                    IdReferencia = IdReferencia
+                }
+                ))
+            {
+                result = true;
+            }
+            return result;
+        }
         public bool ActualizarParametrosEntradaCliente(string IdCompany, string IdBranch, string VchModena, string VchUsuario, string VchPassword, string VchCanal, string VchData0, string VchUrl, string VchSemillaAES, Guid UidPropietario)
         {
             bool result = false;

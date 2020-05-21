@@ -27,6 +27,12 @@ namespace Franquicia.Bussiness
             set { _usuariosRepository = value; }
         }
 
+        private PrefijosTelefonicosRepository _prefijosTelefonicosRepository = new PrefijosTelefonicosRepository();
+        public PrefijosTelefonicosRepository prefijosTelefonicosRepository
+        {
+            get { return _prefijosTelefonicosRepository; }
+            set { _prefijosTelefonicosRepository = value; }
+        }
 
         public List<UsuariosCompletos> lsUsuariosCompletos = new List<UsuariosCompletos>();
 
@@ -41,6 +47,7 @@ namespace Franquicia.Bussiness
         public List<LigasMultiplesUsuariosGridViewModel> lsLigasErroresMultiple = new List<LigasMultiplesUsuariosGridViewModel>();
 
         public List<LigasUsuariosGridViewModel> lsPagoLiga = new List<LigasUsuariosGridViewModel>();
+        public List<LigasUsuariosGridViewModel> lsEventoLiga = new List<LigasUsuariosGridViewModel>();
 
         public void CargarAdministradores(Guid UidTipoPerfil)
         {
@@ -600,10 +607,21 @@ namespace Franquicia.Bussiness
             }
             return result;
         }
+
+        #region Pagos
         public void SeleccionarUsuariosCliente(Guid UidUsuario)
         {
             lsPagoLiga = usuariosCompletosRepository.SeleccionarUsuariosCliente(UidUsuario);
         }
+        #endregion
+        
+        #region Eventos
+        public void SelectUsClienteEvento(Guid UidUsuario)
+        {
+            lsEventoLiga = usuariosCompletosRepository.SelectUsClienteEvento(UidUsuario);
+        }
+        #endregion
+
 
         #endregion
 
@@ -614,7 +632,7 @@ namespace Franquicia.Bussiness
         }
         public bool RegistrarUsuarios(Guid UidUsuario,
             string Nombre, string ApePaterno, string ApeMaterno, string Correo, string Usuario, string Password, Guid UidSegPerfil,
-            string Telefono, Guid UidTipoTelefono, Guid UidCliente)
+            string Telefono, Guid UidTipoTelefono, Guid UidPrefijo, Guid UidCliente)
         {
             bool result = false;
             if (usuariosCompletosRepository.RegistrarUsuarios(
@@ -632,7 +650,8 @@ namespace Franquicia.Bussiness
                 new TelefonosUsuarios
                 {
                     VchTelefono = Telefono,
-                    UidTipoTelefono = UidTipoTelefono
+                    UidTipoTelefono = UidTipoTelefono,
+                    UidPrefijo = UidPrefijo
                 },
                 UidCliente
                 ))
@@ -644,7 +663,7 @@ namespace Franquicia.Bussiness
 
         public bool ActualizarUsuarios(
             Guid UidUsuario, string Nombre, string ApePaterno, string ApeMaterno, string Correo, Guid UidEstatus, string Usuario, string Password, Guid UidSegPerfil,
-            string Telefono, Guid UidTipoTelefono, Guid UidCliente)
+            string Telefono, Guid UidTipoTelefono, Guid UidPrefijo, Guid UidCliente)
         {
 
             bool result = false;
@@ -664,7 +683,8 @@ namespace Franquicia.Bussiness
                 new TelefonosUsuarios
                 {
                     VchTelefono = Telefono,
-                    UidTipoTelefono = UidTipoTelefono
+                    UidTipoTelefono = UidTipoTelefono,
+                    UidPrefijo = UidPrefijo
                 },
                 UidCliente
                 ))
@@ -752,9 +772,10 @@ namespace Franquicia.Bussiness
         {
             lsLigasUsuariosGridViewModel = usuariosCompletosRepository.ActualizarListaUsuarios(lsLigasUsuarios, IdUsuario, accion);
         }
-        public void EliminarItemgvUsuariosSeleccionados(int IdUsuario)
+        public void EliminarItemgvUsuariosSeleccionados(int IdUsuario, int Index)
         {
-            lsgvUsuariosSeleccionados.RemoveAt(lsgvUsuariosSeleccionados.FindIndex(x => x.IdUsuario == IdUsuario));
+            //lsgvUsuariosSeleccionados.RemoveAt(lsgvUsuariosSeleccionados.FindIndex(x => x.IdUsuario == IdUsuario));
+            lsgvUsuariosSeleccionados.RemoveAt(Index);
         }
         public void ExcelToList(List<LigasUsuariosGridViewModel> lsLigasUsuariosGridView, List<LigasUsuariosGridViewModel> lsLigasInsertar, Guid UidCliente)
         {
@@ -771,14 +792,63 @@ namespace Franquicia.Bussiness
                     !string.IsNullOrEmpty(item["APEMATERNO"].ToString()) && !string.IsNullOrEmpty(item["CORREO"].ToString()) &&
                     !string.IsNullOrEmpty(item["CELULAR"].ToString()))
                 {
-                    lsLigasInsertar.Add(new LigasUsuariosGridViewModel()
+                    bool error = false;
+
+                    string regexCorreo = @"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}" + @"\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\" + @".)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$";
+                    Regex reCorreo = new Regex(regexCorreo);
+
+                    if (reCorreo.IsMatch(item["CORREO"].ToString()))
                     {
-                        StrNombre = item["NOMBRE(S)"].ToString(),
-                        StrApePaterno = item["APEPATERNO"].ToString(),
-                        StrApeMaterno = item["APEMATERNO"].ToString(),
-                        StrCorreo = item["CORREO"].ToString(),
-                        StrTelefono = item["CELULAR"].ToString()
-                    });
+                        if (item["CELULAR"].ToString().Contains("(") && item["CELULAR"].ToString().Contains("+") && item["CELULAR"].ToString().Contains(")"))
+                        {
+                            string output = item["CELULAR"].ToString().Split('(', ')')[1];
+                            prefijosTelefonicosRepository.ValidarPrefijoTelefonico(output);
+
+                            if (item["CELULAR"].ToString().Split('(', ')')[2].Count() == 10)
+                            {
+                                if (prefijosTelefonicosRepository.prefijosTelefonicos.UidPrefijo != null && prefijosTelefonicosRepository.prefijosTelefonicos.UidPrefijo != Guid.Empty)
+                                {
+                                    lsLigasInsertar.Add(new LigasUsuariosGridViewModel()
+                                    {
+                                        StrNombre = item["NOMBRE(S)"].ToString(),
+                                        StrApePaterno = item["APEPATERNO"].ToString(),
+                                        StrApeMaterno = item["APEMATERNO"].ToString(),
+                                        StrCorreo = item["CORREO"].ToString(),
+                                        StrTelefono = item["CELULAR"].ToString().Split('(', ')')[2],
+                                        UidPrefijo = prefijosTelefonicosRepository.prefijosTelefonicos.UidPrefijo
+                                    });
+                                }
+                                else
+                                {
+                                    error = true;
+                                }
+                            }
+                            else
+                            {
+                                error = true;
+                            }
+                        }
+                        else
+                        {
+                            error = true;
+                        }
+                    }
+                    else
+                    {
+                        error = true;
+                    }
+
+                    if (error)
+                    {
+                        lsLigasErrores.Add(new LigasUsuariosGridViewModel()
+                        {
+                            StrNombre = item["NOMBRE(S)"].ToString(),
+                            StrApePaterno = item["APEPATERNO"].ToString(),
+                            StrApeMaterno = item["APEMATERNO"].ToString(),
+                            StrCorreo = item["CORREO"].ToString(),
+                            StrTelefono = item["CELULAR"].ToString()
+                        });
+                    }
                 }
                 else
                 {
@@ -802,7 +872,8 @@ namespace Franquicia.Bussiness
         {
             foreach (var item in lsLigasUsuariosGridViewModel)
             {
-                if (!lsgvUsuariosSeleccionados.Exists(x => x.UidUsuario == item.UidUsuario) && item.blSeleccionado == true)
+                //if (!lsgvUsuariosSeleccionados.Exists(x => x.UidUsuario == item.UidUsuario) && item.blSeleccionado == true)
+                if (item.blSeleccionado == true)
                 {
                     lsgvUsuariosSeleccionados.Add(new LigasUsuariosGridViewModel()
                     {
@@ -819,10 +890,10 @@ namespace Franquicia.Bussiness
                         VchNombreComercial = item.VchNombreComercial
                     });
                 }
-                else if (lsgvUsuariosSeleccionados.Exists(x => x.UidUsuario == item.UidUsuario) && item.blSeleccionado == false)
-                {
-                    lsgvUsuariosSeleccionados.RemoveAt(lsgvUsuariosSeleccionados.FindIndex(x => x.UidUsuario == item.UidUsuario));
-                }
+                //else if (lsgvUsuariosSeleccionados.Exists(x => x.UidUsuario == item.UidUsuario) && item.blSeleccionado == false)
+                //{
+                //    lsgvUsuariosSeleccionados.RemoveAt(lsgvUsuariosSeleccionados.FindIndex(x => x.UidUsuario == item.UidUsuario));
+                //}
             }
         }
         #endregion
@@ -844,9 +915,9 @@ namespace Franquicia.Bussiness
         {
             lsLigasMultiplesUsuariosGridViewModel = usuariosCompletosRepository.ActualizarListaUsuariosMultiple(lsLigasUsuarios, IdUsuario, accion);
         }
-        public void ActualizarListaGvUsuariosMultiple(List<LigasMultiplesUsuariosGridViewModel> lsLigasUsuarios, int IdUsuario, bool accion, string Asunto, string Concepto, decimal Importe, DateTime Vencimiento, string Promociones)
+        public void ActualizarListaGvUsuariosMultiple(List<LigasMultiplesUsuariosGridViewModel> lsLigasUsuarios, int IdUsuario, bool accion, string Asunto, string Concepto, decimal Importe, DateTime Vencimiento, string Promociones, bool CBCorreo, bool CBSms, bool CBWhatsApp, int Index)
         {
-            lsgvUsuariosSeleccionadosMultiple = usuariosCompletosRepository.ActualizarListaGvUsuariosMultiple(lsLigasUsuarios, IdUsuario, accion, Asunto, Concepto, Importe, Vencimiento, Promociones);
+            lsgvUsuariosSeleccionadosMultiple = usuariosCompletosRepository.ActualizarListaGvUsuariosMultiple(lsLigasUsuarios, IdUsuario, accion, Asunto, Concepto, Importe, Vencimiento, Promociones, CBCorreo, CBSms, CBWhatsApp, Index);
         }
 
 
@@ -863,48 +934,232 @@ namespace Franquicia.Bussiness
                     !string.IsNullOrEmpty(item["APEMATERNO"].ToString()) && !string.IsNullOrEmpty(item["CORREO"].ToString()) &&
                     !string.IsNullOrEmpty(item["CELULAR"].ToString()) && !string.IsNullOrEmpty(item["ASUNTO"].ToString()) &&
                     !string.IsNullOrEmpty(item["CONCEPTO"].ToString()) && !string.IsNullOrEmpty(item["IMPORTE"].ToString()) &&
-                    !string.IsNullOrEmpty(item["VENCIMIENTO"].ToString()))
+                    !string.IsNullOrEmpty(item["VENCIMIENTO"].ToString()) && !string.IsNullOrEmpty(item["EMAIL"].ToString()) &&
+                    !string.IsNullOrEmpty(item["WHATS"].ToString()) && !string.IsNullOrEmpty(item["SMS"].ToString()))
                 {
-                    if (!string.IsNullOrEmpty(item["PROMOCION(ES)"].ToString()))
-                    {
-                        string[] arPromo = Regex.Split(item["PROMOCION(ES)"].ToString(), ",");
+                    bool EMAIL = false;
+                    bool WHATS = false;
+                    bool SMS = false;
+                    bool error = false;
 
-                        for (int i = 0; i < arPromo.Length; i++)
-                        {
-                            if (!lsCBLPromocionesModelCliente.Exists(x => x.VchDescripcion == arPromo[i].Trim()))
-                            {
-                                DateTime dateTime = DateTime.Now;
-                                string Remplazo = dateTime.ToString("dd/MM/yyyy");
-                                lsLigasErroresMultiple.Add(new LigasMultiplesUsuariosGridViewModel()
-                                {
-                                    StrNombre = item["NOMBRE(S)"].ToString(),
-                                    StrApePaterno = item["APEPATERNO"].ToString(),
-                                    StrApeMaterno = item["APEMATERNO"].ToString(),
-                                    StrCorreo = item["CORREO"].ToString(),
-                                    StrTelefono = item["CELULAR"].ToString(),
-                                    StrAsunto = item["ASUNTO"].ToString(),
-                                    StrConcepto = item["CONCEPTO"].ToString(),
-                                    DcmImporte = item.IsNull("IMPORTE") ? 0 : decimal.Parse(item["IMPORTE"].ToString()),
-                                    DtVencimiento = item.IsNull("VENCIMIENTO") ? DateTime.Parse(Remplazo) : DateTime.Parse(item["VENCIMIENTO"].ToString()),
-                                    StrPromociones = item["PROMOCION(ES)"].ToString()
-                                });
-                                PromocionCorrecto = false;
-                                break;
-                            }
-                            else
-                            {
-                                PromocionCorrecto = true;
-                            }
-                        }
+                    if (item["EMAIL"].ToString().ToUpper() != "SI" && item["EMAIL"].ToString().ToUpper() != "NO" ||
+                        item["WHATS"].ToString().ToUpper() != "SI" && item["WHATS"].ToString().ToUpper() != "NO" ||
+                        item["SMS"].ToString().ToUpper() != "SI" && item["SMS"].ToString().ToUpper() != "NO")
+                    {
+                        EMAIL = true;
+                        WHATS = true;
+                        SMS = true;
+                        error = true;
                     }
                     else
                     {
-                        PromocionCorrecto = true;
+                        if (item["EMAIL"].ToString().ToUpper() == "SI")
+                        {
+                            EMAIL = true;
+                        }
+                        else if (item["EMAIL"].ToString().ToUpper() == "NO")
+                        {
+                            EMAIL = false;
+                        }
+
+                        if (item["WHATS"].ToString().ToUpper() == "SI")
+                        {
+                            WHATS = false;
+                        }
+                        else if (item["WHATS"].ToString().ToUpper() == "NO")
+                        {
+                            WHATS = false;
+                        }
+
+                        if (item["SMS"].ToString().ToUpper() == "SI")
+                        {
+                            SMS = true;
+                        }
+                        else if (item["SMS"].ToString().ToUpper() == "NO")
+                        {
+                            SMS = false;
+                        }
+
+                        string regexCorreo = @"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}" + @"\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\" + @".)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$";
+                        Regex reCorreo = new Regex(regexCorreo);
+
+                        if (reCorreo.IsMatch(item["CORREO"].ToString()))
+                        {
+                            if (item["CELULAR"].ToString().Contains("(") && item["CELULAR"].ToString().Contains("+") && item["CELULAR"].ToString().Contains(")"))
+                            {
+                                string output = item["CELULAR"].ToString().Split('(', ')')[1];
+                                prefijosTelefonicosRepository.ValidarPrefijoTelefonico(output);
+                                string promociones = string.Empty;
+                                string pro = string.Empty;
+
+                                if (item["CELULAR"].ToString().Split('(', ')')[2].Count() == 10)
+                                {
+                                    if (prefijosTelefonicosRepository.prefijosTelefonicos.UidPrefijo != null && prefijosTelefonicosRepository.prefijosTelefonicos.UidPrefijo != Guid.Empty)
+                                    {
+                                        decimal validar = 0;
+                                        if (decimal.TryParse(item["IMPORTE"].ToString(), out validar))
+                                        {
+                                            string MontoMin = "50.00";
+                                            string MontoMax = "15000.00";
+
+                                            if (decimal.Parse(item["IMPORTE"].ToString()) >= decimal.Parse(MontoMin) && decimal.Parse(item["IMPORTE"].ToString()) <= decimal.Parse(MontoMax))
+                                            {
+                                                DateTime date = DateTime.Parse(item["VENCIMIENTO"].ToString());
+                                                DateTime hoy = DateTime.Parse(DateTime.Now.ToString("dd/MM/yyyy"));
+                                                DateTime hoyMas = DateTime.Parse(DateTime.Now.AddDays(89).ToString("dd/MM/yyyy"));
+                                                DateTime date2 = DateTime.Parse(item["VENCIMIENTO"].ToString());
+
+                                                if (date >= hoy && date2 <= hoyMas)
+                                                {
+                                                    DateTime fecha;
+                                                    if (DateTime.TryParse(item["VENCIMIENTO"].ToString(), out fecha))
+                                                    {
+                                                        if (!string.IsNullOrEmpty(item["PROMOCION(ES)"].ToString()))
+                                                        {
+                                                            promociones = item["PROMOCION(ES)"].ToString();
+
+                                                            promociones = promociones.Trim().Replace(",", " MESES,");
+
+                                                            promociones = promociones.Trim() + " MESES";
+
+                                                            //string strRegex = @"^[0-9]+([,]*\s()[0-9]+)+([,]*\s()[0-9]+)?$";
+                                                            string strRegex = @"^[0-9]+([,]()[0-9]+)+([,]()[0-9]+)?$";
+                                                            Regex re = new Regex(strRegex);
+
+                                                            string strRegexOnly = @"^[0-9]?$";
+                                                            Regex reOnly = new Regex(strRegexOnly);
+
+                                                            if (re.IsMatch(item["PROMOCION(ES)"].ToString().Trim()) || reOnly.IsMatch(item["PROMOCION(ES)"].ToString().Trim()))
+                                                            {
+                                                                string[] arPromo = Regex.Split(promociones, ",");
+
+                                                                for (int i = 0; i < arPromo.Length; i++)
+                                                                {
+                                                                    if (!lsCBLPromocionesModelCliente.Exists(x => x.VchDescripcion == arPromo[i].Trim()))
+                                                                    {
+
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        pro += arPromo[i] + ",";
+                                                                        PromocionCorrecto = true;
+                                                                    }
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                DateTime dateTime = DateTime.Now;
+                                                                string Remplazo = dateTime.ToString("dd/MM/yyyy");
+                                                                lsLigasErroresMultiple.Add(new LigasMultiplesUsuariosGridViewModel()
+                                                                {
+                                                                    StrNombre = item["NOMBRE(S)"].ToString(),
+                                                                    StrApePaterno = item["APEPATERNO"].ToString(),
+                                                                    StrApeMaterno = item["APEMATERNO"].ToString(),
+                                                                    StrCorreo = item["CORREO"].ToString(),
+                                                                    StrTelefono = item["CELULAR"].ToString(),
+                                                                    StrAsunto = item["ASUNTO"].ToString(),
+                                                                    StrConcepto = item["CONCEPTO"].ToString(),
+                                                                    DcmImporte = item.IsNull("IMPORTE") ? 0 : decimal.Parse(item["IMPORTE"].ToString()),
+                                                                    DtVencimiento = item.IsNull("VENCIMIENTO") ? DateTime.Parse(Remplazo) : DateTime.Parse(item["VENCIMIENTO"].ToString()),
+                                                                    CBCorreo = EMAIL,
+                                                                    CBWhatsApp = WHATS,
+                                                                    CBSms = SMS,
+                                                                    StrPromociones = item["PROMOCION(ES)"].ToString()
+                                                                });
+                                                                PromocionCorrecto = false;
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            PromocionCorrecto = true;
+                                                        }
+
+                                                        if (PromocionCorrecto)
+                                                        {
+                                                            lsLigasInsertarMultiple.Add(new LigasMultiplesUsuariosGridViewModel()
+                                                            {
+                                                                StrNombre = item["NOMBRE(S)"].ToString(),
+                                                                StrApePaterno = item["APEPATERNO"].ToString(),
+                                                                StrApeMaterno = item["APEMATERNO"].ToString(),
+                                                                StrCorreo = item["CORREO"].ToString(),
+                                                                UidPrefijo = prefijosTelefonicosRepository.prefijosTelefonicos.UidPrefijo,
+                                                                StrTelefono = item["CELULAR"].ToString().Split('(', ')')[2],
+                                                                StrAsunto = item["ASUNTO"].ToString(),
+                                                                StrConcepto = item["CONCEPTO"].ToString(),
+                                                                DcmImporte = decimal.Parse(item["IMPORTE"].ToString()),
+                                                                DtVencimiento = DateTime.Parse(item["VENCIMIENTO"].ToString()),
+                                                                CBCorreo = EMAIL,
+                                                                CBWhatsApp = WHATS,
+                                                                CBSms = SMS,
+                                                                StrPromociones = pro
+                                                            });
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        error = true;
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    error = true;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                error = true;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            error = true;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        error = true;
+                                    }
+                                }
+                                else
+                                {
+                                    error = true;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            error = true;
+                        }
                     }
 
-                    if (PromocionCorrecto)
+                    if (error)
                     {
-                        lsLigasInsertarMultiple.Add(new LigasMultiplesUsuariosGridViewModel()
+                        DateTime Remplazo = DateTime.Parse(DateTime.Now.ToString("dd/MM/yyyy"));
+                        decimal Importe = 0;
+
+                        if (!string.IsNullOrEmpty(item["IMPORTE"].ToString()))
+                        {
+                            decimal validar = 0;
+                            string numString = item["IMPORTE"].ToString();
+                            bool canConvert = decimal.TryParse(numString, out validar);
+
+                            if (canConvert)
+                            {
+                                Importe = decimal.Parse(item["IMPORTE"].ToString());
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(item["VENCIMIENTO"].ToString()))
+                        {
+                            DateTime fecha;
+
+                            if (DateTime.TryParse(item["VENCIMIENTO"].ToString(), out fecha))
+                            {
+                                Remplazo = fecha;
+                            }
+                        }
+
+                        lsLigasErroresMultiple.Add(new LigasMultiplesUsuariosGridViewModel()
                         {
                             StrNombre = item["NOMBRE(S)"].ToString(),
                             StrApePaterno = item["APEPATERNO"].ToString(),
@@ -913,8 +1168,11 @@ namespace Franquicia.Bussiness
                             StrTelefono = item["CELULAR"].ToString(),
                             StrAsunto = item["ASUNTO"].ToString(),
                             StrConcepto = item["CONCEPTO"].ToString(),
-                            DcmImporte = decimal.Parse(item["IMPORTE"].ToString()),
-                            DtVencimiento = DateTime.Parse(item["VENCIMIENTO"].ToString()),
+                            DcmImporte = Importe,
+                            DtVencimiento = Remplazo,
+                            CBCorreo = EMAIL,
+                            CBWhatsApp = WHATS,
+                            CBSms = SMS,
                             StrPromociones = item["PROMOCION(ES)"].ToString()
                         });
                     }
@@ -925,10 +1183,65 @@ namespace Franquicia.Bussiness
                     !string.IsNullOrEmpty(item["APEMATERNO"].ToString()) || !string.IsNullOrEmpty(item["CORREO"].ToString()) ||
                     !string.IsNullOrEmpty(item["CELULAR"].ToString()) || !string.IsNullOrEmpty(item["ASUNTO"].ToString()) ||
                     !string.IsNullOrEmpty(item["CONCEPTO"].ToString()) || !string.IsNullOrEmpty(item["IMPORTE"].ToString()) ||
-                    !string.IsNullOrEmpty(item["VENCIMIENTO"].ToString()))
+                    !string.IsNullOrEmpty(item["VENCIMIENTO"].ToString()) && !string.IsNullOrEmpty(item["EMAIL"].ToString()) &&
+                    !string.IsNullOrEmpty(item["WHATS"].ToString()) && !string.IsNullOrEmpty(item["SMS"].ToString()))
                     {
-                        DateTime dateTime = DateTime.Now;
-                        string Remplazo = dateTime.ToString("dd/MM/yyyy");
+                        DateTime Remplazo = DateTime.Parse(DateTime.Now.ToString("dd/MM/yyyy"));
+
+                        bool EMAIL = false;
+                        bool WHATS = false;
+                        bool SMS = false;
+                        decimal Importe = 0;
+
+                        if (item["EMAIL"].ToString() == "SI")
+                        {
+                            EMAIL = true;
+                        }
+                        else if (item["EMAIL"].ToString() == "NO")
+                        {
+                            EMAIL = false;
+                        }
+
+                        if (item["WHATS"].ToString() == "SI")
+                        {
+                            WHATS = true;
+                        }
+                        else if (item["WHATS"].ToString() == "NO")
+                        {
+                            WHATS = false;
+                        }
+
+                        if (item["SMS"].ToString() == "SI")
+                        {
+                            SMS = true;
+                        }
+                        else if (item["SMS"].ToString() == "NO")
+                        {
+                            SMS = false;
+                        }
+
+                        if (!string.IsNullOrEmpty(item["IMPORTE"].ToString()))
+                        {
+                            decimal validar = 0;
+                            string numString = item["IMPORTE"].ToString();
+                            bool canConvert = decimal.TryParse(numString, out validar);
+
+                            if (canConvert)
+                            {
+                                Importe = decimal.Parse(item["IMPORTE"].ToString());
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(item["VENCIMIENTO"].ToString()))
+                        {
+                            DateTime fecha;
+
+                            if (DateTime.TryParse(item["VENCIMIENTO"].ToString(), out fecha))
+                            {
+                                Remplazo = fecha;
+                            }
+                        }
+
                         lsLigasErroresMultiple.Add(new LigasMultiplesUsuariosGridViewModel()
                         {
                             StrNombre = item["NOMBRE(S)"].ToString(),
@@ -938,19 +1251,28 @@ namespace Franquicia.Bussiness
                             StrTelefono = item["CELULAR"].ToString(),
                             StrAsunto = item["ASUNTO"].ToString(),
                             StrConcepto = item["CONCEPTO"].ToString(),
-                            DcmImporte = item.IsNull("IMPORTE") ? 0 : decimal.Parse(item["IMPORTE"].ToString()),
-                            DtVencimiento = item.IsNull("VENCIMIENTO") ? DateTime.Parse(Remplazo) : DateTime.Parse(item["VENCIMIENTO"].ToString()),
+                            DcmImporte = Importe,
+                            DtVencimiento = Remplazo,
+                            CBCorreo = EMAIL,
+                            CBWhatsApp = WHATS,
+                            CBSms = SMS,
                             StrPromociones = item["PROMOCION(ES)"].ToString()
                         });
                     }
                 }
             }
         }
+
         public void gvUsuariosSeleccionadosMultiple(List<LigasMultiplesUsuariosGridViewModel> lsLigasMultiplesUsuariosGridViewModel)
         {
+            Random random = new Random();
+
             foreach (var item in lsLigasMultiplesUsuariosGridViewModel)
             {
-                if (!lsgvUsuariosSeleccionados.Exists(x => x.UidUsuario == item.UidUsuario) && item.blSeleccionado == true)
+                DateTime dtAuxiliar = DateTime.Now.AddSeconds(3).AddMilliseconds(5);
+
+                //if (!lsgvUsuariosSeleccionados.Exists(x => x.UidUsuario == item.UidUsuario) && item.blSeleccionado == true)
+                if (item.blSeleccionado == true)
                 {
                     lsgvUsuariosSeleccionadosMultiple.Add(new LigasMultiplesUsuariosGridViewModel()
                     {
@@ -967,19 +1289,24 @@ namespace Franquicia.Bussiness
                         VchNombreComercial = item.VchNombreComercial,
                         StrAsunto = item.StrAsunto,
                         StrConcepto = item.StrConcepto,
-                        DcmImporte = item.DcmImporte,
-                        DtVencimiento = item.DtVencimiento
+                        DcmImporte = 50,
+                        DtVencimiento = item.DtVencimiento,
+                        CBCorreo = item.CBCorreo,
+                        CBSms = item.CBSms,
+                        CBWhatsApp = item.CBWhatsApp,
+                        IntAuxiliar = dtAuxiliar.ToString("ssfff") + random.Next(10000000, 100000001).ToString()
                     });
                 }
-                else if (lsgvUsuariosSeleccionadosMultiple.Exists(x => x.UidUsuario == item.UidUsuario) && item.blSeleccionado == false)
-                {
-                    lsgvUsuariosSeleccionadosMultiple.RemoveAt(lsgvUsuariosSeleccionadosMultiple.FindIndex(x => x.UidUsuario == item.UidUsuario));
-                }
+                //else if (lsgvUsuariosSeleccionadosMultiple.Exists(x => x.UidUsuario == item.UidUsuario) && item.blSeleccionado == false)
+                //{
+                //    lsgvUsuariosSeleccionadosMultiple.RemoveAt(lsgvUsuariosSeleccionadosMultiple.FindIndex(x => x.UidUsuario == item.UidUsuario));
+                //}
             }
         }
-        public void EliminarItemgvUsuariosSeleccionadosMultiple(int IdUsuario)
+        public void EliminarItemgvUsuariosSeleccionadosMultiple(int IdUsuario, int Index)
         {
-            lsgvUsuariosSeleccionadosMultiple.RemoveAt(lsgvUsuariosSeleccionadosMultiple.FindIndex(x => x.IdUsuario == IdUsuario));
+            //lsgvUsuariosSeleccionadosMultiple.RemoveAt(lsgvUsuariosSeleccionadosMultiple.FindIndex(x => x.IdUsuario == IdUsuario));
+            lsgvUsuariosSeleccionadosMultiple.RemoveAt(Index);
         }
         #endregion
         #endregion
@@ -1062,6 +1389,11 @@ namespace Franquicia.Bussiness
                     lsgvUsuariosSeleccionados.RemoveAt(lsgvUsuariosSeleccionados.FindIndex(x => x.UidUsuario == item.UidUsuario));
                 }
             }
+        }
+        public void EliminarItemgvUsuariosSeleccionadosFranquicia(int IdUsuario)
+        {
+            lsgvUsuariosSeleccionados.RemoveAt(lsgvUsuariosSeleccionados.FindIndex(x => x.IdUsuario == IdUsuario));
+            //lsgvUsuariosSeleccionados.RemoveAt(Index);
         }
         #endregion
         #region Multiple
@@ -1219,6 +1551,18 @@ namespace Franquicia.Bussiness
         {
             Guid UidLigaUrl = Guid.NewGuid();
 
+            bool result = false;
+            if (usuariosCompletosRepository.GenerarLigasPagos(
+               UidLigaUrl, VchUrl, VchConcepto, DcmImporte, IdReferencia, UidUsuario, VchIdentificador, DtRegistro, DtVencimiento, VchAsunto, UidLigaAsociado, UidPromocion, UidPropietario
+                ))
+            {
+                result = true;
+            }
+            return result;
+        }
+
+        public bool GenerarLigasPagosTemp(Guid UidLigaUrl, string VchUrl, string VchConcepto, decimal DcmImporte, string IdReferencia, Guid UidUsuario, string VchIdentificador, DateTime DtRegistro, DateTime DtVencimiento, string VchAsunto, Guid UidLigaAsociado, Guid UidPromocion, Guid UidPropietario)
+        {
             bool result = false;
             if (usuariosCompletosRepository.GenerarLigasPagos(
                UidLigaUrl, VchUrl, VchConcepto, DcmImporte, IdReferencia, UidUsuario, VchIdentificador, DtRegistro, DtVencimiento, VchAsunto, UidLigaAsociado, UidPromocion, UidPropietario

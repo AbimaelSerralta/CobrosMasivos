@@ -40,19 +40,33 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select lu.DtRegistro, lu.VchIdentificador, hp.* from LigasUrls lu left join HistorialPagos hp on hp.IdReferencia = lu.IdReferencia left join AuxiliarPago ap on ap.IdReferencia = lu.IdReferencia where lu.IdReferencia = hp.IdReferencia and ap.IdReferencia is null and lu.UidPropietario = '" + UidCliente + "'";
+            //query.CommandText = "select lu.DtRegistro, lu.VchIdentificador, hp.* from LigasUrls lu left join HistorialPagos hp on hp.IdReferencia = lu.IdReferencia left join AuxiliarPago ap on ap.IdReferencia = lu.IdReferencia where lu.IdReferencia = hp.IdReferencia and ap.IdReferencia is null and lu.UidPropietario = '" + UidCliente + "'";
+            query.CommandText = "select lu.DtRegistro, lu.VchIdentificador, hp.* from LigasUrls lu left join HistorialPagos hp on hp.IdReferencia = lu.IdReferencia left join AuxiliarPago ap on ap.IdReferencia = lu.IdReferencia where lu.IdReferencia = hp.IdReferencia and ap.IdReferencia is null and lu.UidPropietario = '" + UidCliente + "' UNION select t.DtRegistro, t.VchDescripcion as VchIdentificador, hp.* from Tickets t, HistorialPagos hp where t.UidHistorialPago = hp.UidHistorialPago and t.UidPropietario = '" + UidCliente + "'";
 
             DataTable dt = this.Busquedas(query);
 
             foreach (DataRow item in dt.Rows)
             {
+                decimal abono = 0;
+                decimal cargo = 0;
+
+                if (item["UidEstatusPago"].ToString().ToUpper() == "7AC8EFFC-8CD8-4643-A4D8-0088AC3072BD")
+                {
+                    cargo = decimal.Parse(item["DcmOperacion"].ToString());
+                }
+                else if (item["UidEstatusPago"].ToString().ToUpper() == "13178D2B-9704-4C15-9ED6-22029701E40A")
+                {
+                    abono = decimal.Parse(item["DcmOperacion"].ToString());
+                }
+
+
                 lsHistorialPagosGridViewModel.Add(new HistorialPagosGridViewModel()
                 {
                     DtRegistro = DateTime.Parse(item["DtRegistro"].ToString()),
                     VchIdentificador = item["VchIdentificador"].ToString(),
                     UidHistorialPago = new Guid(item["UidHistorialPago"].ToString()),
-                    DcmSaldo = decimal.Parse(item["DcmSaldo"].ToString()),
-                    DcmOperacion = decimal.Parse(item["DcmOperacion"].ToString()),
+                    DcmSaldo = abono,
+                    DcmOperacion = cargo,
                     DcmNuevoSaldo = decimal.Parse(item["DcmNuevoSaldo"].ToString()),
                     IdReferencia = item["IdReferencia"].ToString(),
                     UidEstatusPago = Guid.Parse(item["UidEstatusPago"].ToString())

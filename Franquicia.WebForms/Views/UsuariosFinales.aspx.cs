@@ -29,6 +29,7 @@ namespace Franquicia.WebForms.Views
         ColoniasServices coloniasServices = new ColoniasServices();
 
         PerfilesServices perfilesServices = new PerfilesServices();
+        PrefijosTelefonicosServices prefijosTelefonicosServices = new PrefijosTelefonicosServices();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -56,6 +57,7 @@ namespace Franquicia.WebForms.Views
                 Session["usuariosCompletosServices"] = usuariosCompletosServices;
                 //Session["telefonosUsuariosServices"] = telefonosUsuariosServices;
                 Session["estatusService"] = estatusService;
+                Session["prefijosTelefonicosServices"] = prefijosTelefonicosServices;
 
                 usuariosCompletosServices.CargarUsuariosFinales(new Guid(ViewState["UidClienteLocal"].ToString()), new Guid("E39FF705-8A01-4302-829A-7CFB9615CC8F"));
                 gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
@@ -66,6 +68,12 @@ namespace Franquicia.WebForms.Views
                 ddlEstatus.DataTextField = "VchDescripcion";
                 ddlEstatus.DataValueField = "UidEstatus";
                 ddlEstatus.DataBind();
+
+                prefijosTelefonicosServices.CargarPrefijosTelefonicos();
+                ddlPrefijo.DataSource = prefijosTelefonicosServices.lsPrefijosTelefonicos;
+                ddlPrefijo.DataTextField = "VchCompleto";
+                ddlPrefijo.DataValueField = "UidPrefijo";
+                ddlPrefijo.DataBind();
 
                 FiltroEstatus.DataSource = estatusService.lsEstatus;
                 FiltroEstatus.Items.Insert(0, new ListItem("Seleccione", "00000000-0000-0000-0000-000000000000"));
@@ -106,6 +114,7 @@ namespace Franquicia.WebForms.Views
 
                 estatusService = (EstatusServices)Session["estatusService"];
                 tiposTelefonosServices = (TiposTelefonosServices)Session["tiposTelefonosServices"];
+                prefijosTelefonicosServices = (PrefijosTelefonicosServices)Session["prefijosTelefonicosServices"];
 
                 lblValidar.Text = string.Empty;
 
@@ -388,7 +397,7 @@ namespace Franquicia.WebForms.Views
 
                                     if (usuariosCompletosServices.RegistrarUsuarios(UidUsuario,
                                     txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), ViewState["txtUsuario.Text"].ToString().Trim().ToUpper(), ViewState["txtPassword.Text"].ToString().Trim(), new Guid("18E9669B-C238-4BCC-9213-AF995644A5A4"),
-                                    txtNumero.Text.Trim(), Guid.Parse("B1055882-BCBA-4AB7-94FA-90E57647E607"), new Guid(ViewState["UidClienteLocal"].ToString())))
+                                    txtNumero.Text.Trim(), Guid.Parse("B1055882-BCBA-4AB7-94FA-90E57647E607"), new Guid(ddlPrefijo.SelectedValue), new Guid(ViewState["UidClienteLocal"].ToString())))
                                     {
                                         if (ddlIncluirDir.SelectedValue == "SI")
                                         {
@@ -470,7 +479,7 @@ namespace Franquicia.WebForms.Views
                             {
                                 if (usuariosCompletosServices.ActualizarUsuarios(
                                 new Guid(ViewState["UidRequerido"].ToString()), txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), new Guid(ddlEstatus.SelectedValue), txtUsuario.Text.Trim().ToUpper(), txtPassword.Text.Trim(), new Guid("18E9669B-C238-4BCC-9213-AF995644A5A4"),
-                                txtNumero.Text.Trim(), new Guid(ddlTipoTelefono.SelectedValue), new Guid(ViewState["UidClienteLocal"].ToString())))
+                                txtNumero.Text.Trim(), new Guid(ddlTipoTelefono.SelectedValue), new Guid(ddlPrefijo.SelectedValue), new Guid(ViewState["UidClienteLocal"].ToString())))
                                 {
                                     if (ddlIncluirDir.SelectedValue == "SI")
                                     {
@@ -606,6 +615,7 @@ namespace Franquicia.WebForms.Views
 
             ddlTipoTelefono.Enabled = false;
             txtNumero.Enabled = false;
+            ddlPrefijo.Enabled = false;
         }
         private void DesbloquearCampos()
         {
@@ -651,6 +661,7 @@ namespace Franquicia.WebForms.Views
 
             ddlTipoTelefono.Enabled = true;
             txtNumero.Enabled = true;
+            ddlPrefijo.Enabled = true;
         }
         private void LimpiarCampos()
         {
@@ -682,6 +693,7 @@ namespace Franquicia.WebForms.Views
 
             ddlTipoTelefono.SelectedIndex = -1;
             txtNumero.Text = string.Empty;
+            ddlPrefijo.SelectedIndex = ddlPrefijo.Items.IndexOf(ddlPrefijo.Items.FindByValue("abb854c4-e7ed-420f-8561-aa4b61bf5b0f"));
         }
 
         protected void gvAdministradores_RowDataBound(object sender, GridViewRowEventArgs e)
@@ -803,6 +815,7 @@ namespace Franquicia.WebForms.Views
             telefonosUsuariosServices.ObtenerTelefonoUsuario(dataKeys);
             txtNumero.Text = telefonosUsuariosServices.telefonosUsuariosRepository.telefonosUsuarios.VchTelefono;
             ddlTipoTelefono.SelectedIndex = ddlTipoTelefono.Items.IndexOf(ddlTipoTelefono.Items.FindByValue(telefonosUsuariosServices.telefonosUsuariosRepository.telefonosUsuarios.UidTipoTelefono.ToString()));
+            ddlPrefijo.SelectedIndex = ddlPrefijo.Items.IndexOf(ddlPrefijo.Items.FindByValue(telefonosUsuariosServices.telefonosUsuariosRepository.telefonosUsuarios.UidPrefijo.ToString()));
         }
 
         #region Combobox de Direcciones
@@ -962,6 +975,16 @@ namespace Franquicia.WebForms.Views
                         else
                         {
                             usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.NombreCompleto).ToList();
+                        }
+                        break;
+                    case "StrCorreo":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderBy(x => x.StrCorreo).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.StrCorreo).ToList();
                         }
                         break;
                     case "VchUsuario":

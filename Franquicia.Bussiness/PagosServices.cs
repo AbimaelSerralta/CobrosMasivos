@@ -18,6 +18,7 @@ namespace Franquicia.Bussiness
         }
 
         public List<LigasUrlsPayCardModel> lsLigasUrlsPayCardModel = new List<LigasUrlsPayCardModel>();
+        public List<LigasEventoPayCardModel> lsLigasEventoPayCardModel = new List<LigasEventoPayCardModel>();
 
         public bool AgregarInformacionTarjeta(string Autorizacion, string reference, DateTime HoraTransaccion, string response, string cc_type, string tp_operation, string nb_company, string nb_merchant, string id_url, string cd_error, string nb_error, string cc_number, string cc_mask, string FolioPago, decimal Monto, DateTime DtFechaOperacion)
         {
@@ -28,6 +29,17 @@ namespace Franquicia.Bussiness
         {
             lsLigasUrlsPayCardModel = new List<LigasUrlsPayCardModel>();
             return lsLigasUrlsPayCardModel = pagosRepository.ConsultarPromocionLiga(IdReferencia);
+        }
+
+        public List<LigasEventoPayCardModel> ConsultarPagoEventoLiga(string IdReferencia)
+        {
+            lsLigasEventoPayCardModel = new List<LigasEventoPayCardModel>();
+            return lsLigasEventoPayCardModel = pagosRepository.ConsultarPagoEventoLiga(IdReferencia);
+        }
+
+        public string ObtenerCorreoAuxiliar(string IdReferencia)
+        {
+            return pagosRepository.ObtenerCorreoAuxiliar(IdReferencia);
         }
 
         //public bool ActualizarEstatusLigas(string Estatus)

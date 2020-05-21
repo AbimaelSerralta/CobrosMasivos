@@ -104,6 +104,7 @@ namespace Franquicia.WebForms.Views
                                 {
                                     manejoSesionServices.ObtenerFranquiciaClienteUsuario();
                                     Session["UidClienteMaster"] = manejoSesionServices.usuarioCompletoRepository.clientes.UidCliente;
+                                    Session["UidUsuarioMaster"] = manejoSesionServices.usuarioCompletoRepository.usuarioCompleto.UidUsuario;
                                 }
                                 else if (manejoSesionServices.perfilesRepository.appWebRepository.appWeb.IntGerarquia == 4)
                                 {

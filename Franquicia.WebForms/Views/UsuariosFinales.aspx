@@ -47,6 +47,7 @@
                                                 </EmptyDataTemplate>
                                                 <Columns>
                                                     <asp:BoundField SortExpression="NombreCompleto" DataField="NombreCompleto" HeaderText="NOMBRE COMPLETO" />
+                                                    <asp:BoundField SortExpression="StrCorreo" DataField="StrCorreo" HeaderText="CORREO" />
                                                     <asp:BoundField SortExpression="VchUsuario" DataField="VchUsuario" HeaderText="USUARIO" />
                                                     <asp:BoundField SortExpression="VchNombrePerfil" DataField="VchNombrePerfil" HeaderText="PERFIL" />
                                                     <asp:TemplateField SortExpression="UidEstatus" HeaderText="ESTATUS">
@@ -215,6 +216,11 @@
                                                         <asp:Label CssClass="text-danger" runat="server" ID="lblExiste" />
                                                         <asp:Label CssClass="text-success" runat="server" ID="lblNoExiste" />
                                                         <asp:LinkButton ID="btnValidarCorreo" CssClass="pull-right" Text="Validar" OnClick="btnValidarCorreo_Click" runat="server" />
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label for="ddlPrefijo" style="color: black;">Código pais *</label>
+                                                        <asp:DropDownList ID="ddlPrefijo" CssClass="form-control" runat="server">
+                                                        </asp:DropDownList>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <div class="form-group">

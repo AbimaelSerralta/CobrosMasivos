@@ -510,7 +510,7 @@ namespace Franquicia.WebForms.Views
                 GridView valor = (GridView)sender;
                 int dataKey = int.Parse(valor.DataKeys[Seleccionado.RowIndex].Value.ToString());
 
-                usuariosCompletosServices.EliminarItemgvUsuariosSeleccionados(dataKey);
+                usuariosCompletosServices.EliminarItemgvUsuariosSeleccionadosFranquicia(dataKey);
                 gvUsuariosSeleccionados.DataSource = usuariosCompletosServices.lsgvUsuariosSeleccionados;
                 gvUsuariosSeleccionados.DataBind();
             }

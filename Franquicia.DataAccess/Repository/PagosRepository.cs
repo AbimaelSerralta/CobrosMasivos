@@ -84,7 +84,7 @@ namespace Franquicia.DataAccess.Repository
             }
             return resultado;
         }
-        
+
         public List<LigasUrlsPayCardModel> ConsultarPromocionLiga(string IdReferencia)
         {
             List<LigasUrlsPayCardModel> lsLigasUrlsPayCardModel = new List<LigasUrlsPayCardModel>();
@@ -105,7 +105,7 @@ namespace Franquicia.DataAccess.Repository
                     SqlCommand quer = new SqlCommand();
                     quer.CommandType = CommandType.Text;
 
-                    quer.CommandText = "select * from LigasUrls where IdReferencia != '"+ IdReferencia + "' and UidLigaAsociado = '" + UidLigaAsociado + "'";
+                    quer.CommandText = "select * from LigasUrls where IdReferencia != '" + IdReferencia + "' and UidLigaAsociado = '" + UidLigaAsociado + "'";
 
                     DataTable data = this.Busquedas(quer);
 
@@ -123,6 +123,71 @@ namespace Franquicia.DataAccess.Repository
             }
 
             return lsLigasUrlsPayCardModel;
+        }
+        public List<LigasEventoPayCardModel> ConsultarPagoEventoLiga(string IdReferencia)
+        {
+            List<LigasEventoPayCardModel> lsLigasEventoPayCardModel = new List<LigasEventoPayCardModel>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select lu.IdReferencia, lu.DcmImporte, cl.VchNombreComercial from LigasUrls lu, Clientes cl where lu.UidPropietario = cl.UidCliente and lu.IdReferencia = '" + IdReferencia + "'";
+            DataTable dt = this.Busquedas(query);
+
+            string pago = string.Empty;
+            bool promocion = false;
+
+            if (dt.Rows.Count == 0)
+            {
+                SqlCommand quer = new SqlCommand();
+                quer.CommandType = CommandType.Text;
+
+                quer.CommandText = "select * from LigasUrls where IdReferencia != '" + IdReferencia + "' and UidLigaAsociado = '" + IdReferencia + "'";
+                dt = this.Busquedas(quer);
+
+                promocion = true;
+            }
+
+            foreach (DataRow it in dt.Rows)
+            {
+                if (promocion)
+                {
+                    pago = "Al contado";
+                }
+                else
+                {
+                    pago = it["VchDescripcion"].ToString();
+                }
+
+                lsLigasEventoPayCardModel.Add(new LigasEventoPayCardModel()
+                {
+                    IdReferencia = it["IdReferencia"].ToString(),
+                    DcmImporte =decimal.Parse(it["DcmImporte"].ToString()),
+                    VchNombreComercial = it["VchNombreComercial"].ToString(),
+                    VchPago = pago                    
+                });
+            }
+
+            return lsLigasEventoPayCardModel;
+        }
+        
+        public string ObtenerCorreoAuxiliar(string IdReferencia)
+        {
+            string Resultado = string.Empty;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select * from AuxiliarCorreos where IdReferencia = = '" + IdReferencia + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                Resultado = item["VchCorreo"].ToString();
+            }
+
+            return Resultado;
         }
     }
 }

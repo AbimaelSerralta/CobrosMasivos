@@ -47,7 +47,10 @@ namespace Franquicia.WebForms.Views
                         {
                             StrNombre = "",
                             DtVencimiento = dateTime,
-                            DcmImporte = 0
+                            DcmImporte = 50,
+                            CBCorreo = true,
+                            CBSms = true,
+                            CBWhatsApp = true
                         });
 
                         gvLigasMultiples.DataSource = l;
@@ -92,7 +95,21 @@ namespace Franquicia.WebForms.Views
                 {
                     header = gridView.HeaderRow.Cells[j].Text;
 
-                    dr[header] = HttpUtility.HtmlDecode(row.Cells[j].Text.Replace("&nbsp;", ""));
+                    if (header == "EMAIL" || header == "WHATS" || header == "SMS")
+                    {
+                        if (row.Cells[j].Text == "True")
+                        {
+                            dr[header] = "SI";
+                        }
+                        else if(row.Cells[j].Text == "False")
+                        {
+                            dr[header] = "NO";
+                        }
+                    }
+                    else
+                    {
+                        dr[header] = HttpUtility.HtmlDecode(row.Cells[j].Text.Replace("&nbsp;", ""));
+                    }
                 }
 
                 data.Rows.Add(dr);

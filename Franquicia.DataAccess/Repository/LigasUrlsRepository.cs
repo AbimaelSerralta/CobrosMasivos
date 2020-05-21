@@ -269,11 +269,11 @@ namespace Franquicia.DataAccess.Repository
                 throw;
             }
         }
-        public void ContruirLiga(Guid UidCliente, string IdReferencia)
+        public void ContruirLiga(Guid UidLigaUrl)
         {
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
-            query.CommandText = "select lu.VchUrl, lu.VchConcepto, lu.DcmImporte, lu.DtVencimiento, us.VchNombre, us.VchApePaterno, us.VchApeMaterno, cl.VchNombreComercial from LigasUrls lu, Usuarios us, Clientes cl where lu.UidUsuario = us.UidUsuario and cl.UidCliente = lu.UidPropietario and UidPropietario = '" + UidCliente + "' and IdReferencia = '" + IdReferencia + "'";
+            query.CommandText = "select lu.VchUrl, lu.VchConcepto, lu.DcmImporte, lu.DtVencimiento, us.VchNombre, us.VchApePaterno, us.VchApeMaterno, cl.VchIdWAySMS, lu.UidPromocion, lu.UidLigaAsociado from LigasUrls lu, Usuarios us, Clientes cl where lu.UidUsuario = us.UidUsuario and cl.UidCliente = lu.UidPropietario and lu.UidLigaUrl = '" + UidLigaUrl + "'";
 
             DataTable dt = this.Busquedas(query);
 
@@ -286,7 +286,9 @@ namespace Franquicia.DataAccess.Repository
                 ligasUrlsConstruirLigaModel.VchNombre = item["VchNombre"].ToString();
                 ligasUrlsConstruirLigaModel.VchApePaterno = item["VchApePaterno"].ToString();
                 ligasUrlsConstruirLigaModel.VchApeMaterno = item["VchApeMaterno"].ToString();
-                ligasUrlsConstruirLigaModel.VchNombreComercial = item["VchNombreComercial"].ToString();
+                ligasUrlsConstruirLigaModel.VchNombreComercial = item["VchIdWAySMS"].ToString();
+                ligasUrlsConstruirLigaModel.UidPromocion = item.IsNull("UidPromocion") ? Guid.Empty : Guid.Parse(item["UidPromocion"].ToString());
+                ligasUrlsConstruirLigaModel.UidLigaAsociado = item.IsNull("UidLigaAsociado") ? Guid.Empty : Guid.Parse(item["UidLigaAsociado"].ToString());
             }
         }
         #endregion

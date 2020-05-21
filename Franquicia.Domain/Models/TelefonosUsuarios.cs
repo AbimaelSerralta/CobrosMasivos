@@ -12,5 +12,6 @@ namespace Franquicia.Domain.Models
         public string VchTelefono { get; set; }
         public Guid UidUsuario { get; set; }
         public Guid UidTipoTelefono { get; set; }
+        public Guid UidPrefijo { get; set; }
     }
 }

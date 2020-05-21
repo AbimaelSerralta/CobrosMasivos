@@ -242,7 +242,7 @@ namespace Franquicia.Bussiness
             smtp.UseDefaultCredentials = true;
             smtp.Credentials = credenciales;
             //Puerto de salida de correo electronico
-            smtp.Port = 25;
+            smtp.Port = 2525;
             //envio del correo electronico
             smtp.Send(mail);
         }

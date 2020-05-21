@@ -43,6 +43,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AESCrypto.cs" />
+    <Compile Include="EventosServices.cs" />
+    <Compile Include="PrefijosTelefonicosServices.cs" />
+    <Compile Include="TicketsServices.cs" />
     <Compile Include="HistorialPagosServices.cs" />
     <Compile Include="ColoniasServices.cs" />
     <Compile Include="CiudadesServices.cs" />

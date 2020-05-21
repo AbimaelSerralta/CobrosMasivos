@@ -10,5 +10,6 @@ namespace Franquicia.Domain.ViewModels
     public class LigasMultiplePromocionesModel : Promociones
     {
         public int IdUsuario { get; set; }
+        public string IntAuxiliar { get; set; }
     }
 }

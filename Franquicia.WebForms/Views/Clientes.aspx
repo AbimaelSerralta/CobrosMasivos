@@ -48,6 +48,7 @@
                                                     <asp:BoundField SortExpression="VchRFC" DataField="VchRFC" HeaderText="RFC" />
                                                     <asp:BoundField SortExpression="VchRazonSocial" DataField="VchRazonSocial" HeaderText="RAZÓN SOCIAL" />
                                                     <asp:BoundField SortExpression="VchNombreComercial" DataField="VchNombreComercial" HeaderText="NOMBRE COMERCIAL" />
+                                                    <asp:BoundField SortExpression="VchIdWAySMS" DataField="VchIdWAySMS" HeaderText="DESCRIPCION WA/SMS" />
                                                     <asp:TemplateField SortExpression="UidEstatus" HeaderText="ESTATUS">
                                                         <ItemTemplate>
                                                             <div class="col-md-6">
@@ -105,16 +106,16 @@
 <asp:Content ID="Content3" ContentPlaceHolderID="cBodyBottom" runat="server">
     <!--MODAL-->
     <div class="modal fade" id="ModalNuevo" tabindex="-1" role="dialog" data-backdrop="static" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <asp:UpdatePanel runat="server">
                     <ContentTemplate>
                         <div class="modal-header">
                             <h5 class="modal-title" runat="server">
                                 <asp:Label ID="lblTituloModal" runat="server" /></h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <%--<button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
-                            </button>
+                            </button>--%>
                         </div>
                     </ContentTemplate>
                 </asp:UpdatePanel>
@@ -166,6 +167,10 @@
                                         <asp:UpdatePanel runat="server">
                                             <ContentTemplate>
                                                 <div class="row">
+                                                    <div class="form-group col-md-6">
+                                                        <label for="txtRFC" style="color: black;">Descripcion para Whats y SMS</label>
+                                                        <asp:TextBox ID="txtIdentificadorWASMS" PlaceHolder="Max 20 caracteres" MaxLength="20" CssClass="form-control" runat="server" />
+                                                    </div>
                                                     <div class="form-group col-md-6">
                                                         <label for="txtRFC" style="color: black;">RFC</label>
                                                         <asp:TextBox ID="txtRFC" CssClass="form-control" runat="server" />

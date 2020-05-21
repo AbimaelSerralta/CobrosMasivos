@@ -327,7 +327,7 @@ namespace Franquicia.WebForms.Views
             Session["lsgvUsuariosSeleccionadosMultiple"] = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple;
             Session["lsLigasUsuariosGridViewModelErrorMultiple"] = null;
 
-            string _open = "window.open('ExportarAExcelMultiple.aspx', '_blank');";
+            string _open = "window.open('ExportarAExcelMultipleFranquicia.aspx', '_blank');";
             ScriptManager.RegisterStartupScript(this, this.GetType(), Guid.NewGuid().ToString(), _open, true);
         }
 
@@ -1082,7 +1082,7 @@ namespace Franquicia.WebForms.Views
             Session["lsgvUsuariosSeleccionadosMultiple"] = null;
             Session["lsLigasUsuariosGridViewModelErrorMultiple"] = usuariosCompletosServices.lsLigasErroresMultiple;
 
-            string _open = "window.open('ExportarAExcelMultiple.aspx', '_blank');";
+            string _open = "window.open('ExportarAExcelMultipleFranquicia.aspx', '_blank');";
             ScriptManager.RegisterStartupScript(this, this.GetType(), Guid.NewGuid().ToString(), _open, true);
         }
 

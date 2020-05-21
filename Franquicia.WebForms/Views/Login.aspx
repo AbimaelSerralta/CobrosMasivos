@@ -38,7 +38,8 @@
             <ProgressTemplate>
                 <div class="PogressModal" style="top: 0px;">
                     <div>
-                        <div class="loader"></div>
+                        <img height="150" width="150" src="../CSSPropio/loader.gif" alt="imgCobrosMasivos" />
+                        <%--<div class="loader"></div>--%>
                         <br />
                         <asp:Label Text="Validando..." Style="color: white;" runat="server" />
                     </div>

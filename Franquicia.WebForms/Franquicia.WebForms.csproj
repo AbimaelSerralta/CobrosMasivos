@@ -204,13 +204,18 @@
     <Content Include="bootstrap4.0.0\js\bootstrap.bundle.min.js" />
     <Content Include="bootstrap4.0.0\js\bootstrap.js" />
     <Content Include="bootstrap4.0.0\js\bootstrap.min.js" />
+    <Content Include="CSSPropio\BasicEventos.css" />
     <Content Include="CSSPropio\BtnPaginacion.css" />
     <Content Include="CSSPropio\Loader.css" />
+    <Content Include="CSSPropio\loader.gif" />
     <Content Include="CSSPropio\Login.css" />
     <Content Include="CSSPropio\style2.css" />
+    <Content Include="CSSPropio\StyleLoadingEvento.css" />
     <Content Include="CSSPropio\StyleVentanaModal.css" />
     <Content Include="Default.aspx" />
+    <Content Include="Evento.aspx" />
     <Content Include="Global.asax" />
+    <Content Include="Images\EventoCerrado.png" />
     <Content Include="Images\face.png" />
     <Content Include="Images\icoSms.jpg" />
     <Content Include="Images\icoWhats.png" />
@@ -222,13 +227,18 @@
     <Content Include="Images\logoCobroscontarjetasLetras.png" />
     <Content Include="Images\mountain.png" />
     <Content Include="Images\Multiple.PNG" />
+    <Content Include="Images\think.png" />
     <Content Include="Multiselect\css\bootstrap-multiselect.css" />
     <Content Include="Multiselect\js\bootstrap-multiselect.min.js" />
     <Content Include="Multiselect\js\jquery-3.3.1.min.js" />
     <Content Include="Views\AccesosUsuarios.aspx" />
     <Content Include="Views\AdministradoresFranquicias.aspx" />
     <Content Include="Views\AdministradoresClientes.aspx" />
+    <Content Include="Views\CrearEventos.aspx" />
+    <Content Include="Views\Eventos.aspx" />
+    <Content Include="Views\ExportarAExcelFranquicia.aspx" />
     <Content Include="Views\ExportarAExcel.aspx" />
+    <Content Include="Views\ExportarAExcelMultipleFranquicia.aspx" />
     <Content Include="Views\ExportarAExcelMultiple.aspx" />
     <Content Include="Views\ExportarAExcelReporteLigas.aspx" />
     <Content Include="Views\GenerarLigasFranquicias.aspx" />
@@ -241,7 +251,8 @@
     <Content Include="Views\Promociones.aspx" />
     <Content Include="Views\ReporteLigasFranquicias.aspx" />
     <Content Include="Views\ReporteLigas.aspx" />
-    <Content Include="Views\SeleccionPago.aspx" />
+    <Content Include="Views\Pago.aspx" />
+    <Content Include="Views\Solo2.aspx" />
     <Content Include="Views\Tarifas.aspx" />
     <Content Include="Views\UsuariosClientes.aspx" />
     <Content Include="Views\UsuariosFinalesFranquicias.aspx" />
@@ -272,6 +283,13 @@
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Evento.aspx.cs">
+      <DependentUpon>Evento.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Evento.aspx.designer.cs">
+      <DependentUpon>Evento.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -299,12 +317,40 @@
     <Compile Include="Views\AdministradoresClientes.aspx.designer.cs">
       <DependentUpon>AdministradoresClientes.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Views\CrearEventos.aspx.cs">
+      <DependentUpon>CrearEventos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\CrearEventos.aspx.designer.cs">
+      <DependentUpon>CrearEventos.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Eventos.aspx.cs">
+      <DependentUpon>Eventos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\Eventos.aspx.designer.cs">
+      <DependentUpon>Eventos.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ExportarAExcelFranquicia.aspx.cs">
+      <DependentUpon>ExportarAExcelFranquicia.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\ExportarAExcelFranquicia.aspx.designer.cs">
+      <DependentUpon>ExportarAExcelFranquicia.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Views\ExportarAExcel.aspx.cs">
       <DependentUpon>ExportarAExcel.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Views\ExportarAExcel.aspx.designer.cs">
       <DependentUpon>ExportarAExcel.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ExportarAExcelMultipleFranquicia.aspx.cs">
+      <DependentUpon>ExportarAExcelMultipleFranquicia.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\ExportarAExcelMultipleFranquicia.aspx.designer.cs">
+      <DependentUpon>ExportarAExcelMultipleFranquicia.aspx</DependentUpon>
     </Compile>
     <Compile Include="Views\ExportarAExcelMultiple.aspx.cs">
       <DependentUpon>ExportarAExcelMultiple.aspx</DependentUpon>
@@ -390,12 +436,19 @@
     <Compile Include="Views\ReporteLigas.aspx.designer.cs">
       <DependentUpon>ReporteLigas.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Views\SeleccionPago.aspx.cs">
-      <DependentUpon>SeleccionPago.aspx</DependentUpon>
+    <Compile Include="Views\Pago.aspx.cs">
+      <DependentUpon>Pago.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Views\SeleccionPago.aspx.designer.cs">
-      <DependentUpon>SeleccionPago.aspx</DependentUpon>
+    <Compile Include="Views\Pago.aspx.designer.cs">
+      <DependentUpon>Pago.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Solo2.aspx.cs">
+      <DependentUpon>Solo2.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\Solo2.aspx.designer.cs">
+      <DependentUpon>Solo2.aspx</DependentUpon>
     </Compile>
     <Compile Include="Views\Tarifas.aspx.cs">
       <DependentUpon>Tarifas.aspx</DependentUpon>
@@ -711,7 +764,8 @@
     <Content Include="assets\MaterialIcons\KFOmCnqEu92Fr1Mu7WxKOzY.woff2" />
     <None Include="packages.config" />
     <Content Include="Views\MasterPage.Master" />
-    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\CobrosMasivos.pubxml" />
+    <None Include="Properties\PublishProfiles\CobrosMasivosPub.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

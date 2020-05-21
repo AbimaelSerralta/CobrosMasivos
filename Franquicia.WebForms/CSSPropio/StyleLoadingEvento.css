@@ -1,0 +1,14 @@
+﻿.PogressModal {
+    z-index: 99999;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    /*IMPORTANTE*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align:center;
+    background-color: #666699;
+    filter: alpha(opacity=50);
+    opacity: 0.8;
+}

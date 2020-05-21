@@ -33,7 +33,8 @@ namespace Franquicia.DataAccess.Repository
                 telefonosUsuarios = new TelefonosUsuarios()
                 {
                     VchTelefono = item["VchTelefono"].ToString(),
-                    UidTipoTelefono = new Guid(item["UidTipoTelefono"].ToString())
+                    UidTipoTelefono = new Guid(item["UidTipoTelefono"].ToString()),
+                    UidPrefijo = new Guid(item["UidPrefijo"].ToString())
                 };
             }
 

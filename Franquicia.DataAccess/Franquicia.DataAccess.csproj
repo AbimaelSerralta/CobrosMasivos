@@ -55,6 +55,9 @@
     <Compile Include="Common\SqlDapper.cs" />
     <Compile Include="Common\SqlDataRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\EventosRepository.cs" />
+    <Compile Include="Repository\PrefijosTelefonicosRepository.cs" />
+    <Compile Include="Repository\TicketsRepository.cs" />
     <Compile Include="Repository\HistorialPagosRepository.cs" />
     <Compile Include="Repository\ClienteCuentaRepository.cs" />
     <Compile Include="Repository\TarifasRepository.cs" />

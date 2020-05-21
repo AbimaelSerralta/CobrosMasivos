@@ -429,6 +429,15 @@ namespace Franquicia.WebForms.Views
         protected global::System.Web.UI.WebControls.Label lblDcmSms;
 
         /// <summary>
+        /// Control cbCorreo.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox cbCorreo;
+
+        /// <summary>
         /// Control lblCorreoUsado.
         /// </summary>
         /// <remarks>
@@ -436,6 +445,15 @@ namespace Franquicia.WebForms.Views
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblCorreoUsado;
+
+        /// <summary>
+        /// Control lblErrorCorreo.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblErrorCorreo;
 
         /// <summary>
         /// Control cbSms.
@@ -474,6 +492,15 @@ namespace Franquicia.WebForms.Views
         protected global::System.Web.UI.WebControls.Label lblTotalUtilizarSms;
 
         /// <summary>
+        /// Control lblErrorSms.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblErrorSms;
+
+        /// <summary>
         /// Control lblDcmSaldo.
         /// </summary>
         /// <remarks>
@@ -508,6 +535,15 @@ namespace Franquicia.WebForms.Views
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblTotalUtilizarWA;
+
+        /// <summary>
+        /// Control lblErrorWA.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblErrorWA;
 
         /// <summary>
         /// Control upRegistro.

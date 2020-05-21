@@ -24,10 +24,10 @@ namespace Franquicia.WebForms.Controller
             // key con produccion
             string cadena = finalString;
 
-            //correosServices.CorreoCadena("finalString " + cadena, "serralta2008@gmail.com");
+            correosServices.CorreoCadena(DateTime.Now + " finalString " + cadena, "serralta2008@gmail.com");
 
-            string key = "5DCC67393750523CD165F17E1EFADD21"; //Credenciales sanbox 
-            //string key = "7AACFE849FABD796F6DCB947FD4D5268";
+            //string key = "5DCC67393750523CD165F17E1EFADD21"; //Credenciales sanbox 
+            string key = "7AACFE849FABD796F6DCB947FD4D5268";
             AESCrypto o = new AESCrypto();
             string decryptedString = o.decrypt(key, cadena);
             if (!string.IsNullOrEmpty(decryptedString))
@@ -74,7 +74,7 @@ namespace Franquicia.WebForms.Controller
                             cd_error = RespuestaWebPayPlus[0].ChildNodes[i].InnerText;
                             break;
                         case "reference":
-                            reference = "1216042020172833956" /*RespuestaWebPayPlus[0].ChildNodes[i].InnerText*/;
+                            reference = RespuestaWebPayPlus[0].ChildNodes[i].InnerText;
                             break;
                         case "response":
                             response = RespuestaWebPayPlus[0].ChildNodes[i].InnerText;
@@ -145,6 +145,13 @@ namespace Franquicia.WebForms.Controller
 
                     if (response == "approved")
                     {
+                        //pagosServices.ConsultarPagoEventoLiga(reference);
+
+                        //if (pagosServices.lsLigasEventoPayCardModel.Count >= 1)
+                        //{
+                        //    pagosServices.ObtenerCorreoAuxiliar(reference);
+                        //}
+
                         pagosServices.ConsultarPromocionLiga(reference);
 
                         if (pagosServices.lsLigasUrlsPayCardModel.Count >= 1)

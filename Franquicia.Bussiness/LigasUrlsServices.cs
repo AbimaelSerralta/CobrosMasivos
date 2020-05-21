@@ -41,9 +41,9 @@ namespace Franquicia.Bussiness
 
             return lsLigasUrlsGridViewModel = ligasUrlsRepository.BuscarLigas(UidCliente, Identificador, Nombre, ApePaterno, ApeMaterno, Asunto, Concepto, ImporteMayor, ImporteMenor, RegistroDesde, RegistroHasta, VencimientoDesde, VencimientoHasta, Estatus);
         }
-        public void ContruirLiga(Guid UidCliente, string IdReferencia)
+        public void ContruirLiga(Guid UidLigaUrl)
         {
-            ligasUrlsRepository.ContruirLiga(UidCliente, IdReferencia);
+            ligasUrlsRepository.ContruirLiga(UidLigaUrl);
         }
 
         #endregion

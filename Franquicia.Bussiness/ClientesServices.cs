@@ -42,7 +42,7 @@ namespace Franquicia.Bussiness
         }
 
         public bool RegistrarClientes(
-            string Rfc, string RazonSocial, string NombreComercial, DateTime FechaAlta, string Correo,
+            string Rfc, string RazonSocial, string NombreComercial, DateTime FechaAlta, string Correo, string IdWAySMS,
             string Identificador, Guid UidPais, Guid UidEstado, Guid Municipio, Guid UidCiudad, Guid UidColonia, string Calle, string EntreCalle, string YCalle, string NumeroExterior, string NumeroInterior, string CodigoPostal, string Referencia,
             string Telefono, Guid UidTipoTelefono, Guid UidFranquiciatario)
         {
@@ -58,6 +58,7 @@ namespace Franquicia.Bussiness
                     VchNombreComercial = NombreComercial,
                     DtFechaAlta = FechaAlta,
                     VchCorreoElectronico = Correo,
+                    VchIdWAySMS = IdWAySMS,
                     UidFranquiciatario = UidFranquiciatario
                 }, 
                 new DireccionesClientes 
@@ -90,7 +91,7 @@ namespace Franquicia.Bussiness
         }
 
         public bool ActualizarClientes(
-            Guid UidCliente, string Rfc, string RazonSocial, string NombreComercial, string Correo, Guid UidEstatus,
+            Guid UidCliente, string Rfc, string RazonSocial, string NombreComercial, string Correo, Guid UidEstatus, string IdWAySMS,
             string Identificador, Guid UidPais, Guid UidEstado, Guid Municipio, Guid UidCiudad, Guid UidColonia, string Calle, string EntreCalle, string YCalle, string NumeroExterior, string NumeroInterior, string CodigoPostal, string Referencia,
             string Telefono, Guid UidTipoTelefono)
         {
@@ -104,7 +105,8 @@ namespace Franquicia.Bussiness
                     VchRazonSocial = RazonSocial,
                     VchNombreComercial = NombreComercial,
                     VchCorreoElectronico = Correo,
-                    UidEstatus = UidEstatus
+                    UidEstatus = UidEstatus,
+                    VchIdWAySMS = IdWAySMS
                 },
                 new DireccionesClientes
                 {

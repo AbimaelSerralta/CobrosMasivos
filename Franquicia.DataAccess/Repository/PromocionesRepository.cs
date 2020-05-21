@@ -235,6 +235,52 @@ namespace Franquicia.DataAccess.Repository
             }
             return lsClientesCBLPromocionesModel;
         }
+
+        #region Eventos
+        public List<EventosGenerarLigasModel> CargarPromocionesEvento(Guid UidCliente, Guid UidEvento)
+        {
+            List<EventosGenerarLigasModel> lsEventosGenerarLigasModel = new List<EventosGenerarLigasModel>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select pr.*, cp.* from Eventos ev, EventosPromociones ep, Promociones pr, Clientes cl, ClientesPromociones cp where ev.UidEvento = ep.UidEvento and ep.UidPromocion = pr.UidPromocion and cl.UidCliente = cp.UidCliente and cp.UidPromocion = pr.UidPromocion and cl.UidCliente = '" + UidCliente + "' and ev.UidEvento = '" + UidEvento + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                lsEventosGenerarLigasModel.Add(new EventosGenerarLigasModel()
+                {
+                    UidPromocion = new Guid(item["UidPromocion"].ToString()),
+                    VchDescripcion = item["VchDescripcion"].ToString(),
+                    DcmComicion = decimal.Parse(item["DcmComicion"].ToString()),
+                    IntGerarquia = int.Parse(item["IntGerarquia"].ToString())
+                });
+            }
+            return lsEventosGenerarLigasModel.OrderBy(x => x.IntGerarquia).ToList();
+        }
+        public List<EventosPromocionesModel> ObtenerPromocionesEvento(Guid UidEvento)
+        {
+            List<EventosPromocionesModel> lsEventosPromocionesModel = new List<EventosPromocionesModel>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select ep.* from Eventos ev, EventosPromociones ep where ev.UidEvento = ep.UidEvento and ev.UidEvento = '" + UidEvento + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                lsEventosPromocionesModel.Add(new EventosPromocionesModel()
+                {
+                    UidPromocion = new Guid(item["UidPromocion"].ToString())
+                });
+            }
+            return lsEventosPromocionesModel;
+        }
+        #endregion
         #endregion
 
         #region PromocionesValidas

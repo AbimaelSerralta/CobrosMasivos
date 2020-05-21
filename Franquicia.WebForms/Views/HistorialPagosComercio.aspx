@@ -67,11 +67,11 @@
                                                     <div class="alert alert-info">Su historial esta vacio</div>
                                                 </EmptyDataTemplate>
                                                 <Columns>
-                                                    <asp:BoundField DataField="DtRegistro" HeaderText="FECHA" />
+                                                    <asp:BoundField DataField="DtRegistro" dataformatstring="{0:dd/MM/yyyy HH:mm:ss}" HeaderText="FECHA" />
                                                     <asp:BoundField DataField="VchIdentificador" HeaderText="IDENTIFICADOR" />
-                                                    <asp:BoundField DataField="DcmSaldo" HeaderText="SALDO" />
-                                                    <asp:BoundField DataField="DcmOperacion" HeaderText="IMPORTE" />
-                                                    <asp:BoundField DataField="DcmNuevoSaldo" HeaderText="NUEVO SALDO" />
+                                                    <asp:BoundField DataField="DcmSaldo" HeaderStyle-CssClass="text-right" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:C}" HeaderText="ABONO" />
+                                                    <asp:BoundField DataField="DcmOperacion" HeaderStyle-CssClass="text-right" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:C}" HeaderText="CARGO" />
+                                                    <asp:BoundField DataField="DcmNuevoSaldo" HeaderStyle-CssClass="text-right" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:C}" HeaderText="NUEVO SALDO" />
                                                     <%--<asp:TemplateField>
                                                         <ItemTemplate>
                                                             <table>
@@ -419,7 +419,7 @@
 
                             <div class="row">
                                 <div style="width: 100%; background-color: #45abad;">
-                                    <img src="https://image.flaticon.com/icons/svg/1814/1814030.svg" style="width: 30%; margin: 0 auto; display: block;" height="100" width="100" class="img-fluid align-items-center" alt="Responsive image">
+                                    <img src="../Images/think.png" style="width: 30%; margin: 0 auto; display: block;" height="100" width="100" class="img-fluid align-items-center" alt="Responsive image">
                                 </div>
                             </div>
                             <%--<button type="button" class="close" data-dismiss="modal" aria-label="Close">
