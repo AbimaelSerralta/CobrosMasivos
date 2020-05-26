@@ -19,13 +19,14 @@
     <%--<link href="../assets/css/MaterialIcons.css" type="text/css" rel="stylesheet" />--%>
     <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
     <!-- Material Kit CSS -->
-    <link href="../assets/css/material-dashboard.css?v=2.1.1" rel="stylesheet" />
+    <link href="../assets/css/material-dashboard.css" rel="stylesheet" />
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title><%= Page.Title %></title>
     <link rel="shortcut icon" href="../Images/logoCobroscontarjetas.png" />
     <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
+    <link href="../assets/css/style2.css" rel="stylesheet" />
 </head>
 <body>
     <form id="form1" runat="server">
@@ -431,15 +432,15 @@
     </script>
 
    <script>
-        $('.copyboard').on('click', function (e) {
-            e.preventDefault();
+       $('.copyboard').on('click', function (e) {
+           e.preventDefault();
 
-            var copyText = $(this).attr('data-text');
-            var el = $('<input style="position: absolute; bottom: -120%" type="text" value="' + copyText + '"/>').appendTo('body');
-            el[0].select();
-            document.execCommand("copy");
-            el.remove();
-        })
+           var copyText = $(this).attr('data-text');
+           var el = $('<input style="position: absolute; bottom: -120%" type="text" value="' + copyText + '"/>').appendTo('body');
+           el[0].select();
+           document.execCommand("copy");
+           el.remove();
+       })
     </script>
 
     <!--   Core JS Files   -->

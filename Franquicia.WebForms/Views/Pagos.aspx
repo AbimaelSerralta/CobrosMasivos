@@ -1,4 +1,4 @@
-﻿<%@ Page Culture="es-MX" Language="C#" AutoEventWireup="true" CodeBehind="Pago.aspx.cs" Inherits="Franquicia.WebForms.Views.Pago" %>
+﻿<%@ Page Culture="es-MX" Language="C#" AutoEventWireup="true" CodeBehind="Pagos.aspx.cs" Inherits="Franquicia.WebForms.Views.Pagos" %>
 
 <!DOCTYPE html>
 
@@ -16,7 +16,7 @@
                     <tr>
                         <td align="center" bgcolor="#00bcd4" style="padding: 40px 0 30px 0; color: #153643; font-size: 28px; font-weight: bold; font-family: Arial, sans-serif;">
                             <a href="http://www.cobroscontarjeta.com/">
-                                <img src="http://www.cobroscontarjeta.com/images/logo.png" alt="Cobroscontarjeta" width="500" height="120" style="display: block;" /></a>
+                                <img src="http://www.cobroscontarjeta.com/images/logo.png" alt="Cobroscontarjeta" style="display: block;" /></a>
                         </td>
                     </tr>
                     <tr>

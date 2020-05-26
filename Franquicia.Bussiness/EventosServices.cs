@@ -145,6 +145,11 @@ namespace Franquicia.Bussiness
             }
             return result;
         }
+
+        public void BuscarEventos(Guid UidPropietario, string VchNombreEvento, string DtFHInicioDesde, string DtFHInicioHasta, string DtFHFinDesde, string DtFHFinHasta, decimal DcmImporteMayor, decimal DcmImporteMenor, Guid UidEstatus)
+        {
+            lsEventosGridViewModel = eventosRepository.BuscarEventos(UidPropietario, VchNombreEvento, DtFHInicioDesde, DtFHInicioHasta, DtFHFinDesde, DtFHFinHasta, DcmImporteMayor, DcmImporteMenor, UidEstatus);
+        }
         #endregion
     }
 }

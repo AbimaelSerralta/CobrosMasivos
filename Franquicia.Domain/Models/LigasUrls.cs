@@ -20,6 +20,7 @@ namespace Franquicia.Domain.Models
         public string VchAsunto { get; set; }
         public Guid UidLigaAsociado { get; set; }
         public Guid UidPromocion { get; set; }
+        public Guid UidEvento { get; set; }
         public Guid UidPropietario { get; set; }
     }
 }

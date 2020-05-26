@@ -11,7 +11,7 @@ namespace Franquicia.WebForms.Views
 {
 
 
-    public partial class Pago
+    public partial class Pagos
     {
 
         /// <summary>

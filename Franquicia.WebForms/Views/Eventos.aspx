@@ -326,7 +326,9 @@
 
                                                     <div style="height: 100%; width: 100%; display: flex; justify-content: center; align-items: center;">
                                                         <div>
-                                                            <div class="loader"></div>
+                                                            <img height="150" width="150" src="../CSSPropio/loader.gif" alt="imgCobrosMasivos" />
+                                                            <%--<div class="loader"></div>--%>
+                                                            <br />
                                                             <strong>
                                                                 <asp:Literal ID="ltMnsj" Text="Verificando..." runat="server" /></strong>
                                                         </div>

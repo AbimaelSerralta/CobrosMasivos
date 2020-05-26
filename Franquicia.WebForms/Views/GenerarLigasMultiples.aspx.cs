@@ -1078,9 +1078,10 @@ namespace Franquicia.WebForms.Views
                                     nombreTrun = nombreTrun.Remove(7) + "...";
                                 }
 
-                                string body = "Hola, " + nombreTrun +
+                                string body = "Hola " + nombreTrun + "," +
                                     "\r\n" + item.VchNombreComercial + " le ha enviado su liga de pago:" +
-                                    "\r\n" + "https://cobrosmasivos.com/" + "Views/Pago.aspx?CodigoLiga=" + UidLigaUrl;
+                                    "\r\n" + "$" + item.DcmImporte.ToString("N2") +
+                                    "\r\n" + "https://cobrosmasivos.com/" + "Pago.aspx?Id=" + UidLigaUrl;
 
                                 if (item.CBSms)
                                 {
@@ -1118,8 +1119,8 @@ namespace Franquicia.WebForms.Views
                                     try
                                     {
                                         var message = MessageResource.Create(
-                                        body: body,
-                                        from: new Twilio.Types.PhoneNumber("whatsapp:+14155238886"),
+                                        body: body.Replace("\r", ""),
+                                        from: new Twilio.Types.PhoneNumber("whatsapp:" + NumberFrom),
                                         to: new Twilio.Types.PhoneNumber("whatsapp:" + NumberTo)
                                     );
 
@@ -1222,9 +1223,10 @@ namespace Franquicia.WebForms.Views
                                         nombreTrun = nombreTrun.Remove(7) + "...";
                                     }
 
-                                    string body = "Hola, " + nombreTrun +
+                                    string body = "Hola " + nombreTrun + "," +
                                         "\r\n" + item.VchNombreComercial + " le ha enviado su liga de pago:" +
-                                        "\r\n" + "https://cobrosmasivos.com/" + "Views/Pago.aspx?CodigoLiga=" + UidLigaUrl;
+                                        "\r\n" + "$" + item.DcmImporte.ToString("N2") +
+                                        "\r\n" + "https://cobrosmasivos.com/" + "Pago.aspx?Id=" + UidLigaUrl;
 
                                     if (item.CBSms)
                                     {
@@ -1262,8 +1264,8 @@ namespace Franquicia.WebForms.Views
                                         try
                                         {
                                             var message = MessageResource.Create(
-                                            body: body,
-                                            from: new Twilio.Types.PhoneNumber("whatsapp:+14155238886"),
+                                            body: body.Replace("\r", ""),
+                                            from: new Twilio.Types.PhoneNumber("whatsapp:" + NumberFrom),
                                             to: new Twilio.Types.PhoneNumber("whatsapp:" + NumberTo)
                                         );
 

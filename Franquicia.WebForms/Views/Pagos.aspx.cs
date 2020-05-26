@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 
 namespace Franquicia.WebForms.Views
 {
-    public partial class Pago : System.Web.UI.Page
+    public partial class Pagos : System.Web.UI.Page
     {
         #region Propiedades
         // Nombre del servidor
@@ -41,9 +41,9 @@ namespace Franquicia.WebForms.Views
         {
             if (!IsPostBack)
             {
-                if (Request.QueryString["CodigoLiga"] != null)
+                if (Request.QueryString["Id"] != null)
                 {
-                    ligasUrlsService.ContruirLiga(Guid.Parse(Request.QueryString["CodigoLiga"]));
+                    ligasUrlsService.ContruirLiga(Guid.Parse(Request.QueryString["Id"]));
 
                     lblNombreComp.Text = "&nbsp;" + ligasUrlsService.ligasUrlsRepository.ligasUrlsConstruirLigaModel.NombreCompleto;
                     lblNombreComercial.Text = "&nbsp;" + ligasUrlsService.ligasUrlsRepository.ligasUrlsConstruirLigaModel.VchNombreComercial;

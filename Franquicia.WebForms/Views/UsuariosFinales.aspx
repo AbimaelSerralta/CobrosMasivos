@@ -87,7 +87,7 @@
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                 </Columns>
-                                                <PagerStyle CssClass="pagination-ys" />
+                                                <PagerStyle HorizontalAlign="Center" CssClass="pagination-ys" />
                                             </asp:GridView>
                                         </div>
                                     </div>

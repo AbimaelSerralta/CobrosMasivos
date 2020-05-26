@@ -66,6 +66,23 @@ namespace Franquicia.WebForms.Views
 
                     eventosServices.ObtenerDatosEvento(Guid.Parse(Request.QueryString["Id"]));
 
+                    if (eventosServices.eventosRepository.eventosGridViewModel.UidPropietario != null && eventosServices.eventosRepository.eventosGridViewModel.UidPropietario != Guid.Empty)
+                    {
+                        ViewState["UidClienteLocal"] = eventosServices.eventosRepository.eventosGridViewModel.UidPropietario;
+                    }
+                    else
+                    {
+                        ViewState["UidClienteLocal"] = Guid.Empty;
+                    }
+
+                    promocionesServices.CargarPromocionesEvento(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse(Request.QueryString["Id"].ToString()));
+
+                    ddlFormasPago.Items.Insert(0, new ListItem("Al contado", "contado"));
+                    ddlFormasPago.DataSource = promocionesServices.lsEventosGenerarLigasModel;
+                    ddlFormasPago.DataTextField = "VchDescripcion";
+                    ddlFormasPago.DataValueField = "UidPromocion";
+                    ddlFormasPago.DataBind();
+
                     if (eventosServices.eventosRepository.eventosGridViewModel.UidEstatus == Guid.Parse("65E46BC9-1864-4145-AD1A-70F5B5F69739"))
                     {
                         //DateTime hoy = DateTime.Now;
@@ -182,15 +199,6 @@ namespace Franquicia.WebForms.Views
         }
         private void CargarConfiguracion()
         {
-            if (eventosServices.eventosRepository.eventosGridViewModel.UidPropietario != null && eventosServices.eventosRepository.eventosGridViewModel.UidPropietario != Guid.Empty)
-            {
-                ViewState["UidClienteLocal"] = eventosServices.eventosRepository.eventosGridViewModel.UidPropietario;
-            }
-            else
-            {
-                ViewState["UidClienteLocal"] = Guid.Empty;
-            }
-
             lblTitle.Text = eventosServices.eventosRepository.eventosGridViewModel.VchConcepto;
             lblNombreEvento.Text = eventosServices.eventosRepository.eventosGridViewModel.VchNombreEvento;
             txtDescripcion.Text = eventosServices.eventosRepository.eventosGridViewModel.VchDescripcion;
@@ -246,14 +254,6 @@ namespace Franquicia.WebForms.Views
                 ViewState["UidUsuarioLocal"] = Guid.Empty;
             }
 
-            promocionesServices.CargarPromocionesEvento(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse(Request.QueryString["Id"].ToString()));
-
-            ddlFormasPago.Items.Insert(0, new ListItem("Al contado", "contado"));
-            ddlFormasPago.DataSource = promocionesServices.lsEventosGenerarLigasModel;
-            ddlFormasPago.DataTextField = "VchDescripcion";
-            ddlFormasPago.DataValueField = "UidPromocion";
-            ddlFormasPago.DataBind();
-
             ddlFormasPago_SelectedIndexChanged(null, null);
         }
 
@@ -271,6 +271,37 @@ namespace Franquicia.WebForms.Views
         }
         protected void btnGenerarPago_Click(object sender, EventArgs e)
         {
+            string MontoMin = "50.00";
+            string MontoMax = "15000.00";
+
+            if (txtImporte.EmptyTextBox())
+            {
+                pnlAlert.Visible = true;
+                lblMensajeAlert.Text = "El campo <b>Importe</b> es obligatorio.";
+                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                return;
+            }
+            if (txtImporteTotal.EmptyTextBox())
+            {
+                pnlAlert.Visible = true;
+                lblMensajeAlert.Text = "El campo <b>Total a pagar</b> es obligatorio.";
+                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                return;
+            }
+
+            if (decimal.Parse(txtImporte.Text) >= decimal.Parse(MontoMin) && decimal.Parse(txtImporte.Text) <= decimal.Parse(MontoMax))
+            {
+
+            }
+            else
+            {
+                txtImporte.BackColor = System.Drawing.Color.FromName("#f2dede");
+                pnlAlert.Visible = true;
+                lblMensajeAlert.Text = "El importe mínimo es de <b>$50.00</b> y el máximo es de <b>$15,000.00.</b>";
+                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                return;
+            }
+
             ViewState["UidUsuarioRegistro"] = ViewState["UidUsuarioLocal"];
 
             if (ViewState["AccionEvento"].ToString() == "RegistroCompleto")
@@ -421,7 +452,6 @@ namespace Franquicia.WebForms.Views
                     {
                         DateTime thisDay = DateTime.Now;
                         string ReferenciaCobro = item.IdCliente.ToString() + item.IdUsuario.ToString() + thisDay.ToString("ddMMyyyyHHmmssfff");
-                        Guid UidLigaUrl = Guid.NewGuid();
 
                         foreach (var itPromo in promocionesServices.lsEventosGenerarLigasModel.Where(x => x.UidPromocion == Guid.Parse(ddlFormasPago.SelectedValue)).ToList())
                         {
@@ -437,7 +467,7 @@ namespace Franquicia.WebForms.Views
 
                             if (url.Contains("https://"))
                             {
-                                if (usuariosCompletosServices.GenerarLigasPagos(url, concepto, Importe, Referencia, item.UidUsuario, identificador, thisDay, DateTime.Parse(vencimiento), "EVENTO", UidLigaAsociado, itPromo.UidPromocion, Guid.Parse(ViewState["UidClienteLocal"].ToString())))
+                                if (usuariosCompletosServices.GenerarLigasPagosEvento(url, concepto, Importe, Referencia, item.UidUsuario, identificador, thisDay, DateTime.Parse(vencimiento), "EVENTO", UidLigaAsociado, itPromo.UidPromocion, Guid.Parse(Request.QueryString["Id"].ToString()), Guid.Parse(ViewState["UidClienteLocal"].ToString())))
                                 {
                                     if (ViewState["AccionEvento"].ToString() == "RegistroCorreo")
                                     {
@@ -459,6 +489,8 @@ namespace Franquicia.WebForms.Views
                                     btnAceptar.Visible = true;
 
                                     ifrLiga.Src = url;
+
+                                    resu = true;
                                 }
                             }
                             else
@@ -477,8 +509,7 @@ namespace Franquicia.WebForms.Views
 
                         if (urlCobro.Contains("https://"))
                         {
-                            Guid UidLigaUrl = Guid.NewGuid();
-                            if (usuariosCompletosServices.GenerarLigasPagosTemp(UidLigaUrl, urlCobro, concepto, importeTotal, ReferenciaCobro, item.UidUsuario, identificador, thisDay, DateTime.Parse(vencimiento), "EVENTO", Guid.Empty, Guid.Empty, Guid.Parse(ViewState["UidClienteLocal"].ToString())))
+                            if (usuariosCompletosServices.GenerarLigasPagosEvento(urlCobro, concepto, importeTotal, ReferenciaCobro, item.UidUsuario, identificador, thisDay, DateTime.Parse(vencimiento), "EVENTO", Guid.Empty, Guid.Empty, Guid.Parse(Request.QueryString["Id"].ToString()), Guid.Parse(ViewState["UidClienteLocal"].ToString())))
                             {
                                 if (ViewState["AccionEvento"].ToString() == "RegistroCorreo")
                                 {
@@ -519,220 +550,220 @@ namespace Franquicia.WebForms.Views
                 {
                     if (!string.IsNullOrEmpty(url))
                     {
-                        //pnlAlertModal.Visible = true;
-                        //lblResumen.Text = "<b>¡Lo sentimos! </b> " + url + "." + "<br /> Las credenciales proporcionadas no son correctos, por favor contacte a los administradores.";
-                        //divAlertModal.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                        pnlAlert.Visible = true;
+                        lblMensajeAlert.Text = "<b>¡Lo sentimos! </b> " + url + "." + "<br /> Las credenciales proporcionadas no son correctos, por favor contacte a los administradores.";
+                        divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                     }
                     else
                     {
-                        //pnlAlertModal.Visible = true;
-                        //lblResumen.Text = "<b>¡Lo sentimos! </b> Las credenciales proporcionadas no son correctos, por favor contacte a los administradores.";
-                        //divAlertModal.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                        pnlAlert.Visible = true;
+                        lblMensajeAlert.Text = "<b>¡Lo sentimos! </b> Las credenciales proporcionadas no son correctos, por favor contacte a los administradores.";
+                        divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                     }
                 }
             }
             else
             {
-                //pnlAlertModal.Visible = true;
-                //lblResumen.Text = "<b>¡Lo sentimos! </b> Esta empresa no cuenta con credenciales para generar ligas, por favor contacte a los administradores.";
-                //divAlertModal.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                pnlAlert.Visible = true;
+                lblMensajeAlert.Text = "<b>¡Lo sentimos! </b> Esta empresa no cuenta con credenciales para generar ligas, por favor contacte a los administradores.";
+                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
             }
         }
         protected void btnGenerarLigas_Click(object sender, EventArgs e)
         {
-            pnlDatosComercio.Visible = false;
-            pnlUsuario.Visible = false;
-            pnlCorreo.Visible = false;
-            pnlGenerarLigas.Visible = true;
-            pnlIframe.Visible = false;
+            //pnlDatosComercio.Visible = false;
+            //pnlUsuario.Visible = false;
+            //pnlCorreo.Visible = false;
+            //pnlGenerarLigas.Visible = true;
+            //pnlIframe.Visible = false;
 
-            btnGenerarLigas.Visible = false;
-            btnCancelar.Visible = true;
+            //btnGenerarLigas.Visible = false;
+            //btnCancelar.Visible = true;
 
-            string identificador = eventosServices.eventosRepository.eventosGridViewModel.VchNombreEvento;
-            string concepto = eventosServices.eventosRepository.eventosGridViewModel.VchConcepto;
-            string vencimiento = eventosServices.eventosRepository.eventosGridViewModel.DtFHFin.ToString("dd/MM/yyyy");
-            string correo = txtCorreo.Text;
-            int intCorreo = 0;
+            //string identificador = eventosServices.eventosRepository.eventosGridViewModel.VchNombreEvento;
+            //string concepto = eventosServices.eventosRepository.eventosGridViewModel.VchConcepto;
+            //string vencimiento = eventosServices.eventosRepository.eventosGridViewModel.DtFHFin.ToString("dd/MM/yyyy");
+            //string correo = txtCorreo.Text;
+            //int intCorreo = 0;
 
-            if (!string.IsNullOrEmpty(correo))
-            {
-                intCorreo = 1;
-            }
+            //if (!string.IsNullOrEmpty(correo))
+            //{
+            //    intCorreo = 1;
+            //}
 
-            string url = string.Empty;
-            bool resu = false;
+            //string url = string.Empty;
+            //bool resu = false;
 
-            parametrosEntradaServices.ObtenerParametrosEntradaCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+            //parametrosEntradaServices.ObtenerParametrosEntradaCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
 
-            string id_company = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.IdCompany;
-            string id_branch = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.IdBranch;
-            string user = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchUsuario;
-            string pwd = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchPassword;
-            string moneda = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchModena;
-            string canal = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchCanal;
-            string semillaAES = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchSemillaAES;
-            string urlGen = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchUrl;
-            string data0 = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchData0;
+            //string id_company = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.IdCompany;
+            //string id_branch = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.IdBranch;
+            //string user = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchUsuario;
+            //string pwd = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchPassword;
+            //string moneda = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchModena;
+            //string canal = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchCanal;
+            //string semillaAES = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchSemillaAES;
+            //string urlGen = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchUrl;
+            //string data0 = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchData0;
 
-            if (!string.IsNullOrEmpty(id_company) && !string.IsNullOrEmpty(id_branch) && !string.IsNullOrEmpty(user) && !string.IsNullOrEmpty(pwd) && !string.IsNullOrEmpty(moneda) && !string.IsNullOrEmpty(canal) && !string.IsNullOrEmpty(semillaAES) && !string.IsNullOrEmpty(urlGen) && !string.IsNullOrEmpty(data0))
-            {
-                bool VariasLigas = false;
-                Guid UidLigaAsociado = Guid.NewGuid();
+            //if (!string.IsNullOrEmpty(id_company) && !string.IsNullOrEmpty(id_branch) && !string.IsNullOrEmpty(user) && !string.IsNullOrEmpty(pwd) && !string.IsNullOrEmpty(moneda) && !string.IsNullOrEmpty(canal) && !string.IsNullOrEmpty(semillaAES) && !string.IsNullOrEmpty(urlGen) && !string.IsNullOrEmpty(data0))
+            //{
+            //    bool VariasLigas = false;
+            //    Guid UidLigaAsociado = Guid.NewGuid();
 
-                usuariosCompletosServices.SelectUsClienteEvento(Guid.Parse(ViewState["UidUsuarioLocal"].ToString()));
-                promocionesServices.CargarPromocionesEvento(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse(Request.QueryString["Id"].ToString()));
+            //    usuariosCompletosServices.SelectUsClienteEvento(Guid.Parse(ViewState["UidUsuarioLocal"].ToString()));
+            //    promocionesServices.CargarPromocionesEvento(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse(Request.QueryString["Id"].ToString()));
 
-                foreach (var item in usuariosCompletosServices.lsEventoLiga)
-                {
-                    if (promocionesServices.lsEventosGenerarLigasModel.Count >= 1)
-                    {
-                        VariasLigas = true;
-                    }
+            //    foreach (var item in usuariosCompletosServices.lsEventoLiga)
+            //    {
+            //        if (promocionesServices.lsEventosGenerarLigasModel.Count >= 1)
+            //        {
+            //            VariasLigas = true;
+            //        }
 
-                    if (VariasLigas)
-                    {
-                        DateTime thisDay = DateTime.Now;
-                        string ReferenciaCobro = item.IdCliente.ToString() + item.IdUsuario.ToString() + thisDay.ToString("ddMMyyyyHHmmssfff");
-                        Guid UidLigaUrl = Guid.NewGuid();
-                        string urlCobro = GenLigaPara(id_company, id_branch, user, pwd, ReferenciaCobro, decimal.Parse(txtImporte.Text), moneda, canal, "C", intCorreo, vencimiento, correo, concepto, semillaAES, data0, urlGen);
+            //        if (VariasLigas)
+            //        {
+            //            DateTime thisDay = DateTime.Now;
+            //            string ReferenciaCobro = item.IdCliente.ToString() + item.IdUsuario.ToString() + thisDay.ToString("ddMMyyyyHHmmssfff");
+            //            Guid UidLigaUrl = Guid.NewGuid();
+            //            string urlCobro = GenLigaPara(id_company, id_branch, user, pwd, ReferenciaCobro, decimal.Parse(txtImporte.Text), moneda, canal, "C", intCorreo, vencimiento, correo, concepto, semillaAES, data0, urlGen);
 
-                        if (urlCobro.Contains("https://"))
-                        {
-                            if (usuariosCompletosServices.GenerarLigasPagosTemp(UidLigaUrl, urlCobro, concepto, decimal.Parse(txtImporte.Text), ReferenciaCobro, item.UidUsuario, identificador, thisDay, DateTime.Parse(vencimiento), "EVENTO", UidLigaAsociado, Guid.Empty, Guid.Parse(ViewState["UidClienteLocal"].ToString())))
-                            {
-                                resu = true;
+            //            if (urlCobro.Contains("https://"))
+            //            {
+            //                if (usuariosCompletosServices.GenerarLigasPagosTemp(UidLigaUrl, urlCobro, concepto, decimal.Parse(txtImporte.Text), ReferenciaCobro, item.UidUsuario, identificador, thisDay, DateTime.Parse(vencimiento), "EVENTO", UidLigaAsociado, Guid.Empty, Guid.Parse(ViewState["UidClienteLocal"].ToString())))
+            //                {
+            //                    resu = true;
 
-                                btnPagar.Text = "Pagar $" + txtImporte.Text;
-                                ViewState["urlCobro"] = urlCobro;
+            //                    btnPagar.Text = "Pagar $" + txtImporte.Text;
+            //                    ViewState["urlCobro"] = urlCobro;
 
-                                foreach (var itPromo in promocionesServices.lsEventosGenerarLigasModel)
-                                {
-                                    //int i = promocionesServices.lsCBLPromocionesModelCliente.IndexOf(promocionesServices.lsCBLPromocionesModelCliente.First(x => x.UidPromocion == itPromo.UidPromocion));
-                                    //decimal cobro = promocionesServices.lsCBLPromocionesModelCliente[i].DcmComicion;
+            //                    foreach (var itPromo in promocionesServices.lsEventosGenerarLigasModel)
+            //                    {
+            //                        //int i = promocionesServices.lsCBLPromocionesModelCliente.IndexOf(promocionesServices.lsCBLPromocionesModelCliente.First(x => x.UidPromocion == itPromo.UidPromocion));
+            //                        //decimal cobro = promocionesServices.lsCBLPromocionesModelCliente[i].DcmComicion;
 
-                                    decimal Valor = itPromo.DcmComicion * decimal.Parse(txtImporte.Text) / 100;
-                                    decimal Importe = Valor + decimal.Parse(txtImporte.Text);
+            //                        decimal Valor = itPromo.DcmComicion * decimal.Parse(txtImporte.Text) / 100;
+            //                        decimal Importe = Valor + decimal.Parse(txtImporte.Text);
 
-                                    string promocion = itPromo.VchDescripcion.Replace(" MESES", "");
+            //                        string promocion = itPromo.VchDescripcion.Replace(" MESES", "");
 
-                                    DateTime thisDay2 = DateTime.Now;
-                                    string Referencia = item.IdCliente.ToString() + item.IdUsuario.ToString() + thisDay2.ToString("ddMMyyyyHHmmssfff");
+            //                        DateTime thisDay2 = DateTime.Now;
+            //                        string Referencia = item.IdCliente.ToString() + item.IdUsuario.ToString() + thisDay2.ToString("ddMMyyyyHHmmssfff");
 
-                                    url = GenLigaPara(id_company, id_branch, user, pwd, Referencia, Importe, moneda, canal, promocion, intCorreo, vencimiento, correo, concepto, semillaAES, data0, urlGen);
+            //                        url = GenLigaPara(id_company, id_branch, user, pwd, Referencia, Importe, moneda, canal, promocion, intCorreo, vencimiento, correo, concepto, semillaAES, data0, urlGen);
 
-                                    if (url.Contains("https://"))
-                                    {
-                                        if (usuariosCompletosServices.GenerarLigasPagos(url, concepto, Importe, Referencia, item.UidUsuario, identificador, thisDay, DateTime.Parse(vencimiento), "EVENTO", UidLigaAsociado, itPromo.UidPromocion, Guid.Parse(ViewState["UidClienteLocal"].ToString())))
-                                        {
-                                            resu = true;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        resu = false;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            resu = false;
-                            break;
-                        }
+            //                        if (url.Contains("https://"))
+            //                        {
+            //                            if (usuariosCompletosServices.GenerarLigasPagos(url, concepto, Importe, Referencia, item.UidUsuario, identificador, thisDay, DateTime.Parse(vencimiento), "EVENTO", UidLigaAsociado, itPromo.UidPromocion, Guid.Parse(ViewState["UidClienteLocal"].ToString())))
+            //                            {
+            //                                resu = true;
+            //                            }
+            //                        }
+            //                        else
+            //                        {
+            //                            resu = false;
+            //                            break;
+            //                        }
+            //                    }
+            //                }
+            //            }
+            //            else
+            //            {
+            //                resu = false;
+            //                break;
+            //            }
 
-                        if (resu)
-                        {
-                            promocionesServices.CargarPromocionesValidas(UidLigaAsociado);
+            //            if (resu)
+            //            {
+            //                promocionesServices.CargarPromocionesValidas(UidLigaAsociado);
 
-                            string strPromociones = string.Empty;
+            //                string strPromociones = string.Empty;
 
-                            if (promocionesServices.lsLigasUrlsPromocionesModel.Count >= 1)
-                            {
-                                foreach (var itPromo in promocionesServices.lsLigasUrlsPromocionesModel)
-                                {
-                                    decimal promocion = int.Parse(itPromo.VchDescripcion.Replace(" MESES", ""));
-                                    decimal Final = itPromo.DcmImporte / promocion;
+            //                if (promocionesServices.lsLigasUrlsPromocionesModel.Count >= 1)
+            //                {
+            //                    foreach (var itPromo in promocionesServices.lsLigasUrlsPromocionesModel)
+            //                    {
+            //                        decimal promocion = int.Parse(itPromo.VchDescripcion.Replace(" MESES", ""));
+            //                        decimal Final = itPromo.DcmImporte / promocion;
 
-                                    strPromociones +=
-                                    "\t\t\t\t\t\t\t\t<tr>\r\n" +
-                                    "\t\t\t\t\t\t\t\t\t<td width=\"50%\" style=\"color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;text-align: right;\">\r\n" +
-                                    "\t\t\t\t\t\t\t\t\t\t" + itPromo.VchDescripcion + " de $" + Final.ToString("N2") + "\r\n" +
-                                    "\t\t\t\t\t\t\t\t\t</td>\r\n" +
-                                    "\t\t\t\t\t\t\t\t\t<td width=\"50%\" style=\"color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;text-align: left;\">\r\n" +
-                                    "\t\t\t\t\t\t\t\t\t\t &nbsp;" + "<a style =\"display:block;color:#fff;font-weight:400;text-align:center;width:100px;font-size:15px;text-decoration:none;background:#28a745;margin:0 auto; padding:5px;\" href=" + URLBase + "Views/Eventos.aspx?CodigoPromocion=" + itPromo.IdReferencia + "> Pagar $" + itPromo.DcmImporte.ToString("N2") + "</a>" + "\r\n" +
-                                    "\t\t\t\t\t\t\t\t\t</td>\r\n" +
-                                    "\t\t\t\t\t\t\t\t</tr>\r\n";
-                                }
-                            }
+            //                        strPromociones +=
+            //                        "\t\t\t\t\t\t\t\t<tr>\r\n" +
+            //                        "\t\t\t\t\t\t\t\t\t<td width=\"50%\" style=\"color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;text-align: right;\">\r\n" +
+            //                        "\t\t\t\t\t\t\t\t\t\t" + itPromo.VchDescripcion + " de $" + Final.ToString("N2") + "\r\n" +
+            //                        "\t\t\t\t\t\t\t\t\t</td>\r\n" +
+            //                        "\t\t\t\t\t\t\t\t\t<td width=\"50%\" style=\"color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 20px;text-align: left;\">\r\n" +
+            //                        "\t\t\t\t\t\t\t\t\t\t &nbsp;" + "<a style =\"display:block;color:#fff;font-weight:400;text-align:center;width:100px;font-size:15px;text-decoration:none;background:#28a745;margin:0 auto; padding:5px;\" href=" + URLBase + "Views/Eventos.aspx?CodigoPromocion=" + itPromo.IdReferencia + "> Pagar $" + itPromo.DcmImporte.ToString("N2") + "</a>" + "\r\n" +
+            //                        "\t\t\t\t\t\t\t\t\t</td>\r\n" +
+            //                        "\t\t\t\t\t\t\t\t</tr>\r\n";
+            //                    }
+            //                }
 
-                            pnlPromociones.Visible = true;
-                            ltlPromociones.Text = strPromociones;
+            //                pnlPromociones.Visible = true;
+            //                ltlPromociones.Text = strPromociones;
 
-                            //string LigaUrl = URLBase + "Views/Promociones.aspx?CodigoPromocion=" + UidLigaAsociado + "&CodigoLiga=" + ReferenciaCobro;
-                        }
-                    }
-                    else
-                    {
-                        DateTime thisDay = DateTime.Now;
-                        string ReferenciaCobro = item.IdCliente.ToString() + item.IdUsuario.ToString() + thisDay.ToString("ddMMyyyyHHmmssfff");
+            //                //string LigaUrl = URLBase + "Views/Promociones.aspx?CodigoPromocion=" + UidLigaAsociado + "&CodigoLiga=" + ReferenciaCobro;
+            //            }
+            //        }
+            //        else
+            //        {
+            //            DateTime thisDay = DateTime.Now;
+            //            string ReferenciaCobro = item.IdCliente.ToString() + item.IdUsuario.ToString() + thisDay.ToString("ddMMyyyyHHmmssfff");
 
-                        string urlCobro = GenLigaPara(id_company, id_branch, user, pwd, ReferenciaCobro, decimal.Parse(txtImporte.Text), moneda, canal, "C", intCorreo, vencimiento, correo, concepto, semillaAES, data0, urlGen);
+            //            string urlCobro = GenLigaPara(id_company, id_branch, user, pwd, ReferenciaCobro, decimal.Parse(txtImporte.Text), moneda, canal, "C", intCorreo, vencimiento, correo, concepto, semillaAES, data0, urlGen);
 
-                        if (urlCobro.Contains("https://"))
-                        {
-                            Guid UidLigaUrl = Guid.NewGuid();
-                            if (usuariosCompletosServices.GenerarLigasPagosTemp(UidLigaUrl, urlCobro, concepto, decimal.Parse(txtImporte.Text), ReferenciaCobro, item.UidUsuario, identificador, thisDay, DateTime.Parse(vencimiento), "EVENTO", Guid.Empty, Guid.Empty, Guid.Parse(ViewState["UidClienteLocal"].ToString())))
-                            {
-                                btnPagar.Text = "Pagar $" + txtImporte.Text;
-                                pnlGenerarLigas.Visible = false;
-                                pnlDatosComercio.Visible = false;
-                                pnlUsuario.Visible = false;
-                                pnlCorreo.Visible = false;
-                                pnlIframe.Visible = true;
+            //            if (urlCobro.Contains("https://"))
+            //            {
+            //                Guid UidLigaUrl = Guid.NewGuid();
+            //                if (usuariosCompletosServices.GenerarLigasPagosTemp(UidLigaUrl, urlCobro, concepto, decimal.Parse(txtImporte.Text), ReferenciaCobro, item.UidUsuario, identificador, thisDay, DateTime.Parse(vencimiento), "EVENTO", Guid.Empty, Guid.Empty, Guid.Parse(ViewState["UidClienteLocal"].ToString())))
+            //                {
+            //                    btnPagar.Text = "Pagar $" + txtImporte.Text;
+            //                    pnlGenerarLigas.Visible = false;
+            //                    pnlDatosComercio.Visible = false;
+            //                    pnlUsuario.Visible = false;
+            //                    pnlCorreo.Visible = false;
+            //                    pnlIframe.Visible = true;
 
-                                btnCancelar.Visible = false;
-                                btnAceptar.Visible = true;
+            //                    btnCancelar.Visible = false;
+            //                    btnAceptar.Visible = true;
 
-                                ifrLiga.Src = urlCobro;
+            //                    ifrLiga.Src = urlCobro;
 
-                                resu = true;
-                            }
-                        }
-                        else
-                        {
-                            resu = false;
-                        }
-                    }
-                }
+            //                    resu = true;
+            //                }
+            //            }
+            //            else
+            //            {
+            //                resu = false;
+            //            }
+            //        }
+            //    }
 
-                if (resu)
-                {
+            //    if (resu)
+            //    {
 
-                }
-                else
-                {
-                    if (!string.IsNullOrEmpty(url))
-                    {
-                        //pnlAlertModal.Visible = true;
-                        //lblResumen.Text = "<b>¡Lo sentimos! </b> " + url + "." + "<br /> Las credenciales proporcionadas no son correctos, por favor contacte a los administradores.";
-                        //divAlertModal.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
-                    }
-                    else
-                    {
-                        //pnlAlertModal.Visible = true;
-                        //lblResumen.Text = "<b>¡Lo sentimos! </b> Las credenciales proporcionadas no son correctos, por favor contacte a los administradores.";
-                        //divAlertModal.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
-                    }
-                }
-            }
-            else
-            {
-                //pnlAlertModal.Visible = true;
-                //lblResumen.Text = "<b>¡Lo sentimos! </b> Esta empresa no cuenta con credenciales para generar ligas, por favor contacte a los administradores.";
-                //divAlertModal.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
-            }
+            //    }
+            //    else
+            //    {
+            //        if (!string.IsNullOrEmpty(url))
+            //        {
+            //            //pnlAlertModal.Visible = true;
+            //            //lblResumen.Text = "<b>¡Lo sentimos! </b> " + url + "." + "<br /> Las credenciales proporcionadas no son correctos, por favor contacte a los administradores.";
+            //            //divAlertModal.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+            //        }
+            //        else
+            //        {
+            //            //pnlAlertModal.Visible = true;
+            //            //lblResumen.Text = "<b>¡Lo sentimos! </b> Las credenciales proporcionadas no son correctos, por favor contacte a los administradores.";
+            //            //divAlertModal.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    //pnlAlertModal.Visible = true;
+            //    //lblResumen.Text = "<b>¡Lo sentimos! </b> Esta empresa no cuenta con credenciales para generar ligas, por favor contacte a los administradores.";
+            //    //divAlertModal.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+            //}
         }
 
         private string GenLigaPara(string id_company, string id_branch, string user, string pwd, string Referencia, decimal Importe,
@@ -822,31 +853,34 @@ namespace Franquicia.WebForms.Views
         }
         protected void ddlFormasPago_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (ddlFormasPago.SelectedValue == "contado")
+            if (!string.IsNullOrEmpty(txtImporte.Text))
             {
-                decimal importe = decimal.Parse(txtImporte.Text);
-
-                txtImporte.Text = importe.ToString("N2");
-                txtImporteTotal.Text = importe.ToString("N2");
-                ViewState["txtImporteTotal.Text"] = importe.ToString("N2");
-            }
-            else
-            {
-                decimal importeTotal = decimal.Parse(txtImporte.Text);
-
-                promocionesServices.CargarPromocionesEvento(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse(Request.QueryString["Id"].ToString()));
-
-                foreach (var itPromo in promocionesServices.lsEventosGenerarLigasModel.Where(x => x.UidPromocion == Guid.Parse(ddlFormasPago.SelectedValue)).ToList())
+                if (ddlFormasPago.SelectedValue == "contado")
                 {
-                    decimal Valor = itPromo.DcmComicion * importeTotal / 100;
-                    decimal Importe = Valor + importeTotal;
+                    decimal importe = decimal.Parse(txtImporte.Text);
 
-                    txtImporteTotal.Text = Importe.ToString("N2");
-                    ViewState["txtImporteTotal.Text"] = Importe.ToString("N2");
+                    txtImporte.Text = importe.ToString("N2");
+                    txtImporteTotal.Text = importe.ToString("N2");
+                    ViewState["txtImporteTotal.Text"] = importe.ToString("N2");
                 }
-            }
+                else
+                {
+                    decimal importeTotal = decimal.Parse(txtImporte.Text);
 
-            lblTotalPago.Text = "Generar pago $" + ViewState["txtImporteTotal.Text"].ToString();
+                    promocionesServices.CargarPromocionesEvento(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse(Request.QueryString["Id"].ToString()));
+
+                    foreach (var itPromo in promocionesServices.lsEventosGenerarLigasModel.Where(x => x.UidPromocion == Guid.Parse(ddlFormasPago.SelectedValue)).ToList())
+                    {
+                        decimal Valor = itPromo.DcmComicion * importeTotal / 100;
+                        decimal Importe = Valor + importeTotal;
+
+                        txtImporteTotal.Text = Importe.ToString("N2");
+                        ViewState["txtImporteTotal.Text"] = Importe.ToString("N2");
+                    }
+                }
+
+                lblTotalPago.Text = "Generar pago $" + ViewState["txtImporteTotal.Text"].ToString();
+            }
         }
 
         protected void tmValidar_Tick(object sender, EventArgs e)
@@ -905,7 +939,7 @@ namespace Franquicia.WebForms.Views
             pnlValidar.Visible = true;
             tmValidar.Enabled = true;
             pnlIframe.Visible = false;
-            ViewState["tmValidar"] = DateTime.Now.AddSeconds(10).ToString();
+            ViewState["tmValidar"] = DateTime.Now.AddSeconds(5).ToString();
         }
     }
 }

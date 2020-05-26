@@ -23,6 +23,10 @@ namespace Franquicia.WebForms
                     Response.Redirect(URLBase + "Views/Eventos.aspx?n=" + Request.QueryString["n"].ToString());
                 }
             }
+            else
+            {
+                Response.Redirect(URLBase + "Views/Eventos.aspx");
+            }
         }
     }
 }

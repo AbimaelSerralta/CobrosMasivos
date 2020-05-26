@@ -38,6 +38,10 @@ namespace Franquicia.WebForms.Views
             {
                 ligasUrlsServices = (LigasUrlsServices)Session["ligasUrlsServices"];
                 pagosTarjetaServices = (PagosTarjetaServices)Session["pagosTarjetaServices"];
+
+                pnlAlert.Visible = false;
+                lblMensajeAlert.Text = "";
+                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
             }
         }
 
@@ -251,6 +255,17 @@ namespace Franquicia.WebForms.Views
             Session["lsLigasUrlsGridViewModel"] = ligasUrlsServices.lsLigasUrlsGridViewModel;
             string _open = "window.open('ExportarAExcelReporteLigas.aspx', '_blank');";
             ScriptManager.RegisterStartupScript(this, this.GetType(), Guid.NewGuid().ToString(), _open, true);
+        }
+
+        protected void btnActualizarLista_Click(object sender, EventArgs e)
+        {
+            ligasUrlsServices.ConsultarEstatusLiga(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+            gvLigasGeneradas.DataSource = ligasUrlsServices.lsLigasUrlsGridViewModel;
+            gvLigasGeneradas.DataBind();
+
+            pnlAlert.Visible = true;
+            lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha sincronizado exitosamente.";
+            divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
         }
     }
 }

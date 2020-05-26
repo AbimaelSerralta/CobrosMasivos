@@ -964,7 +964,7 @@ namespace Franquicia.Bussiness
 
                         if (item["WHATS"].ToString().ToUpper() == "SI")
                         {
-                            WHATS = false;
+                            WHATS = true;
                         }
                         else if (item["WHATS"].ToString().ToUpper() == "NO")
                         {
@@ -1554,6 +1554,19 @@ namespace Franquicia.Bussiness
             bool result = false;
             if (usuariosCompletosRepository.GenerarLigasPagos(
                UidLigaUrl, VchUrl, VchConcepto, DcmImporte, IdReferencia, UidUsuario, VchIdentificador, DtRegistro, DtVencimiento, VchAsunto, UidLigaAsociado, UidPromocion, UidPropietario
+                ))
+            {
+                result = true;
+            }
+            return result;
+        }
+        public bool GenerarLigasPagosEvento(string VchUrl, string VchConcepto, decimal DcmImporte, string IdReferencia, Guid UidUsuario, string VchIdentificador, DateTime DtRegistro, DateTime DtVencimiento, string VchAsunto, Guid UidLigaAsociado, Guid UidPromocion, Guid UidEvento, Guid UidPropietario)
+        {
+            Guid UidLigaUrl = Guid.NewGuid();
+
+            bool result = false;
+            if (usuariosCompletosRepository.GenerarLigasPagosEvento(
+               UidLigaUrl, VchUrl, VchConcepto, DcmImporte, IdReferencia, UidUsuario, VchIdentificador, DtRegistro, DtVencimiento, VchAsunto, UidLigaAsociado, UidPromocion, UidEvento, UidPropietario
                 ))
             {
                 result = true;

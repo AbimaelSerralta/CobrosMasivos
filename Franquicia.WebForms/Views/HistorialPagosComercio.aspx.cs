@@ -38,6 +38,9 @@ namespace Franquicia.WebForms.Views
 
             if (!IsPostBack)
             {
+                ViewState["gvHistorial"] = SortDirection.Ascending;
+
+                Session["historialPagosServices"] = historialPagosServices;
                 Session["usuariosCompletosServices"] = usuariosCompletosServices;
                 tmValidar.Enabled = false;
 
@@ -47,6 +50,7 @@ namespace Franquicia.WebForms.Views
             }
             else
             {
+                historialPagosServices = (HistorialPagosServices)Session["historialPagosServices"];
                 usuariosCompletosServices = (UsuariosCompletosServices)Session["usuariosCompletosServices"];
 
                 pnlAlert.Visible = false;
@@ -356,7 +360,7 @@ namespace Franquicia.WebForms.Views
             btnCancelar.Visible = false;
 
             tmValidar.Enabled = true;
-            Session["tmValidar"] = DateTime.Now.AddSeconds(18).ToString();
+            Session["tmValidar"] = DateTime.Now.AddSeconds(5).ToString();
         }
 
         protected void btnAgregarWa_Click(object sender, EventArgs e)
@@ -422,6 +426,92 @@ namespace Franquicia.WebForms.Views
             }
 
             ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModalDialog()", true);
+        }
+
+        protected void gvHistorial_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            string SortExpression = e.SortExpression;
+            SortDirection direccion;
+            string Orden = string.Empty;
+
+            if (ViewState["gvHistorial"] != null)
+            {
+                direccion = (SortDirection)ViewState["gvHistorial"];
+                if (direccion == SortDirection.Ascending)
+                {
+                    ViewState["gvHistorial"] = SortDirection.Descending;
+                    Orden = "ASC";
+                }
+                else
+                {
+                    ViewState["gvHistorial"] = SortDirection.Ascending;
+                    Orden = "DESC";
+                }
+
+                switch (SortExpression)
+                {
+                    case "DtRegistro":
+                        if (Orden == "ASC")
+                        {
+                            historialPagosServices.lsHistorialPagosGridViewModel = historialPagosServices.lsHistorialPagosGridViewModel.OrderBy(x => x.DtRegistro).ToList();
+                        }
+                        else
+                        {
+                            historialPagosServices.lsHistorialPagosGridViewModel = historialPagosServices.lsHistorialPagosGridViewModel.OrderByDescending(x => x.DtRegistro).ToList();
+                        }
+                        break;
+                    case "VchIdentificador":
+                        if (Orden == "ASC")
+                        {
+                            historialPagosServices.lsHistorialPagosGridViewModel = historialPagosServices.lsHistorialPagosGridViewModel.OrderBy(x => x.VchIdentificador).ToList();
+                        }
+                        else
+                        {
+                            historialPagosServices.lsHistorialPagosGridViewModel = historialPagosServices.lsHistorialPagosGridViewModel.OrderByDescending(x => x.VchIdentificador).ToList();
+                        }
+                        break;
+                    case "DcmSaldo":
+                        if (Orden == "ASC")
+                        {
+                            historialPagosServices.lsHistorialPagosGridViewModel = historialPagosServices.lsHistorialPagosGridViewModel.OrderBy(x => x.DcmSaldo).ToList();
+                        }
+                        else
+                        {
+                            historialPagosServices.lsHistorialPagosGridViewModel = historialPagosServices.lsHistorialPagosGridViewModel.OrderByDescending(x => x.DcmSaldo).ToList();
+                        }
+                        break;
+                    case "DcmOperacion":
+                        if (Orden == "ASC")
+                        {
+                            historialPagosServices.lsHistorialPagosGridViewModel = historialPagosServices.lsHistorialPagosGridViewModel.OrderBy(x => x.DcmOperacion).ToList();
+                        }
+                        else
+                        {
+                            historialPagosServices.lsHistorialPagosGridViewModel = historialPagosServices.lsHistorialPagosGridViewModel.OrderByDescending(x => x.DcmOperacion).ToList();
+                        }
+                        break;
+                    case "DcmNuevoSaldo":
+                        if (Orden == "ASC")
+                        {
+                            historialPagosServices.lsHistorialPagosGridViewModel = historialPagosServices.lsHistorialPagosGridViewModel.OrderBy(x => x.DcmNuevoSaldo).ToList();
+                        }
+                        else
+                        {
+                            historialPagosServices.lsHistorialPagosGridViewModel = historialPagosServices.lsHistorialPagosGridViewModel.OrderByDescending(x => x.DcmNuevoSaldo).ToList();
+                        }
+                        break;
+                }
+
+                gvHistorial.DataSource = historialPagosServices.lsHistorialPagosGridViewModel;
+                gvHistorial.DataBind();
+            }
+        }
+
+        protected void gvHistorial_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvHistorial.PageIndex = e.NewPageIndex;
+            gvHistorial.DataSource = historialPagosServices.lsHistorialPagosGridViewModel;
+            gvHistorial.DataBind();
         }
     }
 }

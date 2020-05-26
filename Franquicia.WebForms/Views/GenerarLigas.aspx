@@ -426,7 +426,7 @@
                                                             </tr>
                                                             <tr>
                                                                 <td class="text-center">
-                                                                    <asp:CheckBox ID="cbWhats" Visible="false" Checked="false" AutoPostBack="true" OnCheckedChanged="cbWhats_CheckedChanged" runat="server" /></td>
+                                                                    <asp:CheckBox ID="cbWhats" Checked="false" AutoPostBack="true" OnCheckedChanged="cbWhats_CheckedChanged" runat="server" /></td>
                                                                 <td class="text-center">WhatsApp</td>
                                                                 <td class="text-center"><asp:Label ID="lblAUtilizarWA" Visible="false" Text="0" runat="server" /><asp:Label Text="$" runat="server" /><asp:Label ID="lblTotalUtilizarWA" runat="server" /></td>
                                                                 <td class="text-center"><asp:Label ID="lblErrorWA" Text="0" runat="server" /></td>

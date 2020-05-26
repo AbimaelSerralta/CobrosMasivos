@@ -143,6 +143,7 @@
     <Content Include="assets\css\material-dashboard-rtl.css" />
     <Content Include="assets\css\material-dashboard.css" />
     <Content Include="assets\css\material-dashboard.min.css" />
+    <Content Include="assets\css\style2.css" />
     <Content Include="assets\demo\demo.css" />
     <Content Include="assets\demo\demo.js" />
     <Content Include="assets\img\angular.png" />
@@ -231,6 +232,7 @@
     <Content Include="Multiselect\css\bootstrap-multiselect.css" />
     <Content Include="Multiselect\js\bootstrap-multiselect.min.js" />
     <Content Include="Multiselect\js\jquery-3.3.1.min.js" />
+    <Content Include="Pago.aspx" />
     <Content Include="Views\AccesosUsuarios.aspx" />
     <Content Include="Views\AdministradoresFranquicias.aspx" />
     <Content Include="Views\AdministradoresClientes.aspx" />
@@ -251,7 +253,7 @@
     <Content Include="Views\Promociones.aspx" />
     <Content Include="Views\ReporteLigasFranquicias.aspx" />
     <Content Include="Views\ReporteLigas.aspx" />
-    <Content Include="Views\Pago.aspx" />
+    <Content Include="Views\Pagos.aspx" />
     <Content Include="Views\Solo2.aspx" />
     <Content Include="Views\Tarifas.aspx" />
     <Content Include="Views\UsuariosClientes.aspx" />
@@ -292,6 +294,13 @@
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Pago.aspx.cs">
+      <DependentUpon>Pago.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pago.aspx.designer.cs">
+      <DependentUpon>Pago.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Response\ResponseHelpers.cs" />
@@ -436,12 +445,12 @@
     <Compile Include="Views\ReporteLigas.aspx.designer.cs">
       <DependentUpon>ReporteLigas.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Views\Pago.aspx.cs">
-      <DependentUpon>Pago.aspx</DependentUpon>
+    <Compile Include="Views\Pagos.aspx.cs">
+      <DependentUpon>Pagos.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Views\Pago.aspx.designer.cs">
-      <DependentUpon>Pago.aspx</DependentUpon>
+    <Compile Include="Views\Pagos.aspx.designer.cs">
+      <DependentUpon>Pagos.aspx</DependentUpon>
     </Compile>
     <Compile Include="Views\Solo2.aspx.cs">
       <DependentUpon>Solo2.aspx</DependentUpon>

@@ -62,16 +62,16 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="table-responsive">
-                                            <asp:GridView ID="gvHistorial" DataKeyNames="UidHistorialPago" AutoGenerateColumns="false" CssClass="table table-hover" GridLines="None" border="0" runat="server">
+                                            <asp:GridView ID="gvHistorial" DataKeyNames="UidHistorialPago" OnSorting="gvHistorial_Sorting" AllowSorting="true" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvHistorial_PageIndexChanging" AutoGenerateColumns="false" CssClass="table table-hover" GridLines="None" border="0" runat="server">
                                                 <EmptyDataTemplate>
                                                     <div class="alert alert-info">Su historial esta vacio</div>
                                                 </EmptyDataTemplate>
                                                 <Columns>
-                                                    <asp:BoundField DataField="DtRegistro" dataformatstring="{0:dd/MM/yyyy HH:mm:ss}" HeaderText="FECHA" />
-                                                    <asp:BoundField DataField="VchIdentificador" HeaderText="IDENTIFICADOR" />
-                                                    <asp:BoundField DataField="DcmSaldo" HeaderStyle-CssClass="text-right" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:C}" HeaderText="ABONO" />
-                                                    <asp:BoundField DataField="DcmOperacion" HeaderStyle-CssClass="text-right" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:C}" HeaderText="CARGO" />
-                                                    <asp:BoundField DataField="DcmNuevoSaldo" HeaderStyle-CssClass="text-right" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:C}" HeaderText="NUEVO SALDO" />
+                                                    <asp:BoundField SortExpression="DtRegistro" DataField="DtRegistro" dataformatstring="{0:dd/MM/yyyy HH:mm:ss}" HeaderText="FECHA" />
+                                                    <asp:BoundField SortExpression="VchIdentificador" DataField="VchIdentificador" HeaderText="IDENTIFICADOR" />
+                                                    <asp:BoundField SortExpression="DcmSaldo" DataField="DcmSaldo" HeaderStyle-CssClass="text-right" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:C}" HeaderText="ABONO" />
+                                                    <asp:BoundField SortExpression="DcmOperacion" DataField="DcmOperacion" HeaderStyle-CssClass="text-right" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:C}" HeaderText="CARGO" />
+                                                    <asp:BoundField SortExpression="DcmNuevoSaldo" DataField="DcmNuevoSaldo" HeaderStyle-CssClass="text-right" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:C}" HeaderText="NUEVO SALDO" />
                                                     <%--<asp:TemplateField>
                                                         <ItemTemplate>
                                                             <table>
@@ -98,7 +98,7 @@
                                                         </ItemTemplate>
                                                     </asp:TemplateField>--%>
                                                 </Columns>
-                                                <PagerStyle CssClass="pagination-ys" />
+                                                <PagerStyle HorizontalAlign="Center" CssClass="pagination-ys" />
                                             </asp:GridView>
                                         </div>
                                     </div>
@@ -289,9 +289,10 @@
 
                                             <div style="height: 100%; width: 100%; display: flex; justify-content: center; align-items: center;">
                                                 <div>
-                                                    <div class="loader"></div>
-                                                    <strong>
-                                                        <asp:Literal ID="ltMnsj" Text="Verificando..." runat="server" /></strong>
+                                                    <img height="150" width="150" src="../CSSPropio/loader.gif" alt="imgCobrosMasivos" />
+                                                    <%--<div class="loader"></div>--%>
+                                                    <br />
+                                                    <strong><asp:Literal ID="ltMnsj" Text="Verificando..." runat="server" /></strong>
                                                 </div>
                                             </div>
                                         </ContentTemplate>

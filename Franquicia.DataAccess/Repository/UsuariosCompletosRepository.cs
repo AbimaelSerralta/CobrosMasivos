@@ -1595,7 +1595,7 @@ namespace Franquicia.DataAccess.Repository
             return lsLigasUsuariosGridViewModel;
         }
         #endregion
-        
+
         #region Eventos
         public List<LigasUsuariosGridViewModel> SelectUsClienteEvento(Guid UidUsuario)
         {
@@ -2322,20 +2322,20 @@ namespace Franquicia.DataAccess.Repository
                 {
                     //if (!lsLigasUsuariosGridViewModel.Exists(x => x.StrCorreo == us["VchCorreo"].ToString()))
                     //{
-                        lsLigasUsuariosGridViewModel.Add(new LigasUsuariosGridViewModel()
-                        {
-                            UidUsuario = new Guid(us["UidUsuario"].ToString()),
-                            IdUsuario = int.Parse(us["IdUsuario"].ToString()),
-                            StrNombre = us["VchNombre"].ToString(),
-                            StrApePaterno = us["VchApePaterno"].ToString(),
-                            StrApeMaterno = us["VchApeMaterno"].ToString(),
-                            StrCorreo = us["VchCorreo"].ToString(),
-                            UidEstatus = new Guid(us["UidEstatus"].ToString()),
-                            StrTelefono = "(" + us["Prefijo"].ToString() + ")" + us["VchTelefono"].ToString(),
-                            blSeleccionado = true,
-                            IdCliente = int.Parse(us["IdCliente"].ToString()),
-                            VchNombreComercial = us["VchIdWAySMS"].ToString()
-                        });
+                    lsLigasUsuariosGridViewModel.Add(new LigasUsuariosGridViewModel()
+                    {
+                        UidUsuario = new Guid(us["UidUsuario"].ToString()),
+                        IdUsuario = int.Parse(us["IdUsuario"].ToString()),
+                        StrNombre = us["VchNombre"].ToString(),
+                        StrApePaterno = us["VchApePaterno"].ToString(),
+                        StrApeMaterno = us["VchApeMaterno"].ToString(),
+                        StrCorreo = us["VchCorreo"].ToString(),
+                        UidEstatus = new Guid(us["UidEstatus"].ToString()),
+                        StrTelefono = "(" + us["Prefijo"].ToString() + ")" + us["VchTelefono"].ToString(),
+                        blSeleccionado = true,
+                        IdCliente = int.Parse(us["IdCliente"].ToString()),
+                        VchNombreComercial = us["VchIdWAySMS"].ToString()
+                    });
                     //}
                     //else
                     //{
@@ -2456,7 +2456,7 @@ namespace Franquicia.DataAccess.Repository
                         DcmImporte = item.DcmImporte,
                         DtVencimiento = item.DtVencimiento,
                         CBCorreo = accion,
-                        CBWhatsApp = false, //Cambiarlo cuando activen whatsApp
+                        CBWhatsApp = accion,
                         CBSms = accion
                     });
                 }
@@ -2480,7 +2480,7 @@ namespace Franquicia.DataAccess.Repository
                         DcmImporte = item.DcmImporte,
                         DtVencimiento = item.DtVencimiento,
                         CBCorreo = accion,
-                        CBWhatsApp = false, //Cambiarlo cuando activen whatsApp
+                        CBWhatsApp = accion,
                         CBSms = accion
                     });
                 }
@@ -2734,29 +2734,29 @@ namespace Franquicia.DataAccess.Repository
                 {
                     //if (!lsLigasMultiplesUsuariosGridViewModel.Exists(x => x.StrCorreo == us["VchCorreo"].ToString()))
                     //{
-                        lsLigasMultiplesUsuariosGridViewModel.Add(new LigasMultiplesUsuariosGridViewModel()
-                        {
-                            UidUsuario = Guid.Parse(us["UidUsuario"].ToString()),
-                            IdUsuario = int.Parse(us["IdUsuario"].ToString()),
-                            StrNombre = us["VchNombre"].ToString(),
-                            StrApePaterno = us["VchApePaterno"].ToString(),
-                            StrApeMaterno = us["VchApeMaterno"].ToString(),
-                            StrCorreo = us["VchCorreo"].ToString(),
-                            UidEstatus = Guid.Parse(us["UidEstatus"].ToString()),
-                            StrTelefono = "(" + us["Prefijo"].ToString() + ")" + us["VchTelefono"].ToString(),
-                            blSeleccionado = true,
-                            IdCliente = int.Parse(us["IdCliente"].ToString()),
-                            VchNombreComercial = us["VchIdWAySMS"].ToString(),
-                            StrAsunto = item.StrAsunto,
-                            StrConcepto = item.StrConcepto,
-                            DcmImporte = item.DcmImporte,
-                            DtVencimiento = item.DtVencimiento,
-                            CBCorreo = item.CBCorreo,
-                            CBWhatsApp = item.CBWhatsApp,
-                            CBSms = item.CBSms,
-                            StrPromociones = item.StrPromociones,
-                            IntAuxiliar = dtAuxiliar.ToString("ssfff") + random.Next(10000000, 100000001).ToString()
-                        });
+                    lsLigasMultiplesUsuariosGridViewModel.Add(new LigasMultiplesUsuariosGridViewModel()
+                    {
+                        UidUsuario = Guid.Parse(us["UidUsuario"].ToString()),
+                        IdUsuario = int.Parse(us["IdUsuario"].ToString()),
+                        StrNombre = us["VchNombre"].ToString(),
+                        StrApePaterno = us["VchApePaterno"].ToString(),
+                        StrApeMaterno = us["VchApeMaterno"].ToString(),
+                        StrCorreo = us["VchCorreo"].ToString(),
+                        UidEstatus = Guid.Parse(us["UidEstatus"].ToString()),
+                        StrTelefono = "(" + us["Prefijo"].ToString() + ")" + us["VchTelefono"].ToString(),
+                        blSeleccionado = true,
+                        IdCliente = int.Parse(us["IdCliente"].ToString()),
+                        VchNombreComercial = us["VchIdWAySMS"].ToString(),
+                        StrAsunto = item.StrAsunto,
+                        StrConcepto = item.StrConcepto,
+                        DcmImporte = item.DcmImporte,
+                        DtVencimiento = item.DtVencimiento,
+                        CBCorreo = item.CBCorreo,
+                        CBWhatsApp = item.CBWhatsApp,
+                        CBSms = item.CBSms,
+                        StrPromociones = item.StrPromociones,
+                        IntAuxiliar = dtAuxiliar.ToString("ssfff") + random.Next(10000000, 100000001).ToString()
+                    });
                     //}
                     //else
                     //{
@@ -3595,6 +3595,72 @@ namespace Franquicia.DataAccess.Repository
                     comando.Parameters.Add("@UidPropietario", SqlDbType.UniqueIdentifier);
                     comando.Parameters["@UidPropietario"].Value = UidPropietario;
                 }
+
+                Resultado = this.ManipulacionDeDatos(comando);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return Resultado;
+        }
+        public bool GenerarLigasPagosEvento(Guid UidLigaUrl, string VchUrl, string VchConcepto, decimal DcmImporte, string IdReferencia, Guid UidUsuario, string VchIdentificador, DateTime DtRegistro, DateTime DtVencimiento, string VchAsunto, Guid UidLigaAsociado, Guid UidPromocion, Guid UidEvento, Guid UidPropietario)
+        {
+            bool Resultado = false;
+
+            SqlCommand comando = new SqlCommand();
+            try
+            {
+                comando.CommandType = System.Data.CommandType.StoredProcedure;
+                comando.CommandText = "sp_LigasRegistrar";
+
+                comando.Parameters.Add("@UidLigaUrl", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidLigaUrl"].Value = UidLigaUrl;
+
+                comando.Parameters.Add("@VchUrl", SqlDbType.VarChar, 100);
+                comando.Parameters["@VchUrl"].Value = VchUrl;
+
+                comando.Parameters.Add("@VchConcepto", SqlDbType.VarChar, 100);
+                comando.Parameters["@VchConcepto"].Value = VchConcepto;
+
+                comando.Parameters.Add("@DcmImporte", SqlDbType.Decimal);
+                comando.Parameters["@DcmImporte"].Value = DcmImporte;
+
+                comando.Parameters.Add("@IdReferencia", SqlDbType.VarChar, 100);
+                comando.Parameters["@IdReferencia"].Value = IdReferencia;
+
+                comando.Parameters.Add("@UidUsuario", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidUsuario"].Value = UidUsuario;
+
+                comando.Parameters.Add("@VchIdentificador", SqlDbType.VarChar, 50);
+                comando.Parameters["@VchIdentificador"].Value = VchIdentificador;
+
+                comando.Parameters.Add("@DtRegistro", SqlDbType.DateTime);
+                comando.Parameters["@DtRegistro"].Value = DtRegistro;
+
+                comando.Parameters.Add("@DtVencimiento", SqlDbType.DateTime);
+                comando.Parameters["@DtVencimiento"].Value = DtVencimiento;
+
+                comando.Parameters.Add("@VchAsunto", SqlDbType.VarChar, 50);
+                comando.Parameters["@VchAsunto"].Value = VchAsunto;
+
+                if (UidLigaAsociado != Guid.Empty)
+                {
+                    comando.Parameters.Add("@UidLigaAsociado", SqlDbType.UniqueIdentifier);
+                    comando.Parameters["@UidLigaAsociado"].Value = UidLigaAsociado;
+                }
+
+                if (UidPromocion != Guid.Empty)
+                {
+                    comando.Parameters.Add("@UidPromocion", SqlDbType.UniqueIdentifier);
+                    comando.Parameters["@UidPromocion"].Value = UidPromocion;
+                }
+
+                comando.Parameters.Add("@UidEvento", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidEvento"].Value = UidEvento;
+
+                comando.Parameters.Add("@UidPropietario", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidPropietario"].Value = UidPropietario;
 
                 Resultado = this.ManipulacionDeDatos(comando);
             }

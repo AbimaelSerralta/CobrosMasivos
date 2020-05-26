@@ -868,7 +868,7 @@
                                             </div>
                                             <div class="form-group col-md-1">
                                                 <label for="cbModWa" style="color: black;padding-left: 0px;">Whats</label>
-                                                <asp:CheckBox ID="cbModWa" Enabled="false" Checked="false" runat="server" />
+                                                <asp:CheckBox ID="cbModWa" Checked="false" runat="server" />
                                             </div>
                                             <div class="form-group col-md-1">
                                                 <label for="cbModSms" style="color: black;padding-left: 0px;">Sms</label>

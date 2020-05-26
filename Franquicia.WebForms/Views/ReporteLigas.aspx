@@ -5,16 +5,16 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="CPHCaja" runat="server">
-    <asp:Panel ID="pnlAlert" Visible="false" runat="server">
-        <asp:UpdatePanel runat="server">
-            <ContentTemplate>
+    <asp:UpdatePanel runat="server">
+        <ContentTemplate>
+            <asp:Panel ID="pnlAlert" Visible="false" runat="server">
                 <div id="divAlert" class="alert alert-danger alert-dismissible fade" role="alert" runat="server">
                     <asp:Label ID="lblMensajeAlert" runat="server" />
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 </div>
-            </ContentTemplate>
-        </asp:UpdatePanel>
-    </asp:Panel>
+            </asp:Panel>
+        </ContentTemplate>
+    </asp:UpdatePanel>
     <asp:UpdatePanel runat="server">
         <ContentTemplate>
             <div class="content">
@@ -31,6 +31,9 @@
                                                 </asp:LinkButton>
                                                 <asp:Label Text="Listado de ligas" runat="server" />
 
+                                                <asp:LinkButton ID="btnActualizarLista" OnClick="btnActualizarLista_Click" ToolTip="Actualizar tabla." class="btn btn-lg btn-success btn-fab btn-fab-mini btn-round pull-right" runat="server">
+                                                        <i class="material-icons">sync</i>
+                                                </asp:LinkButton>
                                                 <asp:LinkButton ID="btnExportarLista" OnClick="btnExportarLista_Click" ToolTip="Exportar tabla a excel." class="btn btn-lg btn-warning btn-fab btn-fab-mini btn-round pull-right" runat="server">
                                                         <i class="material-icons">file_download</i>
                                                 </asp:LinkButton>
@@ -79,7 +82,7 @@
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                 </Columns>
-                                                <PagerStyle CssClass="pagination-ys" />
+                                                <PagerStyle HorizontalAlign="Center" CssClass="pagination-ys" />
                                             </asp:GridView>
                                         </div>
                                     </div>
@@ -246,8 +249,8 @@
                                                             <div class="form-group col-md-3">
                                                                 <label for="ddlImporteMenor" style="color: black;"></label>
                                                                 <asp:DropDownList ID="ddlImporteMenor" CssClass="form-control" Style="margin-top: 6px;" runat="server">
-                                                                    <asp:ListItem Text="(<=) Mayor o igual que" Value="<=" />
-                                                                    <asp:ListItem Text="(<) Mayor que" Value="<" />
+                                                                    <asp:ListItem Text="(<=) Menor o igual que" Value="<=" />
+                                                                    <asp:ListItem Text="(<) Menor que" Value="<" />
                                                                 </asp:DropDownList>
                                                             </div>
                                                             <div class="form-group col-md-3">

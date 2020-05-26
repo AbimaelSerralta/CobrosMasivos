@@ -37,7 +37,10 @@
                                 <div class="card-header card-header-tabs card-header-primary" style="padding-top: 0px; padding-bottom: 0px;">
                                     <div class="nav-tabs-navigation">
                                         <div class="nav-tabs-wrapper">
-                                            <div class="form-group">
+                                            <div class="form-group" style="margin-top: 0px; padding-bottom: 0px;">
+                                                <asp:LinkButton ID="btnFiltros" OnClick="btnFiltros_Click" ToolTip="Filtros de busqueda." BackColor="#4db6ac" class="btn btn-lg btn-fab btn-fab-mini btn-round" runat="server">
+                                                                <i class="material-icons">search</i>
+                                                </asp:LinkButton>
 
                                                 <asp:Label Text="Listado de Eventos" runat="server" />
 
@@ -53,7 +56,7 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="table-responsive">
-                                            <asp:GridView ID="gvEventos" OnSelectedIndexChanged="gvEventos_SelectedIndexChanged" OnRowCommand="gvEventos_RowCommand" OnRowDataBound="gvEventos_RowDataBound" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidEvento" GridLines="None" border="0" runat="server">
+                                            <asp:GridView ID="gvEventos" OnRowCommand="gvEventos_RowCommand" OnRowDataBound="gvEventos_RowDataBound" OnSorting="gvEventos_Sorting" AllowSorting="true" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvEventos_PageIndexChanging" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidEvento" GridLines="None" border="0" runat="server">
                                                 <EmptyDataTemplate>
                                                     <div class="alert alert-info">No hay eventos registrados</div>
                                                 </EmptyDataTemplate>
@@ -61,7 +64,7 @@
                                                     <asp:ButtonField CommandName="Select" HeaderStyle-CssClass="hide" ItemStyle-CssClass="hide" />
                                                     <asp:BoundField SortExpression="VchNombreEvento" DataField="VchNombreEvento" HeaderText="EVENTO" />
                                                     <asp:BoundField SortExpression="DtFHInicio" DataField="DtFHInicio" DataFormatString="{0:dd/MM/yyyy HH:mm:ss}" HeaderText="F/H INICIO" />
-                                                    <asp:BoundField SortExpression="DTFHFin" DataField="DTFHFin" DataFormatString="{0:dd/MM/yyyy HH:mm:ss}" HeaderText="F/H FIN" />
+                                                    <asp:BoundField SortExpression="DtFHFin" DataField="DtFHFin" DataFormatString="{0:dd/MM/yyyy HH:mm:ss}" HeaderText="F/H FIN" />
                                                     <asp:TemplateField HeaderText="URL">
                                                         <ItemTemplate>
                                                             <table>
@@ -116,6 +119,7 @@
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                 </Columns>
+                                                <PagerStyle HorizontalAlign="Center" CssClass="pagination-ys" />
                                             </asp:GridView>
                                         </div>
                                     </div>
@@ -267,6 +271,117 @@
             </div>
         </div>
     </div>
+
+    <div id="ModalBusqueda" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <asp:UpdatePanel runat="server">
+                    <ContentTemplate>
+                        <div class="modal-header">
+                            <h5 class="modal-title" runat="server">
+                                <asp:Label ID="lblTittleLigas" Text="Filtro de busqueda" runat="server" /></h5>
+                            <%--<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>--%>
+                        </div>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+                <div class="col-12 pt-3">
+                    <asp:UpdateProgress runat="server" AssociatedUpdatePanelID="upBusqueda">
+                        <ProgressTemplate>
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                            </div>
+                        </ProgressTemplate>
+                    </asp:UpdateProgress>
+                </div>
+                <div class="modal-body pt-0" style="padding-bottom: 0px;">
+                    <div class="tab-content">
+                        <asp:UpdatePanel runat="server">
+                            <ContentTemplate>
+                                <asp:Panel ID="pnlFiltrosBusqueda" runat="server">
+                                    <div class="card" style="margin-top: 0px;">
+                                        <div class="card-header card-header-tabs card-header" style="padding-top: 0px; padding-bottom: 0px;">
+                                            <div class="nav-tabs-navigation">
+                                                <div class="nav-tabs-wrapper">
+                                                    <div class="form-group">
+                                                        <asp:Label Text="Busqueda" runat="server" />
+                                                        <div class="row">
+                                                            <div class="form-group col-md-6">
+                                                                <label for="txtFiltroNombre" style="color: black;">Nombre evento</label>
+                                                                <asp:TextBox ID="txtFiltroNombre" style="margin-top: 12px;" CssClass="form-control" aria-label="Search" runat="server" />
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label for="ddlFiltroEstatus" style="color: black;">Estatus</label>
+                                                                <asp:DropDownList ID="ddlFiltroEstatus" AppendDataBoundItems="true" CssClass="form-control" Style="margin-top: 6px;" runat="server">
+                                                                </asp:DropDownList>
+                                                            </div>
+                                                            <div class="form-group col-md-3">
+                                                                <label for="ddlImporteMayor" style="color: black;">Importe</label>
+                                                                <asp:DropDownList ID="ddlImporteMayor" CssClass="form-control" runat="server">
+                                                                    <asp:ListItem Text="(>=) Mayor o igual que" Value=">=" />
+                                                                    <asp:ListItem Text="(>) Mayor que" Value=">" />
+                                                                </asp:DropDownList>
+                                                            </div>
+                                                            <div class="form-group col-md-3">
+                                                                <label for="txtFiltroDcmImporteMayor" style="color: black;"></label>
+                                                                <asp:TextBox ID="txtFiltroDcmImporteMayor" CssClass="form-control" placeholder="Mayor" aria-label="Search" Style="margin-top: 11px;" runat="server" />
+                                                                <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtFiltroDcmImporteMayor" runat="server" />
+                                                            </div>
+                                                            <div class="form-group col-md-3">
+                                                                <label for="ddlImporteMenor" style="color: black;"></label>
+                                                                <asp:DropDownList ID="ddlImporteMenor" CssClass="form-control" Style="margin-top: 6px;" runat="server">
+                                                                    <asp:ListItem Text="(<=) Menor o igual que" Value="<=" />
+                                                                    <asp:ListItem Text="(<) Menor que" Value="<" />
+                                                                </asp:DropDownList>
+                                                            </div>
+                                                            <div class="form-group col-md-3">
+                                                                <label for="txtFiltroDcmImporteMenor" style="color: black;"></label>
+                                                                <asp:TextBox ID="txtFiltroDcmImporteMenor" CssClass="form-control" placeholder="Menor" aria-label="Search" Style="margin-top: 11px;" runat="server" />
+                                                                <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtFiltroDcmImporteMenor" runat="server" />
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label for="txtFiltroDtInicioDesde" style="color: black;">Fecha Inicio</label>
+                                                                <asp:TextBox ID="txtFiltroDtInicioDesde" CssClass="form-control" TextMode="Date" aria-label="Search" runat="server" />
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label for="txtFiltroDtInicioHasta" style="color: black;"></label>
+                                                                <asp:TextBox ID="txtFiltroDtInicioHasta" style="margin-top: 5px;" CssClass="form-control" TextMode="Date" aria-label="Search" runat="server" />
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label for="txtFiltroDtFinDesde" style="color: black;">Fecha Fin</label>
+                                                                <asp:TextBox ID="txtFiltroDtFinDesde" CssClass="form-control" TextMode="Date" aria-label="Search" runat="server" />
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label for="txtFiltroDtFinHasta" style="color: black;"></label>
+                                                                <asp:TextBox ID="txtFiltroDtFinHasta" style="margin-top: 5px;" CssClass="form-control" TextMode="Date" aria-label="Search" runat="server" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </asp:Panel>
+                            </ContentTemplate>
+                        </asp:UpdatePanel>
+                    </div>
+                </div>
+                <asp:UpdatePanel runat="server" ID="upBusqueda">
+                    <ContentTemplate>
+                        <div class="modal-footer justify-content-center">
+                            <asp:LinkButton ID="btnBuscar" OnClick="btnBuscar_Click" CssClass="btn btn-primary btn-round" runat="server">
+                            <i class="material-icons">search</i> Buscar
+                            </asp:LinkButton>
+                            <asp:LinkButton ID="btnLimpiar" OnClick="btnLimpiar_Click" CssClass="btn btn-warning btn-round" runat="server">
+                            <i class="material-icons">clear_all</i> Limpiar
+                            </asp:LinkButton>
+                        </div>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+            </div>
+        </div>
+    </div>
     <!--END MODAL-->
 
     <script>
@@ -276,6 +391,13 @@
 
         function hideModal() {
             $('#ModalNuevo').modal('hide');
+        }
+        function showModalBusqueda() {
+            $('#ModalBusqueda').modal('show');
+        }
+
+        function hideModalBusqueda() {
+            $('#ModalBusqueda').modal('hide');
         }
 
         function hideAlert() {

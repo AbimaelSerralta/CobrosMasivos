@@ -370,6 +370,92 @@ namespace Franquicia.DataAccess.Repository
             }
             return Resultado;
         }
+
+        public List<EventosGridViewModel> BuscarEventos(Guid UidPropietario, string VchNombreEvento, string DtFHInicioDesde, string DtFHInicioHasta, string DtFHFinDesde, string DtFHFinHasta, decimal DcmImporteMayor, decimal DcmImporteMenor, Guid UidEstatus)
+        {
+            List<EventosGridViewModel> lsEventosGridViewModel = new List<EventosGridViewModel>();
+
+            SqlCommand comando = new SqlCommand();
+            comando.CommandType = CommandType.StoredProcedure;
+            comando.CommandText = "sp_EventosBuscar";
+            try
+            {
+                comando.Parameters.Add("@UidPropietario", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidPropietario"].Value = UidPropietario;
+
+                if (VchNombreEvento != string.Empty)
+                {
+                    comando.Parameters.Add("@VchNombreEvento", SqlDbType.VarChar);
+                    comando.Parameters["@VchNombreEvento"].Value = VchNombreEvento;
+                }
+
+                if (DtFHInicioDesde != string.Empty)
+                {
+                    comando.Parameters.Add("@DtFHInicioDesde", SqlDbType.DateTime);
+                    comando.Parameters["@DtFHInicioDesde"].Value = DtFHInicioDesde;
+                }
+                if (DtFHInicioHasta != string.Empty)
+                {
+                    comando.Parameters.Add("@DtFHInicioHasta", SqlDbType.Date);
+                    comando.Parameters["@DtFHInicioHasta"].Value = DtFHInicioHasta;
+                }
+                if (DtFHFinDesde != string.Empty)
+                {
+                    comando.Parameters.Add("@DtFHFinDesde", SqlDbType.DateTime);
+                    comando.Parameters["@DtFHFinDesde"].Value = DtFHFinDesde;
+                }
+                if (DtFHFinHasta != string.Empty)
+                {
+                    comando.Parameters.Add("@DtFHFinHasta", SqlDbType.Date);
+                    comando.Parameters["@DtFHFinHasta"].Value = DtFHFinHasta;
+                }
+                if (DcmImporteMayor != 0)
+                {
+                    comando.Parameters.Add("@DcmImporteMayor", SqlDbType.Decimal);
+                    comando.Parameters["@DcmImporteMayor"].Value = DcmImporteMayor;
+                }
+                if (DcmImporteMenor != 0)
+                {
+                    comando.Parameters.Add("@DcmImporteMenor", SqlDbType.Decimal);
+                    comando.Parameters["@DcmImporteMenor"].Value = DcmImporteMenor;
+                }
+
+                if (UidEstatus != Guid.Empty)
+                {
+                    comando.Parameters.Add("@UidEstatus", SqlDbType.UniqueIdentifier);
+                    comando.Parameters["@UidEstatus"].Value = UidEstatus;
+                }
+
+                foreach (DataRow item in this.Busquedas(comando).Rows)
+                {
+                    eventosGridViewModel = new EventosGridViewModel()
+                    {
+                        UidEvento = Guid.Parse(item["UidEvento"].ToString()),
+                        VchNombreEvento = item["VchNombreEvento"].ToString(),
+                        VchDescripcion = item["VchDescripcion"].ToString(),
+                        DtRegistro = DateTime.Parse(item["DtRegistro"].ToString()),
+                        DtFHInicio = DateTime.Parse(item["DtFHInicio"].ToString()),
+                        DtFHFin = DateTime.Parse(item["DtFHFin"].ToString()),
+                        BitTipoImporte = bool.Parse(item["BitTipoImporte"].ToString()),
+                        DcmImporte = decimal.Parse(item["DcmImporte"].ToString()),
+                        VchConcepto = item["VchConcepto"].ToString(),
+                        BitDatosUsuario = bool.Parse(item["BitDatosUsuario"].ToString()),
+                        VchUrlEvento = item["VchUrlEvento"].ToString(),
+                        UidEstatus = Guid.Parse(item["UidEstatus"].ToString()),
+                        VchEstatus = item["Estatus"].ToString(),
+                        VchIcono = item["VchIcono"].ToString()
+                    };
+
+                    lsEventosGridViewModel.Add(eventosGridViewModel);
+                }
+
+                return lsEventosGridViewModel.OrderByDescending(x => x.DtRegistro).ToList();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
         #endregion
     }
 }
