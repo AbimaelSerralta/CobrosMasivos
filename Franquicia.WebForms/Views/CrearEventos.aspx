@@ -13,7 +13,7 @@
             font-weight: 400;
             padding-left: 5px;
             padding-right: 20px;
-            width: 100%;
+            /*width: 100%;*/
         }
     </style>
 
@@ -64,7 +64,7 @@
                                                     <asp:ButtonField CommandName="Select" HeaderStyle-CssClass="hide" ItemStyle-CssClass="hide" />
                                                     <asp:BoundField SortExpression="VchNombreEvento" DataField="VchNombreEvento" HeaderText="EVENTO" />
                                                     <asp:BoundField SortExpression="DtFHInicio" DataField="DtFHInicio" DataFormatString="{0:dd/MM/yyyy HH:mm:ss}" HeaderText="F/H INICIO" />
-                                                    <asp:BoundField SortExpression="DtFHFin" DataField="DtFHFin" DataFormatString="{0:dd/MM/yyyy HH:mm:ss}" HeaderText="F/H FIN" />
+                                                    <asp:BoundField SortExpression="VchFHFin" DataField="VchFHFin" DataFormatString="{0:dd/MM/yyyy HH:mm:ss}" HeaderText="F/H FIN" />
                                                     <asp:TemplateField HeaderText="URL">
                                                         <ItemTemplate>
                                                             <table>
@@ -162,86 +162,214 @@
                     </asp:UpdateProgress>
                 </div>
                 <div class="modal-body pt-0" style="padding-bottom: 0px;">
-                    <div class="row">
-                        <div class="card card-nav-tabs">
-                            <div class="card-body">
-                                <div class="tab-content">
-                                    <asp:UpdatePanel runat="server">
-                                        <ContentTemplate>
-                                            <asp:Label CssClass="text-danger" runat="server" ID="lblValidar" />
-                                        </ContentTemplate>
-                                    </asp:UpdatePanel>
+                    <asp:UpdatePanel runat="server">
+                        <ContentTemplate>
+                            <div class="row">
+                                <div class="card card-nav-tabs">
+                                    <div class="card-header card-header-primary">
+                                        <div class="nav-tabs-navigation">
+                                            <div class="nav-tabs-wrapper">
+                                                <ul class="nav nav-tabs" data-tabs="tabs">
+                                                    <li id="liActivarEvento" class="nav-item" runat="server">
+                                                        <asp:LinkButton ID="btnActivarEvento" OnClick="btnActivarEvento_Click" CssClass="nav-link active show" runat="server">
+                                                    <i class="material-icons">date_range</i>Evento<div class="ripple-container"></div>
+                                                        </asp:LinkButton>
+                                                    </li>
 
-                                    <asp:UpdatePanel runat="server">
-                                        <ContentTemplate>
-                                            <div class="row">
-                                                <div class="form-group col-md-6">
-                                                    <label for="txtNombreEvento" style="color: black;">Nombre del evento *</label>
-                                                    <asp:TextBox ID="txtNombreEvento" CssClass="form-control" Style="margin-top: 17px;" runat="server" />
-                                                </div>
-                                                <div class="form-group col-md-6">
-                                                    <label for="txtDescripcion" style="color: black;">Descripción del evento</label>
-                                                    <asp:TextBox ID="txtDescripcion" CssClass="form-control" TextMode="MultiLine" runat="server" />
-                                                </div>
-                                                <div class="form-group col-md-6">
-                                                    <label for="txtFHInicio" style="color: black;">F/H de inicio *</label>
-                                                    <asp:TextBox ID="txtFHInicio" ToolTip="F/H de la Ciudad de México, CDMX" TextMode="DateTimeLocal" CssClass="form-control" runat="server" />
-                                                </div>
-                                                <div class="form-group col-md-6">
-                                                    <label for="txtFHFinalizacion" style="color: black;">F/H Finalización *</label>
-                                                    <asp:TextBox ID="txtFHFinalizacion" ToolTip="F/H de la Ciudad de México, CDMX" TextMode="DateTimeLocal" CssClass="form-control" runat="server" />
-                                                </div>
-                                                <div class="form-group col-md-6">
-                                                    <label for="txtFechaAlta" style="color: black;">Importe *</label>
-                                                    <div class="row">
-                                                        <div class="form-group col-md-6">
-                                                            <asp:DropDownList ID="ddlTipoImporte" ToolTip="Editable: Lo que la persona considere.&#10;Exacto: Ingresado por el creador del evento." CssClass="form-control" runat="server">
-                                                                <asp:ListItem Text="EDITABLE" Value="true" />
-                                                                <asp:ListItem Text="EXACTO" Value="false" />
-                                                            </asp:DropDownList>
-                                                        </div>
-                                                        <div class="form-group col-md-6">
-                                                            <div class="input-group">
-                                                                <div class="input-group-prepend">
-                                                                    <span class="input-group-text" style="padding-left: 0px;">
-                                                                        <i class="material-icons">$</i>
-                                                                    </span>
-                                                                </div>
-                                                                <asp:TextBox ID="txtImporte" Text="50" PlaceHolder="Min: $50" CssClass="form-control" Style="margin-top: 4px;" TextMode="Phone" runat="server" />
-                                                            </div>
-
-                                                            <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtImporte" runat="server" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group col-md-6">
-                                                    <label for="txtConcepto" style="color: black;">Concepto *</label>
-                                                    <asp:TextBox ID="txtConcepto" CssClass="form-control" Style="margin-top: 11px;" runat="server" />
-                                                </div>
-                                                <div class="form-group col-md-4">
-                                                    <label for="ListBoxMultipleMod" style="color: black; padding-left: 0px;">Promoción(es)</label>
-                                                    <br />
-                                                    <asp:ListBox ID="ListBoxMultipleMod" runat="server" SelectionMode="Multiple"></asp:ListBox>
-                                                </div>
-                                                <div class="form-group col-md-5">
-                                                    <label for="ddlPedirDatos" style="color: black; text-overflow: ellipsis;">¿Pedir datos al cliente? *</label>
-                                                    <asp:DropDownList ID="ddlPedirDatos" CssClass="form-control" runat="server">
-                                                        <asp:ListItem Text="SI" Value="true" />
-                                                        <asp:ListItem Text="NO" Value="false" />
-                                                    </asp:DropDownList>
-                                                </div>
-                                                <div class="form-group col-md-3">
-                                                    <label for="ddlEstatus" style="color: black;">Estatus</label>
-                                                    <asp:DropDownList ID="ddlEstatus" CssClass="form-control" runat="server">
-                                                    </asp:DropDownList>
-                                                </div>
+                                                    <li id="liActivarUsuarios" class="nav-item" runat="server">
+                                                        <asp:LinkButton ID="btnActivarUsuarios" OnClick="btnActivarUsuarios_Click" CssClass="nav-link" runat="server">
+                                                    <i class="material-icons">group_add</i>Asignar Usuarios<div class="ripple-container"></div>
+                                                        </asp:LinkButton>
+                                                    </li>
+                                                </ul>
                                             </div>
-                                        </ContentTemplate>
-                                    </asp:UpdatePanel>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="tab-content">
+                                            <asp:UpdatePanel runat="server">
+                                                <ContentTemplate>
+                                                    <asp:Label CssClass="text-danger" runat="server" ID="lblValidar" />
+                                                </ContentTemplate>
+                                            </asp:UpdatePanel>
+
+                                            <asp:Panel ID="pnlActivarEvento" Visible="true" runat="server">
+                                                <asp:UpdatePanel runat="server">
+                                                    <ContentTemplate>
+                                                        <asp:UpdatePanel runat="server">
+                                                            <ContentTemplate>
+                                                                <div class="row">
+                                                                    <div class="form-group col-md-6">
+                                                                        <label for="txtNombreEvento" style="color: black;">Nombre del evento *</label>
+                                                                        <asp:TextBox ID="txtNombreEvento" CssClass="form-control" Style="margin-top: 17px;" runat="server" />
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label for="txtDescripcion" style="color: black;">Descripción del evento</label>
+                                                                        <asp:TextBox ID="txtDescripcion" CssClass="form-control" TextMode="MultiLine" runat="server" />
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label for="txtFHInicio" style="color: black;">F/H de inicio *</label>
+                                                                        <asp:TextBox ID="txtFHInicio" ToolTip="F/H de la Ciudad de México, CDMX" TextMode="DateTimeLocal" CssClass="form-control" runat="server" />
+                                                                    </div>
+
+                                                                    <div class="form-group col-md-6">
+                                                                        <asp:CheckBox ID="cbxActivarFF" Text="F/H Finalización *" AutoPostBack="true" OnCheckedChanged="cbxActivarFF_CheckedChanged" runat="server" />
+
+                                                                        <asp:Panel ID="pnlActivarFHFinal" Enabled="false" Width="100%" runat="server">
+                                                                            <asp:TextBox ID="txtFHFinalizacion" ToolTip="F/H de la Ciudad de México, CDMX" TextMode="DateTimeLocal" CssClass="form-control" runat="server" />
+                                                                        </asp:Panel>
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label for="txtFechaAlta" style="color: black;">Importe *</label>
+                                                                        <div class="row">
+                                                                            <div class="form-group col-md-6">
+                                                                                <asp:DropDownList ID="ddlTipoImporte" ToolTip="Editable: Lo que la persona considere.&#10;Exacto: Ingresado por el creador del evento." CssClass="form-control" runat="server">
+                                                                                    <asp:ListItem Text="EDITABLE" Value="true" />
+                                                                                    <asp:ListItem Text="EXACTO" Value="false" />
+                                                                                </asp:DropDownList>
+                                                                            </div>
+                                                                            <div class="form-group col-md-6">
+                                                                                <div class="input-group">
+                                                                                    <div class="input-group-prepend">
+                                                                                        <span class="input-group-text" style="padding-left: 0px;">
+                                                                                            <i class="material-icons">$</i>
+                                                                                        </span>
+                                                                                    </div>
+                                                                                    <asp:TextBox ID="txtImporte" Text="50" CssClass="form-control" Style="margin-top: 4px;" TextMode="Phone" runat="server" />
+                                                                                </div>
+
+                                                                                <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtImporte" runat="server" />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-group col-md-6">
+                                                                        <label for="txtConcepto" style="color: black;">Concepto *</label>
+                                                                        <asp:TextBox ID="txtConcepto" CssClass="form-control" Style="margin-top: 11px;" runat="server" />
+                                                                    </div>
+                                                                    <div class="form-group col-md-4">
+                                                                        <label for="ListBoxMultipleMod" style="color: black; padding-left: 0px;">Promoción(es)</label>
+                                                                        <br />
+                                                                        <asp:ListBox ID="ListBoxMultipleMod" runat="server" SelectionMode="Multiple"></asp:ListBox>
+                                                                    </div>
+                                                                    <div class="form-group col-md-3">
+                                                                        <label for="ddlPedirDatos" style="color: black; padding-left: 0px; text-overflow: ellipsis;">¿Pedir datos? *</label>
+                                                                        <asp:DropDownList ID="ddlPedirDatos" CssClass="form-control" runat="server">
+                                                                            <asp:ListItem Text="SI" Value="true" />
+                                                                            <asp:ListItem Text="NO" Value="false" />
+                                                                        </asp:DropDownList>
+                                                                    </div>
+                                                                    <div class="form-group col-md-3">
+                                                                        <label for="ddlTipoEvento" style="color: black; padding-left: 0px; text-overflow: ellipsis;">Tipo evento *</label>
+                                                                        <asp:DropDownList ID="ddlTipoEvento" OnSelectedIndexChanged="ddlTipoEvento_SelectedIndexChanged" AutoPostBack="true" CssClass="form-control" runat="server">
+                                                                            <asp:ListItem Text="PÚBLICO" Value="publico" />
+                                                                            <asp:ListItem Text="PRIVADO" Value="privado" />
+                                                                        </asp:DropDownList>
+                                                                    </div>
+                                                                    <div class="form-group col-md-2">
+                                                                        <label for="ddlEstatus" style="color: black; padding-left: 0px;">Estatus</label>
+                                                                        <asp:DropDownList ID="ddlEstatus" CssClass="form-control" runat="server">
+                                                                        </asp:DropDownList>
+                                                                    </div>
+                                                                </div>
+                                                            </ContentTemplate>
+                                                        </asp:UpdatePanel>
+
+                                                    </ContentTemplate>
+                                                </asp:UpdatePanel>
+                                            </asp:Panel>
+
+                                            <asp:Panel ID="pnlActivarUsuarios" Visible="false" runat="server">
+                                                <asp:UpdatePanel runat="server">
+                                                    <ContentTemplate>
+                                                        <asp:Panel ID="pnlSeleccionUsuarios" runat="server">
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <div class="card" style="margin-top: 0px;">
+                                                                        <div class="card-header">
+                                                                            <div class="d-flex flex-row-reverse">
+                                                                                <div>
+                                                                                    <asp:LinkButton ID="btnFiltroBuscar" OnClick="btnFiltroBuscar_Click" BorderWidth="1" CssClass="btn btn-info btn-sm" runat="server">
+                                                                                <i class="material-icons">search</i> Buscar
+                                                                                    </asp:LinkButton>
+                                                                                </div>
+                                                                                <div>
+                                                                                    <asp:LinkButton ID="btnFiltroLimpiar" OnClick="btnFiltroLimpiar_Click" BorderWidth="1" CssClass="btn btn-warning btn-sm" runat="server">
+                                                                                <i class="material-icons">delete</i> Limpiar
+                                                                                    </asp:LinkButton>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="card-body" style="padding-top: 0px; padding-bottom: 0px; padding-right: 10px; padding-left: 10px;">
+                                                                            <div class="form-group" style="margin-top: 0px;">
+                                                                                <div class="row">
+                                                                                    <div class="form-group col-sm-6 col-md-6 col-lg-3">
+                                                                                        <label for="txtFiltroNombre" style="color: black; padding-left: 0px;">Nombre(s)</label>
+                                                                                        <asp:TextBox ID="txtFiltroEveNombre" CssClass="form-control" aria-label="Search" runat="server" />
+                                                                                    </div>
+                                                                                    <div class="form-group col-sm-6 col-md-6 col-lg-3">
+                                                                                        <label for="txtFiltroPaterno" style="color: black; padding-left: 0px;">ApePaterno</label>
+                                                                                        <asp:TextBox ID="txtFiltroEvePaterno" CssClass="form-control" aria-label="Search" runat="server" />
+                                                                                    </div>
+                                                                                    <div class="form-group col-sm-6 col-md-6 col-lg-3">
+                                                                                        <label for="txtFiltroMaterno" style="color: black; padding-left: 0px;">ApeMaterno</label>
+                                                                                        <asp:TextBox ID="txtFiltroEveMaterno" CssClass="form-control" aria-label="Search" runat="server" />
+                                                                                    </div>
+                                                                                    <div class="form-group col-sm-6 col-md-6 col-lg-3">
+                                                                                        <label for="txtFiltroCorreo" style="color: black; padding-left: 0px;">Correo</label>
+                                                                                        <asp:TextBox ID="txtFiltroEveCorreo" CssClass="form-control" aria-label="Search" runat="server" />
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div>
+                                                                    <h5>Seleccionados:
+                                                                        <asp:Label ID="lblCantSeleccionado" CssClass="alert alert-warning" Font-Size="Larger" Text="0" Style="padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;" runat="server" /></h5>
+                                                                </div>
+
+                                                                <div class="table-responsive">
+                                                                    <asp:GridView ID="gvUsuarios" OnSorting="gvUsuarios_Sorting" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidUsuario" GridLines="None" border="0" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvUsuarios_PageIndexChanging" runat="server">
+                                                                        <EmptyDataTemplate>
+                                                                            <div class="alert alert-info">No hay usuarios</div>
+                                                                        </EmptyDataTemplate>
+                                                                        <Columns>
+                                                                            <asp:TemplateField>
+                                                                                <HeaderTemplate>
+                                                                                    <%--<asp:CheckBox ID="cbTodo" AutoPostBack="true" OnCheckedChanged="cbTodo_CheckedChanged" runat="server" />--%>
+                                                                                </HeaderTemplate>
+                                                                                <ItemTemplate>
+                                                                                    <table>
+                                                                                        <tbody>
+                                                                                            <tr style="background: transparent;">
+                                                                                                <td style="border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
+                                                                                                    <asp:CheckBox ID="cbSeleccionado" OnCheckedChanged="cbSeleccionado_CheckedChanged" AutoPostBack="true" Checked='<%#Eval("blSeleccionado")%>' runat="server" />
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </ItemTemplate>
+                                                                            </asp:TemplateField>
+                                                                            <asp:BoundField SortExpression="NombreCompleto" DataField="NombreCompleto" HeaderText="NOMBRE" />
+                                                                            <asp:BoundField SortExpression="StrCorreo" DataField="StrCorreo" HeaderText="CORREO" />
+                                                                            <asp:BoundField SortExpression="StrTelefono" DataField="StrTelefono" HeaderText="CELULAR" />
+                                                                        </Columns>
+                                                                        <PagerStyle HorizontalAlign="Center" CssClass="pagination-ys" />
+                                                                    </asp:GridView>
+                                                                </div>
+
+                                                            </div>
+                                                        </asp:Panel>
+                                                    </ContentTemplate>
+                                                </asp:UpdatePanel>
+                                            </asp:Panel>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        </ContentTemplate>
+                    </asp:UpdatePanel>
                 </div>
                 <asp:UpdatePanel runat="server" ID="upRegistro">
                     <ContentTemplate>
@@ -280,9 +408,9 @@
                         <div class="modal-header">
                             <h5 class="modal-title" runat="server">
                                 <asp:Label ID="lblTittleLigas" Text="Filtro de busqueda" runat="server" /></h5>
-                            <%--<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
-                            </button>--%>
+                            </button>
                         </div>
                     </ContentTemplate>
                 </asp:UpdatePanel>
@@ -309,7 +437,7 @@
                                                         <div class="row">
                                                             <div class="form-group col-md-6">
                                                                 <label for="txtFiltroNombre" style="color: black;">Nombre evento</label>
-                                                                <asp:TextBox ID="txtFiltroNombre" style="margin-top: 12px;" CssClass="form-control" aria-label="Search" runat="server" />
+                                                                <asp:TextBox ID="txtFiltroNombre" Style="margin-top: 12px;" CssClass="form-control" aria-label="Search" runat="server" />
                                                             </div>
                                                             <div class="form-group col-md-6">
                                                                 <label for="ddlFiltroEstatus" style="color: black;">Estatus</label>
@@ -346,7 +474,7 @@
                                                             </div>
                                                             <div class="form-group col-md-6">
                                                                 <label for="txtFiltroDtInicioHasta" style="color: black;"></label>
-                                                                <asp:TextBox ID="txtFiltroDtInicioHasta" style="margin-top: 5px;" CssClass="form-control" TextMode="Date" aria-label="Search" runat="server" />
+                                                                <asp:TextBox ID="txtFiltroDtInicioHasta" Style="margin-top: 5px;" CssClass="form-control" TextMode="Date" aria-label="Search" runat="server" />
                                                             </div>
                                                             <div class="form-group col-md-6">
                                                                 <label for="txtFiltroDtFinDesde" style="color: black;">Fecha Fin</label>
@@ -354,7 +482,7 @@
                                                             </div>
                                                             <div class="form-group col-md-6">
                                                                 <label for="txtFiltroDtFinHasta" style="color: black;"></label>
-                                                                <asp:TextBox ID="txtFiltroDtFinHasta" style="margin-top: 5px;" CssClass="form-control" TextMode="Date" aria-label="Search" runat="server" />
+                                                                <asp:TextBox ID="txtFiltroDtFinHasta" Style="margin-top: 5px;" CssClass="form-control" TextMode="Date" aria-label="Search" runat="server" />
                                                             </div>
                                                         </div>
                                                     </div>

@@ -41,6 +41,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\Colegiaturas.cs" />
+    <Compile Include="Models\Periodicidades.cs" />
+    <Compile Include="Models\NivelesEnsenianzas.cs" />
+    <Compile Include="Models\TelefonosAlumnos.cs" />
+    <Compile Include="Models\PagosPadres.cs" />
+    <Compile Include="Models\TiposEnsenianzas.cs" />
+    <Compile Include="Models\ProcesosEnsenianzas.cs" />
+    <Compile Include="Models\ParametrosTwi.cs" />
+    <Compile Include="Models\TiposEventos.cs" />
+    <Compile Include="Models\Alumnos.cs" />
+    <Compile Include="Models\Padres.cs" />
+    <Compile Include="Models\WhatsAppPendientes.cs" />
     <Compile Include="Models\Eventos.cs" />
     <Compile Include="Models\PrefijosTelefonicos.cs" />
     <Compile Include="Models\Tickets.cs" />
@@ -79,12 +91,20 @@
     <Compile Include="Models\UsuariosCompletos.cs" />
     <Compile Include="Models\Usuarios.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\Alumnos\AlumnosGridViewModel.cs" />
+    <Compile Include="ViewModels\Colegiaturas\ColegiaturasFechasGridViewModel.cs" />
+    <Compile Include="ViewModels\Colegiaturas\ColegiaturasGridViewModel.cs" />
+    <Compile Include="ViewModels\Eventos\EventosUsuarioFinalGridViewModel.cs" />
     <Compile Include="ViewModels\Eventos\EventosGridViewModel.cs" />
     <Compile Include="ViewModels\HistorialPagos\HistorialPagosGridViewModel.cs" />
     <Compile Include="ViewModels\LigasUrls\LigasUrlsConstruirLigaModel.cs" />
     <Compile Include="ViewModels\LigasUrls\LigasEventoPayCardModel.cs" />
+    <Compile Include="ViewModels\LigasUrls\LigasUsuariosFinalGridViewModel.cs" />
     <Compile Include="ViewModels\LigasUrls\LigasUrlsPayCardModel.cs" />
     <Compile Include="ViewModels\LigasUrls\LigasUrlsPromocionesModel.cs" />
+    <Compile Include="ViewModels\Padres\PadresComerciosViewModels.cs" />
+    <Compile Include="ViewModels\PagosTarjeta\PagTarjDetalUsFinalGridViewModel.cs" />
+    <Compile Include="ViewModels\Promociones\SelectPagoLigaModel.cs" />
     <Compile Include="ViewModels\Promociones\EventosGenerarLigasModel.cs" />
     <Compile Include="ViewModels\Promociones\FranquiciasCBLPromocionesModel.cs" />
     <Compile Include="ViewModels\Promociones\EventosPromocionesModel.cs" />
@@ -103,10 +123,12 @@
     <Compile Include="ViewModels\Tarifas\TarifasGridViewModel.cs" />
     <Compile Include="ViewModels\Usuarios\LigasMultiplesUsuariosGridViewModel.cs" />
     <Compile Include="ViewModels\Usuarios\LigasUsuariosGridViewModel.cs" />
+    <Compile Include="ViewModels\Usuarios\EventoUsuarioGridViewModel.cs" />
     <Compile Include="ViewModels\Usuarios\UsuarioGridViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Enums\" />
+    <Folder Include="ViewModels\WhatsAppPendientes\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

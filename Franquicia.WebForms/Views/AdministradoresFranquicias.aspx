@@ -46,7 +46,7 @@
                                                 <Columns>
                                                     <asp:BoundField SortExpression="NombreCompleto" DataField="NombreCompleto" HeaderText="NOMBRE COMPLETO" />
                                                     <asp:BoundField SortExpression="VchUsuario" DataField="VchUsuario" HeaderText="USUARIO" />
-                                                    <asp:BoundField SortExpression="VchNombreComercial" DataField="VchNombreComercial" HeaderText="NOMBRE COMERCIAL" />
+                                                    <asp:BoundField SortExpression="VchNombreComercial" DataField="VchNombreComercial" HeaderText="FRANQUICIA" />
                                                     <asp:TemplateField SortExpression="UidEstatus" HeaderText="ESTATUS">
                                                         <ItemTemplate>
                                                             <div class="col-md-6">

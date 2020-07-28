@@ -58,31 +58,31 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@DcmImporte", SqlDbType.Decimal);
                 comando.Parameters["@DcmImporte"].Value = tickets.DcmImporte;
-                
+
                 comando.Parameters.Add("@DcmDescuento", SqlDbType.Decimal);
                 comando.Parameters["@DcmDescuento"].Value = tickets.DcmDescuento;
-                
+
                 comando.Parameters.Add("@DcmTotal", SqlDbType.Decimal);
                 comando.Parameters["@DcmTotal"].Value = tickets.DcmTotal;
 
                 comando.Parameters.Add("@VchDescripcion", SqlDbType.VarChar, 50);
                 comando.Parameters["@VchDescripcion"].Value = tickets.VchDescripcion;
-                
+
                 comando.Parameters.Add("@UidPropietario", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidPropietario"].Value = tickets.UidPropietario;
-                
+
                 comando.Parameters.Add("@DtRegistro", SqlDbType.DateTime);
                 comando.Parameters["@DtRegistro"].Value = tickets.DtRegistro;
-                
+
                 comando.Parameters.Add("@UidHistorialPago", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidHistorialPago"].Value = tickets.UidHistorialPago;
-                
+
                 comando.Parameters.Add("@IntWA", SqlDbType.Int);
                 comando.Parameters["@IntWA"].Value = tickets.IntWA;
-                
+
                 comando.Parameters.Add("@IntSMS", SqlDbType.Int);
                 comando.Parameters["@IntSMS"].Value = tickets.IntSMS;
-                
+
                 comando.Parameters.Add("@IntCorreo", SqlDbType.Int);
                 comando.Parameters["@IntCorreo"].Value = tickets.IntCorreo;
 
@@ -121,7 +121,7 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@UidCliente", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidCliente"].Value = clienteCuenta.UidCliente;
-                
+
                 comando.Parameters.Add("@IdReferencia", SqlDbType.VarChar);
                 comando.Parameters["@IdReferencia"].Value = IdReferencia;
 
@@ -132,6 +132,127 @@ namespace Franquicia.DataAccess.Repository
                 throw;
             }
             return Resultado;
+        }
+
+        public bool RegistrarTicketPagoGeneral(Tickets tickets, HistorialPagos historialPagos)
+        {
+            bool Resultado = false;
+
+            SqlCommand comando = new SqlCommand();
+            try
+            {
+                comando.CommandType = System.Data.CommandType.StoredProcedure;
+                comando.CommandText = "sp_TicketsRegistrarGeneral";
+
+                comando.Parameters.Add("@VchFolio", SqlDbType.VarChar, 100);
+                comando.Parameters["@VchFolio"].Value = tickets.VchFolio;
+
+                comando.Parameters.Add("@DcmImporte", SqlDbType.Decimal);
+                comando.Parameters["@DcmImporte"].Value = tickets.DcmImporte;
+
+                comando.Parameters.Add("@DcmDescuento", SqlDbType.Decimal);
+                comando.Parameters["@DcmDescuento"].Value = tickets.DcmDescuento;
+
+                comando.Parameters.Add("@DcmTotal", SqlDbType.Decimal);
+                comando.Parameters["@DcmTotal"].Value = tickets.DcmTotal;
+
+                comando.Parameters.Add("@VchDescripcion", SqlDbType.VarChar, 50);
+                comando.Parameters["@VchDescripcion"].Value = tickets.VchDescripcion;
+
+                comando.Parameters.Add("@UidPropietario", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidPropietario"].Value = tickets.UidPropietario;
+
+                comando.Parameters.Add("@DtRegistro", SqlDbType.DateTime);
+                comando.Parameters["@DtRegistro"].Value = tickets.DtRegistro;
+
+                comando.Parameters.Add("@UidHistorialPago", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidHistorialPago"].Value = tickets.UidHistorialPago;
+
+                comando.Parameters.Add("@IntWA", SqlDbType.Int);
+                comando.Parameters["@IntWA"].Value = tickets.IntWA;
+
+                comando.Parameters.Add("@IntSMS", SqlDbType.Int);
+                comando.Parameters["@IntSMS"].Value = tickets.IntSMS;
+
+                comando.Parameters.Add("@IntCorreo", SqlDbType.Int);
+                comando.Parameters["@IntCorreo"].Value = tickets.IntCorreo;
+
+                //====================HISTORIALPAGOS=======================================
+
+                comando.Parameters.Add("@DcmSaldo", SqlDbType.Decimal);
+                comando.Parameters["@DcmSaldo"].Value = historialPagos.DcmSaldo;
+
+                comando.Parameters.Add("@DcmOperacion", SqlDbType.Decimal);
+                comando.Parameters["@DcmOperacion"].Value = historialPagos.DcmOperacion;
+
+                comando.Parameters.Add("@DcmNuevoSaldo", SqlDbType.Decimal);
+                comando.Parameters["@DcmNuevoSaldo"].Value = historialPagos.DcmNuevoSaldo;
+
+                Resultado = this.ManipulacionDeDatos(comando);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return Resultado;
+        }
+        public bool ActualizarTicketPagoGeneral(HistorialPagos historialPagos)
+        {
+            bool Resultado = false;
+
+            SqlCommand comando = new SqlCommand();
+            try
+            {
+                comando.CommandType = System.Data.CommandType.StoredProcedure;
+                comando.CommandText = "sp_TicketsActualizarGeneral";
+
+                //====================HISTORIALPAGOS=======================================
+
+                comando.Parameters.Add("@UidHistorialPago", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidHistorialPago"].Value = historialPagos.UidHistorialPago;
+
+                comando.Parameters.Add("@DcmSaldo", SqlDbType.Decimal);
+                comando.Parameters["@DcmSaldo"].Value = historialPagos.DcmSaldo;
+
+                comando.Parameters.Add("@DcmOperacion", SqlDbType.Decimal);
+                comando.Parameters["@DcmOperacion"].Value = historialPagos.DcmOperacion;
+
+                comando.Parameters.Add("@DcmNuevoSaldo", SqlDbType.Decimal);
+                comando.Parameters["@DcmNuevoSaldo"].Value = historialPagos.DcmNuevoSaldo;
+
+                Resultado = this.ManipulacionDeDatos(comando);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return Resultado;
+        }
+
+        public List<Tickets> CargarResumen(Guid UidHistorialPago)
+        {
+            List<Tickets> lsTickets = new List<Tickets>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select IntWA, IntSMS, IntCorreo, DcmTotal from Tickets where UidHistorialPago = '" + UidHistorialPago + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                tickets = new Tickets()
+                {
+                    IntWA = int.Parse(item["IntWA"].ToString()),
+                    IntSMS = int.Parse(item["IntSMS"].ToString()),
+                    DcmTotal = decimal.Parse(item["DcmTotal"].ToString())
+                };
+
+                lsTickets.Add(tickets);
+            }
+
+            return lsTickets;
         }
 
         #endregion

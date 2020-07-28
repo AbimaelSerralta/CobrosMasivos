@@ -54,7 +54,7 @@ namespace Franquicia.WebForms.Views
                 {
                     if (!IsPostBack)
                     {
-                        Response.Redirect(URLBase + "Views/Empresas.aspx");
+                        Response.Redirect(manejoSesionServices.ObtenerHome());
                         SetFocus(txtUsuario);
                     }
                     else
@@ -108,7 +108,7 @@ namespace Franquicia.WebForms.Views
                                 }
                                 else if (manejoSesionServices.perfilesRepository.appWebRepository.appWeb.IntGerarquia == 4)
                                 {
-
+                                    Session["UidUsuarioMaster"] = manejoSesionServices.usuarioCompletoRepository.usuarioCompleto.UidUsuario;
                                 }
                                 Session["manejoSesionServices"] = manejoSesionServices;
                                 Response.Redirect(manejoSesionServices.ObtenerHome());

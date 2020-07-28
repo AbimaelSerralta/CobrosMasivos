@@ -454,8 +454,9 @@
                                                                 <th class="text-center"></th>
                                                                 <th class="text-center">Disponible</th>
                                                                 <th class="text-center">Utilizado</th>
-                                                                <th class="text-center">Error(es)</th>
                                                                 <th class="text-center">Saldo</th>
+                                                                <th class="text-center">Pendiente(s)</th>
+                                                                <th id="thError" visible="false" class="text-center" runat="server">Error(es)</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -464,22 +465,26 @@
                                                                 <td class="text-center">Correo</td>
                                                                 <td class="text-center">Ilimitado</td>
                                                                 <td class="text-center"><asp:Label ID="lblCorreoUsado" Text="0" runat="server" /></td>
-                                                                <td class="text-center"><asp:Label ID="lblErrorCorreo" Text="0" runat="server" /></td>
                                                                 <td class="text-center">Ilimitado</td>
+                                                                <td class="text-center">$0.00</td>
+                                                                <td id="tdErrorCorreo" visible="false" class="text-center" runat="server"><asp:Label ID="lblErrorCorreo" Text="0" runat="server" /></td>
                                                             </tr>
                                                             <tr>
                                                                 <td class="text-center"><asp:CheckBox ID="cbSms" Visible="false" Checked="true" Enabled="false" runat="server" /></td>
                                                                 <td class="text-center">SMS</td>
                                                                 <td rowspan="2" class="text-center"><asp:Label Text="$" runat="server" /><asp:Label ID="lblDcmCuenta" runat="server" /></td>
                                                                 <td class="text-center"><asp:Label ID="lblAUtilizarSms" Text="0" runat="server" /><asp:Label Text="$" runat="server" /><asp:Label ID="lblTotalUtilizarSms" runat="server" /></td>
-                                                                <td class="text-center"><asp:Label ID="lblErrorSms" Text="0" runat="server" /></td>
                                                                 <td rowspan="2" class="text-center"><asp:Label Text="$" runat="server" /><asp:Label ID="lblDcmSaldo" Text="0.00" runat="server" /></td>
+                                                                <td class="text-center">$0.00</td>
+                                                                <td id="tdErrorSms" visible="false" class="text-center" runat="server"><asp:Label ID="lblErrorSms" Text="0" runat="server" /></td>
+                                                                
                                                             </tr>
                                                             <tr>
                                                                 <td class="text-center"><asp:CheckBox ID="cbWhats" Visible="false" Checked="false" Enabled="false" runat="server" /></td>
                                                                 <td class="text-center">WhatsApp</td>
                                                                 <td class="text-center"><asp:Label ID="lblAUtilizarWA" Text="0" runat="server" /><asp:Label Text="$" runat="server" /><asp:Label ID="lblTotalUtilizarWA" runat="server" /></td>
-                                                                <td class="text-center"><asp:Label ID="lblErrorWA" Text="0" runat="server" /></td>
+                                                                <td class="text-center"><asp:Label ID="lblPendienteWA" Text="0" runat="server" /></td>
+                                                                <td id="tdErrorWA" visible="false" class="text-center" runat="server"><asp:Label ID="lblErrorWA" Text="0" runat="server" /></td>
                                                             </tr>
                                                         </tbody>
                                                     </table>

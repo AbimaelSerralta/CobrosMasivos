@@ -43,7 +43,9 @@ namespace Franquicia.DataAccess.Repository
                     UidEstatus = new Guid(item["UidEstatus"].ToString()),
                     VchEstatus = item["VchDescripcion"].ToString(),
                     VchIcono = item["VchIcono"].ToString(),
-                    VchIdWAySMS = item["VchIdWAySMS"].ToString()
+                    VchIdWAySMS = item["VchIdWAySMS"].ToString(),
+                    VchZonaHoraria = item["VchZonaHoraria"].ToString(),
+                    BitEscuela = bool.Parse(item["BitEscuela"].ToString())
                 });
             }
 
@@ -84,6 +86,12 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@VchIdWAySMS", SqlDbType.VarChar, 50);
                 comando.Parameters["@VchIdWAySMS"].Value = clientes.VchIdWAySMS;
+                
+                comando.Parameters.Add("@VchZonaHoraria", SqlDbType.VarChar, 60);
+                comando.Parameters["@VchZonaHoraria"].Value = clientes.VchZonaHoraria;
+                
+                comando.Parameters.Add("@BitEscuela", SqlDbType.Bit);
+                comando.Parameters["@BitEscuela"].Value = clientes.BitEscuela;
 
                 //===========================DIRECCION==================================================
 
@@ -174,6 +182,12 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@VchIdWAySMS", SqlDbType.VarChar, 50);
                 comando.Parameters["@VchIdWAySMS"].Value = clientes.VchIdWAySMS;
+
+                comando.Parameters.Add("@VchZonaHoraria", SqlDbType.VarChar, 60);
+                comando.Parameters["@VchZonaHoraria"].Value = clientes.VchZonaHoraria;
+                
+                comando.Parameters.Add("@BitEscuela", SqlDbType.Bit);
+                comando.Parameters["@BitEscuela"].Value = clientes.BitEscuela;
 
                 //===========================DIRECCION==================================================
 
@@ -283,7 +297,8 @@ namespace Franquicia.DataAccess.Repository
                     UidCliente = new Guid(item["UidCliente"].ToString()),
                     VchRFC = item["VchRFC"].ToString(),
                     VchRazonSocial = item["VchRazonSocial"].ToString(),
-                    VchNombreComercial = item["VchNombreComercial"].ToString()
+                    VchNombreComercial = item["VchNombreComercial"].ToString(),
+                    BitEscuela = bool.Parse(item["BitEscuela"].ToString())
                 };
             }
         }

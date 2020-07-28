@@ -62,41 +62,34 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="table-responsive">
-                                            <asp:GridView ID="gvHistorial" DataKeyNames="UidHistorialPago" OnSorting="gvHistorial_Sorting" AllowSorting="true" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvHistorial_PageIndexChanging" AutoGenerateColumns="false" CssClass="table table-hover" GridLines="None" border="0" runat="server">
+                                            <asp:GridView ID="gvHistorial" DataKeyNames="UidHistorialPago" OnRowCommand="gvHistorial_RowCommand" OnSorting="gvHistorial_Sorting" AllowSorting="true" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvHistorial_PageIndexChanging" AutoGenerateColumns="false" CssClass="table table-hover" GridLines="None" border="0" runat="server">
                                                 <EmptyDataTemplate>
                                                     <div class="alert alert-info">Su historial esta vacio</div>
                                                 </EmptyDataTemplate>
                                                 <Columns>
-                                                    <asp:BoundField SortExpression="DtRegistro" DataField="DtRegistro" dataformatstring="{0:dd/MM/yyyy HH:mm:ss}" HeaderText="FECHA" />
+                                                    <asp:BoundField SortExpression="DtRegistro" DataField="DtRegistro" DataFormatString="{0:dd/MM/yyyy HH:mm:ss}" HeaderText="FECHA" />
                                                     <asp:BoundField SortExpression="VchIdentificador" DataField="VchIdentificador" HeaderText="IDENTIFICADOR" />
                                                     <asp:BoundField SortExpression="DcmSaldo" DataField="DcmSaldo" HeaderStyle-CssClass="text-right" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:C}" HeaderText="ABONO" />
                                                     <asp:BoundField SortExpression="DcmOperacion" DataField="DcmOperacion" HeaderStyle-CssClass="text-right" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:C}" HeaderText="CARGO" />
                                                     <asp:BoundField SortExpression="DcmNuevoSaldo" DataField="DcmNuevoSaldo" HeaderStyle-CssClass="text-right" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:C}" HeaderText="NUEVO SALDO" />
-                                                    <%--<asp:TemplateField>
+                                                    <asp:TemplateField>
                                                         <ItemTemplate>
                                                             <table>
                                                                 <tbody>
                                                                     <tr style="background: transparent;">
                                                                         <td style="border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
-                                                                            <asp:LinkButton ID="LinkButton1" ToolTip="Editar" CommandArgument="<%# ((GridViewRow)Container).RowIndex %>" CommandName="Editar" Style="margin-left: 5px;" runat="server">
-                                                                                <asp:Label ID="Label1" class="btn btn-sm btn-info btn-fab btn-fab-mini btn-round" runat="server">
-                                                                                        <i class="material-icons">edit</i>
+                                                                            <asp:LinkButton ToolTip="Detalle" CommandArgument="<%# ((GridViewRow)Container).RowIndex %>" CommandName="Detalle" Style="margin-left: 5px;" runat="server">
+                                                                                <asp:Label class="btn btn-sm btn-info btn-fab btn-fab-mini btn-round" runat="server">
+                                                                                        <i class="material-icons">info_outline</i>
                                                                                 </asp:Label>
                                                                             </asp:LinkButton>
 
-                                                                        </td>
-                                                                        <td style="border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
-                                                                            <asp:LinkButton ID="btnCancelarCambio" ToolTip="Visualizar" CommandArgument="<%# ((GridViewRow)Container).RowIndex %>" CommandName="Ver" Style="margin-left: 5px;" runat="server">
-                                                                                <asp:Label ID="lblCancelarCambio" class="btn btn-sm btn-warning btn-fab btn-fab-mini btn-round" runat="server">
-                                                                                        <i class="material-icons">remove_red_eye</i>
-                                                                                </asp:Label>
-                                                                            </asp:LinkButton>
                                                                         </td>
                                                                     </tr>
                                                                 </tbody>
                                                             </table>
                                                         </ItemTemplate>
-                                                    </asp:TemplateField>--%>
+                                                    </asp:TemplateField>
                                                 </Columns>
                                                 <PagerStyle HorizontalAlign="Center" CssClass="pagination-ys" />
                                             </asp:GridView>
@@ -118,7 +111,7 @@
 
 <asp:Content ID="Content3" ContentPlaceHolderID="cBodyBottom" runat="server">
     <!--MODAL-->
-    <div class="modal fade" id="ModalNuevo" tabindex="-1" role="dialog" data-backdrop="static" aria-hidden="true">
+    <div id="ModalNuevo" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <asp:UpdatePanel runat="server">
@@ -292,7 +285,8 @@
                                                     <img height="150" width="150" src="../CSSPropio/loader.gif" alt="imgCobrosMasivos" />
                                                     <%--<div class="loader"></div>--%>
                                                     <br />
-                                                    <strong><asp:Literal ID="ltMnsj" Text="Verificando..." runat="server" /></strong>
+                                                    <strong>
+                                                        <asp:Literal ID="ltMnsj" Text="Verificando..." runat="server" /></strong>
                                                 </div>
                                             </div>
                                         </ContentTemplate>
@@ -411,7 +405,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="ModalDialog" tabindex="-1" role="dialog" data-backdrop="static" aria-hidden="true">
+    <div id="ModalDialog" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <asp:UpdatePanel runat="server">
@@ -436,7 +430,7 @@
                                 <h5 class="modal-title" runat="server">
                                     <asp:Label ID="lblTitleDialog" runat="server" />
                                 </h5>
-                                    <asp:Label ID="lblMnsjDialog" runat="server" />
+                                <asp:Label ID="lblMnsjDialog" runat="server" />
                             </ContentTemplate>
                         </asp:UpdatePanel>
                     </div>
@@ -461,6 +455,140 @@
             </div>
         </div>
     </div>
+
+    <div id="ModalHistorialDetalle" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <asp:UpdatePanel runat="server">
+                    <ContentTemplate>
+                        <div class="modal-header">
+                            <h5 class="modal-title" runat="server">
+                                <asp:Label ID="lblTitleDetalle" Text="Detalle" runat="server" /></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+                <div class="modal-body pt-0" style="padding-bottom: 0px;">
+                    <asp:UpdatePanel runat="server">
+                        <ContentTemplate>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-header card-header-text card-header-success">
+                                            <div class="card-text">
+                                                <h4 class="card-title">RESUMEN</h4>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table" style="margin-bottom: 0px;">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="text-center"></th>
+                                                            <th class="text-center">Utilizado</th>
+                                                            <th class="text-center">Total</th>
+                                                            <th class="text-center">Pendiente(s)</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td class="text-center">Correo</td>
+                                                            <td class="text-center">
+                                                                <asp:Label ID="lblCorreoUsado" Text="0" runat="server" /></td>
+                                                            <td rowspan="3" class="text-center">
+                                                                <asp:Label ID="lblDcmSaldo" Font-Bold="true" Text="$0.00" runat="server" />
+                                                            </td>
+                                                            <td class="text-center">0</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-center">SMS</td>
+                                                            <td class="text-center">
+                                                                <asp:Label ID="lblTotalUtilizarSms" Text="0" runat="server" />
+                                                            </td>
+                                                            
+                                                            <td class="text-center">0</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-center">WhatsApp</td>
+                                                            <td class="text-center">
+                                                                <asp:Label ID="lblTotalUtilizarWA" Text="0" runat="server" />
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <asp:Label ID="lblPendienteWA" Text="0" runat="server" />
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                                <hr style="margin-top: 0px; margin-bottom: 0px; border-top-width: 1px;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div visible="false" class="col-md-6" runat="server">
+                                    <div class="card">
+                                        <div class="card-header card-header-text card-header-success">
+                                            <div class="card-text">
+                                                <h4 class="card-title">RESUMEN</h4>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center">Cat. Whats</th>
+                                                        <th class="text-center">Cat. Sms</th>
+                                                        <th class="text-right">Importe</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <asp:Repeater ID="rptResumen" runat="server">
+                                                        <ItemTemplate>
+                                                            <tr>
+                                                                <td class="text-center"><%#Eval("IntWA")%></td>
+                                                                <td class="text-center"><%#Eval("IntSMS")%></td>
+                                                                <td class="text-right">$<%#Eval("DcmTotal")%></td>
+                                                            </tr>
+                                                        </ItemTemplate>
+                                                    </asp:Repeater>
+                                                </tbody>
+                                            </table>
+                                            <hr style="margin-top: 0px; margin-bottom: 0px; border-top-width: 2px;">
+                                            <table class="table" style="margin-left: auto;">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-right" style="width: 50%;" scope="col">Total:</th>
+                                                        <th class="text-right" style="width: 50%;" scope="col">
+                                                            <asp:Label ID="lblResuTotal" Text="$0.00" runat="server" /></th>
+                                                    </tr>
+                                                </thead>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div visible="false" class="col-md-6" runat="server">
+                                    <div class="card">
+                                        <div class="card-header card-header-text card-header-info">
+                                            <div class="card-text">
+                                                <h4 class="card-title">PENDIENTE(S)</h4>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            Actualmente cuenta con 
+                                            <asp:Label ID="lblCantPendiente" CssClass="alert alert-warning" Font-Size="Larger" Text="0" Style="padding-top: 5px; padding-bottom: 5px; padding-left: 10px; padding-right: 10px;" runat="server" />
+                                            mensaje(s) pendiente(s).
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </ContentTemplate>
+                    </asp:UpdatePanel>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!--END MODAL-->
 
     <script>
@@ -488,6 +616,23 @@
 
         function hideModalDialog() {
             $('#ModalDialog').modal('hide');
+        }
+    </script>
+    <script>
+        function showModalDialog() {
+            $('#ModalDialog').modal('show');
+        }
+
+        function hideModalDialog() {
+            $('#ModalDialog').modal('hide');
+        }
+
+        function showModalHistorialDetalle() {
+            $('#ModalHistorialDetalle').modal('show');
+        }
+
+        function hideModalHistorialDetalle() {
+            $('#ModalHistorialDetalle').modal('hide');
         }
     </script>
 </asp:Content>

@@ -17,7 +17,8 @@ namespace Franquicia.Bussiness
             get { return _ticketsRepository; }
             set { _ticketsRepository = value; }
         }
-        
+
+        public List<Tickets> lsResumenTickets = new List<Tickets>();
         
         #region Metodos Franquicia
         
@@ -73,6 +74,60 @@ namespace Franquicia.Bussiness
                 result = true;
             }
             return result;
+        }
+
+        public bool RegistrarTicketPagoGeneral(Guid UidHistorialPago, string VchFolio, decimal DcmImporte, decimal DcmDescuento, decimal DcmTotal, string VchDescripcion, Guid UidPropietario, DateTime DtRegistro, int IntWA, int IntSMS, int IntCorreo, decimal DcmSaldo, decimal DcmOperacion, decimal DcmNuevoSaldo)
+        {
+            bool result = false;
+            if (ticketsRepository.RegistrarTicketPagoGeneral(
+                new Tickets
+                {
+                    UidTicket = Guid.NewGuid(),
+                    VchFolio = VchFolio,
+                    DcmImporte = DcmImporte,
+                    DcmDescuento = DcmDescuento,
+                    DcmTotal = DcmTotal,
+                    VchDescripcion = VchDescripcion,
+                    UidPropietario = UidPropietario,
+                    DtRegistro = DtRegistro,
+                    UidHistorialPago = UidHistorialPago,
+                    IntSMS = IntSMS,
+                    IntWA = IntWA,
+                    IntCorreo = IntCorreo
+                },
+                new HistorialPagos
+                {
+                    DcmSaldo = DcmSaldo,
+                    DcmOperacion = DcmOperacion,
+                    DcmNuevoSaldo = DcmNuevoSaldo
+                }
+                ))
+            {
+                result = true;
+            }
+            return result;
+        }
+        public bool ActualizarTicketPagoGeneral(Guid UidHistorialPago, decimal DcmSaldo, decimal DcmOperacion, decimal DcmNuevoSaldo)
+        {
+            bool result = false;
+            if (ticketsRepository.ActualizarTicketPagoGeneral(
+                new HistorialPagos
+                {
+                    UidHistorialPago = UidHistorialPago,
+                    DcmSaldo = DcmSaldo,
+                    DcmOperacion = DcmOperacion,
+                    DcmNuevoSaldo = DcmNuevoSaldo
+                }
+                ))
+            {
+                result = true;
+            }
+            return result;
+        }
+
+        public List<Tickets> CargarResumen(Guid UidHistorialPago)
+        {
+            return lsResumenTickets = ticketsRepository.CargarResumen(UidHistorialPago);
         }
         #endregion
     }

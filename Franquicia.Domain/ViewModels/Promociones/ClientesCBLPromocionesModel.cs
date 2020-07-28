@@ -12,5 +12,6 @@ namespace Franquicia.Domain.ViewModels
         public Guid UidClientePromocion { get; set; }
         public Guid UidCliente { get; set; }
         public Decimal DcmComicion { get; set; }
+        public Decimal DcmApartirDe { get; set; }
     }
 }

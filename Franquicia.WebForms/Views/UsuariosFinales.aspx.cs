@@ -9,6 +9,8 @@ using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Twilio;
+using Twilio.Rest.Api.V2010.Account;
 using WebApplication1.Vista;
 
 namespace Franquicia.WebForms.Views
@@ -30,6 +32,10 @@ namespace Franquicia.WebForms.Views
 
         PerfilesServices perfilesServices = new PerfilesServices();
         PrefijosTelefonicosServices prefijosTelefonicosServices = new PrefijosTelefonicosServices();
+
+        ClienteCuentaServices clienteCuentaServices = new ClienteCuentaServices();
+        TarifasServices tarifasServices = new TarifasServices();
+        TicketsServices ticketsServices = new TicketsServices();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -396,8 +402,8 @@ namespace Franquicia.WebForms.Views
                                     Guid UidUsuario = Guid.NewGuid();
 
                                     if (usuariosCompletosServices.RegistrarUsuarios(UidUsuario,
-                                    txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), ViewState["txtUsuario.Text"].ToString().Trim().ToUpper(), ViewState["txtPassword.Text"].ToString().Trim(), new Guid("18E9669B-C238-4BCC-9213-AF995644A5A4"),
-                                    txtNumero.Text.Trim(), Guid.Parse("B1055882-BCBA-4AB7-94FA-90E57647E607"), new Guid(ddlPrefijo.SelectedValue), new Guid(ViewState["UidClienteLocal"].ToString())))
+                                    txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), ViewState["txtUsuario.Text"].ToString().Trim().ToUpper(), ViewState["txtPassword.Text"].ToString().Trim(), Guid.Parse("18E9669B-C238-4BCC-9213-AF995644A5A4"),
+                                    txtNumero.Text.Trim(), Guid.Parse("B1055882-BCBA-4AB7-94FA-90E57647E607"), Guid.Parse(ddlPrefijo.SelectedValue), Guid.Parse(ViewState["UidClienteLocal"].ToString())))
                                     {
                                         if (ddlIncluirDir.SelectedValue == "SI")
                                         {
@@ -411,7 +417,7 @@ namespace Franquicia.WebForms.Views
                                             {
                                                 pnlAlert.Visible = true;
                                                 lblMensajeAlert.Text = "<b>Lo sentimos, </b> el usuario se ha registrado exitosamente, sin embargo la dirección no se pudo registrar.";
-                                                divAlert.Attributes.Add("class", "alert alert-darger alert-dismissible fade show");
+                                                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                                             }
                                         }
                                         else
@@ -420,6 +426,109 @@ namespace Franquicia.WebForms.Views
                                             lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
                                             divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
                                         }
+
+                                        #region EnviarWhats
+
+                                        string NumberTo = txtNumero.Text;
+                                        string nombreTrun = string.Empty;
+                                        string NombreComercial = string.Empty;
+                                        string prefijo = prefijosTelefonicosServices.lsPrefijosTelefonicos[ddlPrefijo.SelectedIndex].Prefijo;
+
+                                        if (prefijo == "+52")
+                                        {
+                                            prefijo = prefijo + "1";
+                                        }
+
+                                        string[] Descripcion = Regex.Split(txtNombre.Text, " ");
+
+                                        if (Descripcion.Length >= 2)
+                                        {
+                                            nombreTrun = Descripcion[0];
+                                        }
+                                        else
+                                        {
+                                            nombreTrun = txtNombre.Text;
+                                        }
+
+                                        NombreComercial = validacionesServices.ObtenerNombreCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+
+                                        string body = "Hola " + nombreTrun + "," +
+                                            "\r\n" + NombreComercial + " le agradece su registro." +
+                                            "\r\n" + "Responda SI para activar las notificaciones";
+
+                                        string EstaWhats = validacionesServices.EstatusWhatsApp(NumberTo);
+                                        if (EstaWhats == "PENDIENTE")
+                                        {
+                                            //******Configuracion de Twilio******
+                                            const string accountSid = "ACcf4d1380ccb0be6d47e78a73036a29ab";
+                                            ////string authToken = "30401e7bf2b7b3a2ab24c0a22203acc1";
+                                            const string authToken = "915ce4d30dc09473b5ed753490436281";
+                                            //var accountSid = Environment.GetEnvironmentVariable("ACcf4d1380ccb0be6d47e78a73036a29ab");
+                                            //var authToken = Environment.GetEnvironmentVariable("f6b99afa9cdf4da4e685ff4837b2f911");
+                                            string NumberFrom = "+14582243212";
+
+                                            //string accountSid = "ACc7561cb09df3180ee1368e40055eedf5";
+                                            //string authToken = "3f914e588826df9a93ed849cee73eae2";
+                                            ////string NumberFrom = "+14158739087";
+                                            //string NumberFrom = "+14155238886";
+
+                                            try
+                                            {
+                                                tarifasServices.CargarTarifas();
+                                                clienteCuentaServices.ObtenerDineroCuentaCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+                                                decimal DcmCuenta = clienteCuentaServices.clienteCuentaRepository.clienteCuenta.DcmDineroCuenta;
+
+                                                decimal DcmWhatsapp = 0;
+                                                foreach (var tariWhats in tarifasServices.lsTarifasGridViewModel)
+                                                {
+                                                    DcmWhatsapp = tariWhats.DcmWhatsapp;
+                                                }
+
+                                                if (DcmCuenta >= DcmWhatsapp)
+                                                {
+                                                    TwilioClient.Init(accountSid, authToken);
+
+                                                    var message = MessageResource.Create(
+                                                    body: body.Replace("\r", ""),
+                                                    from: new Twilio.Types.PhoneNumber("whatsapp:" + NumberFrom),
+                                                    to: new Twilio.Types.PhoneNumber("whatsapp:" + prefijo + NumberTo)
+                                                    //to: new Twilio.Types.PhoneNumber("whatsapp:+5219841651607")
+                                                    );
+
+                                                    string Id = telefonosUsuariosServices.ObtenerIdTelefono(NumberTo);
+                                                    telefonosUsuariosServices.ActualizarEstatusWhats(Guid.Parse(Id), Guid.Parse("C8A2C506-7655-4102-B987-D13AE3E25A66"));
+
+                                                    decimal NuevoSaldo = DcmCuenta - DcmWhatsapp;
+
+                                                    string[] DatosUsuario = Regex.Split(validacionesServices.ObtenerDatosUsuario(UidUsuario, Guid.Parse(ViewState["UidClienteLocal"].ToString())), ",");
+
+                                                    string IdCliente = string.Empty;
+                                                    string IdUsuario = string.Empty;
+
+                                                    if (DatosUsuario.Length >= 2)
+                                                    {
+                                                        IdCliente = DatosUsuario[0];
+                                                        IdUsuario = DatosUsuario[1];
+                                                    }
+
+                                                    string Folio = IdCliente + IdUsuario + DateTime.Now.ToString("ddMMyyyyHHmmssfff");
+
+                                                    if (ticketsServices.RegistrarTicketPago(Folio, DcmWhatsapp, 0, DcmWhatsapp, "Pago de WhatsApp", Guid.Parse(ViewState["UidClienteLocal"].ToString()), DateTime.Now, 1, 0, 0, DcmCuenta, DcmWhatsapp, NuevoSaldo))
+                                                    {
+                                                        clienteCuentaServices.ActualizarDineroCuentaCliente(NuevoSaldo, Guid.Parse(ViewState["UidClienteLocal"].ToString()), "");
+
+                                                        clienteCuentaServices.ObtenerDineroCuentaCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+                                                        Master.GvSaldo.Text = "Saldo: $ " + clienteCuentaServices.clienteCuentaRepository.clienteCuenta.DcmDineroCuenta.ToString("N2");
+                                                    }
+                                                }
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                //lblResumen.Text += "WhatsApp: " + ex.Message;
+                                            }
+                                        }
+
+                                        #endregion
 
                                         usuariosCompletosServices.CargarUsuariosFinales(new Guid(ViewState["UidClienteLocal"].ToString()), new Guid("E39FF705-8A01-4302-829A-7CFB9615CC8F"));
                                         gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
@@ -495,7 +604,7 @@ namespace Franquicia.WebForms.Views
                                             {
                                                 pnlAlert.Visible = true;
                                                 lblMensajeAlert.Text = "<b>Lo sentimos, </b> los datos del usuario se ha actualizado exitosamente, sin embargo la dirección no se pudo registrar.";
-                                                divAlert.Attributes.Add("class", "alert alert-darger alert-dismissible fade show");
+                                                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                                             }
                                         }
                                         else
@@ -510,7 +619,7 @@ namespace Franquicia.WebForms.Views
                                             {
                                                 pnlAlert.Visible = true;
                                                 lblMensajeAlert.Text = "<b>Lo sentimos, </b> el usuario se ha registrado exitosamente, sin embargo la dirección no se pudo registrar.";
-                                                divAlert.Attributes.Add("class", "alert alert-darger alert-dismissible fade show");
+                                                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                                             }
                                         }
                                     }
@@ -644,7 +753,7 @@ namespace Franquicia.WebForms.Views
             {
                 ddlEstatus.Enabled = true;
             }
-            
+
             txtIdentificador.Enabled = true;
             ddlPais.Enabled = true;
             ddlEstado.Enabled = true;
@@ -757,7 +866,7 @@ namespace Franquicia.WebForms.Views
                 ViewState["UidRequerido"] = dataKeys;
 
                 ManejoDatos(dataKeys);
-                
+
                 if (!string.IsNullOrEmpty(txtCalle.Text) && !string.IsNullOrEmpty(txtEntreCalle.Text))
                 {
                     ddlIncluirDir.SelectedIndex = 1;
@@ -770,7 +879,7 @@ namespace Franquicia.WebForms.Views
                     ddlIncluirDir.Enabled = true;
                     pnlIncluirDir.Visible = false;
                 }
-                
+
                 lblTituloModal.Text = "Visualización de Usuario";
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);

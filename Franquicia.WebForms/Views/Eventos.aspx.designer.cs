@@ -240,6 +240,15 @@ namespace Franquicia.WebForms.Views
         protected global::System.Web.UI.WebControls.LinkButton btnCalcular;
 
         /// <summary>
+        /// Control lblEditable.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblEditable;
+
+        /// <summary>
         /// Control ddlFormasPago.
         /// </summary>
         /// <remarks>

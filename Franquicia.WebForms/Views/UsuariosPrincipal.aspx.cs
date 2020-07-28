@@ -587,7 +587,7 @@ namespace Franquicia.WebForms.Views
             txtCodigoPostal.Text = direccionesUsuariosServices.direccionesUsuariosRepository.direccionesUsuarios.CodigoPostal;
             txtReferencia.Text = direccionesUsuariosServices.direccionesUsuariosRepository.direccionesUsuarios.Referencia;
             //==================TELÉFONO===================================
-            telefonosUsuariosServices.ObtenerTelefonoUsuario(dataKeys);
+            telefonosUsuariosServices.ObtenerTelefonoUsuarioSinPrefijo(dataKeys);
             txtNumero.Text = telefonosUsuariosServices.telefonosUsuariosRepository.telefonosUsuarios.VchTelefono;
             ddlTipoTelefono.SelectedIndex = ddlTipoTelefono.Items.IndexOf(ddlTipoTelefono.Items.FindByValue(telefonosUsuariosServices.telefonosUsuariosRepository.telefonosUsuarios.UidTipoTelefono.ToString()));
         }

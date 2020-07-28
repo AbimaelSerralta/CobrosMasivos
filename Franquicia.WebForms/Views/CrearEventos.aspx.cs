@@ -37,6 +37,8 @@ namespace Franquicia.WebForms.Views
         EventosServices eventosServices = new EventosServices();
         PromocionesServices promocionesServices = new PromocionesServices();
         EstatusServices estatusServices = new EstatusServices();
+        UsuariosCompletosServices usuariosCompletosServices = new UsuariosCompletosServices();
+        TiposEventosServices tiposEventosServices = new TiposEventosServices();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -70,10 +72,13 @@ namespace Franquicia.WebForms.Views
             if (!IsPostBack)
             {
                 ViewState["gvEventos"] = SortDirection.Ascending;
+                ViewState["gvUsuarios"] = SortDirection.Ascending;
 
                 Session["eventosServices"] = eventosServices;
                 Session["promocionesServices"] = promocionesServices;
                 Session["estatusServices"] = estatusServices;
+                Session["CrearEventousuariosCompletosServices"] = usuariosCompletosServices;
+                Session["CrearEventotiposEventosServices"] = tiposEventosServices;
 
                 eventosServices.CargarEventos(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
                 gvEventos.DataSource = eventosServices.lsEventosGridViewModel;
@@ -90,12 +95,22 @@ namespace Franquicia.WebForms.Views
                 ddlEstatus.DataTextField = "VchDescripcion";
                 ddlEstatus.DataValueField = "UidEstatus";
                 ddlEstatus.DataBind();
+
+                tiposEventosServices.CargarTiposEventos();
+                ddlTipoEvento.DataSource = tiposEventosServices.lsTiposEventos;
+                ddlTipoEvento.DataTextField = "VchDescripcion";
+                ddlTipoEvento.DataValueField = "UidTipoEvento";
+                ddlTipoEvento.DataBind();
+
+                ddlTipoEvento_SelectedIndexChanged(null, null);
             }
             else
             {
                 eventosServices = (EventosServices)Session["eventosServices"];
                 promocionesServices = (PromocionesServices)Session["promocionesServices"];
                 estatusServices = (EstatusServices)Session["estatusServices"];
+                usuariosCompletosServices = (UsuariosCompletosServices)Session["CrearEventousuariosCompletosServices"];
+                tiposEventosServices = (TiposEventosServices)Session["CrearEventotiposEventosServices"];
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Sh", "shot()", true);
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Mult", "multi()", true);
@@ -109,6 +124,7 @@ namespace Franquicia.WebForms.Views
 
         protected void btnNuevo_Click(object sender, EventArgs e)
         {
+            btnActivarEvento_Click(null, null);
             lblValidar.Text = string.Empty;
             ViewState["Accion"] = "Guardar";
             LimpiarCampos();
@@ -157,52 +173,90 @@ namespace Franquicia.WebForms.Views
                 return;
             }
 
-            DateTime date = DateTime.Parse(txtFHInicio.Text);
-            DateTime date2 = DateTime.Parse(txtFHInicio.Text);
-            if (date >= hoyIgual && date2 <= hoyMas)
+            if (ViewState["Accion"].ToString() == "Guardar")
             {
+                DateTime date = DateTime.Parse(txtFHInicio.Text);
+                DateTime date2 = DateTime.Parse(txtFHInicio.Text);
+                if (date >= hoyIgual && date2 <= hoyMas)
+                {
 
+                }
+                else
+                {
+                    txtFHInicio.BackColor = System.Drawing.Color.FromName("#f2dede");
+                    lblValidar.Text = "La fecha mínima es el día de hoy y la máxima son 90 días.";
+                    return;
+                }
+
+                if (cbxActivarFF.Checked)
+                {
+                    if (txtFHFinalizacion.EmptyTextBox())
+                    {
+                        lblValidar.Text = "El campo F/H Finalización es obligatorio";
+                        return;
+                    }
+                    DateTime date3 = DateTime.Parse(txtFHFinalizacion.Text);
+                    DateTime date4 = DateTime.Parse(txtFHFinalizacion.Text);
+
+                    if (date3 >= hoyIgual && date4 <= hoyMas)
+                    {
+
+                    }
+                    else
+                    {
+                        txtFHFinalizacion.BackColor = System.Drawing.Color.FromName("#f2dede");
+                        lblValidar.Text = "La fecha mínima es el día de hoy y la máxima son 90 días.";
+                        return;
+                    }
+                }
+                else
+                {
+                    txtFHFinalizacion.Text = "1/1/0001 12:00:00";
+                }
             }
-            else
+            else if (ViewState["Accion"].ToString() == "Actualizar")
             {
-                txtFHInicio.BackColor = System.Drawing.Color.FromName("#f2dede");
-                lblValidar.Text = "La fecha mínima es el día de hoy y la máxima son 90 días.";
-                return;
+                if (cbxActivarFF.Checked)
+                {
+                    if (txtFHFinalizacion.EmptyTextBox())
+                    {
+                        lblValidar.Text = "El campo F/H Finalización es obligatorio";
+                        return;
+                    }
+                }
+                else
+                {
+                    txtFHFinalizacion.Text = "1/1/0001 12:00:00";
+                }
             }
 
-            if (txtFHFinalizacion.EmptyTextBox())
+            if (bool.Parse(ddlTipoImporte.SelectedValue)) //Editable
             {
-                lblValidar.Text = "El campo F/H Finalización es obligatorio";
-                return;
+                if (string.IsNullOrEmpty(txtImporte.Text))
+                {
+                    txtImporte.Text = "0.00";
+                }
             }
-            DateTime date3 = DateTime.Parse(txtFHFinalizacion.Text);
-            DateTime date4 = DateTime.Parse(txtFHFinalizacion.Text);
+            else //Exacto
+            {
+                if (txtImporte.EmptyTextBox())
+                {
+                    lblValidar.Text = "El campo Importe es obligatorio";
+                    return;
+                }
 
-            if (date3 >= hoyIgual && date4 <= hoyMas)
-            {
+                if (decimal.Parse(txtImporte.Text) >= decimal.Parse(MontoMin) && decimal.Parse(txtImporte.Text) <= decimal.Parse(MontoMax))
+                {
 
+                }
+                else
+                {
+                    txtImporte.BackColor = System.Drawing.Color.FromName("#f2dede");
+                    lblValidar.Text = "El importe mínimo es de $50.00 y el máximo es de $15,000.00.";
+                    return;
+                }
             }
-            else
-            {
-                txtFHFinalizacion.BackColor = System.Drawing.Color.FromName("#f2dede");
-                lblValidar.Text = "La fecha mínima es el día de hoy y la máxima son 90 días.";
-                return;
-            }
-            if (txtImporte.EmptyTextBox())
-            {
-                lblValidar.Text = "El campo Importe es obligatorio";
-                return;
-            }
-            if (decimal.Parse(txtImporte.Text) >= decimal.Parse(MontoMin) && decimal.Parse(txtImporte.Text) <= decimal.Parse(MontoMax))
-            {
 
-            }
-            else
-            {
-                txtImporte.BackColor = System.Drawing.Color.FromName("#f2dede");
-                lblValidar.Text = "El importe mínimo es de $50.00 y el máximo es de $15,000.00.";
-                return;
-            }
             if (txtConcepto.EmptyTextBox())
             {
                 lblValidar.Text = "El campo Concepto es obligatorio";
@@ -225,13 +279,21 @@ namespace Franquicia.WebForms.Views
                         Guid UidEvento = Guid.NewGuid();
                         string URL = "https://cobrosmasivos.com/Evento.aspx?Id=" + UidEvento;
 
-                        if (eventosServices.RegistrarEvento(UidEvento, txtNombreEvento.Text.Trim().ToUpper(), txtDescripcion.Text.Trim().ToUpper(), hoy, DateTime.Parse(txtFHInicio.Text), DateTime.Parse(txtFHFinalizacion.Text), bool.Parse(ddlTipoImporte.SelectedValue), decimal.Parse(txtImporte.Text), txtConcepto.Text.Trim().ToUpper(), bool.Parse(ddlPedirDatos.SelectedValue), URL, Guid.Parse(ViewState["UidClienteLocal"].ToString())))
+                        if (eventosServices.RegistrarEvento(UidEvento, txtNombreEvento.Text.Trim().ToUpper(), txtDescripcion.Text.Trim().ToUpper(), hoy, DateTime.Parse(txtFHInicio.Text), DateTime.Parse(txtFHFinalizacion.Text), bool.Parse(ddlTipoImporte.SelectedValue), decimal.Parse(txtImporte.Text), txtConcepto.Text.Trim().ToUpper(), bool.Parse(ddlPedirDatos.SelectedValue), URL, cbxActivarFF.Checked, Guid.Parse(ddlTipoEvento.SelectedValue), Guid.Parse(ViewState["UidClienteLocal"].ToString())))
                         {
                             foreach (ListItem promo in ListBoxMultipleMod.Items)
                             {
                                 if (promo.Selected)
                                 {
                                     eventosServices.RegistrarPromocionesEvento(UidEvento, Guid.Parse(promo.Value));
+                                }
+                            }
+
+                            if (ddlTipoEvento.SelectedItem.Text == "PRIVADO")
+                            {
+                                foreach (var itUsu in usuariosCompletosServices.lsSelectEventoUsuarioGridViewModel)
+                                {
+                                    eventosServices.RegistrarUsuariosEvento(UidEvento, itUsu.UidUsuario);
                                 }
                             }
 
@@ -258,7 +320,7 @@ namespace Franquicia.WebForms.Views
                 {
                     if (item.Actualizar)
                     {
-                        if (eventosServices.ActualizarEvento(Guid.Parse(ViewState["UidRequerido"].ToString()), txtNombreEvento.Text.Trim().ToUpper(), txtDescripcion.Text.Trim().ToUpper(), DateTime.Parse(txtFHInicio.Text), DateTime.Parse(txtFHFinalizacion.Text), bool.Parse(ddlTipoImporte.SelectedValue), decimal.Parse(txtImporte.Text), txtConcepto.Text.Trim().ToUpper(), bool.Parse(ddlPedirDatos.SelectedValue), Guid.Parse(ddlEstatus.SelectedValue)))
+                        if (eventosServices.ActualizarEvento(Guid.Parse(ViewState["UidRequerido"].ToString()), txtNombreEvento.Text.Trim().ToUpper(), txtDescripcion.Text.Trim().ToUpper(), DateTime.Parse(txtFHInicio.Text), DateTime.Parse(txtFHFinalizacion.Text), bool.Parse(ddlTipoImporte.SelectedValue), decimal.Parse(txtImporte.Text), txtConcepto.Text.Trim().ToUpper(), bool.Parse(ddlPedirDatos.SelectedValue), cbxActivarFF.Checked, Guid.Parse(ddlTipoEvento.SelectedValue), Guid.Parse(ddlEstatus.SelectedValue)))
                         {
                             eventosServices.EliminarPromocionesEvento(Guid.Parse(ViewState["UidRequerido"].ToString()));
 
@@ -268,6 +330,19 @@ namespace Franquicia.WebForms.Views
                                 {
                                     eventosServices.RegistrarPromocionesEvento(Guid.Parse(ViewState["UidRequerido"].ToString()), Guid.Parse(promo.Value));
                                 }
+                            }
+
+                            if (ddlTipoEvento.SelectedItem.Text == "PRIVADO")
+                            {
+                                eventosServices.EliminarUsuariosEvento(Guid.Parse(ViewState["UidRequerido"].ToString()));
+                                foreach (var itUsu in usuariosCompletosServices.lsSelectEventoUsuarioGridViewModel)
+                                {
+                                    eventosServices.RegistrarUsuariosEvento(Guid.Parse(ViewState["UidRequerido"].ToString()), itUsu.UidUsuario);
+                                }
+                            }
+                            else if (ddlTipoEvento.SelectedItem.Text == "PUBLICO")
+                            {
+                                eventosServices.EliminarUsuariosEvento(Guid.Parse(ViewState["UidRequerido"].ToString()));
                             }
 
                             pnlAlert.Visible = true;
@@ -295,6 +370,7 @@ namespace Franquicia.WebForms.Views
         {
             if (e.CommandName == "Editar")
             {
+                btnActivarEvento_Click(null, null);
                 ViewState["Accion"] = "Actualizar";
                 DesbloquearCampos();
                 btnCerrar.Visible = false;
@@ -310,6 +386,11 @@ namespace Franquicia.WebForms.Views
                 Guid dataKeys = Guid.Parse(valor.DataKeys[Seleccionado.RowIndex].Value.ToString());
                 ViewState["UidRequerido"] = dataKeys;
 
+                usuariosCompletosServices.ObtenerUsuariosEvento(dataKeys);
+                lblCantSeleccionado.Text = usuariosCompletosServices.lsSelectEventoUsuarioGridViewModel.Count.ToString();
+                gvUsuarios.DataSource = usuariosCompletosServices.lsEventoUsuarioGridViewModel;
+                gvUsuarios.DataBind();
+
                 ManejoDatos(dataKeys);
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
@@ -317,6 +398,7 @@ namespace Franquicia.WebForms.Views
 
             if (e.CommandName == "Ver")
             {
+                btnActivarEvento_Click(null, null);
                 BloquearCampos();
                 btnCerrar.Visible = true;
                 btnCancelar.Visible = false;
@@ -327,6 +409,11 @@ namespace Franquicia.WebForms.Views
                 GridView valor = (GridView)sender;
                 Guid dataKeys = Guid.Parse(valor.DataKeys[Seleccionado.RowIndex].Value.ToString());
                 ViewState["UidRequerido"] = dataKeys;
+
+                usuariosCompletosServices.ObtenerUsuariosEvento(dataKeys);
+                lblCantSeleccionado.Text = usuariosCompletosServices.lsSelectEventoUsuarioGridViewModel.Count.ToString();
+                gvUsuarios.DataSource = usuariosCompletosServices.lsEventoUsuarioGridViewModel;
+                gvUsuarios.DataBind();
 
                 ManejoDatos(dataKeys);
 
@@ -352,7 +439,19 @@ namespace Franquicia.WebForms.Views
             txtNombreEvento.Text = eventosServices.eventosRepository.eventosGridViewModel.VchNombreEvento;
             txtDescripcion.Text = eventosServices.eventosRepository.eventosGridViewModel.VchDescripcion;
             txtFHInicio.Text = eventosServices.eventosRepository.eventosGridViewModel.DtFHInicio.ToString("yyyy-MM-ddTHH:mm");
-            txtFHFinalizacion.Text = eventosServices.eventosRepository.eventosGridViewModel.DtFHFin.ToString("yyyy-MM-ddTHH:mm");
+
+            if (eventosServices.eventosRepository.eventosGridViewModel.BitFHFin)
+            {
+                cbxActivarFF.Checked = true;
+                //txtFHFinalizacion.Text = eventosServices.eventosRepository.eventosGridViewModel.VchFHFin;
+                txtFHFinalizacion.Text = DateTime.Parse(eventosServices.eventosRepository.eventosGridViewModel.VchFHFin).ToString("yyyy-MM-ddTHH:mm");
+                pnlActivarFHFinal.Enabled = true;
+            }
+            else
+            {
+                cbxActivarFF.Checked = false;
+                pnlActivarFHFinal.Enabled = false;
+            }
 
             if (eventosServices.eventosRepository.eventosGridViewModel.BitTipoImporte)
             {
@@ -391,6 +490,8 @@ namespace Franquicia.WebForms.Views
             }
             this.ddlPedirDatos.SelectedIndex = ddlPedirDatos;
             ddlEstatus.SelectedIndex = ddlEstatus.Items.IndexOf(ddlEstatus.Items.FindByValue(eventosServices.eventosRepository.eventosGridViewModel.UidEstatus.ToString()));
+            ddlTipoEvento.SelectedIndex = ddlTipoEvento.Items.IndexOf(ddlTipoEvento.Items.FindByValue(eventosServices.eventosRepository.eventosGridViewModel.UidTipoEvento.ToString()));
+            ddlTipoEvento_SelectedIndexChanged(null, null);
         }
 
         private void BloquearCampos()
@@ -399,11 +500,13 @@ namespace Franquicia.WebForms.Views
             txtDescripcion.Enabled = false;
             txtFHInicio.Enabled = false;
             txtFHFinalizacion.Enabled = false;
+            cbxActivarFF.Enabled = false;
             ddlTipoImporte.Enabled = false;
             txtImporte.Enabled = false;
             txtConcepto.Enabled = false;
             ddlPedirDatos.Enabled = false;
             ddlEstatus.Enabled = false;
+            ddlTipoEvento.Enabled = false;
         }
         private void DesbloquearCampos()
         {
@@ -411,6 +514,7 @@ namespace Franquicia.WebForms.Views
             txtDescripcion.Enabled = true;
             txtFHInicio.Enabled = true;
             txtFHFinalizacion.Enabled = true;
+            cbxActivarFF.Enabled = true;
             ddlTipoImporte.Enabled = true;
             txtImporte.Enabled = true;
             txtConcepto.Enabled = true;
@@ -424,6 +528,7 @@ namespace Franquicia.WebForms.Views
             {
                 ddlEstatus.Enabled = true;
             }
+            ddlTipoEvento.Enabled = true;
         }
         private void LimpiarCampos()
         {
@@ -431,10 +536,12 @@ namespace Franquicia.WebForms.Views
             txtDescripcion.Text = string.Empty;
             txtFHInicio.Text = string.Empty;
             txtFHFinalizacion.Text = string.Empty;
+            cbxActivarFF.Checked = false;
             ddlTipoImporte.SelectedIndex = 0;
-            txtImporte.Text = "50";
+            txtImporte.Text = "0.00";
             txtConcepto.Text = string.Empty;
             ddlPedirDatos.SelectedIndex = 0;
+            ddlTipoEvento.SelectedIndex = 0;
         }
 
         protected void btnCerrar_Click(object sender, EventArgs e)
@@ -484,14 +591,14 @@ namespace Franquicia.WebForms.Views
                             eventosServices.lsEventosGridViewModel = eventosServices.lsEventosGridViewModel.OrderByDescending(x => x.DtFHInicio).ToList();
                         }
                         break;
-                    case "DtFHFin":
+                    case "VchFHFin":
                         if (Orden == "ASC")
                         {
-                            eventosServices.lsEventosGridViewModel = eventosServices.lsEventosGridViewModel.OrderBy(x => x.DtFHFin).ToList();
+                            eventosServices.lsEventosGridViewModel = eventosServices.lsEventosGridViewModel.OrderBy(x => x.VchFHFin).ToList();
                         }
                         else
                         {
-                            eventosServices.lsEventosGridViewModel = eventosServices.lsEventosGridViewModel.OrderByDescending(x => x.DtFHFin).ToList();
+                            eventosServices.lsEventosGridViewModel = eventosServices.lsEventosGridViewModel.OrderByDescending(x => x.VchFHFin).ToList();
                         }
                         break;
                     case "UidEstatus":
@@ -580,5 +687,172 @@ namespace Franquicia.WebForms.Views
             txtFiltroDtFinDesde.Text = string.Empty;
             txtFiltroDtFinHasta.Text = string.Empty;
         }
+
+        protected void cbxActivarFF_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbxActivarFF.Checked)
+            {
+                pnlActivarFHFinal.Enabled = true;
+            }
+            else
+            {
+                pnlActivarFHFinal.Enabled = false;
+            }
+        }
+
+        protected void gvUsuarios_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            string SortExpression = e.SortExpression;
+            SortDirection direccion;
+            string Orden = string.Empty;
+
+            if (ViewState["gvUsuarios"] != null)
+            {
+                direccion = (SortDirection)ViewState["gvUsuarios"];
+                if (direccion == SortDirection.Ascending)
+                {
+                    ViewState["gvUsuarios"] = SortDirection.Descending;
+                    Orden = "ASC";
+                }
+                else
+                {
+                    ViewState["gvUsuarios"] = SortDirection.Ascending;
+                    Orden = "DESC";
+                }
+
+                switch (SortExpression)
+                {
+                    case "NombreCompleto":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsEventoUsuarioGridViewModel = usuariosCompletosServices.lsEventoUsuarioGridViewModel.OrderBy(x => x.NombreCompleto).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsEventoUsuarioGridViewModel = usuariosCompletosServices.lsEventoUsuarioGridViewModel.OrderByDescending(x => x.NombreCompleto).ToList();
+                        }
+                        break;
+                    case "StrCorreo":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsEventoUsuarioGridViewModel = usuariosCompletosServices.lsEventoUsuarioGridViewModel.OrderBy(x => x.StrCorreo).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsEventoUsuarioGridViewModel = usuariosCompletosServices.lsEventoUsuarioGridViewModel.OrderByDescending(x => x.StrCorreo).ToList();
+                        }
+                        break;
+                    case "StrTelefono":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsEventoUsuarioGridViewModel = usuariosCompletosServices.lsEventoUsuarioGridViewModel.OrderBy(x => x.StrTelefono).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsEventoUsuarioGridViewModel = usuariosCompletosServices.lsEventoUsuarioGridViewModel.OrderByDescending(x => x.StrTelefono).ToList();
+                        }
+                        break;
+                }
+
+                gvUsuarios.DataSource = usuariosCompletosServices.lsEventoUsuarioGridViewModel;
+                gvUsuarios.DataBind();
+            }
+        }
+
+        protected void gvUsuarios_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvUsuarios.PageIndex = e.NewPageIndex;
+            gvUsuarios.DataSource = usuariosCompletosServices.lsEventoUsuarioGridViewModel;
+            gvUsuarios.DataBind();
+        }
+        protected void cbTodo_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox cbSeleccionado = (CheckBox)gvUsuarios.HeaderRow.FindControl("cbTodo");
+
+            if (cbSeleccionado.Checked)
+            {
+                usuariosCompletosServices.ActualizarTodoListaEventoUsuarios(usuariosCompletosServices.lsEventoUsuarioGridViewModel, true);
+            }
+            else
+            {
+                usuariosCompletosServices.ActualizarTodoListaEventoUsuarios(usuariosCompletosServices.lsEventoUsuarioGridViewModel, false);
+            }
+
+            lblCantSeleccionado.Text = usuariosCompletosServices.lsEventoUsuarioGridViewModel.Where(x => x.blSeleccionado == true).ToList().Count.ToString();
+            gvUsuarios.DataSource = usuariosCompletosServices.lsEventoUsuarioGridViewModel;
+            gvUsuarios.DataBind();
+        }
+        protected void cbSeleccionado_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox checkBox = (CheckBox)sender;
+            GridViewRow gr = (GridViewRow)checkBox.Parent.Parent;
+            Guid dataKey = Guid.Parse(gvUsuarios.DataKeys[gr.RowIndex].Value.ToString());
+
+            CheckBox cbSeleccionado = (CheckBox)gr.FindControl("cbSeleccionado");
+
+            if (cbSeleccionado.Checked)
+            {
+                usuariosCompletosServices.ActualizarListaEventoUsuarios(usuariosCompletosServices.lsEventoUsuarioGridViewModel, dataKey, true);
+            }
+            else
+            {
+                usuariosCompletosServices.ActualizarListaEventoUsuarios(usuariosCompletosServices.lsEventoUsuarioGridViewModel, dataKey, false);
+            }
+
+            lblCantSeleccionado.Text = usuariosCompletosServices.lsSelectEventoUsuarioGridViewModel.Count.ToString();
+            gvUsuarios.DataSource = usuariosCompletosServices.lsEventoUsuarioGridViewModel;
+            gvUsuarios.DataBind();
+        }
+
+        protected void ddlTipoEvento_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (ddlTipoEvento.SelectedItem.Text == "PUBLICO")
+            {
+                liActivarUsuarios.Visible = false;
+                ddlPedirDatos.Enabled = true;
+            }
+            else if (ddlTipoEvento.SelectedItem.Text == "PRIVADO")
+            {
+                liActivarUsuarios.Visible = true;
+                ddlPedirDatos.Enabled = false;
+                ddlPedirDatos.SelectedIndex = 1;
+            }
+        }
+
+        protected void btnFiltroBuscar_Click(object sender, EventArgs e)
+        {
+            usuariosCompletosServices.BuscarUsuariosEvento(usuariosCompletosServices.lsSelectEventoUsuarioGridViewModel, Guid.Parse(ViewState["UidClienteLocal"].ToString()), txtFiltroEveNombre.Text, txtFiltroEvePaterno.Text, txtFiltroEveMaterno.Text, txtFiltroEveCorreo.Text);
+            gvUsuarios.DataSource = usuariosCompletosServices.lsEventoUsuarioGridViewModel;
+            gvUsuarios.DataBind();
+        }
+
+        protected void btnFiltroLimpiar_Click(object sender, EventArgs e)
+        {
+            txtFiltroEveNombre.Text = string.Empty;
+            txtFiltroEvePaterno.Text = string.Empty;
+            txtFiltroEveMaterno.Text = string.Empty;
+            txtFiltroEveCorreo.Text = string.Empty;
+        }
+
+        //Menu de asinar usuarios EVENTO
+        #region Menu
+        protected void btnActivarEvento_Click(object sender, EventArgs e)
+        {
+            btnActivarEvento.CssClass = "nav-link active show";
+            pnlActivarEvento.Visible = true;
+
+            btnActivarUsuarios.CssClass = "nav-link";
+            pnlActivarUsuarios.Visible = false;
+        }
+
+        protected void btnActivarUsuarios_Click(object sender, EventArgs e)
+        {
+            btnActivarEvento.CssClass = "nav-link";
+            pnlActivarEvento.Visible = false;
+
+            btnActivarUsuarios.CssClass = "nav-link active show";
+            pnlActivarUsuarios.Visible = true;
+        }
+        #endregion
     }
 }

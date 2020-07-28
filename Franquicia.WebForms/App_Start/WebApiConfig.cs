@@ -17,6 +17,12 @@ namespace Franquicia.WebForms.App_Start
                 routeTemplate: "cobrosMasivos/api/{controller}/{action}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+
+            config.Routes.MapHttpRoute(
+                name: "TwiApi",
+                routeTemplate: "HookPayCard/ReceiveSms",
+                defaults: new { id = RouteParameter.Optional }
+            );
         }
     }
 }

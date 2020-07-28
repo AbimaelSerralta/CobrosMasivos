@@ -19,6 +19,8 @@ namespace Franquicia.Bussiness
         }
 
         public List<EventosGridViewModel> lsEventosGridViewModel = new List<EventosGridViewModel>();
+        
+        public List<EventosUsuarioFinalGridViewModel> lsEventosUsuarioFinalGridViewModel = new List<EventosUsuarioFinalGridViewModel>();
 
         #region Metodos Franquicia
 
@@ -35,7 +37,7 @@ namespace Franquicia.Bussiness
             eventosRepository.eventosGridViewModel = new EventosGridViewModel();
             eventosRepository.eventosGridViewModel = lsEventosGridViewModel.Find(x => x.UidEvento == UidEvento);
         }
-        public bool RegistrarEvento(Guid UidEvento, string VchNombreEvento, string VchDescripcion, DateTime DtRegistro, DateTime DtFHInicio, DateTime DtFHFin, bool BitTipoImporte, decimal DcmImporte, string VchConcepto, bool BitDatosUsuario, string VchUrlEvento, Guid UidPropietario)
+        public bool RegistrarEvento(Guid UidEvento, string VchNombreEvento, string VchDescripcion, DateTime DtRegistro, DateTime DtFHInicio, DateTime DtFHFin, bool BitTipoImporte, decimal DcmImporte, string VchConcepto, bool BitDatosUsuario, string VchUrlEvento, bool BitFHFin, Guid UidTipoEvento, Guid UidPropietario)
         {
             bool result = false;
             if (eventosRepository.RegistrarEvento(
@@ -52,6 +54,8 @@ namespace Franquicia.Bussiness
                     VchConcepto = VchConcepto,
                     BitDatosUsuario = BitDatosUsuario,
                     VchUrlEvento = VchUrlEvento,
+                    BitFHFin = BitFHFin,
+                    UidTipoEvento = UidTipoEvento,
                     UidPropietario = UidPropietario
                 }
                 ))
@@ -61,7 +65,7 @@ namespace Franquicia.Bussiness
             return result;
         }
 
-        public bool ActualizarEvento(Guid UidEvento, string VchNombreEvento, string VchDescripcion, DateTime DtFHInicio, DateTime DtFHFin, bool BitTipoImporte, decimal DcmImporte, string VchConcepto, bool BitDatosUsuario, Guid UidEstatus)
+        public bool ActualizarEvento(Guid UidEvento, string VchNombreEvento, string VchDescripcion, DateTime DtFHInicio, DateTime DtFHFin, bool BitTipoImporte, decimal DcmImporte, string VchConcepto, bool BitDatosUsuario, bool BitFHFin, Guid UidTipoEvento, Guid UidEstatus)
         {
             bool result = false;
             if (eventosRepository.ActualizarEvento(
@@ -76,6 +80,8 @@ namespace Franquicia.Bussiness
                     DcmImporte = DcmImporte,
                     VchConcepto = VchConcepto,
                     BitDatosUsuario = BitDatosUsuario,
+                    BitFHFin = BitFHFin,
+                    UidTipoEvento = UidTipoEvento,
                     UidEstatus = UidEstatus
                 }))
             {
@@ -149,6 +155,42 @@ namespace Franquicia.Bussiness
         public void BuscarEventos(Guid UidPropietario, string VchNombreEvento, string DtFHInicioDesde, string DtFHInicioHasta, string DtFHFinDesde, string DtFHFinHasta, decimal DcmImporteMayor, decimal DcmImporteMenor, Guid UidEstatus)
         {
             lsEventosGridViewModel = eventosRepository.BuscarEventos(UidPropietario, VchNombreEvento, DtFHInicioDesde, DtFHInicioHasta, DtFHFinDesde, DtFHFinHasta, DcmImporteMayor, DcmImporteMenor, UidEstatus);
+        }
+
+        public bool RegistrarUsuariosEvento(Guid UidEvento, Guid UidUsuario)
+        {
+            bool result = false;
+            if (eventosRepository.RegistrarUsuariosEvento(UidEvento, UidUsuario))
+            {
+                result = true;
+            }
+            return result;
+        }
+        public bool EliminarUsuariosEvento(Guid UidEvento)
+        {
+            bool result = false;
+            if (eventosRepository.EliminarUsuariosEvento(UidEvento))
+            {
+                result = true;
+            }
+            return result;
+        }
+        #endregion
+
+        #region Metodos Usuarios final
+        public List<EventosUsuarioFinalGridViewModel> CargarEventosUsuariosFinal(Guid UidCliente)
+        {
+            lsEventosUsuarioFinalGridViewModel = new List<EventosUsuarioFinalGridViewModel>();
+            return lsEventosUsuarioFinalGridViewModel = eventosRepository.CargarEventosUsuariosFinal(UidCliente);
+        }
+        public void BuscarEventosUsuarioFinal(Guid UidPropietario, string VchNombreEvento, string DtFHInicioDesde, string DtFHInicioHasta, string DtFHFinDesde, string DtFHFinHasta, decimal DcmImporteMayor, decimal DcmImporteMenor, Guid UidEstatus)
+        {
+            lsEventosUsuarioFinalGridViewModel = eventosRepository.BuscarEventosUsuarioFinal(UidPropietario, VchNombreEvento, DtFHInicioDesde, DtFHInicioHasta, DtFHFinDesde, DtFHFinHasta, DcmImporteMayor, DcmImporteMenor, UidEstatus);
+        }
+
+        public void ObtenerDatosEventoUsuariosFinal(Guid UidEvento)
+        {
+            eventosRepository.ObtenerDatosEventoUsuariosFinal(UidEvento);
         }
         #endregion
     }

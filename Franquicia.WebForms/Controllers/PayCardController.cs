@@ -5,6 +5,9 @@ using System.Web.Http;
 using System.Xml;
 using WebApplication1.Vista;
 using System.Web;
+using System.Text.RegularExpressions;
+using Twilio;
+using Twilio.Rest.Api.V2010.Account;
 
 namespace Franquicia.WebForms.Controller
 {
@@ -17,6 +20,9 @@ namespace Franquicia.WebForms.Controller
             ValidacionesServices validacionesServices = new ValidacionesServices();
             ClienteCuentaServices clienteCuentaServices = new ClienteCuentaServices();
             LigasUrlsServices ligasUrlsServices = new LigasUrlsServices();
+            WhatsAppPendientesServices whatsAppPendientesServices = new WhatsAppPendientesServices();
+            TicketsServices ticketsServices = new TicketsServices();
+            TarifasServices tarifasServices = new TarifasServices();
 
             strResponse.StrResponse = HttpUtility.HtmlEncode(strResponse.StrResponse);
             var respuesta = new ResponseHelpers();
@@ -178,6 +184,93 @@ namespace Franquicia.WebForms.Controller
                                 else
                                 {
                                     clienteCuentaServices.RegistrarDineroCuentaCliente(ligasUrlsServices.ligasUrlsRepository.ligasUrlsGridViewModel.DcmImporte, ligasUrlsServices.ligasUrlsRepository.ligasUrlsGridViewModel.UidPropietario, reference);
+                                }
+
+                                whatsAppPendientesServices.ObtenerWhatsPntHistPago(ligasUrlsServices.ligasUrlsRepository.ligasUrlsGridViewModel.UidPropietario);
+
+                                DateTime HoraDelServidor = DateTime.Now;
+                                DateTime hoy = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(HoraDelServidor, TimeZoneInfo.Local.Id, "Eastern Standard Time (Mexico)");
+                                DateTime horParse = DateTime.Parse(hoy.ToString("dd/MM/yyyy"));
+
+                                if (whatsAppPendientesServices.lsWhatsAppPendientes.Count >= 1)
+                                {
+                                    ////******Configuracion de Twilio******
+                                    const string accountSid = "ACcf4d1380ccb0be6d47e78a73036a29ab";
+                                    ////string authToken = "30401e7bf2b7b3a2ab24c0a22203acc1";
+                                    const string authToken = "915ce4d30dc09473b5ed753490436281";
+                                    //var accountSid = Environment.GetEnvironmentVariable("ACcf4d1380ccb0be6d47e78a73036a29ab");
+                                    //var authToken = Environment.GetEnvironmentVariable("f6b99afa9cdf4da4e685ff4837b2f911");
+                                    string NumberFrom = "+14582243212";
+
+                                    //string accountSid = "ACc7561cb09df3180ee1368e40055eedf5";
+                                    ////string authToken = "0f47ce2d28c9211ac6a9ae42f630d1d6";
+                                    //string authToken = "3f914e588826df9a93ed849cee73eae2";
+                                    ////string NumberFrom = "+14158739087";
+                                    //string NumberFrom = "+14155238886";
+
+                                    foreach (var item in whatsAppPendientesServices.lsWhatsAppPendientes)
+                                    {
+                                        DateTime DtVencimiento = DateTime.Parse(item.DtVencimiento.ToString("dd/MM/yyyy"));
+
+                                        if (DtVencimiento >= horParse)
+                                        {
+                                            string prefijo = item.VchTelefono.Split('(', ')')[1];
+                                            string NumberTo = item.VchTelefono.Split('(', ')')[2];
+
+                                            if (prefijo == "+52")
+                                            {
+                                                prefijo = prefijo + "1";
+                                            }
+
+                                            try
+                                            {
+                                                tarifasServices.CargarTarifas();
+                                                clienteCuentaServices.ObtenerDineroCuentaCliente(item.UidPropietario);
+                                                decimal DcmCuenta = clienteCuentaServices.clienteCuentaRepository.clienteCuenta.DcmDineroCuenta;
+
+                                                decimal DcmWhatsapp = 0;
+                                                foreach (var tariWhats in tarifasServices.lsTarifasGridViewModel)
+                                                {
+                                                    DcmWhatsapp = tariWhats.DcmWhatsapp;
+                                                }
+
+                                                if (DcmCuenta >= DcmWhatsapp)
+                                                {
+                                                    TwilioClient.Init(accountSid, authToken);
+
+                                                    var message = MessageResource.Create(
+                                                    body: item.VchUrl.Replace("[n]", "\n"),
+                                                    from: new Twilio.Types.PhoneNumber("whatsapp:" + NumberFrom),
+                                                    to: new Twilio.Types.PhoneNumber("whatsapp:" + prefijo + NumberTo));
+
+                                                    decimal NuevoSaldo = DcmCuenta - DcmWhatsapp;
+
+                                                    string[] DatosUsuario = Regex.Split(validacionesServices.ObtenerDatosUsuario(item.UidUsuario, item.UidPropietario), ",");
+
+                                                    string IdCliente = string.Empty;
+                                                    string IdUsuario = string.Empty;
+
+                                                    if (DatosUsuario.Length >= 2)
+                                                    {
+                                                        IdCliente = DatosUsuario[0];
+                                                        IdUsuario = DatosUsuario[1];
+                                                    }
+
+                                                    string Folio = IdCliente + IdUsuario + DateTime.Now.ToString("ddMMyyyyHHmmssfff");
+
+                                                    if (ticketsServices.RegistrarTicketPago(Folio, DcmWhatsapp, 0, DcmWhatsapp, item.VchDescripcion, item.UidPropietario, hoy, 1, 0, 0, DcmCuenta, DcmWhatsapp, NuevoSaldo))
+                                                    {
+                                                        clienteCuentaServices.ActualizarDineroCuentaCliente(NuevoSaldo, item.UidPropietario, "");
+                                                        whatsAppPendientesServices.ActualizarWhatsPendiente(item.UidWhatsAppPendiente, Guid.Parse("FB046B99-A9DF-4826-9EDB-E47BCE0251EA"));
+                                                    }
+                                                }
+                                            }
+                                            catch (Exception ex)
+                                            {
+
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }

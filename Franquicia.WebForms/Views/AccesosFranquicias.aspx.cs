@@ -85,6 +85,7 @@ namespace Franquicia.WebForms.Views
                 listPermisosPrincipal = (List<string>)Session["listPermisosPrincipal"];
                 listDenegarPermisos = (List<string>)Session["listDenegarPermisos"];
 
+                pnlAlert.Visible = false;
                 lblMensajeAlert.Text = "";
                 divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
 
@@ -144,6 +145,7 @@ namespace Franquicia.WebForms.Views
                             gvPerfiles.DataSource = perfilesServices.lsperfilesGridViewModel;
                             gvPerfiles.DataBind();
 
+                            pnlAlert.Visible = true;
                             lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
                             divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
 
@@ -152,6 +154,7 @@ namespace Franquicia.WebForms.Views
                     }
                     else
                     {
+                        pnlAlert.Visible = true;
                         lblMensajeAlert.Text = "<b>Lo sentimos,</b> no tiene permisos para esta acción.";
                         divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
@@ -169,6 +172,7 @@ namespace Franquicia.WebForms.Views
                             gvPerfiles.DataSource = perfilesServices.lsperfilesGridViewModel;
                             gvPerfiles.DataBind();
 
+                            pnlAlert.Visible = true;
                             lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha actualizado exitosamente.";
                             divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
 
@@ -177,6 +181,7 @@ namespace Franquicia.WebForms.Views
                     }
                     else
                     {
+                        pnlAlert.Visible = true;
                         lblMensajeAlert.Text = "<b>Lo sentimos,</b> no tiene permisos para esta acción.";
                         divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);

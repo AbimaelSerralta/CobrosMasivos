@@ -75,14 +75,6 @@ namespace Franquicia.WebForms.Views
                         ViewState["UidClienteLocal"] = Guid.Empty;
                     }
 
-                    promocionesServices.CargarPromocionesEvento(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse(Request.QueryString["Id"].ToString()));
-
-                    ddlFormasPago.Items.Insert(0, new ListItem("Al contado", "contado"));
-                    ddlFormasPago.DataSource = promocionesServices.lsEventosGenerarLigasModel;
-                    ddlFormasPago.DataTextField = "VchDescripcion";
-                    ddlFormasPago.DataValueField = "UidPromocion";
-                    ddlFormasPago.DataBind();
-
                     if (eventosServices.eventosRepository.eventosGridViewModel.UidEstatus == Guid.Parse("65E46BC9-1864-4145-AD1A-70F5B5F69739"))
                     {
                         //DateTime hoy = DateTime.Now;
@@ -90,62 +82,113 @@ namespace Franquicia.WebForms.Views
                         DateTime HoraDelServidor = DateTime.Now;
                         DateTime hoy = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(HoraDelServidor, TimeZoneInfo.Local.Id, "Eastern Standard Time (Mexico)");
 
-
-                        DateTime fhInicio = eventosServices.eventosRepository.eventosGridViewModel.DtFHInicio;
-                        DateTime fhFin = eventosServices.eventosRepository.eventosGridViewModel.DtFHFin;
-
-
-                        DateTime date1 = hoy;
-                        DateTime date2 = fhInicio;
-                        int result = DateTime.Compare(date1, date2);
-
-                        DateTime date3 = hoy;
-                        DateTime date4 = fhFin;
-                        int result2 = DateTime.Compare(date3, date4);
-
-                        if (result >= 0 && result2 <= 0)
+                        if (eventosServices.eventosRepository.eventosGridViewModel.UidTipoEvento == Guid.Parse("C70BA375-58AB-4ADC-9BEF-DAE0DAEEA99A"))
                         {
-                            CargarConfiguracion();
+                            DateTime fhInicio = eventosServices.eventosRepository.eventosGridViewModel.DtFHInicio;
+                            DateTime fhFin = eventosServices.eventosRepository.eventosGridViewModel.DtFHFin;
 
-                            txtCorreo.Focus();
+                            if (eventosServices.eventosRepository.eventosGridViewModel.BitFHFin)
+                            {
+                                DateTime date1 = hoy;
+                                DateTime date2 = fhInicio;
+                                int result = DateTime.Compare(date1, date2);
+
+                                DateTime date3 = hoy;
+                                DateTime date4 = fhFin;
+                                int result2 = DateTime.Compare(date3, date4);
+
+                                if (result >= 0 && result2 <= 0)
+                                {
+                                    CargarConfiguracion();
+
+                                    txtCorreo.Focus();
+                                }
+                                else
+                                {
+
+                                    if (result <= 0 && result2 <= 0)
+                                    {
+                                        pnlValidar.Visible = false;
+                                        tmValidar.Enabled = false;
+
+                                        pnlDatosComercio.Visible = false;
+                                        pnlUsuario.Visible = false;
+                                        pnlCorreo.Visible = false;
+                                        pnlIframe.Visible = false;
+
+                                        btnAceptar.Visible = false;
+                                        btnGenerarLigas.Visible = false;
+
+                                        pnlValidarEvento.Visible = true;
+
+                                        lblTitleDialog.Text = "El evento Inicia el " + fhInicio.ToString("dd/MM/yyyy HH:mm:ss") + " (Ciudad de México, CDMX)";
+                                    }
+                                    else if (result == 1 && result2 == 1)
+                                    {
+                                        pnlValidar.Visible = false;
+                                        tmValidar.Enabled = false;
+
+                                        pnlDatosComercio.Visible = false;
+                                        pnlUsuario.Visible = false;
+                                        pnlCorreo.Visible = false;
+                                        pnlIframe.Visible = false;
+
+                                        btnAceptar.Visible = false;
+                                        btnGenerarLigas.Visible = false;
+
+                                        pnlValidarEvento.Visible = true;
+
+                                        lblTitleDialog.Text = "El evento ha terminado.";
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                DateTime date1 = hoy;
+                                DateTime date2 = fhInicio;
+                                int result = DateTime.Compare(date1, date2);
+
+                                if (result >= 0)
+                                {
+                                    CargarConfiguracion();
+
+                                    txtCorreo.Focus();
+                                }
+                                else
+                                {
+                                    pnlValidar.Visible = false;
+                                    tmValidar.Enabled = false;
+
+                                    pnlDatosComercio.Visible = false;
+                                    pnlUsuario.Visible = false;
+                                    pnlCorreo.Visible = false;
+                                    pnlIframe.Visible = false;
+
+                                    btnAceptar.Visible = false;
+                                    btnGenerarLigas.Visible = false;
+
+                                    pnlValidarEvento.Visible = true;
+
+                                    lblTitleDialog.Text = "El evento Inicia el " + fhInicio.ToString("dd/MM/yyyy HH:mm:ss") + " (Ciudad de México, CDMX)";
+                                }
+                            }
                         }
                         else
                         {
+                            pnlValidar.Visible = false;
+                            tmValidar.Enabled = false;
 
-                            if (result <= 0 && result2 <= 0)
-                            {
-                                pnlValidar.Visible = false;
-                                tmValidar.Enabled = false;
+                            pnlDatosComercio.Visible = false;
+                            pnlUsuario.Visible = false;
+                            pnlCorreo.Visible = false;
+                            pnlIframe.Visible = false;
 
-                                pnlDatosComercio.Visible = false;
-                                pnlUsuario.Visible = false;
-                                pnlCorreo.Visible = false;
-                                pnlIframe.Visible = false;
+                            btnAceptar.Visible = false;
+                            btnGenerarLigas.Visible = false;
 
-                                btnAceptar.Visible = false;
-                                btnGenerarLigas.Visible = false;
+                            pnlValidarEvento.Visible = true;
 
-                                pnlValidarEvento.Visible = true;
-
-                                lblTitleDialog.Text = "El evento Inicia el " + fhInicio.ToString("dd/MM/yyyy HH:mm:ss") + " (Ciudad de México, CDMX)";
-                            }
-                            else if (result == 1 && result2 == 1)
-                            {
-                                pnlValidar.Visible = false;
-                                tmValidar.Enabled = false;
-
-                                pnlDatosComercio.Visible = false;
-                                pnlUsuario.Visible = false;
-                                pnlCorreo.Visible = false;
-                                pnlIframe.Visible = false;
-
-                                btnAceptar.Visible = false;
-                                btnGenerarLigas.Visible = false;
-
-                                pnlValidarEvento.Visible = true;
-
-                                lblTitleDialog.Text = "El evento ha terminado.";
-                            }
+                            lblTitleDialog.Text = "Lo sentimos, el evento es privado.";
                         }
                     }
                     else
@@ -209,12 +252,13 @@ namespace Franquicia.WebForms.Views
             if (eventosServices.eventosRepository.eventosGridViewModel.BitTipoImporte)
             {
                 txtImporte.Enabled = true;
+                lblEditable.Visible = true;
             }
             else
             {
                 txtImporte.Enabled = false;
-
-                lblPagar.Text = "Pagar $" + eventosServices.eventosRepository.eventosGridViewModel.DcmImporte.ToString("N2");
+                lblEditable.Visible = false;
+                //lblPagar.Text = "Pagar $" + eventosServices.eventosRepository.eventosGridViewModel.DcmImporte.ToString("N2");
             }
             txtImporte.Text = eventosServices.eventosRepository.eventosGridViewModel.DcmImporte.ToString("N2");
 
@@ -254,7 +298,7 @@ namespace Franquicia.WebForms.Views
                 ViewState["UidUsuarioLocal"] = Guid.Empty;
             }
 
-            ddlFormasPago_SelectedIndexChanged(null, null);
+            btnCalcular_Click(null, null);
         }
 
         private void LimpiarCampos()
@@ -414,7 +458,17 @@ namespace Franquicia.WebForms.Views
 
             string identificador = eventosServices.eventosRepository.eventosGridViewModel.VchNombreEvento;
             string concepto = eventosServices.eventosRepository.eventosGridViewModel.VchConcepto;
-            string vencimiento = eventosServices.eventosRepository.eventosGridViewModel.DtFHFin.ToString("dd/MM/yyyy");
+
+            DateTime HoraDelServidor = DateTime.Now;
+            DateTime hoy = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(HoraDelServidor, TimeZoneInfo.Local.Id, "Eastern Standard Time (Mexico)");
+
+            string vencimiento = hoy.ToString("dd/MM/yyyy");
+
+            if (eventosServices.eventosRepository.eventosGridViewModel.BitFHFin)
+            {
+                vencimiento = eventosServices.eventosRepository.eventosGridViewModel.DtFHFin.ToString("dd/MM/yyyy");
+            }
+
             string correo = txtCorreo.Text;
             int intCorreo = 0;
             decimal importeTotal = decimal.Parse(txtImporte.Text);
@@ -849,11 +903,22 @@ namespace Franquicia.WebForms.Views
         }
         protected void btnCalcular_Click(object sender, EventArgs e)
         {
+            if (!string.IsNullOrEmpty(txtImporte.Text))
+            {
+                ddlFormasPago.Items.Clear();
+                promocionesServices.CargarPromocionesEventoImporte(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse(Request.QueryString["Id"].ToString()), txtImporte.Text);
+                ddlFormasPago.Items.Insert(0, new ListItem("Al contado", "contado"));
+                ddlFormasPago.DataSource = promocionesServices.lsEventosGenerarLigasModel;
+                ddlFormasPago.DataTextField = "VchDescripcion";
+                ddlFormasPago.DataValueField = "UidPromocion";
+                ddlFormasPago.DataBind();
+            }
+
             ddlFormasPago_SelectedIndexChanged(null, null);
         }
         protected void ddlFormasPago_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(txtImporte.Text))
+            if (!string.IsNullOrEmpty(txtImporte.Text) && decimal.Parse(txtImporte.Text) != 0)
             {
                 if (ddlFormasPago.SelectedValue == "contado")
                 {
@@ -880,6 +945,14 @@ namespace Franquicia.WebForms.Views
                 }
 
                 lblTotalPago.Text = "Generar pago $" + ViewState["txtImporteTotal.Text"].ToString();
+                btnGenerarLigas.Enabled = true;
+            }
+            else
+            {
+                txtImporte.Text = string.Empty;
+                lblTotalPago.Text = "Generar pago $0.00";
+                btnGenerarLigas.Enabled = false;
+                txtImporteTotal.Text = "0.00";
             }
         }
 

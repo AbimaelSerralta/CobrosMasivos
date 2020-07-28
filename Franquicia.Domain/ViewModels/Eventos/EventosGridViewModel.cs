@@ -14,5 +14,6 @@ namespace Franquicia.Domain.ViewModels
         public string VchNombreComercial { get; set; }
         public string VchTelefono { get; set; }
         public string VchCorreo { get; set; }
+        public string VchFHFin { get; set; }
     }
 }

@@ -172,21 +172,26 @@ namespace Franquicia.WebForms.Views
                             Session["UidUsuarioMaster"] = manejoSesionServices.usuarioCompletoRepository.usuarioCompleto.UidUsuario;
                             
                             manejoSesionServices.clienteCuentaRepository.ObtenerDineroCuentaCliente(manejoSesionServices.usuarioCompletoRepository.clientes.UidCliente);
-                            lblGvSaldo.Text = "Saldo: $ " + manejoSesionServices.clienteCuentaRepository.clienteCuenta.DcmDineroCuenta.ToString("N2");
+                            lblGvSaldo.Text = "Saldo: $" + manejoSesionServices.clienteCuentaRepository.clienteCuenta.DcmDineroCuenta.ToString("N2");
                         }
                         else if (manejoSesionServices.perfilesRepository.appWebRepository.appWeb.IntGerarquia == 4)
                         {
                             lblTitleMenu.Text = "Panel Usuario";
 
+                            ViewState["ColorSide"] = "#5b3c64";
+
                             liMenuFranquicia.Visible = false;
                             liMenuCliente.Visible = false;
 
-                            //dlMenu.DataSource = manejoSesionServices.lsAccesosPermitidos.Where(x => x.UidAppWeb == new Guid("0D910772-AE62-467A-A7A3-79540F0445CB")).ToList();
-                            //dlMenu.DataBind();
+                            dlMenu.DataSource = manejoSesionServices.lsAccesosPermitidos.Where(x => x.UidAppWeb == new Guid("9C8AD059-A37B-42EE-BF37-FEB7ACA84088")).ToList();
+                            dlMenu.DataBind();
 
                             //manejoSesionServices.ObtenerFranquiciaClienteUsuario();
                             //lblNombreComercial.Text = "<b>FRANQUICIA:</b>&nbsp;" + manejoSesionServices.usuarioCompletoRepository.franquiciatarios.VchNombreComercial;
                             //lblDescripcionCliente.Text = "&nbsp;<b>CLIENTE:</b>&nbsp;" + manejoSesionServices.usuarioCompletoRepository.clientes.VchNombreComercial;
+
+                            manejoSesionServices.ObtenerFranquiciaClienteUsuario();
+                            Session["UidUsuarioMaster"] = manejoSesionServices.usuarioCompletoRepository.usuarioCompleto.UidUsuario;
                         }
                     }
                     else
@@ -419,6 +424,18 @@ namespace Franquicia.WebForms.Views
                 pnlSeleccion.Visible = false;
                 pnlResumen.Visible = true;
                 pnlIframe.Visible = false;
+            }
+        }
+
+        protected void Unnamed_Click(object sender, EventArgs e)
+        {
+            if (myDIV.Attributes.CssStyle.Value == "sidebar-mini")
+            {
+                myDIV.Attributes.Add("class", "");
+            }
+            else
+            {
+                myDIV.Attributes.Add("class", "sidebar-mini");
             }
         }
     }

@@ -43,6 +43,7 @@ namespace Franquicia.WebForms.Views
                 Session["usuariosCompletosServices"] = usuariosCompletosServices;
                 //Session["telefonosUsuariosServices"] = telefonosUsuariosServices;
                 Session["estatusService"] = estatusService;
+                Session["clientesServices"] = clientesServices;
 
                 if (Session["UidFranquiciaMaster"] != null)
                 {
@@ -96,6 +97,7 @@ namespace Franquicia.WebForms.Views
 
                 estatusService = (EstatusServices)Session["estatusService"];
                 tiposTelefonosServices = (TiposTelefonosServices)Session["tiposTelefonosServices"];
+                clientesServices = (ClientesServices)Session["clientesServices"];
 
                 lblValidar.Text = string.Empty;
 
@@ -200,6 +202,12 @@ namespace Franquicia.WebForms.Views
             if (FiltroNombreComercial.EmptyTextBox())
             {
                 lblValidar.Text = "El campo Nombre Comercial es obligatorio";
+                return;
+            }
+
+            if (Guid.Parse(ViewState["UidCliente"].ToString()) == Guid.Empty)
+            {
+                lblValidar.Text = "Por favor seleccione un comercio";
                 return;
             }
 
@@ -316,7 +324,7 @@ namespace Franquicia.WebForms.Views
                                 if (!validacionesServices.ExisteCorreo(txtCorreo.Text.Trim()))
                                 {
                                     if (usuariosCompletosServices.RegistrarAdministradoresCliente(
-                                    txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), txtUsuario.Text.Trim().ToUpper(), txtPassword.Text.Trim(), new Guid("d2c80d47-c14c-4677-a63d-c46bcb50fe17"),
+                                    txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), txtUsuario.Text.Trim().ToUpper(), txtPassword.Text.Trim(), bool.Parse(ViewState["BitEstatus"].ToString()), Guid.Parse("d2c80d47-c14c-4677-a63d-c46bcb50fe17"), Guid.Parse("85b6ce16-bace-489e-8e75-2280f72605f1"),
                                     txtIdentificador.Text.Trim().ToUpper(), new Guid(ddlPais.SelectedValue), new Guid(ddlEstado.SelectedValue), new Guid(ddlMunicipio.SelectedValue), new Guid(ddlCiudad.SelectedValue), new Guid(ddlColonia.SelectedValue), txtCalle.Text.Trim().ToUpper(), txtEntreCalle.Text.Trim().ToUpper(), txtYCalle.Text.Trim().ToUpper(), txtNumeroExterior.Text.Trim().ToUpper(), txtNumeroInterior.Text.Trim().ToUpper(), txtCodigoPostal.Text.Trim().ToUpper(), txtReferencia.Text.Trim().ToUpper(),
                                     txtNumero.Text.Trim(), new Guid(ddlTipoTelefono.SelectedValue), new Guid(ViewState["UidCliente"].ToString())))
                                     {
@@ -382,7 +390,7 @@ namespace Franquicia.WebForms.Views
                             if (Actualizar)
                             {
                                 if (usuariosCompletosServices.ActualizarAdministradoresCliente(
-                                new Guid(ViewState["UidRequerido"].ToString()), txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), new Guid(ddlEstatus.SelectedValue), txtUsuario.Text.Trim().ToUpper(), txtPassword.Text.Trim(), new Guid("d2c80d47-c14c-4677-a63d-c46bcb50fe17"),
+                                new Guid(ViewState["UidRequerido"].ToString()), txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), new Guid(ddlEstatus.SelectedValue), txtUsuario.Text.Trim().ToUpper(), txtPassword.Text.Trim(), bool.Parse(ViewState["BitEstatus"].ToString()), Guid.Parse("d2c80d47-c14c-4677-a63d-c46bcb50fe17"), Guid.Parse("85b6ce16-bace-489e-8e75-2280f72605f1"),
                                 txtIdentificador.Text.Trim().ToUpper(), new Guid(ddlPais.SelectedValue), new Guid(ddlEstado.SelectedValue), new Guid(ddlMunicipio.SelectedValue), new Guid(ddlCiudad.SelectedValue), new Guid(ddlColonia.SelectedValue), txtCalle.Text.Trim().ToUpper(), txtEntreCalle.Text.Trim().ToUpper(), txtYCalle.Text.Trim().ToUpper(), txtNumeroExterior.Text.Trim().ToUpper(), txtNumeroInterior.Text.Trim().ToUpper(), txtCodigoPostal.Text.Trim().ToUpper(), txtReferencia.Text.Trim().ToUpper(),
                                 txtNumero.Text.Trim(), new Guid(ddlTipoTelefono.SelectedValue), new Guid(ViewState["UidCliente"].ToString())))
                                 {
@@ -505,6 +513,11 @@ namespace Franquicia.WebForms.Views
         }
         private void LimpiarCampos()
         {
+            FiltroRFC.Text = string.Empty;
+            FiltroRazonSocial.Text = string.Empty;
+            FiltroNombreComercial.Text = string.Empty;
+            ViewState["UidCliente"] = Guid.Empty;
+
             txtNombre.Text = string.Empty;
             txtApePaterno.Text = string.Empty;
             txtApeMaterno.Text = string.Empty;
@@ -595,6 +608,7 @@ namespace Franquicia.WebForms.Views
             FiltroRFC.Text = clientesServices.clientesRepository.clientesGridViewModel.VchRFC;
             FiltroRazonSocial.Text = clientesServices.clientesRepository.clientesGridViewModel.VchRazonSocial;
             FiltroNombreComercial.Text = clientesServices.clientesRepository.clientesGridViewModel.VchNombreComercial;
+            ViewState["BitEstatus"] = clientesServices.clientesRepository.clientesGridViewModel.BitEscuela;
 
             //==================FRANQUICIATARIO============================
             usuariosCompletosServices.ObtenerAdministrador(dataKeys);
@@ -629,7 +643,7 @@ namespace Franquicia.WebForms.Views
             txtCodigoPostal.Text = direccionesUsuariosServices.direccionesUsuariosRepository.direccionesUsuarios.CodigoPostal;
             txtReferencia.Text = direccionesUsuariosServices.direccionesUsuariosRepository.direccionesUsuarios.Referencia;
             //==================TELÉFONO===================================
-            telefonosUsuariosServices.ObtenerTelefonoUsuario(dataKeys);
+            telefonosUsuariosServices.ObtenerTelefonoUsuarioSinPrefijo(dataKeys);
             txtNumero.Text = telefonosUsuariosServices.telefonosUsuariosRepository.telefonosUsuarios.VchTelefono;
             ddlTipoTelefono.SelectedIndex = ddlTipoTelefono.Items.IndexOf(ddlTipoTelefono.Items.FindByValue(telefonosUsuariosServices.telefonosUsuariosRepository.telefonosUsuarios.UidTipoTelefono.ToString()));
         }
@@ -643,13 +657,20 @@ namespace Franquicia.WebForms.Views
         }
         protected void gvClientes_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Guid UidCliente = new Guid(gvClientes.SelectedDataKey.Value.ToString());
+            GridViewRow row = gvClientes.SelectedRow;
 
+            Guid UidCliente = new Guid(gvClientes.SelectedDataKey.Value.ToString());
+            
             ViewState["UidCliente"] = UidCliente;
 
-            FiltroRFC.Text = HttpUtility.HtmlDecode(gvClientes.Rows[gvClientes.SelectedRow.RowIndex].Cells[1].Text);
-            FiltroRazonSocial.Text = HttpUtility.HtmlDecode(gvClientes.Rows[gvClientes.SelectedRow.RowIndex].Cells[2].Text);
-            FiltroNombreComercial.Text = HttpUtility.HtmlDecode(gvClientes.Rows[gvClientes.SelectedRow.RowIndex].Cells[3].Text);
+            FiltroRFC.Text = clientesServices.lsClientesGridViewModel[row.RowIndex].VchRFC;
+            FiltroRazonSocial.Text = clientesServices.lsClientesGridViewModel[row.RowIndex].VchRFC;
+            FiltroNombreComercial.Text = clientesServices.lsClientesGridViewModel[row.RowIndex].VchRFC;
+            ViewState["BitEstatus"] = clientesServices.lsClientesGridViewModel[row.RowIndex].BitEscuela;
+
+            //FiltroRFC.Text = HttpUtility.HtmlDecode(gvClientes.Rows[gvClientes.SelectedRow.RowIndex].Cells[1].Text);
+            //FiltroRazonSocial.Text = HttpUtility.HtmlDecode(gvClientes.Rows[gvClientes.SelectedRow.RowIndex].Cells[2].Text);
+            //FiltroNombreComercial.Text = HttpUtility.HtmlDecode(gvClientes.Rows[gvClientes.SelectedRow.RowIndex].Cells[3].Text);
 
             panelFranquicias.Visible = false;
         }

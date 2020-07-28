@@ -174,5 +174,98 @@ namespace Franquicia.DataAccess.Repository
 
             return result;
         }
+
+        public string EstatusWhatsApp(string Telefono)
+        {
+            string result = "";
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select pw.VchDescripcion from TelefonosUsuarios tu, PermisosWhatsapp pw where tu.UidPermisoWhatsapp = pw.UidPermisoWhatsapp and  tu.VchTelefono = '" + Telefono + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                result = item["VchDescripcion"].ToString();
+            };
+
+            return result;
+        }
+        public string ObtenerNombreCliente(Guid UidCliente)
+        {
+            string result = "";
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select VchIdWAySMS from Clientes where UidCliente = '" + UidCliente + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                result = item["VchIdWAySMS"].ToString();
+            };
+
+            return result;
+        }
+        public string ObtenerNombreClienteCompleto(Guid UidCliente)
+        {
+            string result = "";
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select VchNombreComercial from Clientes where UidCliente = '" + UidCliente + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                result = item["VchNombreComercial"].ToString();
+            };
+
+            return result;
+        }
+
+        public string ObtenerDatosUsuario(Guid UidUsuario, Guid UidCliente)
+        {
+            string result = "";
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select us.*, cl.IdCliente from Usuarios us, Clientes cl, ClientesUsuarios cu where cu.UidUsuario = us.UidUsuario and cu.UidCliente = cl.UidCliente and us.UidUsuario = '" + UidUsuario + "' and cl.UidCliente = '" + UidCliente + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                result = item["IdCliente"].ToString() + "," + item["idUsuario"].ToString();
+            };
+
+            return result;
+        }
+
+        public bool ExisteMatriculaAlumno(string Matricula, Guid UidCliente)
+        {
+            bool result = false;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select VchMatricula from Alumnos where VchMatricula = '" + Matricula + "' and UidCliente = '" + UidCliente + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            if (dt.Rows.Count >= 1)
+            {
+                result = true;
+            }
+
+            return result;
+        }
     }
 }

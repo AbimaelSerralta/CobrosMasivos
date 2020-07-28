@@ -47,7 +47,8 @@
                                                 <Columns>
                                                     <asp:BoundField SortExpression="NombreCompleto" DataField="NombreCompleto" HeaderText="NOMBRE COMPLETO" />
                                                     <asp:BoundField SortExpression="VchUsuario" DataField="VchUsuario" HeaderText="USUARIO" />
-                                                    <asp:BoundField SortExpression="VchNombrePerfil" DataField="VchNombrePerfil" HeaderText="PERFIL" />
+                                                    <asp:BoundField SortExpression="VchNombreComercial" DataField="VchNombreComercial" HeaderText="COMERCIO" />
+                                                    <%--<asp:BoundField SortExpression="VchNombrePerfil" DataField="VchNombrePerfil" HeaderText="PERFIL" />--%>
                                                     <asp:TemplateField SortExpression="UidEstatus" HeaderText="ESTATUS">
                                                         <ItemTemplate>
                                                             <div class="col-md-6">
@@ -137,7 +138,7 @@
                                         <ul class="nav nav-tabs" data-tabs="tabs">
                                             <li class="nav-item">
                                                 <a class="nav-link active show" href="#franquicia" data-toggle="tab">
-                                                    <i class="material-icons">business</i>Franquicia<div class="ripple-container"></div>
+                                                    <i class="material-icons">business</i>Comercio<div class="ripple-container"></div>
                                                 </a>
                                             </li>
                                             <li class="nav-item">

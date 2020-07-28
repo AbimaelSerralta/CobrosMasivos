@@ -7,10 +7,12 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="CPHCaja" runat="server">
     <asp:UpdatePanel runat="server">
         <ContentTemplate>
-            <div id="divAlert" class="alert alert-danger alert-dismissible fade" role="alert" runat="server">
-                <asp:Label ID="lblMensajeAlert" runat="server" />
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            </div>
+            <asp:Panel ID="pnlAlert" Visible="false" runat="server">
+                <div id="divAlert" class="alert alert-danger alert-dismissible fade" role="alert" runat="server">
+                    <asp:Label ID="lblMensajeAlert" runat="server" />
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+            </asp:Panel>
         </ContentTemplate>
     </asp:UpdatePanel>
     <asp:UpdatePanel runat="server">
@@ -20,7 +22,7 @@
                     <div class="row">
                         <div class="col-lg-12 col-md-12">
                             <div class="card">
-                                <div class="card-header card-header-tabs card-header-primary" style="background:#024693;padding-top: 0px; padding-bottom: 0px;">
+                                <div class="card-header card-header-tabs card-header-primary" style="background: #024693; padding-top: 0px; padding-bottom: 0px;">
                                     <div class="nav-tabs-navigation">
                                         <div class="nav-tabs-wrapper">
                                             <div class="form-group">
@@ -131,14 +133,14 @@
                 <div class="modal-body pt-0" style="padding-bottom: 0px;">
                     <div class="row">
                         <div class="card card-nav-tabs">
-                            <div class="card-header card-header-primary" style="background:#024693;">
+                            <div class="card-header card-header-primary" style="background: #024693;">
                                 <!-- colors: "header-primary", "header-info", "header-success", "header-warning", "header-danger" -->
                                 <div class="nav-tabs-navigation">
                                     <div class="nav-tabs-wrapper">
                                         <ul class="nav nav-tabs" data-tabs="tabs">
                                             <li class="nav-item">
                                                 <a class="nav-link active show" href="#empresa" data-toggle="tab">
-                                                    <i class="material-icons">business</i>Empresa<div class="ripple-container"></div>
+                                                    <i class="material-icons">business</i>Comercio<div class="ripple-container"></div>
                                                 </a>
                                             </li>
                                             <li class="nav-item">
@@ -188,13 +190,25 @@
                                                         <asp:TextBox ID="txtFechaAlta" Enabled="false" CssClass="form-control" runat="server" />
                                                     </div>
                                                     <div class="form-group col-md-6">
-                                                        <label for="txtCorreo" style="color: black; margin-bottom:12px;">Correo Eléctronico</label>
+                                                        <label for="txtCorreo" style="color: black; margin-bottom: 12px;">Correo Eléctronico</label>
                                                         <asp:TextBox ID="txtCorreo" CssClass="form-control" required="required" runat="server" />
                                                         <asp:Label CssClass="text-danger" runat="server" ID="lblExiste" />
                                                         <asp:Label CssClass="text-success" runat="server" ID="lblNoExiste" />
                                                         <asp:LinkButton ID="btnValidarCorreo" CssClass="pull-right" Text="Validar" OnClick="btnValidarCorreo_Click" runat="server" />
                                                     </div>
                                                     <div class="form-group col-md-6">
+                                                        <label for="ddlZonaHoraria" style="color: black;">Zona horaria</label>
+                                                        <asp:DropDownList ID="ddlZonaHoraria" CssClass="form-control" runat="server">
+                                                        </asp:DropDownList>
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="ddlEscuela" style="font-weight:bold; color: black;">¿Es una escuela?</label>
+                                                        <asp:DropDownList ID="ddlEscuela" CssClass="form-control" runat="server">
+                                                            <asp:ListItem Text="NO" Value="false" />
+                                                            <asp:ListItem Text="SI" Value="true" />
+                                                        </asp:DropDownList>
+                                                    </div>
+                                                    <div class="form-group col-md-3">
                                                         <label for="ddlEstatus" style="color: black;">Estatus</label>
                                                         <asp:DropDownList ID="ddlEstatus" CssClass="form-control" runat="server">
                                                         </asp:DropDownList>

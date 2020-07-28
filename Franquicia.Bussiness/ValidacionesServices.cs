@@ -120,6 +120,23 @@ namespace Franquicia.Bussiness
         {
             return validacionesRepository.ExisteCuentaDineroCliente(UidCliente);
         }
+
+        public string EstatusWhatsApp(string Telefono)
+        {
+            return validacionesRepository.EstatusWhatsApp(Telefono);
+        }
+        public string ObtenerNombreCliente(Guid UidCliente)
+        {
+            return validacionesRepository.ObtenerNombreCliente(UidCliente);
+        }
+        public string ObtenerNombreClienteCompleto(Guid UidCliente)
+        {
+            return validacionesRepository.ObtenerNombreClienteCompleto(UidCliente);
+        }
+        public string ObtenerDatosUsuario(Guid UidUsuario, Guid UidCliente)
+        {
+            return validacionesRepository.ObtenerDatosUsuario(UidUsuario, UidCliente);
+        }
         #endregion
     }
 }

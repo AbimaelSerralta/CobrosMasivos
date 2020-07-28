@@ -42,7 +42,7 @@ namespace Franquicia.Bussiness
         }
 
         public bool RegistrarClientes(
-            string Rfc, string RazonSocial, string NombreComercial, DateTime FechaAlta, string Correo, string IdWAySMS,
+            string Rfc, string RazonSocial, string NombreComercial, DateTime FechaAlta, string Correo, string IdWAySMS, string ZonaHoraria, bool BitEscuela,
             string Identificador, Guid UidPais, Guid UidEstado, Guid Municipio, Guid UidCiudad, Guid UidColonia, string Calle, string EntreCalle, string YCalle, string NumeroExterior, string NumeroInterior, string CodigoPostal, string Referencia,
             string Telefono, Guid UidTipoTelefono, Guid UidFranquiciatario)
         {
@@ -59,6 +59,8 @@ namespace Franquicia.Bussiness
                     DtFechaAlta = FechaAlta,
                     VchCorreoElectronico = Correo,
                     VchIdWAySMS = IdWAySMS,
+                    VchZonaHoraria = ZonaHoraria,
+                    BitEscuela = BitEscuela,
                     UidFranquiciatario = UidFranquiciatario
                 }, 
                 new DireccionesClientes 
@@ -91,7 +93,7 @@ namespace Franquicia.Bussiness
         }
 
         public bool ActualizarClientes(
-            Guid UidCliente, string Rfc, string RazonSocial, string NombreComercial, string Correo, Guid UidEstatus, string IdWAySMS,
+            Guid UidCliente, string Rfc, string RazonSocial, string NombreComercial, string Correo, Guid UidEstatus, string IdWAySMS, string ZonaHoraria, bool BitEscuela,
             string Identificador, Guid UidPais, Guid UidEstado, Guid Municipio, Guid UidCiudad, Guid UidColonia, string Calle, string EntreCalle, string YCalle, string NumeroExterior, string NumeroInterior, string CodigoPostal, string Referencia,
             string Telefono, Guid UidTipoTelefono)
         {
@@ -106,7 +108,9 @@ namespace Franquicia.Bussiness
                     VchNombreComercial = NombreComercial,
                     VchCorreoElectronico = Correo,
                     UidEstatus = UidEstatus,
-                    VchIdWAySMS = IdWAySMS
+                    VchIdWAySMS = IdWAySMS,
+                    VchZonaHoraria = ZonaHoraria,
+                    BitEscuela = BitEscuela
                 },
                 new DireccionesClientes
                 {

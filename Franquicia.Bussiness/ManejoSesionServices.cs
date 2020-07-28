@@ -237,5 +237,59 @@ namespace Franquicia.Bussiness
             clienteCuentaRepository.ObtenerDineroCuentaCliente(UidCliente);
         }
         #endregion
+
+        #region MetodosEscuela
+        public void IniciarSesionEscuela(string Usuario, string Password)
+        {
+            BolStatusSesion = false;
+
+            usuarioCompletoRepository.LoginUsuarioEscuela(Usuario, Password);
+
+            if (usuarioCompletoRepository.usuarioCompleto.UidAppWeb == new Guid("514433C7-4439-42F5-ABE4-6BF1C330F0CA"))
+            {
+                if (usuarioCompletoRepository.ObtenerDatosUsuarioEscuela(usuarioCompletoRepository.usuarioCompleto.UidUsuario))
+                {
+                    BolStatusSesion = true;
+                }
+            }
+            else
+            {
+                if (usuarioCompletoRepository.usuarioCompleto.UidUsuario != Guid.Empty)
+                {
+                    usuarioCompletoRepository.ObtenerEstatusdeEmpresaUsuarioEscuela(usuarioCompletoRepository.usuarioCompleto.UidUsuario);
+
+                    if (usuarioCompletoRepository.usuarioCompleto.UidUsuario != Guid.Empty)
+                    {
+                        if (usuarioCompletoRepository.usuarioCompleto.UidEstatusEmpresa.ToString() == "65e46bc9-1864-4145-ad1a-70f5b5f69739")
+                        {
+                            if (usuarioCompletoRepository.usuarioCompleto.UidEstatus.ToString() == "65e46bc9-1864-4145-ad1a-70f5b5f69739")
+                            {
+                                BolStatusSesion = true;
+                            }
+                            else
+                            {
+                                BolStatusSesion = false;
+                            }
+                        }
+                        else
+                        {
+                            BolStatusSesion = false;
+                        }
+                    }
+                    else
+                    {
+                        //limpiarPropiedadesUsuarioEmpresas();
+                        BolStatusSesion = true;
+
+                    }
+                }
+                else
+                {
+                    //limpiarPropiedadesUsuarioEmpresas();
+                    BolStatusSesion = false;
+                }
+            }
+        }
+        #endregion
     }
 }

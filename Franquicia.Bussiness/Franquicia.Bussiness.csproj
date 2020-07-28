@@ -43,6 +43,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AESCrypto.cs" />
+    <Compile Include="ColegiaturasServices.cs" />
+    <Compile Include="PeriodicidadesServices.cs" />
+    <Compile Include="NivelesEnsenianzasServices.cs" />
+    <Compile Include="TelefonosAlumnosServices.cs" />
+    <Compile Include="PagosPadresServices.cs" />
+    <Compile Include="TiposEnsenianzasServices.cs" />
+    <Compile Include="ProcesosEnsenianzasServices.cs" />
+    <Compile Include="ParametrosTwiServices.cs" />
+    <Compile Include="TiposEventosServices.cs" />
+    <Compile Include="AlumnosServices.cs" />
+    <Compile Include="PadresServices.cs" />
+    <Compile Include="WhatsAppPendientesServices.cs" />
     <Compile Include="EventosServices.cs" />
     <Compile Include="PrefijosTelefonicosServices.cs" />
     <Compile Include="TicketsServices.cs" />

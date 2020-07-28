@@ -13,5 +13,6 @@ namespace Franquicia.Domain.Models
         public Guid UidUsuario { get; set; }
         public Guid UidTipoTelefono { get; set; }
         public Guid UidPrefijo { get; set; }
+        public Guid UidPermisoWhatsapp { get; set; }
     }
 }

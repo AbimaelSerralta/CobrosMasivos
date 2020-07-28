@@ -35,6 +35,8 @@ namespace Franquicia.Bussiness
         }
 
         public List<UsuariosCompletos> lsUsuariosCompletos = new List<UsuariosCompletos>();
+        
+        public List<UsuariosCompletos> lsActualizarUsuarios = new List<UsuariosCompletos>();
 
         public List<LigasUsuariosGridViewModel> lsLigasUsuariosGridViewModel = new List<LigasUsuariosGridViewModel>();
         public List<LigasUsuariosGridViewModel> lsgvUsuariosSeleccionados = new List<LigasUsuariosGridViewModel>();
@@ -48,6 +50,9 @@ namespace Franquicia.Bussiness
 
         public List<LigasUsuariosGridViewModel> lsPagoLiga = new List<LigasUsuariosGridViewModel>();
         public List<LigasUsuariosGridViewModel> lsEventoLiga = new List<LigasUsuariosGridViewModel>();
+        
+        public List<EventoUsuarioGridViewModel> lsEventoUsuarioGridViewModel = new List<EventoUsuarioGridViewModel>();
+        public List<EventoUsuarioGridViewModel> lsSelectEventoUsuarioGridViewModel = new List<EventoUsuarioGridViewModel>();
 
         public void CargarAdministradores(Guid UidTipoPerfil)
         {
@@ -511,7 +516,7 @@ namespace Franquicia.Bussiness
             lsUsuariosCompletos = usuariosCompletosRepository.CargarAdministradoresCliente(UidFranquiciatario, UidTipoPerfil);
         }
         public bool RegistrarAdministradoresCliente(
-            string Nombre, string ApePaterno, string ApeMaterno, string Correo, string Usuario, string Password, Guid UidSegPerfil,
+            string Nombre, string ApePaterno, string ApeMaterno, string Correo, string Usuario, string Password, bool BitEscuela, Guid UidSegPerfil, Guid UidSegPerfilEscuela,
             string Identificador, Guid UidPais, Guid UidEstado, Guid Municipio, Guid UidCiudad, Guid UidColonia, string Calle, string EntreCalle, string YCalle, string NumeroExterior, string NumeroInterior, string CodigoPostal, string Referencia,
             string Telefono, Guid UidTipoTelefono, Guid UidCliente)
         {
@@ -530,6 +535,8 @@ namespace Franquicia.Bussiness
                     VchContrasenia = Password,
                     UidSegPerfil = UidSegPerfil
                 },
+                BitEscuela, 
+                UidSegPerfilEscuela,
                 new DireccionesUsuarios
                 {
                     Identificador = Identificador,
@@ -560,7 +567,7 @@ namespace Franquicia.Bussiness
         }
 
         public bool ActualizarAdministradoresCliente(
-            Guid UidUsuario, string Nombre, string ApePaterno, string ApeMaterno, string Correo, Guid UidEstatus, string Usuario, string Password, Guid UidSegPerfil,
+            Guid UidUsuario, string Nombre, string ApePaterno, string ApeMaterno, string Correo, Guid UidEstatus, string Usuario, string Password, bool BitEscuela, Guid UidSegPerfil, Guid UidSegPerfilEscuela,
             string Identificador, Guid UidPais, Guid UidEstado, Guid Municipio, Guid UidCiudad, Guid UidColonia, string Calle, string EntreCalle, string YCalle, string NumeroExterior, string NumeroInterior, string CodigoPostal, string Referencia,
             string Telefono, Guid UidTipoTelefono, Guid UidCliente)
         {
@@ -579,6 +586,8 @@ namespace Franquicia.Bussiness
                     VchContrasenia = Password,
                     UidSegPerfil = UidSegPerfil
                 },
+                BitEscuela,
+                UidSegPerfilEscuela,
                 new DireccionesUsuarios
                 {
                     Identificador = Identificador,
@@ -608,17 +617,122 @@ namespace Franquicia.Bussiness
             return result;
         }
 
+        public void CargarAdminCliente(Guid UidFranquiciatario, Guid UidCliente, Guid UidTipoPerfil)
+        {
+            lsActualizarUsuarios = usuariosCompletosRepository.CargarAdminCliente(UidFranquiciatario, UidCliente, UidTipoPerfil);
+        }
+        public bool ActualizarAdminClientePerfilEscu(Guid UidSegUsuario, bool BitEscuela, Guid UidSegPerfilEscuela)
+        {
+            bool result = false;
+            if (usuariosCompletosRepository.ActualizarAdminClientePerfilEscu(UidSegUsuario, BitEscuela, UidSegPerfilEscuela))
+            {
+                result = true;
+            }
+            return result;
+        }
+
         #region Pagos
         public void SeleccionarUsuariosCliente(Guid UidUsuario)
         {
             lsPagoLiga = usuariosCompletosRepository.SeleccionarUsuariosCliente(UidUsuario);
         }
         #endregion
-        
+
         #region Eventos
         public void SelectUsClienteEvento(Guid UidUsuario)
         {
             lsEventoLiga = usuariosCompletosRepository.SelectUsClienteEvento(UidUsuario);
+        }
+
+        public void AsociarUsuariosEvento(Guid UidCliente, Guid UidTipoPerfil)
+        {
+            lsEventoUsuarioGridViewModel = usuariosCompletosRepository.AsociarUsuariosEvento(UidCliente, UidTipoPerfil);
+        }
+        public List<EventoUsuarioGridViewModel> ActualizarTodoListaEventoUsuarios(List<EventoUsuarioGridViewModel> lsEventoUsuarios, bool accion)
+        {
+            List<EventoUsuarioGridViewModel> lsNuevoEventoUsuarioGridViewModel = new List<EventoUsuarioGridViewModel>();
+
+            foreach (var item in lsEventoUsuarios)
+            {
+                lsNuevoEventoUsuarioGridViewModel.Add(new EventoUsuarioGridViewModel()
+                {
+                    UidUsuario = item.UidUsuario,
+                    StrNombre = item.StrNombre,
+                    StrApePaterno = item.StrApePaterno,
+                    StrApeMaterno = item.StrApeMaterno,
+                    StrCorreo = item.StrCorreo,
+                    UidEstatus = item.UidEstatus,
+                    StrTelefono = item.StrTelefono,
+                    blSeleccionado = accion
+                });
+            }
+            return lsEventoUsuarioGridViewModel = lsNuevoEventoUsuarioGridViewModel;
+        }
+        public List<EventoUsuarioGridViewModel> ActualizarListaEventoUsuarios(List<EventoUsuarioGridViewModel> lsEventoUsuarios, Guid UidUsuario, bool accion)
+        {
+            List<EventoUsuarioGridViewModel> lsNuevoEventoUsuarioGridViewModel = new List<EventoUsuarioGridViewModel>();
+
+            foreach (var item in lsEventoUsuarios)
+            {
+                if (item.UidUsuario == UidUsuario)
+                {
+                    lsNuevoEventoUsuarioGridViewModel.Add(new EventoUsuarioGridViewModel()
+                    {
+                        UidUsuario = item.UidUsuario,
+                        StrNombre = item.StrNombre,
+                        StrApePaterno = item.StrApePaterno,
+                        StrApeMaterno = item.StrApeMaterno,
+                        StrCorreo = item.StrCorreo,
+                        UidEstatus = item.UidEstatus,
+                        StrTelefono = item.StrTelefono,
+                        blSeleccionado = accion
+                    });
+
+                    if (accion)
+                    {
+                        lsSelectEventoUsuarioGridViewModel.Add(new EventoUsuarioGridViewModel()
+                        {
+                            UidUsuario = item.UidUsuario,
+                            StrNombre = item.StrNombre,
+                            StrApePaterno = item.StrApePaterno,
+                            StrApeMaterno = item.StrApeMaterno,
+                            StrCorreo = item.StrCorreo,
+                            UidEstatus = item.UidEstatus,
+                            StrTelefono = item.StrTelefono,
+                            blSeleccionado = accion
+                        });
+                    }
+                    else
+                    {
+                        lsSelectEventoUsuarioGridViewModel.RemoveAt(lsSelectEventoUsuarioGridViewModel.FindIndex(x => x.UidUsuario == UidUsuario));
+                    }
+                }
+                else
+                {
+                    lsNuevoEventoUsuarioGridViewModel.Add(new EventoUsuarioGridViewModel()
+                    {
+                        UidUsuario = item.UidUsuario,
+                        StrNombre = item.StrNombre,
+                        StrApePaterno = item.StrApePaterno,
+                        StrApeMaterno = item.StrApeMaterno,
+                        StrCorreo = item.StrCorreo,
+                        UidEstatus = item.UidEstatus,
+                        StrTelefono = item.StrTelefono,
+                        blSeleccionado = item.blSeleccionado
+                    });
+                }
+            }
+
+            return lsEventoUsuarioGridViewModel = lsNuevoEventoUsuarioGridViewModel;
+        }
+        public void BuscarUsuariosEvento(List<EventoUsuarioGridViewModel> lsEventoUsuarios, Guid UidCliente, string Nombre, string ApePaterno, string ApeMaterno, string Correo)
+        {
+            lsEventoUsuarioGridViewModel = usuariosCompletosRepository.BuscarUsuariosEvento(lsEventoUsuarios, UidCliente, Nombre, ApePaterno, ApeMaterno, Correo);
+        }
+        public void ObtenerUsuariosEvento(Guid UidEvento)
+        {
+            lsEventoUsuarioGridViewModel = usuariosCompletosRepository.ObtenerUsuariosEvento(UidEvento);
+            lsSelectEventoUsuarioGridViewModel = lsEventoUsuarioGridViewModel;
         }
         #endregion
 
@@ -760,6 +874,13 @@ namespace Franquicia.Bussiness
             usuariosCompletosRepository.AsociarUsuariosFinales(Correo);
         }
         #endregion
+
+        #region Metodos Usuarios final
+        public void SelectUsClienteEventoUsuarioFinal(Guid UidUsuario)
+        {
+            lsEventoLiga = usuariosCompletosRepository.SelectUsClienteEventoUsuarioFinal(UidUsuario);
+        }
+        #endregion  
 
         #region MetodosExel
         #region Clientes

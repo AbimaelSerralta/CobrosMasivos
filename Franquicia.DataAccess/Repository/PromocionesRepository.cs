@@ -220,7 +220,7 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select pr.*, cp.DcmComicion from Clientes cl, ClientesPromociones cp, Promociones pr where pr.UidPromocion = cp.UidPromocion and cl.UidCliente = cp.UidCliente and cl.UidCliente = '" + UidCliente + "' order by IntGerarquia asc";
+            query.CommandText = "select pr.*, cp.DcmComicion, cp.DcmApartirDe from Clientes cl, ClientesPromociones cp, Promociones pr where pr.UidPromocion = cp.UidPromocion and cl.UidCliente = cp.UidCliente and cl.UidCliente = '" + UidCliente + "' order by IntGerarquia asc";
 
             DataTable dt = this.Busquedas(query);
 
@@ -230,13 +230,41 @@ namespace Franquicia.DataAccess.Repository
                 {
                     UidPromocion = new Guid(item["UidPromocion"].ToString()),
                     VchDescripcion = item["VchDescripcion"].ToString(),
-                    DcmComicion = decimal.Parse(item["DcmComicion"].ToString())
+                    DcmComicion = decimal.Parse(item["DcmComicion"].ToString()),
+                    DcmApartirDe = decimal.Parse(item["DcmApartirDe"].ToString())
                 });
             }
             return lsClientesCBLPromocionesModel;
         }
 
         #region Eventos
+        public List<EventosGenerarLigasModel> CargarPromocionesEventoImporte(Guid UidCliente, Guid UidEvento, string Importe)
+        {
+            List<EventosGenerarLigasModel> lsEventosGenerarLigasModel = new List<EventosGenerarLigasModel>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select pr.*, cp.* from Eventos ev, EventosPromociones ep, Promociones pr, Clientes cl, ClientesPromociones cp where ev.UidEvento = ep.UidEvento and ep.UidPromocion = pr.UidPromocion and cl.UidCliente = cp.UidCliente and cp.UidPromocion = pr.UidPromocion and cl.UidCliente = '" + UidCliente + "' and ev.UidEvento = '" + UidEvento + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+
+                if (decimal.Parse(Importe) >= decimal.Parse(item["DcmApartirDe"].ToString()))
+                {
+                    lsEventosGenerarLigasModel.Add(new EventosGenerarLigasModel()
+                    {
+                        UidPromocion = new Guid(item["UidPromocion"].ToString()),
+                        VchDescripcion = item["VchDescripcion"].ToString(),
+                        DcmComicion = decimal.Parse(item["DcmComicion"].ToString()),
+                        IntGerarquia = int.Parse(item["IntGerarquia"].ToString())
+                    });
+                }
+            }
+            return lsEventosGenerarLigasModel.OrderBy(x => x.IntGerarquia).ToList();
+        }
         public List<EventosGenerarLigasModel> CargarPromocionesEvento(Guid UidCliente, Guid UidEvento)
         {
             List<EventosGenerarLigasModel> lsEventosGenerarLigasModel = new List<EventosGenerarLigasModel>();
@@ -283,6 +311,83 @@ namespace Franquicia.DataAccess.Repository
         #endregion
         #endregion
 
+        #region Metodos Usuarios final
+        public List<EventosGenerarLigasModel> CargarPromocionesEventoUsuarioFinal(Guid UidCliente, Guid UidEvento)
+        {
+            List<EventosGenerarLigasModel> lsEventosGenerarLigasModel = new List<EventosGenerarLigasModel>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select pr.*, cp.* from Eventos ev, EventosPromociones ep, Promociones pr, Clientes cl, ClientesPromociones cp where ev.UidEvento = ep.UidEvento and ep.UidPromocion = pr.UidPromocion and cl.UidCliente = cp.UidCliente and cp.UidPromocion = pr.UidPromocion and cl.UidCliente = '" + UidCliente + "' and ev.UidEvento = '" + UidEvento + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                lsEventosGenerarLigasModel.Add(new EventosGenerarLigasModel()
+                {
+                    UidPromocion = new Guid(item["UidPromocion"].ToString()),
+                    VchDescripcion = item["VchDescripcion"].ToString(),
+                    DcmComicion = decimal.Parse(item["DcmComicion"].ToString()),
+                    IntGerarquia = int.Parse(item["IntGerarquia"].ToString())
+                });
+            }
+            return lsEventosGenerarLigasModel.OrderBy(x => x.IntGerarquia).ToList();
+        }
+
+        public List<SelectPagoLigaModel> CargarPromoPagoLigaUsuarioFinal(Guid UidLigaAsociado)
+        {
+            List<SelectPagoLigaModel> lsSelectPagoLigaModel = new List<SelectPagoLigaModel>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select lu.IdReferencia, lu.VchConcepto, lu.DtVencimiento, lu.VchUrl, lu.DcmImporte, pr.* from LigasUrls lu, Promociones pr where lu.UidPromocion = pr.UidPromocion and lu.UidLigaAsociado = '" + UidLigaAsociado + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                lsSelectPagoLigaModel.Add(new SelectPagoLigaModel()
+                {
+                    IdReferencia = item["IdReferencia"].ToString(),
+                    VchConcepto = item["VchConcepto"].ToString(),
+                    DtVencimiento = DateTime.Parse(item["DtVencimiento"].ToString()),
+                    VchUrl = item["VchUrl"].ToString(),
+                    DcmImporte = decimal.Parse(item["DcmImporte"].ToString()),
+                    UidPromocion = new Guid(item["UidPromocion"].ToString()),
+                    VchDescripcion = item["VchDescripcion"].ToString(),
+                    IntGerarquia = int.Parse(item["IntGerarquia"].ToString())
+                });
+            }
+
+            SqlCommand query2 = new SqlCommand();
+            query2.CommandType = CommandType.Text;
+
+            query2.CommandText = "select IdReferencia, VchConcepto, DtVencimiento, VchUrl, DcmImporte from LigasUrls where UidPromocion IS NULL AND UidLigaAsociado = '" + UidLigaAsociado + "'";
+
+            DataTable dt2 = this.Busquedas(query2);
+
+            foreach (DataRow item in dt2.Rows)
+            {
+                lsSelectPagoLigaModel.Add(new SelectPagoLigaModel()
+                {
+                    IdReferencia = item["IdReferencia"].ToString(),
+                    VchConcepto = item["VchConcepto"].ToString(),
+                    DtVencimiento = DateTime.Parse(item["DtVencimiento"].ToString()),
+                    VchUrl = item["VchUrl"].ToString(),
+                    DcmImporte = decimal.Parse(item["DcmImporte"].ToString()),
+                    UidPromocion = Guid.Empty,
+                    VchDescripcion = "Al contado",
+                    IntGerarquia = 0
+                });
+            }
+
+            return lsSelectPagoLigaModel.OrderBy(x => x.IntGerarquia).ToList();
+        }
+        #endregion
+
         #region PromocionesValidas
         public List<LigasUrlsPromocionesModel> CargarPromocionesValidas(Guid UidLigaAsociado)
         {
@@ -291,7 +396,7 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select lu.*, pr.VchDescripcion, pr.IntGerarquia from LigasUrls lu, Promociones pr where lu.UidPromocion = pr.UidPromocion and lu.UidLigaAsociado = '" + UidLigaAsociado  +  "' order by IntGerarquia asc";
+            query.CommandText = "select lu.*, pr.VchDescripcion, pr.IntGerarquia from LigasUrls lu, Promociones pr where lu.UidPromocion = pr.UidPromocion and lu.UidLigaAsociado = '" + UidLigaAsociado + "' order by IntGerarquia asc";
 
             DataTable dt = this.Busquedas(query);
 

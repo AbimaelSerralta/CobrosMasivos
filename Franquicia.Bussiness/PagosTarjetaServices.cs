@@ -20,6 +20,9 @@ namespace Franquicia.Bussiness
         
         public List<PagosTarjeta> lsPagosTarjeta = new List<PagosTarjeta>();
         public List<PagosTarjetaDetalleGridViewModel> lsPagosTarjetaDetalleGridViewModel = new List<PagosTarjetaDetalleGridViewModel>();
+        
+        public List<PagTarjDetalUsFinalGridViewModel> lsPagTarjDetalUsFinalGridViewModel = new List<PagTarjDetalUsFinalGridViewModel>();
+
 
         public void ObtenerEstatusLiga(string Liga)
         {
@@ -39,5 +42,24 @@ namespace Franquicia.Bussiness
 
             lsPagosTarjetaDetalleGridViewModel = pagosTarjetaRepository.DetalleLigaPromocion(UidLigaAsociado);
         }
+
+        #region UsuariosFinales
+        public bool ValidarPagoUsuarioFinal(string IdReferencia)
+        {
+            return pagosTarjetaRepository.ValidarPagoUsuarioFinal(IdReferencia);
+        }
+        public void DetalleLigaUsuarioFinal(Guid UidLigaUrl)
+        {
+            lsPagTarjDetalUsFinalGridViewModel = new List<PagTarjDetalUsFinalGridViewModel>();
+
+            lsPagTarjDetalUsFinalGridViewModel = pagosTarjetaRepository.DetalleLigaUsuarioFinal(UidLigaUrl);
+        }
+        public void DetalleLigaPromocionUsuarioFinal(Guid UidLigaAsociado)
+        {
+            lsPagTarjDetalUsFinalGridViewModel = new List<PagTarjDetalUsFinalGridViewModel>();
+
+            lsPagTarjDetalUsFinalGridViewModel = pagosTarjetaRepository.DetalleLigaPromocionUsuarioFinal(UidLigaAsociado);
+        }
+        #endregion
     }
 }

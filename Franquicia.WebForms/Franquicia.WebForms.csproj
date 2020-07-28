@@ -16,7 +16,8 @@
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
-    <IISExpressSSLPort>44313</IISExpressSSLPort>
+    <IISExpressSSLPort>
+    </IISExpressSSLPort>
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
@@ -130,6 +131,12 @@
     <Reference Include="Twilio, Version=5.39.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Twilio.5.39.1\lib\net451\Twilio.dll</HintPath>
     </Reference>
+    <Reference Include="Twilio.AspNet.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Twilio.AspNet.Common.5.33.1\lib\net45\Twilio.AspNet.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Twilio.AspNet.Mvc, Version=5.33.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Twilio.AspNet.Mvc.5.33.1\lib\net451\Twilio.AspNet.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
@@ -216,6 +223,8 @@
     <Content Include="Default.aspx" />
     <Content Include="Evento.aspx" />
     <Content Include="Global.asax" />
+    <Content Include="Images\BannerEvent.png" />
+    <Content Include="Images\BannerEvent2.png" />
     <Content Include="Images\EventoCerrado.png" />
     <Content Include="Images\face.png" />
     <Content Include="Images\icoSms.jpg" />
@@ -238,11 +247,13 @@
     <Content Include="Views\AdministradoresClientes.aspx" />
     <Content Include="Views\CrearEventos.aspx" />
     <Content Include="Views\Eventos.aspx" />
+    <Content Include="Views\EventosUsuario.aspx" />
     <Content Include="Views\ExportarAExcelFranquicia.aspx" />
     <Content Include="Views\ExportarAExcel.aspx" />
     <Content Include="Views\ExportarAExcelMultipleFranquicia.aspx" />
     <Content Include="Views\ExportarAExcelMultiple.aspx" />
     <Content Include="Views\ExportarAExcelReporteLigas.aspx" />
+    <Content Include="Views\File.aspx" />
     <Content Include="Views\GenerarLigasFranquicias.aspx" />
     <Content Include="Views\GenerarLigas.aspx" />
     <Content Include="Views\GenerarLigasMultiplesFranquicias.aspx" />
@@ -254,6 +265,7 @@
     <Content Include="Views\ReporteLigasFranquicias.aspx" />
     <Content Include="Views\ReporteLigas.aspx" />
     <Content Include="Views\Pagos.aspx" />
+    <Content Include="Views\ReporteLigaUsuario.aspx" />
     <Content Include="Views\Solo2.aspx" />
     <Content Include="Views\Tarifas.aspx" />
     <Content Include="Views\UsuariosClientes.aspx" />
@@ -275,8 +287,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\HookPayCardController.cs" />
     <Compile Include="Controllers\PayCardController.cs" />
+    <Compile Include="Controllers\PayCardHookController.cs" />
     <Compile Include="Controllers\PruebaController.cs" />
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
@@ -340,6 +355,13 @@
     <Compile Include="Views\Eventos.aspx.designer.cs">
       <DependentUpon>Eventos.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Views\EventosUsuario.aspx.cs">
+      <DependentUpon>EventosUsuario.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\EventosUsuario.aspx.designer.cs">
+      <DependentUpon>EventosUsuario.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Views\ExportarAExcelFranquicia.aspx.cs">
       <DependentUpon>ExportarAExcelFranquicia.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -374,6 +396,13 @@
     </Compile>
     <Compile Include="Views\ExportarAExcelReporteLigas.aspx.designer.cs">
       <DependentUpon>ExportarAExcelReporteLigas.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\File.aspx.cs">
+      <DependentUpon>File.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\File.aspx.designer.cs">
+      <DependentUpon>File.aspx</DependentUpon>
     </Compile>
     <Compile Include="Views\GenerarLigasFranquicias.aspx.cs">
       <DependentUpon>GenerarLigasFranquicias.aspx</DependentUpon>
@@ -451,6 +480,13 @@
     </Compile>
     <Compile Include="Views\Pagos.aspx.designer.cs">
       <DependentUpon>Pagos.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ReporteLigaUsuario.aspx.cs">
+      <DependentUpon>ReporteLigaUsuario.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\ReporteLigaUsuario.aspx.designer.cs">
+      <DependentUpon>ReporteLigaUsuario.aspx</DependentUpon>
     </Compile>
     <Compile Include="Views\Solo2.aspx.cs">
       <DependentUpon>Solo2.aspx</DependentUpon>
@@ -771,6 +807,7 @@
     <Content Include="assets\MaterialIcons\KFOmCnqEu92Fr1Mu7GxKOzY.woff2" />
     <Content Include="assets\MaterialIcons\KFOmCnqEu92Fr1Mu7mxKOzY.woff2" />
     <Content Include="assets\MaterialIcons\KFOmCnqEu92Fr1Mu7WxKOzY.woff2" />
+    <Content Include="libman.json" />
     <None Include="packages.config" />
     <Content Include="Views\MasterPage.Master" />
     <None Include="Properties\PublishProfiles\CobrosMasivos.pubxml" />
@@ -796,7 +833,9 @@
       <Name>Franquicia.Domain</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Views\HookPayCard\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -812,7 +851,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>53340</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>https://localhost:44313/</IISUrl>
+          <IISUrl>http://localhost:53340/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

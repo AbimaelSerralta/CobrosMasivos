@@ -98,6 +98,7 @@ namespace Franquicia.WebForms.Views
 
                 lblValidar.Text = string.Empty;
 
+                pnlAlert.Visible = false;
                 lblMensajeAlert.Text = "";
                 divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
 
@@ -311,6 +312,7 @@ namespace Franquicia.WebForms.Views
                                         gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
                                         gvAdministradores.DataBind();
 
+                                        pnlAlert.Visible = true;
                                         lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
                                         divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
 
@@ -334,6 +336,7 @@ namespace Franquicia.WebForms.Views
                     }
                     else
                     {
+                        pnlAlert.Visible = true;
                         lblMensajeAlert.Text = "<b>Lo sentimos,</b> no tiene permisos para esta acción.";
                         divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
@@ -375,6 +378,7 @@ namespace Franquicia.WebForms.Views
                                     gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
                                     gvAdministradores.DataBind();
 
+                                    pnlAlert.Visible = true;
                                     lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha actualizado exitosamente.";
                                     divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
 
@@ -389,6 +393,7 @@ namespace Franquicia.WebForms.Views
                     }
                     else
                     {
+                        pnlAlert.Visible = true;
                         lblMensajeAlert.Text = "<b>Lo sentimos,</b> no tiene permisos para esta acción.";
                         divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
@@ -588,7 +593,7 @@ namespace Franquicia.WebForms.Views
             txtCodigoPostal.Text = direccionesUsuariosServices.direccionesUsuariosRepository.direccionesUsuarios.CodigoPostal;
             txtReferencia.Text = direccionesUsuariosServices.direccionesUsuariosRepository.direccionesUsuarios.Referencia;
             //==================TELÉFONO===================================
-            telefonosUsuariosServices.ObtenerTelefonoUsuario(dataKeys);
+            telefonosUsuariosServices.ObtenerTelefonoUsuarioSinPrefijo(dataKeys);
             txtNumero.Text = telefonosUsuariosServices.telefonosUsuariosRepository.telefonosUsuarios.VchTelefono;
             ddlTipoTelefono.SelectedIndex = ddlTipoTelefono.Items.IndexOf(ddlTipoTelefono.Items.FindByValue(telefonosUsuariosServices.telefonosUsuariosRepository.telefonosUsuarios.UidTipoTelefono.ToString()));
         }

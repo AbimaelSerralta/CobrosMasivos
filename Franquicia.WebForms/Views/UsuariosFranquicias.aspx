@@ -1,13 +1,16 @@
 ﻿<%@ Page Title="UsuariosFranquicias" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="UsuariosFranquicias.aspx.cs" Inherits="Franquicia.WebForms.Views.AdministradoresFranquicias" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="CPHCaja" runat="server">
     <asp:UpdatePanel runat="server">
         <ContentTemplate>
-            <div id="divAlert" class="alert alert-danger alert-dismissible fade" role="alert" runat="server">
-                <asp:Label ID="lblMensajeAlert" runat="server" />
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            </div>
+            <asp:Panel ID="pnlAlert" Visible="false" runat="server">
+                <div id="divAlert" class="alert alert-danger alert-dismissible fade" role="alert" runat="server">
+                    <asp:Label ID="lblMensajeAlert" runat="server" />
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+            </asp:Panel>
         </ContentTemplate>
     </asp:UpdatePanel>
     <asp:UpdatePanel runat="server">
@@ -17,7 +20,7 @@
                     <div class="row">
                         <div class="col-lg-12 col-md-12">
                             <div class="card">
-                                <div class="card-header card-header-tabs card-header-primary" style="background:#024693;padding-top: 0px; padding-bottom: 0px;">
+                                <div class="card-header card-header-tabs card-header-primary" style="background: #024693; padding-top: 0px; padding-bottom: 0px;">
                                     <div class="nav-tabs-navigation">
                                         <div class="nav-tabs-wrapper">
                                             <div class="form-group">
@@ -126,7 +129,7 @@
                 <div class="modal-body pt-0" style="padding-bottom: 0px;">
                     <div class="row">
                         <div class="card card-nav-tabs">
-                            <div class="card-header card-header-primary" style="background:#024693;">
+                            <div class="card-header card-header-primary" style="background: #024693;">
                                 <!-- colors: "header-primary", "header-info", "header-success", "header-warning", "header-danger" -->
                                 <div class="nav-tabs-navigation">
                                     <div class="nav-tabs-wrapper">

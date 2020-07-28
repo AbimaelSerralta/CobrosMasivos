@@ -46,9 +46,10 @@
             <ContentTemplate>
                 <asp:Panel ID="pnlForm" runat="server">
                     <div class="col-sm-12 row justify-content-center align-items-center" style="margin-right: 0px; margin-left: 0px; padding-left: 0px; padding-right: 0px;">
-                        <div class="col col-sm-12 col-md-12 col-lg-8 col-xl-8" style="margin-top: 10px;">
+                        <div class="col col-sm-12 col-md-12 col-lg-8 col-xl-8">
                             <div class="form-group col-md-12">
                                 <div class="card card-nav-tabs">
+                                    <%--<asp:Image ImageUrl="../Images/BannerEvent2.png" CssClass="embed-responsive" runat="server" />--%>
                                     <div class="card-header card-header-success">
                                         <asp:Label ID="lblTitle" Text="APORTACIÓN VOLUNTARIA" Style="text-transform: uppercase;" runat="server" />
 
@@ -167,10 +168,11 @@
                                                                         <i class="material-icons">$</i>
                                                                     </span>
                                                                 </div>
-                                                                <asp:TextBox ID="txtImporte" PlaceHolder="Monto minimo $50" CssClass="form-control" TextMode="Phone" Style="margin-top: 5px;" runat="server" />
+                                                                <asp:TextBox ID="txtImporte" PlaceHolder="Capture el monto" CssClass="form-control" TextMode="Phone" Style="margin-top: 5px;" runat="server" />
                                                                 <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtImporte" runat="server" />
                                                                 <asp:LinkButton ID="btnCalcular" OnClick="btnCalcular_Click" runat="server" />
                                                             </div>
+                                                            <asp:Label ID="lblEditable" Text="El monto es modificable" CssClass="text-info" Font-Size="Smaller" Font-Bold="true" runat="server" />
                                                         </div>
                                                         <div class="form-group col-md-4" style="padding-left: 0px;" runat="server">
                                                             <asp:Label for="ddlFormasPago" Style="color: black;" Font-Bold="true" runat="server">Formas de pago *</asp:Label>

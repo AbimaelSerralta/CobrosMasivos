@@ -21,5 +21,7 @@ namespace Franquicia.Domain.Models
         public string VchUrlEvento { get; set; }
         public Guid UidPropietario { get; set; }
         public Guid UidEstatus { get; set; }
+        public bool BitFHFin { get; set; }
+        public Guid UidTipoEvento { get; set; }
     }
 }

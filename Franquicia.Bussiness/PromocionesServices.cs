@@ -24,6 +24,8 @@ namespace Franquicia.Bussiness
 
         public List<EventosGenerarLigasModel> lsEventosGenerarLigasModel = new List<EventosGenerarLigasModel>();
         public List<EventosPromocionesModel> lsEventosPromocionesModel = new List<EventosPromocionesModel>();
+        
+        public List<SelectPagoLigaModel> lsSelectPagoLigaModel = new List<SelectPagoLigaModel>();
 
         public void CargarPromociones()
         {
@@ -115,6 +117,12 @@ namespace Franquicia.Bussiness
         }
 
         #region Eventos
+        public void CargarPromocionesEventoImporte(Guid UidCliente, Guid UidEvento, string Importe)
+        {
+            lsEventosGenerarLigasModel = new List<EventosGenerarLigasModel>();
+
+            lsEventosGenerarLigasModel = promocionesRepository.CargarPromocionesEventoImporte(UidCliente, UidEvento, Importe);
+        }
         public void CargarPromocionesEvento(Guid UidCliente, Guid UidEvento)
         {
             lsEventosGenerarLigasModel = new List<EventosGenerarLigasModel>();
@@ -127,6 +135,21 @@ namespace Franquicia.Bussiness
         }
         #endregion
         #endregion
+
+        #region Metodos Usuarios final
+        public void CargarPromocionesEventoUsuarioFinal(Guid UidCliente, Guid UidEvento)
+        {
+            lsEventosGenerarLigasModel = new List<EventosGenerarLigasModel>();
+
+            lsEventosGenerarLigasModel = promocionesRepository.CargarPromocionesEventoUsuarioFinal(UidCliente, UidEvento);
+        }
+        public void CargarPromoPagoLigaUsuarioFinal(Guid UidLigaAsociado)
+        {
+            lsSelectPagoLigaModel = new List<SelectPagoLigaModel>();
+
+            lsSelectPagoLigaModel = promocionesRepository.CargarPromoPagoLigaUsuarioFinal(UidLigaAsociado);
+        }
+        #endregion  
 
         #region PromocionesValidas
         public void CargarPromocionesValidas(Guid UidLigaAsociado)

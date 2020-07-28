@@ -27,8 +27,14 @@
     <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
     <link href="../assets/css/style2.css" rel="stylesheet" />
+
+    <script src="../Multiselect/js/jquery-3.3.1.min.js"></script>
+    <%--<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/css/bootstrap-multiselect.css" rel="stylesheet" type="text/css" />--%>
+    <link href="../Multiselect/css/bootstrap-multiselect.css" rel="stylesheet" />
+    <%--<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/js/bootstrap-multiselect.min.js"></script>--%>
+    <script src="../Multiselect/js/bootstrap-multiselect.min.js"></script>
 </head>
-<body>
+<body id="myDIV" runat="server">
     <form id="form1" runat="server">
         <%--<asp:UpdatePanel runat="server">
             <ContentTemplate>--%>
@@ -97,7 +103,14 @@
                             </ProgressTemplate>
                         </asp:UpdateProgress>--%>
                         <div class="navbar-wrapper">
-                            <a class="navbar-brand" href="#pablo"></a>
+                            <%--<div class="navbar-minimize">
+                                <asp:LinkButton OnClick="Unnamed_Click" Text="text" runat="server" />
+                                <button id="minimizeSidebar" onclick="sideAction()" class="btn btn-just-icon btn-white btn-fab btn-round">
+                                    <i class="material-icons text_align-center visible-on-sidebar-regular">more_vert</i>
+                                    <i class="material-icons design_bullet-list-67 visible-on-sidebar-mini">view_list</i>
+                                </button>
+                            </div>
+                            <a class="navbar-brand" href="#pablo">Menu</a>--%>
                         </div>
                         <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
                             <span class="sr-only">Toggle navigation</span>
@@ -404,18 +417,27 @@
 
 
 
-    <script>
+    <%--<script>
         $("#menu-toggle").click(function (e) {
             e.preventDefault();
             $("#wrapper").toggleClass("toggled");
         });
+    </script>--%>
+
+    <script>
+        function sideAction() {
+
+            let elm = document.getElementById('myDIV');
+
+            if (elm.className === 'sidebar-mini') {
+                elm.className = '';
+            } else {
+                elm.className = 'sidebar-mini';
+            }
+        }
     </script>
 
-    <script src="../Multiselect/js/jquery-3.3.1.min.js"></script>
-    <%--<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/css/bootstrap-multiselect.css" rel="stylesheet" type="text/css" />--%>
-    <link href="../Multiselect/css/bootstrap-multiselect.css" rel="stylesheet" />
-    <%--<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/js/bootstrap-multiselect.min.js"></script>--%>
-    <script src="../Multiselect/js/bootstrap-multiselect.min.js"></script>
+    
     <script>
         $(function () {
             $('[id*=ListBox]').multiselect({
@@ -431,16 +453,16 @@
         }
     </script>
 
-   <script>
-       $('.copyboard').on('click', function (e) {
-           e.preventDefault();
+    <script>
+        $('.copyboard').on('click', function (e) {
+            e.preventDefault();
 
-           var copyText = $(this).attr('data-text');
-           var el = $('<input style="position: absolute; bottom: -120%" type="text" value="' + copyText + '"/>').appendTo('body');
-           el[0].select();
-           document.execCommand("copy");
-           el.remove();
-       })
+            var copyText = $(this).attr('data-text');
+            var el = $('<input style="position: absolute; bottom: -120%" type="text" value="' + copyText + '"/>').appendTo('body');
+            el[0].select();
+            document.execCommand("copy");
+            el.remove();
+        })
     </script>
 
     <!--   Core JS Files   -->
@@ -651,13 +673,13 @@
                 });
             });
         });
-  </script>
+    </script>
     <script>
         $(document).ready(function () {
             // Javascript method's body can be found in assets/js/demos.js
             md.initDashboardPageCharts();
 
         });
-  </script>
+    </script>
 </body>
 </html>

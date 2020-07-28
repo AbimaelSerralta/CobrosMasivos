@@ -20,6 +20,8 @@ namespace Franquicia.Bussiness
 
         public List<LigasUrlsListViewModel> lsLigasUrlsListViewModel = new List<LigasUrlsListViewModel>();
         public List<LigasUrlsGridViewModel> lsLigasUrlsGridViewModel = new List<LigasUrlsGridViewModel>();
+        
+        public List<LigasUsuariosFinalGridViewModel> lsLigasUsuariosFinalGridViewModel = new List<LigasUsuariosFinalGridViewModel>();
 
         public List<LigasUrlsListViewModel> TotalEnvioLigas(Guid UidCliente)
         {
@@ -52,6 +54,29 @@ namespace Franquicia.Bussiness
         public void ObtenerDatosUrl(string IdReferencia)
         {
             ligasUrlsRepository.ObtenerDatosUrl(IdReferencia);
+        }
+        #endregion
+
+        #region UsuariosFinal
+        public List<LigasUsuariosFinalGridViewModel> ConsultarLigaUsuarioFinal(Guid UidCliente)
+        {
+            lsLigasUsuariosFinalGridViewModel = new List<LigasUsuariosFinalGridViewModel>();
+
+            return lsLigasUsuariosFinalGridViewModel = ligasUrlsRepository.ConsultarLigaUsuarioFinal(UidCliente);
+        }
+        public string ObtenerPromocionesUsuarioFinal(Guid UidLigaUrl)
+        {
+            return ligasUrlsRepository.ObtenerPromocionesUsuarioFinal(UidLigaUrl);
+        }
+        public string ObtenerUrlLigaUsuarioFinal(Guid UidLigaUrl)
+        {
+            return ligasUrlsRepository.ObtenerUrlLigaUsuarioFinal(UidLigaUrl);
+        }
+        public List<LigasUsuariosFinalGridViewModel> BuscarLigasUsuarioFinal(Guid UidUsuario, string Identificador, string Asunto, string Concepto, decimal ImporteMayor, decimal ImporteMenor, string RegistroDesde, string RegistroHasta, string VencimientoDesde, string VencimientoHasta, string Estatus)
+        {
+            lsLigasUsuariosFinalGridViewModel = new List<LigasUsuariosFinalGridViewModel>();
+
+            return lsLigasUsuariosFinalGridViewModel = ligasUrlsRepository.BuscarLigasUsuarioFinal(UidUsuario, Identificador, Asunto, Concepto, ImporteMayor, ImporteMenor, RegistroDesde, RegistroHasta, VencimientoDesde, VencimientoHasta, Estatus);
         }
         #endregion
 

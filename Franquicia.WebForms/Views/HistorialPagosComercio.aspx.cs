@@ -18,6 +18,9 @@ namespace Franquicia.WebForms.Views
         HistorialPagosServices historialPagosServices = new HistorialPagosServices();
         ClienteCuentaServices clienteCuentaServices = new ClienteCuentaServices();
         ValidacionesServices validacionesServices = new ValidacionesServices();
+        TicketsServices ticketsServices = new TicketsServices();
+        WhatsAppPendientesServices whatsAppPendientesServices = new WhatsAppPendientesServices();
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Session["UidClienteMaster"] != null)
@@ -34,7 +37,7 @@ namespace Franquicia.WebForms.Views
             txtCantidadSms.Attributes.Add("onchange", "button_click(this,'" + btnCalcularSms.ClientID + "')");
 
             clienteCuentaServices.ObtenerDineroCuentaCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
-            lblGvSaldo.Text = "Saldo: $ " + clienteCuentaServices.clienteCuentaRepository.clienteCuenta.DcmDineroCuenta.ToString("N2");
+            lblGvSaldo.Text = "Saldo: $" + clienteCuentaServices.clienteCuentaRepository.clienteCuenta.DcmDineroCuenta.ToString("N2");
 
             if (!IsPostBack)
             {
@@ -42,6 +45,7 @@ namespace Franquicia.WebForms.Views
 
                 Session["historialPagosServices"] = historialPagosServices;
                 Session["usuariosCompletosServices"] = usuariosCompletosServices;
+                Session["ticketsServices"] = ticketsServices;
                 tmValidar.Enabled = false;
 
                 historialPagosServices.CargarMovimientos(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
@@ -52,6 +56,7 @@ namespace Franquicia.WebForms.Views
             {
                 historialPagosServices = (HistorialPagosServices)Session["historialPagosServices"];
                 usuariosCompletosServices = (UsuariosCompletosServices)Session["usuariosCompletosServices"];
+                ticketsServices = (TicketsServices)Session["ticketsServices"];
 
                 pnlAlert.Visible = false;
                 lblMensajeAlert.Text = "";
@@ -512,6 +517,38 @@ namespace Franquicia.WebForms.Views
             gvHistorial.PageIndex = e.NewPageIndex;
             gvHistorial.DataSource = historialPagosServices.lsHistorialPagosGridViewModel;
             gvHistorial.DataBind();
+        }
+
+        protected void gvHistorial_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            if (e.CommandName == "Detalle")
+            {
+                int index = Convert.ToInt32(e.CommandArgument.ToString());
+                GridViewRow Seleccionado = gvHistorial.Rows[index];
+                GridView valor = (GridView)sender;
+                Guid dataKeys = Guid.Parse(valor.DataKeys[Seleccionado.RowIndex].Value.ToString());
+
+                ticketsServices.CargarResumen(dataKeys);
+                rptResumen.DataSource = ticketsServices.lsResumenTickets;
+                rptResumen.DataBind();
+
+                lblResuTotal.Text = "$" + ticketsServices.lsResumenTickets.Sum(x => x.DcmTotal).ToString("N2");
+
+                lblTitleDetalle.Text = "Detalle de <strong>" + Seleccionado.Cells[1].Text + "</strong>";
+
+                
+                lblCantPendiente.Text = whatsAppPendientesServices.WhatsPendientes(dataKeys).ToString();
+
+                //Resumen nuevo
+                lblCorreoUsado.Text = ticketsServices.lsResumenTickets.Sum(x => x.IntCorreo).ToString();
+                lblTotalUtilizarSms.Text = ticketsServices.lsResumenTickets.Sum(x => x.IntSMS).ToString();
+                lblTotalUtilizarWA.Text = ticketsServices.lsResumenTickets.Sum(x => x.IntWA).ToString();
+                lblDcmSaldo.Text = "$" + ticketsServices.lsResumenTickets.Sum(x => x.DcmTotal).ToString("N2");
+
+                lblPendienteWA.Text = whatsAppPendientesServices.WhatsPendientes(dataKeys).ToString();
+
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalHistorialDetalle()", true);
+            }
         }
     }
 }

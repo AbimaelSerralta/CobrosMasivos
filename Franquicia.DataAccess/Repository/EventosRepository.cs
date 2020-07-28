@@ -26,13 +26,19 @@ namespace Franquicia.DataAccess.Repository
             get { return _eventosGridViewModel; }
             set { _eventosGridViewModel = value; }
         }
+        
+        private EventosUsuarioFinalGridViewModel _eventosUsuarioFinalGridViewModel = new EventosUsuarioFinalGridViewModel();
+        public EventosUsuarioFinalGridViewModel eventosUsuarioFinalGridViewModel
+        {
+            get { return _eventosUsuarioFinalGridViewModel; }
+            set { _eventosUsuarioFinalGridViewModel = value; }
+        }
 
         #region MetodosFranquicias
 
         #endregion
 
         #region MetodosClientes
-
         public List<EventosGridViewModel> CargarEventos(Guid UidCliente)
         {
             List<EventosGridViewModel> lsEventosGridViewModel = new List<EventosGridViewModel>();
@@ -46,6 +52,13 @@ namespace Franquicia.DataAccess.Repository
 
             foreach (DataRow item in dt.Rows)
             {
+                string FechaFin = "ABIERTO";
+
+                if (!string.IsNullOrEmpty(item["DtFHFin"].ToString()))
+                {
+                    FechaFin = DateTime.Parse(item["DtFHFin"].ToString()).ToString("dd/MM/yyyy HH:mm:ss");
+                }
+
                 lsEventosGridViewModel.Add(new EventosGridViewModel()
                 {
                     UidEvento = Guid.Parse(item["UidEvento"].ToString()),
@@ -53,7 +66,7 @@ namespace Franquicia.DataAccess.Repository
                     VchDescripcion = item["VchDescripcion"].ToString(),
                     DtRegistro = DateTime.Parse(item["DtRegistro"].ToString()),
                     DtFHInicio = DateTime.Parse(item["DtFHInicio"].ToString()),
-                    DtFHFin = DateTime.Parse(item["DtFHFin"].ToString()),
+                    VchFHFin = FechaFin,
                     BitTipoImporte = bool.Parse(item["BitTipoImporte"].ToString()),
                     DcmImporte = decimal.Parse(item["DcmImporte"].ToString()),
                     VchConcepto = item["VchConcepto"].ToString(),
@@ -61,7 +74,9 @@ namespace Franquicia.DataAccess.Repository
                     VchUrlEvento = item["VchUrlEvento"].ToString(),
                     UidEstatus = Guid.Parse(item["UidEstatus"].ToString()),
                     VchEstatus = item["Estatus"].ToString(),
-                    VchIcono = item["VchIcono"].ToString()
+                    VchIcono = item["VchIcono"].ToString(),
+                    BitFHFin = bool.Parse(item["BitFHFin"].ToString()),
+                    UidTipoEvento = Guid.Parse(item["UidTipoEvento"].ToString())
                 });
             }
 
@@ -92,8 +107,11 @@ namespace Franquicia.DataAccess.Repository
                 comando.Parameters.Add("@DtFHInicio", SqlDbType.DateTime);
                 comando.Parameters["@DtFHInicio"].Value = eventos.DtFHInicio;
 
-                comando.Parameters.Add("@DtFHFin", SqlDbType.DateTime);
-                comando.Parameters["@DtFHFin"].Value = eventos.DtFHFin;
+                if (eventos.DtFHFin.ToString() != "01/01/0001 12:00:00 p. m.")
+                {
+                    comando.Parameters.Add("@DtFHFin", SqlDbType.DateTime);
+                    comando.Parameters["@DtFHFin"].Value = eventos.DtFHFin;
+                }
 
                 comando.Parameters.Add("@BitTipoImporte", SqlDbType.Bit);
                 comando.Parameters["@BitTipoImporte"].Value = eventos.BitTipoImporte;
@@ -110,6 +128,12 @@ namespace Franquicia.DataAccess.Repository
                 comando.Parameters.Add("@VchUrlEvento", SqlDbType.VarChar);
                 comando.Parameters["@VchUrlEvento"].Value = eventos.VchUrlEvento;
 
+                comando.Parameters.Add("@BitFHFin", SqlDbType.Bit);
+                comando.Parameters["@BitFHFin"].Value = eventos.BitFHFin;
+
+                comando.Parameters.Add("@UidTipoEvento", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidTipoEvento"].Value = eventos.UidTipoEvento;
+
                 comando.Parameters.Add("@UidPropietario", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidPropietario"].Value = eventos.UidPropietario;
 
@@ -121,7 +145,7 @@ namespace Franquicia.DataAccess.Repository
             }
             return Resultado;
         }
-        
+
         public bool ActualizarEvento(EventosGridViewModel eventos)
         {
             bool Resultado = false;
@@ -144,8 +168,11 @@ namespace Franquicia.DataAccess.Repository
                 comando.Parameters.Add("@DtFHInicio", SqlDbType.DateTime);
                 comando.Parameters["@DtFHInicio"].Value = eventos.DtFHInicio;
 
-                comando.Parameters.Add("@DtFHFin", SqlDbType.DateTime);
-                comando.Parameters["@DtFHFin"].Value = eventos.DtFHFin;
+                if (eventos.DtFHFin.ToString() != "01/01/0001 12:00:00 p. m.")
+                {
+                    comando.Parameters.Add("@DtFHFin", SqlDbType.DateTime);
+                    comando.Parameters["@DtFHFin"].Value = eventos.DtFHFin;
+                }
 
                 comando.Parameters.Add("@BitTipoImporte", SqlDbType.Bit);
                 comando.Parameters["@BitTipoImporte"].Value = eventos.BitTipoImporte;
@@ -158,6 +185,12 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@BitDatosUsuario", SqlDbType.Bit);
                 comando.Parameters["@BitDatosUsuario"].Value = eventos.BitDatosUsuario;
+
+                comando.Parameters.Add("@BitFHFin", SqlDbType.Bit);
+                comando.Parameters["@BitFHFin"].Value = eventos.BitFHFin;
+
+                comando.Parameters.Add("@UidTipoEvento", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidTipoEvento"].Value = eventos.UidTipoEvento;
 
                 comando.Parameters.Add("@UidEstatus", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidEstatus"].Value = eventos.UidEstatus;
@@ -202,6 +235,15 @@ namespace Franquicia.DataAccess.Repository
 
             foreach (DataRow item in dt.Rows)
             {
+                string FechaFin = "ABIERTO";
+                DateTime fechaFin = DateTime.Parse("1/1/0001 12:00:00");
+
+                if (!string.IsNullOrEmpty(item["DtFHFin"].ToString()))
+                {
+                    FechaFin = DateTime.Parse(item["DtFHFin"].ToString()).ToString("dd/MM/yyyy HH:mm:ss");
+                    fechaFin = DateTime.Parse(item["DtFHFin"].ToString());
+                }
+
                 eventosGridViewModel = new EventosGridViewModel()
                 {
                     UidEvento = Guid.Parse(item["UidEvento"].ToString()),
@@ -209,7 +251,8 @@ namespace Franquicia.DataAccess.Repository
                     VchDescripcion = item["VchDescripcion"].ToString(),
                     DtRegistro = DateTime.Parse(item["DtRegistro"].ToString()),
                     DtFHInicio = DateTime.Parse(item["DtFHInicio"].ToString()),
-                    DtFHFin = DateTime.Parse(item["DtFHFin"].ToString()),
+                    VchFHFin = FechaFin,
+                    DtFHFin = fechaFin,
                     BitTipoImporte = bool.Parse(item["BitTipoImporte"].ToString()),
                     DcmImporte = decimal.Parse(item["DcmImporte"].ToString()),
                     VchConcepto = item["VchConcepto"].ToString(),
@@ -221,7 +264,9 @@ namespace Franquicia.DataAccess.Repository
                     UidPropietario = Guid.Parse(item["UidPropietario"].ToString()),
                     VchNombreComercial = item["VchNombreComercial"].ToString(),
                     VchTelefono = item["VchTelefono"].ToString(),
-                    VchCorreo = item["VchCorreoElectronico"].ToString()
+                    VchCorreo = item["VchCorreoElectronico"].ToString(),
+                    BitFHFin = bool.Parse(item["BitFHFin"].ToString()),
+                    UidTipoEvento = Guid.Parse(item["UidTipoEvento"].ToString()),
                 };
             }
         }
@@ -358,7 +403,7 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@VchCorreo", SqlDbType.VarChar);
                 comando.Parameters["@VchCorreo"].Value = Correo;
-                
+
                 comando.Parameters.Add("@IdReferencia", SqlDbType.VarChar);
                 comando.Parameters["@IdReferencia"].Value = IdReferencia;
 
@@ -428,6 +473,13 @@ namespace Franquicia.DataAccess.Repository
 
                 foreach (DataRow item in this.Busquedas(comando).Rows)
                 {
+                    string FechaFin = "ABIERTO";
+
+                    if (!string.IsNullOrEmpty(item["DtFHFin"].ToString()))
+                    {
+                        FechaFin = DateTime.Parse(item["DtFHFin"].ToString()).ToString("dd/MM/yyyy HH:mm:ss");
+                    }
+
                     eventosGridViewModel = new EventosGridViewModel()
                     {
                         UidEvento = Guid.Parse(item["UidEvento"].ToString()),
@@ -435,7 +487,7 @@ namespace Franquicia.DataAccess.Repository
                         VchDescripcion = item["VchDescripcion"].ToString(),
                         DtRegistro = DateTime.Parse(item["DtRegistro"].ToString()),
                         DtFHInicio = DateTime.Parse(item["DtFHInicio"].ToString()),
-                        DtFHFin = DateTime.Parse(item["DtFHFin"].ToString()),
+                        VchFHFin = FechaFin,
                         BitTipoImporte = bool.Parse(item["BitTipoImporte"].ToString()),
                         DcmImporte = decimal.Parse(item["DcmImporte"].ToString()),
                         VchConcepto = item["VchConcepto"].ToString(),
@@ -443,7 +495,9 @@ namespace Franquicia.DataAccess.Repository
                         VchUrlEvento = item["VchUrlEvento"].ToString(),
                         UidEstatus = Guid.Parse(item["UidEstatus"].ToString()),
                         VchEstatus = item["Estatus"].ToString(),
-                        VchIcono = item["VchIcono"].ToString()
+                        VchIcono = item["VchIcono"].ToString(),
+                        BitFHFin = bool.Parse(item["BitFHFin"].ToString()),
+                        UidTipoEvento = Guid.Parse(item["UidTipoEvento"].ToString())
                     };
 
                     lsEventosGridViewModel.Add(eventosGridViewModel);
@@ -454,6 +508,240 @@ namespace Franquicia.DataAccess.Repository
             catch (Exception)
             {
                 throw;
+            }
+        }
+
+        public bool RegistrarUsuariosEvento(Guid UidEvento, Guid UidUsuario)
+        {
+            bool Resultado = false;
+
+            SqlCommand comando = new SqlCommand();
+            try
+            {
+                comando.CommandType = System.Data.CommandType.StoredProcedure;
+                comando.CommandText = "sp_EventosUsuariosRegistrar";
+
+                comando.Parameters.Add("@UidEvento", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidEvento"].Value = UidEvento;
+
+                comando.Parameters.Add("@UidUsuario", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidUsuario"].Value = UidUsuario;
+
+                Resultado = this.ManipulacionDeDatos(comando);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return Resultado;
+        }
+        public bool EliminarUsuariosEvento(Guid UidEvento)
+        {
+            bool Resultado = false;
+
+            SqlCommand comando = new SqlCommand();
+            try
+            {
+                comando.CommandType = System.Data.CommandType.StoredProcedure;
+                comando.CommandText = "sp_EventosUsuariosEliminar";
+
+                comando.Parameters.Add("@UidEvento", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidEvento"].Value = UidEvento;
+
+                Resultado = this.ManipulacionDeDatos(comando);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return Resultado;
+        }
+        #endregion
+
+        #region Metodos Usuarios final
+        public List<EventosUsuarioFinalGridViewModel> CargarEventosUsuariosFinal(Guid UidUsuario)
+        {
+            List<EventosUsuarioFinalGridViewModel> lsEventosUsuarioFinalGridViewModel = new List<EventosUsuarioFinalGridViewModel>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select ev.*, es.VchDescripcion as Estatus, es.VchIcono from Eventos ev, EventosUsuarios eu, Usuarios us, Estatus es where es.UidEstatus = ev.UidEstatus and eu.UidEvento = ev.UidEvento and eu.UidUsuario = us.UidUsuario and us.UidUsuario = '" + UidUsuario + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                string FechaFin = "ABIERTO";
+
+                if (!string.IsNullOrEmpty(item["DtFHFin"].ToString()))
+                {
+                    FechaFin = DateTime.Parse(item["DtFHFin"].ToString()).ToString("dd/MM/yyyy HH:mm:ss");
+                }
+
+                lsEventosUsuarioFinalGridViewModel.Add(new EventosUsuarioFinalGridViewModel()
+                {
+                    UidEvento = Guid.Parse(item["UidEvento"].ToString()),
+                    VchNombreEvento = item["VchNombreEvento"].ToString(),
+                    VchDescripcion = item["VchDescripcion"].ToString(),
+                    DtRegistro = DateTime.Parse(item["DtRegistro"].ToString()),
+                    DtFHInicio = DateTime.Parse(item["DtFHInicio"].ToString()),
+                    VchFHFin = FechaFin,
+                    BitTipoImporte = bool.Parse(item["BitTipoImporte"].ToString()),
+                    DcmImporte = decimal.Parse(item["DcmImporte"].ToString()),
+                    VchConcepto = item["VchConcepto"].ToString(),
+                    BitDatosUsuario = bool.Parse(item["BitDatosUsuario"].ToString()),
+                    VchUrlEvento = item["VchUrlEvento"].ToString(),
+                    UidEstatus = Guid.Parse(item["UidEstatus"].ToString()),
+                    VchEstatus = item["Estatus"].ToString(),
+                    VchIcono = item["VchIcono"].ToString(),
+                    BitFHFin = bool.Parse(item["BitFHFin"].ToString()),
+                    UidTipoEvento = Guid.Parse(item["UidTipoEvento"].ToString())
+                });
+            }
+
+            return lsEventosUsuarioFinalGridViewModel.OrderByDescending(x => x.DtRegistro).ToList();
+        }
+        public List<EventosUsuarioFinalGridViewModel> BuscarEventosUsuarioFinal(Guid UidUsuario, string VchNombreEvento, string DtFHInicioDesde, string DtFHInicioHasta, string DtFHFinDesde, string DtFHFinHasta, decimal DcmImporteMayor, decimal DcmImporteMenor, Guid UidEstatus)
+        {
+            List<EventosUsuarioFinalGridViewModel> lsEventosUsuarioFinalGridViewModel = new List<EventosUsuarioFinalGridViewModel>();
+
+            SqlCommand comando = new SqlCommand();
+            comando.CommandType = CommandType.StoredProcedure;
+            comando.CommandText = "sp_EventosBuscarUsuarioFinal";
+            try
+            {
+                comando.Parameters.Add("@UidUsuario", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidUsuario"].Value = UidUsuario;
+
+                if (VchNombreEvento != string.Empty)
+                {
+                    comando.Parameters.Add("@VchNombreEvento", SqlDbType.VarChar);
+                    comando.Parameters["@VchNombreEvento"].Value = VchNombreEvento;
+                }
+
+                if (DtFHInicioDesde != string.Empty)
+                {
+                    comando.Parameters.Add("@DtFHInicioDesde", SqlDbType.DateTime);
+                    comando.Parameters["@DtFHInicioDesde"].Value = DtFHInicioDesde;
+                }
+                if (DtFHInicioHasta != string.Empty)
+                {
+                    comando.Parameters.Add("@DtFHInicioHasta", SqlDbType.Date);
+                    comando.Parameters["@DtFHInicioHasta"].Value = DtFHInicioHasta;
+                }
+                if (DtFHFinDesde != string.Empty)
+                {
+                    comando.Parameters.Add("@DtFHFinDesde", SqlDbType.DateTime);
+                    comando.Parameters["@DtFHFinDesde"].Value = DtFHFinDesde;
+                }
+                if (DtFHFinHasta != string.Empty)
+                {
+                    comando.Parameters.Add("@DtFHFinHasta", SqlDbType.Date);
+                    comando.Parameters["@DtFHFinHasta"].Value = DtFHFinHasta;
+                }
+                if (DcmImporteMayor != 0)
+                {
+                    comando.Parameters.Add("@DcmImporteMayor", SqlDbType.Decimal);
+                    comando.Parameters["@DcmImporteMayor"].Value = DcmImporteMayor;
+                }
+                if (DcmImporteMenor != 0)
+                {
+                    comando.Parameters.Add("@DcmImporteMenor", SqlDbType.Decimal);
+                    comando.Parameters["@DcmImporteMenor"].Value = DcmImporteMenor;
+                }
+
+                if (UidEstatus != Guid.Empty)
+                {
+                    comando.Parameters.Add("@UidEstatus", SqlDbType.UniqueIdentifier);
+                    comando.Parameters["@UidEstatus"].Value = UidEstatus;
+                }
+
+                foreach (DataRow item in this.Busquedas(comando).Rows)
+                {
+                    string FechaFin = "ABIERTO";
+
+                    if (!string.IsNullOrEmpty(item["DtFHFin"].ToString()))
+                    {
+                        FechaFin = DateTime.Parse(item["DtFHFin"].ToString()).ToString("dd/MM/yyyy HH:mm:ss");
+                    }
+
+
+                    eventosUsuarioFinalGridViewModel = new EventosUsuarioFinalGridViewModel()
+                    {
+                        UidEvento = Guid.Parse(item["UidEvento"].ToString()),
+                        VchNombreEvento = item["VchNombreEvento"].ToString(),
+                        VchDescripcion = item["VchDescripcion"].ToString(),
+                        DtRegistro = DateTime.Parse(item["DtRegistro"].ToString()),
+                        DtFHInicio = DateTime.Parse(item["DtFHInicio"].ToString()),
+                        VchFHFin = FechaFin,
+                        BitTipoImporte = bool.Parse(item["BitTipoImporte"].ToString()),
+                        DcmImporte = decimal.Parse(item["DcmImporte"].ToString()),
+                        VchConcepto = item["VchConcepto"].ToString(),
+                        BitDatosUsuario = bool.Parse(item["BitDatosUsuario"].ToString()),
+                        VchUrlEvento = item["VchUrlEvento"].ToString(),
+                        UidEstatus = Guid.Parse(item["UidEstatus"].ToString()),
+                        VchEstatus = item["Estatus"].ToString(),
+                        VchIcono = item["VchIcono"].ToString(),
+                        BitFHFin = bool.Parse(item["BitFHFin"].ToString()),
+                        UidTipoEvento = Guid.Parse(item["UidTipoEvento"].ToString())
+                    };
+
+                    lsEventosUsuarioFinalGridViewModel.Add(eventosUsuarioFinalGridViewModel);
+                }
+
+                return lsEventosUsuarioFinalGridViewModel.OrderByDescending(x => x.DtRegistro).ToList();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public void ObtenerDatosEventoUsuariosFinal(Guid UidEvento)
+        {
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select ev.*, es.VchDescripcion as Estatus, es.VchIcono, cl.VchNombreComercial, cl.VchCorreoElectronico, tc.VchTelefono from Eventos ev, Estatus es, Clientes cl, TelefonosClientes tc where ev.UidEstatus = es.UidEstatus and cl.UidCliente = ev.UidPropietario and tc.UidCliente = cl.UidCliente and UidEvento = '" + UidEvento + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                string FechaFin = "ABIERTO";
+                DateTime fechaFin = DateTime.Parse("1/1/0001 12:00:00");
+
+                if (!string.IsNullOrEmpty(item["DtFHFin"].ToString()))
+                {
+                    FechaFin = DateTime.Parse(item["DtFHFin"].ToString()).ToString("dd/MM/yyyy HH:mm:ss");
+                    fechaFin = DateTime.Parse(item["DtFHFin"].ToString());
+                }
+
+                eventosGridViewModel = new EventosGridViewModel()
+                {
+                    UidEvento = Guid.Parse(item["UidEvento"].ToString()),
+                    VchNombreEvento = item["VchNombreEvento"].ToString(),
+                    VchDescripcion = item["VchDescripcion"].ToString(),
+                    DtRegistro = DateTime.Parse(item["DtRegistro"].ToString()),
+                    DtFHInicio = DateTime.Parse(item["DtFHInicio"].ToString()),
+                    VchFHFin = FechaFin,
+                    DtFHFin = fechaFin,
+                    BitTipoImporte = bool.Parse(item["BitTipoImporte"].ToString()),
+                    DcmImporte = decimal.Parse(item["DcmImporte"].ToString()),
+                    VchConcepto = item["VchConcepto"].ToString(),
+                    BitDatosUsuario = bool.Parse(item["BitDatosUsuario"].ToString()),
+                    VchUrlEvento = item["VchUrlEvento"].ToString(),
+                    UidEstatus = Guid.Parse(item["UidEstatus"].ToString()),
+                    VchEstatus = item["Estatus"].ToString(),
+                    VchIcono = item["VchIcono"].ToString(),
+                    UidPropietario = Guid.Parse(item["UidPropietario"].ToString()),
+                    VchNombreComercial = item["VchNombreComercial"].ToString(),
+                    VchTelefono = item["VchTelefono"].ToString(),
+                    VchCorreo = item["VchCorreoElectronico"].ToString(),
+                    BitFHFin = bool.Parse(item["BitFHFin"].ToString()),
+                    UidTipoEvento = Guid.Parse(item["UidTipoEvento"].ToString()),
+                };
             }
         }
         #endregion

@@ -429,6 +429,15 @@ namespace Franquicia.WebForms.Views
         protected global::System.Web.UI.WebControls.Label lblDcmSms;
 
         /// <summary>
+        /// Control thError.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableCell thError;
+
+        /// <summary>
         /// Control cbCorreo.
         /// </summary>
         /// <remarks>
@@ -445,6 +454,15 @@ namespace Franquicia.WebForms.Views
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblCorreoUsado;
+
+        /// <summary>
+        /// Control tdErrorCorreo.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableCell tdErrorCorreo;
 
         /// <summary>
         /// Control lblErrorCorreo.
@@ -492,15 +510,6 @@ namespace Franquicia.WebForms.Views
         protected global::System.Web.UI.WebControls.Label lblTotalUtilizarSms;
 
         /// <summary>
-        /// Control lblErrorSms.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblErrorSms;
-
-        /// <summary>
         /// Control lblDcmSaldo.
         /// </summary>
         /// <remarks>
@@ -508,6 +517,24 @@ namespace Franquicia.WebForms.Views
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblDcmSaldo;
+
+        /// <summary>
+        /// Control tdErrorSms.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableCell tdErrorSms;
+
+        /// <summary>
+        /// Control lblErrorSms.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblErrorSms;
 
         /// <summary>
         /// Control cbWhats.
@@ -535,6 +562,24 @@ namespace Franquicia.WebForms.Views
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblTotalUtilizarWA;
+
+        /// <summary>
+        /// Control lblPendienteWA.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblPendienteWA;
+
+        /// <summary>
+        /// Control tdErrorWA.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableCell tdErrorWA;
 
         /// <summary>
         /// Control lblErrorWA.
