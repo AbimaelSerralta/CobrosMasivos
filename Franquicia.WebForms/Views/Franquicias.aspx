@@ -515,6 +515,7 @@
                                                                                                 <div class="form-row">
                                                                                                     <div class="col-sm-6">
                                                                                                         <div class="input-group">
+                                                                                                            <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtComicion" runat="server" />
                                                                                                             <asp:TextBox ID="txtComicion" Font-Size="Large" class="form-control" placeholder="123...100" required="required" runat="server" />
                                                                                                             <div class="input-group-prepend">
                                                                                                                 <span class="input-group-text">

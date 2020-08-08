@@ -16,7 +16,7 @@
 
     <div class="row" style="padding-left: 10px; padding-right: 10px;">
         <div class="card card-nav-tabs">
-            <div class="card-header card-header-primary" style="background:#f33527;">
+            <div class="card-header card-header-primary" style="background:#326497;">
                 <!-- colors: "header-primary", "header-info", "header-success", "header-warning", "header-danger" -->
                 <div class="nav-tabs-navigation">
                     <div class="nav-tabs-wrapper">

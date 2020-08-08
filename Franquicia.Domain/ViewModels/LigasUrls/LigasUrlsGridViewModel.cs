@@ -17,5 +17,10 @@ namespace Franquicia.Domain.ViewModels
         public string VchApePaterno { get; set; }
         public string VchApeMaterno { get; set; }
         public string NombreCompleto { get { return VchNombre + " " + VchApePaterno + " " + VchApeMaterno; } }
+
+        public string VchNombreAlumno { get; set; }
+        public string VchApePaternoAlumno { get; set; }
+        public string VchApeMaternoAlumno { get; set; }
+        public string NombreCompletoAlumno { get { return VchNombreAlumno + " " + VchApePaternoAlumno + " " + VchApeMaternoAlumno; } }
     }
 }

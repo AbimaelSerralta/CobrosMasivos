@@ -22,6 +22,7 @@ namespace PagaLaEscuela.Views
         EstatusServices estatusService = new EstatusServices();
         PrefijosTelefonicosServices prefijosTelefonicosServices = new PrefijosTelefonicosServices();
         AlumnosServices alumnosServices = new AlumnosServices();
+        PromocionesServices promocionesServices = new PromocionesServices();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -34,8 +35,11 @@ namespace PagaLaEscuela.Views
                 ViewState["UidClienteLocal"] = Guid.Empty;
             }
 
+            txtFHInicio.Attributes.Add("onchange", "button_click(this,'" + btnCalcular.ClientID + "')");
+
             if (!IsPostBack)
             {
+
                 fuSelecionarExcel.Attributes["onchange"] = "UploadFile(this)";
 
                 ViewState["gvColegiaturas"] = SortDirection.Ascending;
@@ -51,6 +55,12 @@ namespace PagaLaEscuela.Views
                 colegiaturasServices.CargarColegiaturas(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
                 gvColegiaturas.DataSource = colegiaturasServices.lsColegiaturasGridViewModel;
                 gvColegiaturas.DataBind();
+
+                promocionesServices.CargarPromocionesClientes(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+                ListBoxPromociones.DataSource = promocionesServices.lsCBLPromocionesModelCliente;
+                ListBoxPromociones.DataTextField = "VchDescripcion";
+                ListBoxPromociones.DataValueField = "UidPromocion";
+                ListBoxPromociones.DataBind();
 
                 FiltroEstatus.DataSource = estatusService.lsEstatus;
                 FiltroEstatus.Items.Insert(0, new ListItem("Seleccione", "00000000-0000-0000-0000-000000000000"));
@@ -73,6 +83,8 @@ namespace PagaLaEscuela.Views
                 prefijosTelefonicosServices = (PrefijosTelefonicosServices)Session["prefijosTelefonicosServices"];
                 alumnosServices = (AlumnosServices)Session["alumnosServices"];
 
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "Mult", "multi()", true);
+
                 lblValidar.Text = string.Empty;
 
                 pnlAlert.Visible = false;
@@ -82,6 +94,9 @@ namespace PagaLaEscuela.Views
         }
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
+            string MontoMin = "50.00";
+            string MontoMax = "15000.00";
+
             #region ValidarCampos
             if (txtIdentificador.EmptyTextBox())
             {
@@ -91,6 +106,16 @@ namespace PagaLaEscuela.Views
             if (txtImporte.EmptyTextBox())
             {
                 lblValidar.Text = "El campo Importe es obligatorio";
+                return;
+            }
+            if (decimal.Parse(txtImporte.Text) >= decimal.Parse(MontoMin) && decimal.Parse(txtImporte.Text) <= decimal.Parse(MontoMax))
+            {
+
+            }
+            else
+            {
+                txtImporte.BackColor = System.Drawing.Color.FromName("#f2dede");
+                lblValidar.Text = "El importe mínimo es de $50.00 y el máximo es de $15,000.00.";
                 return;
             }
             if (bool.Parse(ddlRecargo.SelectedValue))
@@ -127,6 +152,16 @@ namespace PagaLaEscuela.Views
                     lblValidar.Text = "El campo Fecha Limite es obligatorio";
                     return;
                 }
+
+                if (DateTime.Parse(txtFHLimite.Text) >= DateTime.Parse(ViewState["FHMin"].ToString()) &&  DateTime.Parse(txtFHLimite.Text) <= DateTime.Parse(ViewState["FHMax"].ToString()))
+                {
+                    
+                }
+                else
+                {
+                    lblValidar.Text = "El campo Fecha Limite no puede estar fuera del rango de la periodicidad.";
+                    return;
+                }
             }
             else
             {
@@ -137,6 +172,15 @@ namespace PagaLaEscuela.Views
                 if (txtFHVencimiento.EmptyTextBox())
                 {
                     lblValidar.Text = "El campo Fecha Vencimiento es obligatorio";
+                    return;
+                }
+                if (DateTime.Parse(txtFHVencimiento.Text) >= DateTime.Parse(ViewState["FHMin"].ToString()) && DateTime.Parse(txtFHVencimiento.Text) <= DateTime.Parse(ViewState["FHMax"].ToString()))
+                {
+                    
+                }
+                else
+                {
+                    lblValidar.Text = "El campo Fecha Vencimiento no puede estar fuera del rango de la periodicidad.";
                     return;
                 }
             }
@@ -174,6 +218,14 @@ namespace PagaLaEscuela.Views
                         {
                             RegistrarFechas(UidColegiatura);
 
+                            foreach (ListItem promo in ListBoxPromociones.Items)
+                            {
+                                if (promo.Selected)
+                                {
+                                    colegiaturasServices.RegistrarPromocionesColegiatura(UidColegiatura, Guid.Parse(promo.Value));
+                                }
+                            }
+
                             foreach (var itAlum in alumnosServices.lsSelectAlumnosGridViewModel)
                             {
                                 alumnosServices.RegistrarColeAlumnos(UidColegiatura, itAlum.UidAlumno);
@@ -206,6 +258,15 @@ namespace PagaLaEscuela.Views
                             colegiaturasServices.EliminarColegiaturaFechas(Guid.Parse(ViewState["UidRequerido"].ToString()));
                             RegistrarFechas(Guid.Parse(ViewState["UidRequerido"].ToString()));
 
+                            colegiaturasServices.EliminarPromocionesColegiatura(Guid.Parse(ViewState["UidRequerido"].ToString()));
+                            foreach (ListItem promo in ListBoxPromociones.Items)
+                            {
+                                if (promo.Selected)
+                                {
+                                    colegiaturasServices.RegistrarPromocionesColegiatura(Guid.Parse(ViewState["UidRequerido"].ToString()), Guid.Parse(promo.Value));
+                                }
+                            }
+
                             alumnosServices.EliminarColeAlumnos(Guid.Parse(ViewState["UidRequerido"].ToString()));
                             foreach (var itAlum in alumnosServices.lsSelectAlumnosGridViewModel)
                             {
@@ -234,7 +295,9 @@ namespace PagaLaEscuela.Views
         }
         private void RegistrarFechas(Guid UidColegiatura)
         {
-            colegiaturasServices.RegistrarColegiaturaFechas(UidColegiatura, DateTime.Parse(txtFHInicio.Text), DateTime.Parse(txtFHLimite.Text), DateTime.Parse(txtFHVencimiento.Text));
+            colegiaturasServices.RegistrarColegiaturaFechas(UidColegiatura, 1, DateTime.Parse(txtFHInicio.Text), DateTime.Parse(txtFHLimite.Text), DateTime.Parse(txtFHVencimiento.Text));
+
+            int num = 2;
 
             for (int i = 1; i < int.Parse(txtCantPagos.Text); i++)
             {
@@ -254,7 +317,7 @@ namespace PagaLaEscuela.Views
                         FHVencimiento = DateTime.Parse(txtFHVencimiento.Text).AddDays(7 * i);
                     }
 
-                    colegiaturasServices.RegistrarColegiaturaFechas(UidColegiatura, FHInicio, FHLimite, FHVencimiento);
+                    colegiaturasServices.RegistrarColegiaturaFechas(UidColegiatura, num++, FHInicio, FHLimite, FHVencimiento);
                 }
                 else if (ddlPeriodicidad.SelectedItem.Text == "MENSUAL")
                 {
@@ -272,7 +335,7 @@ namespace PagaLaEscuela.Views
                         FHVencimiento = DateTime.Parse(txtFHVencimiento.Text).AddMonths(1 * i);
                     }
 
-                    colegiaturasServices.RegistrarColegiaturaFechas(UidColegiatura, FHInicio, FHLimite, FHVencimiento);
+                    colegiaturasServices.RegistrarColegiaturaFechas(UidColegiatura, num++, FHInicio, FHLimite, FHVencimiento);
                 }
             }
         }
@@ -290,6 +353,11 @@ namespace PagaLaEscuela.Views
             btnEditar.Visible = false;
             lblTituloModal.Text = "Registro de Colegiatura";
             btnGuardar.Text = "<i class=" + "material-icons>" + "check </i> Guardar";
+
+            DateTime HoraDelServidor = DateTime.Now;
+            DateTime hoy = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(HoraDelServidor, TimeZoneInfo.Local.Id, "Eastern Standard Time (Mexico)");
+            txtFHInicio.Text = hoy.ToString("yyyy-MM-dd");
+            btnCalcular_Click(null, null);
 
             ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
 
@@ -429,9 +497,9 @@ namespace PagaLaEscuela.Views
                 Guid dataKeys = Guid.Parse(valor.DataKeys[Seleccionado.RowIndex].Value.ToString());
                 ViewState["UidRequerido"] = dataKeys;
 
-                LinkButton btnAbrirImpor = (LinkButton) row.FindControl("btnAbrirImpor");
-                LinkButton btnCargarExcel = (LinkButton) row.FindControl("btnCargarExcel");
-                LinkButton btnCancelarExcel = (LinkButton) row.FindControl("btnCancelarExcel");
+                LinkButton btnAbrirImpor = (LinkButton)row.FindControl("btnAbrirImpor");
+                LinkButton btnCargarExcel = (LinkButton)row.FindControl("btnCargarExcel");
+                LinkButton btnCancelarExcel = (LinkButton)row.FindControl("btnCancelarExcel");
 
                 btnAbrirImpor.Visible = false;
                 btnCargarExcel.Visible = true;
@@ -446,9 +514,9 @@ namespace PagaLaEscuela.Views
                 Guid dataKeys = Guid.Parse(valor.DataKeys[Seleccionado.RowIndex].Value.ToString());
                 ViewState["UidRequerido"] = dataKeys;
 
-                LinkButton btnAbrirImpor = (LinkButton) row.FindControl("btnAbrirImpor");
-                LinkButton btnCargarExcel = (LinkButton) row.FindControl("btnCargarExcel");
-                LinkButton btnCancelarExcel = (LinkButton) row.FindControl("btnCancelarExcel");
+                LinkButton btnAbrirImpor = (LinkButton)row.FindControl("btnAbrirImpor");
+                LinkButton btnCargarExcel = (LinkButton)row.FindControl("btnCargarExcel");
+                LinkButton btnCancelarExcel = (LinkButton)row.FindControl("btnCancelarExcel");
 
                 btnAbrirImpor.Visible = true;
                 btnCargarExcel.Visible = false;
@@ -475,6 +543,7 @@ namespace PagaLaEscuela.Views
             txtCantPagos.Text = colegiaturasServices.colegiaturasRepository.colegiaturasGridViewModel.IntCantPagos.ToString();
             ddlPeriodicidad.SelectedIndex = ddlPeriodicidad.Items.IndexOf(ddlPeriodicidad.Items.FindByValue(colegiaturasServices.colegiaturasRepository.colegiaturasGridViewModel.UidPeriodicidad.ToString()));
             txtFHInicio.Text = colegiaturasServices.colegiaturasRepository.colegiaturasGridViewModel.DtFHInicio.ToString("yyyy-MM-dd");
+            ddlPeriodicidad_SelectedIndexChanged(null, null);
             if (colegiaturasServices.colegiaturasRepository.colegiaturasGridViewModel.VchFHLimite != string.Empty && colegiaturasServices.colegiaturasRepository.colegiaturasGridViewModel.VchFHLimite != "NO TIENE")
             {
                 txtFHLimite.Text = DateTime.Parse(colegiaturasServices.colegiaturasRepository.colegiaturasGridViewModel.VchFHLimite).ToString("yyyy-MM-dd");
@@ -486,6 +555,28 @@ namespace PagaLaEscuela.Views
                 txtFHVencimiento.Text = DateTime.Parse(colegiaturasServices.colegiaturasRepository.colegiaturasGridViewModel.VchFHVencimiento).ToString("yyyy-MM-dd");
                 cbActivarFHV.Checked = true;
                 cbActivarFHV_CheckedChanged(null, null);
+            }
+
+            promocionesServices.ObtenerPromocionesColegiatura(dataKeys);
+            if (promocionesServices.lsPromocionesColegiaturaModel.Count >= 1)
+            {
+                foreach (ListItem item in ListBoxPromociones.Items)
+                {
+                    foreach (var it in promocionesServices.lsPromocionesColegiaturaModel)
+                    {
+                        if (item.Value == it.UidPromocion.ToString())
+                        {
+                            item.Selected = true;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                foreach (ListItem item in ListBoxPromociones.Items)
+                {
+                    item.Selected = false;
+                }
             }
         }
 
@@ -889,6 +980,40 @@ namespace PagaLaEscuela.Views
                 pnlRecargo.Visible = false;
                 ddlTipoRecargo.SelectedIndex = -1;
                 txtRecargo.Text = string.Empty;
+            }
+        }
+
+        protected void ddlPeriodicidad_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            btnCalcular_Click(null, null);
+        }
+
+        protected void btnCalcular_Click(object sender, EventArgs e)
+        {
+            DateTime FHI = DateTime.Parse(txtFHInicio.Text);
+
+            txtFHLimite.Text = string.Empty;
+            txtFHVencimiento.Text = string.Empty;
+
+            if (ddlPeriodicidad.SelectedItem.Text == "SEMANAL")
+            {
+                ViewState["FHMin"] = FHI.AddDays(1).ToString("yyyy-MM-dd");
+                txtFHLimite.Attributes.Add("min", FHI.AddDays(1).ToString("yyyy-MM-dd"));
+                txtFHVencimiento.Attributes.Add("min", FHI.AddDays(2).ToString("yyyy-MM-dd"));
+
+                txtFHLimite.Attributes.Add("max", FHI.AddDays(7).ToString("yyyy-MM-dd"));
+                txtFHVencimiento.Attributes.Add("max", FHI.AddDays(7).ToString("yyyy-MM-dd"));
+                ViewState["FHMax"] = FHI.AddDays(7).ToString("yyyy-MM-dd");
+            }
+            else if (ddlPeriodicidad.SelectedItem.Text == "MENSUAL")
+            {
+                ViewState["FHMin"] = FHI.AddDays(1).ToString("yyyy-MM-dd");
+                txtFHLimite.Attributes.Add("min", FHI.AddDays(1).ToString("yyyy-MM-dd"));
+                txtFHVencimiento.Attributes.Add("min", FHI.AddDays(2).ToString("yyyy-MM-dd"));
+
+                txtFHLimite.Attributes.Add("max", FHI.AddMonths(1).ToString("yyyy-MM-dd"));
+                txtFHVencimiento.Attributes.Add("max", FHI.AddMonths(1).ToString("yyyy-MM-dd"));
+                ViewState["FHMax"] = FHI.AddMonths(1).ToString("yyyy-MM-dd");
             }
         }
     }

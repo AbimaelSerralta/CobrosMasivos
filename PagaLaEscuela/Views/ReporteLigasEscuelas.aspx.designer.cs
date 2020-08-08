@@ -11,7 +11,7 @@ namespace PagaLaEscuela.Views
 {
 
 
-    public partial class Pagos
+    public partial class ReporteLigasEscuelas
     {
 
         /// <summary>
@@ -42,58 +42,13 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.Label lblMensajeAlert;
 
         /// <summary>
-        /// Control pnlComercios.
+        /// Control btnFiltros.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlComercios;
-
-        /// <summary>
-        /// Control rpComercios.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rpComercios;
-
-        /// <summary>
-        /// Control pnlPagos.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlPagos;
-
-        /// <summary>
-        /// Control btnRegresar.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton btnRegresar;
-
-        /// <summary>
-        /// Control imgLogoSelect.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Image imgLogoSelect;
-
-        /// <summary>
-        /// Control lblNombreComercial.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblNombreComercial;
+        protected global::System.Web.UI.WebControls.LinkButton btnFiltros;
 
         /// <summary>
         /// Control btnActualizarLista.
@@ -105,219 +60,264 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.LinkButton btnActualizarLista;
 
         /// <summary>
-        /// Control gvPagos.
+        /// Control btnExportarLista.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvPagos;
+        protected global::System.Web.UI.WebControls.LinkButton btnExportarLista;
 
         /// <summary>
-        /// Control lblTitlePagar.
+        /// Control gvLigasGeneradas.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblTitlePagar;
+        protected global::System.Web.UI.WebControls.GridView gvLigasGeneradas;
 
         /// <summary>
-        /// Control btnCerrar.
+        /// Control lblTituloModal.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton btnCerrar;
+        protected global::System.Web.UI.WebControls.Label lblTituloModal;
 
         /// <summary>
-        /// Control btnFinalizar.
+        /// Control pnlAlertModal.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton btnFinalizar;
+        protected global::System.Web.UI.WebControls.Panel pnlAlertModal;
 
         /// <summary>
-        /// Control pnlPromociones.
+        /// Control divAlertModal.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlPromociones;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divAlertModal;
 
         /// <summary>
-        /// Control lblValidar.
+        /// Control lblResumen.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblValidar;
+        protected global::System.Web.UI.WebControls.Label lblResumen;
 
         /// <summary>
-        /// Control lblVencimiento.
+        /// Control gvDetalleLiga.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblVencimiento;
+        protected global::System.Web.UI.WebControls.GridView gvDetalleLiga;
 
         /// <summary>
-        /// Control lblConcepto.
+        /// Control upDetalleLiga.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblConcepto;
+        protected global::System.Web.UI.UpdatePanel upDetalleLiga;
 
         /// <summary>
-        /// Control lblImporteCole.
+        /// Control btnAceptar.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblImporteCole;
+        protected global::System.Web.UI.WebControls.LinkButton btnAceptar;
 
         /// <summary>
-        /// Control lblImporteBeca.
+        /// Control lblTittleLigas.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblImporteBeca;
+        protected global::System.Web.UI.WebControls.Label lblTittleLigas;
 
         /// <summary>
-        /// Control lblRecargo.
+        /// Control pnlFiltrosBusqueda.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblRecargo;
+        protected global::System.Web.UI.WebControls.Panel pnlFiltrosBusqueda;
 
         /// <summary>
-        /// Control lblTieneBeca.
+        /// Control txtIdentificador.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblTieneBeca;
+        protected global::System.Web.UI.WebControls.TextBox txtIdentificador;
 
         /// <summary>
-        /// Control lblTipoBeca.
+        /// Control txtNombre.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblTipoBeca;
+        protected global::System.Web.UI.WebControls.TextBox txtNombre;
 
         /// <summary>
-        /// Control lblImporteTotal.
+        /// Control txtApePaterno.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblImporteTotal;
+        protected global::System.Web.UI.WebControls.TextBox txtApePaterno;
 
         /// <summary>
-        /// Control ddlFormasPago.
+        /// Control txtApeMaterno.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlFormasPago;
+        protected global::System.Web.UI.WebControls.TextBox txtApeMaterno;
 
         /// <summary>
-        /// Control lblTotalPagar.
+        /// Control txtAsunto.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblTotalPagar;
+        protected global::System.Web.UI.WebControls.TextBox txtAsunto;
 
         /// <summary>
-        /// Control btnGenerarLiga.
+        /// Control txtConcepto.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton btnGenerarLiga;
+        protected global::System.Web.UI.WebControls.TextBox txtConcepto;
 
         /// <summary>
-        /// Control lblTotalPago.
+        /// Control ddlImporteMayor.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblTotalPago;
+        protected global::System.Web.UI.WebControls.DropDownList ddlImporteMayor;
 
         /// <summary>
-        /// Control pnlIframe.
+        /// Control txtImporteMayor.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlIframe;
+        protected global::System.Web.UI.WebControls.TextBox txtImporteMayor;
 
         /// <summary>
-        /// Control ifrLiga.
+        /// Control ddlImporteMenor.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlIframe ifrLiga;
+        protected global::System.Web.UI.WebControls.DropDownList ddlImporteMenor;
 
         /// <summary>
-        /// Control pnlValidar.
+        /// Control txtImporteMenor.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlValidar;
+        protected global::System.Web.UI.WebControls.TextBox txtImporteMenor;
 
         /// <summary>
-        /// Control tmValidar.
+        /// Control txtRegistroDesde.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.Timer tmValidar;
+        protected global::System.Web.UI.WebControls.TextBox txtRegistroDesde;
 
         /// <summary>
-        /// Control upValidar.
+        /// Control txtRegistroHasta.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upValidar;
+        protected global::System.Web.UI.WebControls.TextBox txtRegistroHasta;
 
         /// <summary>
-        /// Control ltMnsj.
+        /// Control txtVencimientoDesde.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltMnsj;
+        protected global::System.Web.UI.WebControls.TextBox txtVencimientoDesde;
+
+        /// <summary>
+        /// Control txtVencimientoHasta.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtVencimientoHasta;
+
+        /// <summary>
+        /// Control ddlEstatus.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlEstatus;
+
+        /// <summary>
+        /// Control upBusqueda.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upBusqueda;
+
+        /// <summary>
+        /// Control btnBuscar.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnBuscar;
+
+        /// <summary>
+        /// Control btnLimpiar.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnLimpiar;
     }
 }

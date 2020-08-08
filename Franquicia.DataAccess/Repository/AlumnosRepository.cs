@@ -85,7 +85,7 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@VchIdentificador", SqlDbType.VarChar);
                 comando.Parameters["@VchIdentificador"].Value = Alumnos.VchIdentificador;
-                
+
                 comando.Parameters.Add("@VchNombres", SqlDbType.VarChar, 50);
                 comando.Parameters["@VchNombres"].Value = Alumnos.VchNombres;
 
@@ -362,7 +362,7 @@ namespace Franquicia.DataAccess.Repository
             {
                 comando.Parameters.Add("@UidCliente", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidCliente"].Value = UidCliente;
-                
+
                 comando.Parameters.Add("@UidUsuario", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidUsuario"].Value = UidUsuario;
 
@@ -541,7 +541,7 @@ namespace Franquicia.DataAccess.Repository
                             break;
                         }
                     }
-                    
+
                     foreach (var item2 in lsSelectAlumnosGridViewModel)
                     {
                         if (Guid.Parse(item["UidAlumno"].ToString()) == item2.UidAlumno)
@@ -570,7 +570,82 @@ namespace Franquicia.DataAccess.Repository
                 throw;
             }
         }
-        
+
+        #endregion
+
+        #region Metodos de Excel
+
+        #region Alumnos
+        public bool AccionAlumnosExcelToList(List<AlumnosGridViewModel> lsAccionAlumnos, Guid UidCliente)
+        {
+            bool result = false;
+
+            List<LigasUsuariosGridViewModel> lsLigasUsuariosGridViewModel = new List<LigasUsuariosGridViewModel>();
+
+            foreach (var item in lsAccionAlumnos)
+            {
+                SqlCommand query = new SqlCommand();
+                query.CommandType = CommandType.Text;
+
+                query.CommandText = "select UidAlumno from Alumnos where VchMatricula = '" + item.VchMatricula + "' and UidCliente = '" + UidCliente + "'";
+
+                DataTable exist = this.Busquedas(query);
+
+                if (exist.Rows.Count >= 1)
+                {
+                    foreach (DataRow itemExist in exist.Rows)
+                    {
+                        result = ActualizarAlumno(
+                            new Alumnos
+                            {
+                                UidAlumno = Guid.Parse(itemExist["UidAlumno"].ToString()),
+                                VchIdentificador = item.VchIdentificador,
+                                VchNombres = item.VchNombres,
+                                VchApePaterno = item.VchApePaterno,
+                                VchApeMaterno = item.VchApeMaterno,
+                                VchMatricula = item.VchMatricula,
+                                VchCorreo = item.VchCorreo,
+                                BitBeca = item.BitBeca,
+                                VchTipoBeca = item.VchTipoBeca,
+                                DcmBeca = item.DcmBeca,
+                                UidEstatus = item.UidEstatus
+                            },
+                            new TelefonosAlumnos
+                            {
+                                VchTelefono = item.VchTelefono,
+                                UidPrefijo = item.UidPrefijo
+                            });
+                    }
+                }
+                else
+                {
+                    result = RegistrarAlumno(
+                        new Alumnos
+                        {
+                            UidAlumno = Guid.NewGuid(),
+                            VchIdentificador = item.VchIdentificador,
+                            VchNombres = item.VchNombres,
+                            VchApePaterno = item.VchApePaterno,
+                            VchApeMaterno = item.VchApeMaterno,
+                            VchMatricula = item.VchMatricula,
+                            VchCorreo = item.VchCorreo,
+                            BitBeca = item.BitBeca,
+                            VchTipoBeca = item.VchTipoBeca,
+                            DcmBeca = item.DcmBeca,
+                            UidCliente = UidCliente
+                        },
+                        new TelefonosAlumnos
+                        {
+                            VchTelefono = item.VchTelefono,
+                            UidPrefijo = item.UidPrefijo
+                        });
+                }
+            }
+
+            return result;
+        }
+        #endregion
+
         #endregion
     }
 }

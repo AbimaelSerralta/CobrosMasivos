@@ -1,8 +1,11 @@
-﻿using Franquicia.Bussiness;
+﻿using ClosedXML.Excel;
+using Franquicia.Bussiness;
 using Franquicia.Domain.ViewModels;
 using Franquicia.WebForms.Util;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -34,6 +37,9 @@ namespace PagaLaEscuela.Views
 
             if (!IsPostBack)
             {
+                btnCargarExcel.Attributes.Add("onclick", "document.getElementById('" + fuSelecionarExcel.ClientID + "').click(); return false;");
+                fuSelecionarExcel.Attributes["onchange"] = "UploadFile(this)";
+
                 ViewState["gvAlumnos"] = SortDirection.Ascending;
 
                 Session["alumnosServices"] = alumnosServices;
@@ -157,7 +163,7 @@ namespace PagaLaEscuela.Views
                     {
                         Guid UidAlumno = Guid.NewGuid();
 
-                        if (alumnosServices.RegistrarUsuarios(UidAlumno, txtIdentificador.Text.Trim().ToUpper(), txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtMatricula.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), bool.Parse(ddlBeca.SelectedValue), ddlTipoBeca.SelectedValue, decimal.Parse(txtBeca.Text), txtNumero.Text.Trim(), Guid.Parse(ddlPrefijo.SelectedValue), Guid.Parse(ViewState["UidClienteLocal"].ToString())))
+                        if (alumnosServices.RegistrarAlumno(UidAlumno, txtIdentificador.Text.Trim().ToUpper(), txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtMatricula.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), bool.Parse(ddlBeca.SelectedValue), ddlTipoBeca.SelectedValue, decimal.Parse(txtBeca.Text), txtNumero.Text.Trim(), Guid.Parse(ddlPrefijo.SelectedValue), Guid.Parse(ViewState["UidClienteLocal"].ToString())))
                         {
                             pnlAlert.Visible = true;
                             lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
@@ -531,12 +537,133 @@ namespace PagaLaEscuela.Views
             }
         }
 
+        #region IMPORTACION DE ALUMNOS
         protected void btnExportarLista_Click(object sender, EventArgs e)
         {
-            Session["lsExcelSeleccionar"] = alumnosServices.lsAlumnosGridViewModel;
+            Session["lsAlumnosGridViewModel"] = alumnosServices.lsAlumnosGridViewModel;
             Session["lsExcelErrores"] = null;
             string _open = "window.open('Excel/ExportarExcelAlumnos.aspx', '_blank');";
             ScriptManager.RegisterStartupScript(this, this.GetType(), Guid.NewGuid().ToString(), _open, true);
         }
+        protected void btnDescargarError_Click(object sender, EventArgs e)
+        {
+            Session["lsAlumnosGridViewModel"] = null;
+            Session["lsExcelErrores"] = alumnosServices.lsExcelErrores;
+
+            string _open = "window.open('Excel/ExportarExcelAlumnos.aspx', '_blank');";
+            ScriptManager.RegisterStartupScript(this, this.GetType(), Guid.NewGuid().ToString(), _open, true);
+        }
+        protected void btnMasDetalle_Click(object sender, EventArgs e)
+        {
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalMasDetalle()", true);
+        }
+        protected void btnCloseAlertImportarError_Click(object sender, EventArgs e)
+        {
+            pnlAlertImportarError.Visible = false;
+            lblMnsjAlertImportarError.Text = "";
+            divAlertImportarError.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
+            Session["lsExcelErrores"] = null;
+        }
+
+        protected void btnImportarExcel_Click(object sender, EventArgs e)
+        {
+            if (fuSelecionarExcel.HasFile)
+            {
+                if (".xlsx" == Path.GetExtension(fuSelecionarExcel.FileName))
+                {
+                    try
+                    {
+                        byte[] buffer = new byte[fuSelecionarExcel.FileBytes.Length];
+                        fuSelecionarExcel.FileContent.Seek(0, SeekOrigin.Begin);
+                        fuSelecionarExcel.FileContent.Read(buffer, 0, Convert.ToInt32(fuSelecionarExcel.FileContent.Length));
+
+                        Stream stream2 = new MemoryStream(buffer);
+
+                        DataTable dt = new DataTable();
+                        using (XLWorkbook workbook = new XLWorkbook(stream2))
+                        {
+                            IXLWorksheet sheet = workbook.Worksheet(1);
+                            bool FirstRow = true;
+                            string readRange = "1:1";
+                            foreach (IXLRow row in sheet.RowsUsed())
+                            {
+                                //If Reading the First Row (used) then add them as column name  
+                                if (FirstRow)
+                                {
+                                    //Checking the Last cellused for column generation in datatable  
+                                    readRange = string.Format("{0}:{1}", 1, row.LastCellUsed().Address.ColumnNumber);
+                                    foreach (IXLCell cell in row.Cells(readRange))
+                                    {
+                                        dt.Columns.Add(cell.Value.ToString());
+                                    }
+                                    FirstRow = false;
+                                }
+                                else
+                                {
+                                    //Adding a Row in datatable  
+                                    dt.Rows.Add();
+                                    int cellIndex = 0;
+                                    //Updating the values of datatable  
+                                    foreach (IXLCell cell in row.Cells(readRange))
+                                    {
+                                        dt.Rows[dt.Rows.Count - 1][cellIndex] = cell.Value.ToString();
+                                        cellIndex++;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (dt.Columns.Contains("IDENTIFICADOR".Trim()) && dt.Columns.Contains("MATRICULA".Trim()) && dt.Columns.Contains("NOMBRE(S)".Trim()) && dt.Columns.Contains("APEPATERNO".Trim()) && dt.Columns.Contains("APEMATERNO".Trim()) && dt.Columns.Contains("CORREO".Trim()) && dt.Columns.Contains("CELULAR".Trim()) && dt.Columns.Contains("BECA".Trim()) && dt.Columns.Contains("TIPO BECA".Trim()) && dt.Columns.Contains("CANTIDAD".Trim()) && dt.Columns.Contains("ESTATUS".Trim()))
+                        {
+                            alumnosServices.ValidarAlumnosExcelToList(dt);
+
+                            if (alumnosServices.lsExcelInsertar.Count >= 1)
+                            {
+                                alumnosServices.AccionAlumnosExcelToList(alumnosServices.lsExcelInsertar, Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+
+                                pnlAlert.Visible = true;
+                                lblMensajeAlert.Text = "<strong>¡Felicidades! </strong> " + alumnosServices.lsExcelInsertar.Count() + "alumno(s) se ha registrado/actualizado exitosamente.";
+                                divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+
+                                alumnosServices.CargarAlumnos(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+                                gvAlumnos.DataSource = alumnosServices.lsAlumnosGridViewModel;
+                                gvAlumnos.DataBind();
+                            }
+
+                            if (alumnosServices.lsExcelErrores.Count >= 1)
+                            {
+                                btnDescargarError.Visible = true;
+                                btnMasDetalle.Visible = false;
+                                pnlAlertImportarError.Visible = true;
+                                lblMnsjAlertImportarError.Text = "<strong>!Lo sentimos¡</strong> algunos alumnos no se han importado.";
+                                divAlertImportarError.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                            }
+                        }
+                        else
+                        {
+                            btnDescargarError.Visible = false;
+                            btnMasDetalle.Visible = true;
+                            pnlAlertImportarError.Visible = true;
+                            lblMnsjAlertImportarError.Text = "<strong>!Lo sentimos¡</strong> el archivo no tiene las columnas correctas.";
+                            divAlertImportarError.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        pnlAlert.Visible = true;
+                        lblMensajeAlert.Text = ex.Message;
+                        divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                    }
+                }
+                else
+                {
+                    pnlAlert.Visible = true;
+                    lblMensajeAlert.Text = "Solo se admite los formatos xlsx";
+                    divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                }
+            }
+        }
+
+        #endregion
     }
 }

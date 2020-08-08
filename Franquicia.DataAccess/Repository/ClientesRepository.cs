@@ -80,16 +80,16 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@VchCorreoElectronico", SqlDbType.VarChar, 50);
                 comando.Parameters["@VchCorreoElectronico"].Value = clientes.VchCorreoElectronico;
-               
+
                 comando.Parameters.Add("@UidFranquiciatario", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidFranquiciatario"].Value = clientes.UidFranquiciatario;
 
                 comando.Parameters.Add("@VchIdWAySMS", SqlDbType.VarChar, 50);
                 comando.Parameters["@VchIdWAySMS"].Value = clientes.VchIdWAySMS;
-                
+
                 comando.Parameters.Add("@VchZonaHoraria", SqlDbType.VarChar, 60);
                 comando.Parameters["@VchZonaHoraria"].Value = clientes.VchZonaHoraria;
-                
+
                 comando.Parameters.Add("@BitEscuela", SqlDbType.Bit);
                 comando.Parameters["@BitEscuela"].Value = clientes.BitEscuela;
 
@@ -151,6 +151,92 @@ namespace Franquicia.DataAccess.Repository
             }
             return Resultado;
         }
+        public bool RegistrarLogo(Guid UidCliente, byte[] Imagen)
+        {
+            bool Resultado = false;
+
+            SqlCommand comando = new SqlCommand();
+            try
+            {
+                comando.CommandType = System.Data.CommandType.StoredProcedure;
+                comando.CommandText = "sp_ClientesRegistrarLogo";
+
+                comando.Parameters.Add("@UidCliente", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidCliente"].Value = UidCliente;
+
+                comando.Parameters.Add("@Imagen", SqlDbType.VarBinary);
+                comando.Parameters["@Imagen"].Value = Imagen;
+
+                Resultado = this.ManipulacionDeDatos(comando);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return Resultado;
+        }
+        public bool ActualizarLogo(Guid UidCliente, byte[] Imagen)
+        {
+            bool Resultado = false;
+
+            SqlCommand comando = new SqlCommand();
+            try
+            {
+                comando.CommandType = System.Data.CommandType.StoredProcedure;
+                comando.CommandText = "sp_ClientesActualizarLogo";
+
+                comando.Parameters.Add("@UidCliente", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidCliente"].Value = UidCliente;
+
+                comando.Parameters.Add("@Imagen", SqlDbType.VarBinary);
+                comando.Parameters["@Imagen"].Value = Imagen;
+
+                Resultado = this.ManipulacionDeDatos(comando);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return Resultado;
+        }
+        public byte[] CargarLogo(Guid UidCliente)
+        {
+            byte[] img = null;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "Select * from ImagenesClientes where  UidCliente = '" + UidCliente + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                img = (byte[])item["Imagen"];
+            }
+
+            return img;
+        }
+        public string CargarNombre(Guid UidCliente)
+        {
+            string Nombre = string.Empty;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select VchNombreComercial from Clientes where UidCliente = '" + UidCliente + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                Nombre = item["VchNombreComercial"].ToString();
+            }
+
+            return Nombre;
+        }
 
         public bool ActualizarClientes(Clientes clientes, DireccionesClientes direccionesClientes, TelefonosClientes telefonosClientes)
         {
@@ -185,7 +271,7 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@VchZonaHoraria", SqlDbType.VarChar, 60);
                 comando.Parameters["@VchZonaHoraria"].Value = clientes.VchZonaHoraria;
-                
+
                 comando.Parameters.Add("@BitEscuela", SqlDbType.Bit);
                 comando.Parameters["@BitEscuela"].Value = clientes.BitEscuela;
 

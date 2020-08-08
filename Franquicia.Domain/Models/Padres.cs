@@ -8,6 +8,7 @@ namespace Franquicia.Domain.Models
 {
     public class Padres : UsuariosCompletos
     {
-
+        public string VchMatricula { get; set; }
+        public string StrTelefono { get; set; }
     }
 }

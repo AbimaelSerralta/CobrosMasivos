@@ -184,6 +184,7 @@ namespace Franquicia.WebForms.Views
 
                 CheckBox cbPromocion = e.Row.FindControl("cbPromocion") as CheckBox;
                 TextBox txtComicion = e.Row.FindControl("txtComicion") as TextBox;
+                TextBox txtDcmApartirDe = e.Row.FindControl("txtApartirDe") as TextBox;
 
 
                 foreach (var item in promocionesServices.lsCBLPromocionesModel)
@@ -192,6 +193,7 @@ namespace Franquicia.WebForms.Views
                     {
                         cbPromocion.Checked = true;
                         txtComicion.Text = item.DcmComicion.ToString();
+                        txtDcmApartirDe.Text = item.DcmApartirDe.ToString("N2");
                     }
                 }
             }
@@ -205,18 +207,25 @@ namespace Franquicia.WebForms.Views
             {
                 CheckBox cbPromocion = row.FindControl("cbPromocion") as CheckBox;
                 TextBox txtComicion = row.FindControl("txtComicion") as TextBox;
+                TextBox txtApartirDe = row.FindControl("txtApartirDe") as TextBox;
 
                 if (cbPromocion.Checked)
                 {
                     Guid UidPromocion = Guid.Parse(row.Cells[0].Text);
                     decimal DcmComicion = 0;
+                    decimal DcmApartirDe = 0;
 
                     if (!string.IsNullOrEmpty(txtComicion.Text))
                     {
                         DcmComicion = decimal.Parse(txtComicion.Text);
                     }
+                    
+                    if (!string.IsNullOrEmpty(txtApartirDe.Text))
+                    {
+                        DcmApartirDe = decimal.Parse(txtApartirDe.Text);
+                    }
 
-                    if (promocionesServices.RegistrarPromociones(Guid.Parse(ViewState["UidCliente"].ToString()), UidPromocion, DcmComicion))
+                    if (promocionesServices.RegistrarPromociones(Guid.Parse(ViewState["UidCliente"].ToString()), UidPromocion, DcmComicion, DcmApartirDe))
                     {
                     }
                 }

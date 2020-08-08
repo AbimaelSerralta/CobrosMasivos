@@ -20,7 +20,7 @@
                     <div class="row">
                         <div class="col-lg-12 col-md-12">
                             <div class="card">
-                                <div class="card-header card-header-tabs card-header-primary" style="background:#f33527;padding-top: 0px; padding-bottom: 0px;">
+                                <div class="card-header card-header-tabs card-header-primary" style="background:#326497;padding-top: 0px; padding-bottom: 0px;">
                                     <div class="nav-tabs-navigation">
                                         <div class="nav-tabs-wrapper">
                                             <div class="form-group" style="margin-top: 0px; padding-bottom: 0px;">
@@ -139,7 +139,7 @@
                         <ContentTemplate>
                             <div class="row">
                                 <div class="card card-nav-tabs">
-                                    <div class="card-header card-header-primary" style="background:#f33527;">
+                                    <div class="card-header card-header-primary" style="background:#326497;">
                                         <div class="nav-tabs-navigation">
                                             <div class="nav-tabs-wrapper">
                                                 <ul class="nav nav-tabs" data-tabs="tabs">
@@ -174,15 +174,15 @@
                                                                 <div class="row">
                                                                     <div class="form-group col-md-4">
                                                                         <label for="txtNombre" style="color: black;">Descripción *</label>
-                                                                        <asp:TextBox ID="txtNombre" CssClass="form-control" required="required" runat="server" />
+                                                                        <asp:TextBox ID="txtNombre" CssClass="form-control"  runat="server" />
                                                                     </div>
                                                                     <div class="form-group col-md-4">
                                                                         <label for="txtFInicio" style="color: black;">Fecha inicio *</label>
-                                                                        <asp:TextBox ID="txtFInicio" TextMode="Date" CssClass="form-control" required="required" runat="server" />
+                                                                        <asp:TextBox ID="txtFInicio" TextMode="Date" CssClass="form-control"  runat="server" />
                                                                     </div>
                                                                     <div class="form-group col-md-4">
                                                                         <label for="txtFVencimiento" style="color: black;">Fecha vencimiento *</label>
-                                                                        <asp:TextBox ID="txtFVencimiento" CssClass="form-control" required="required" runat="server" />
+                                                                        <asp:TextBox ID="txtFVencimiento" CssClass="form-control"  runat="server" />
                                                                     </div>
                                                                     <div class="form-group col-md-4">
                                                                         <label for="ddlNivel" style="color: black;">Nivel de enseñanza</label>
@@ -231,11 +231,11 @@
                                                         <div class="row">
                                                             <div class="form-group col-md-4">
                                                                 <label for="txtNombre" style="color: black;">Descripción *</label>
-                                                                <asp:TextBox ID="TextBox1" CssClass="form-control" required="required" runat="server" />
+                                                                <asp:TextBox ID="TextBox1" CssClass="form-control"  runat="server" />
                                                             </div>
                                                             <div class="form-group col-md-4">
                                                                 <label for="txtFPago" style="color: black;">Fecha de pago *</label>
-                                                                <asp:TextBox ID="txtFPago" TextMode="Date" CssClass="form-control" required="required" runat="server" />
+                                                                <asp:TextBox ID="txtFPago" TextMode="Date" CssClass="form-control"  runat="server" />
                                                             </div>
                                                         </div>
                                                     </ContentTemplate>

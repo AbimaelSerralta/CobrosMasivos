@@ -14,7 +14,10 @@ namespace Franquicia.Domain.ViewModels
         public string VchDescripcion { get; set; }
         public string VchIcono { get; set; }
         public string VchBeca { get; set; }
+        public Guid UidPrefijo { get; set; }
         public string VchTelefono { get; set; }
-
+        
+        
+        public string VchEstatus { get; set; }
     }
 }

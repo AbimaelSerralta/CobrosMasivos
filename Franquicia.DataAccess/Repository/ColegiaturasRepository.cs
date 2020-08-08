@@ -99,7 +99,7 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@DtFHInicio", SqlDbType.DateTime);
                 comando.Parameters["@DtFHInicio"].Value = colegiaturas.DtFHInicio;
-                
+
                 comando.Parameters.Add("@BitFHLimite", SqlDbType.Bit);
                 comando.Parameters["@BitFHLimite"].Value = colegiaturas.BitFHLimite;
 
@@ -108,7 +108,7 @@ namespace Franquicia.DataAccess.Repository
                     comando.Parameters.Add("@DtFHLimite", SqlDbType.DateTime);
                     comando.Parameters["@DtFHLimite"].Value = colegiaturas.DtFHLimite;
                 }
-                
+
                 comando.Parameters.Add("@BitFHVencimiento", SqlDbType.Bit);
                 comando.Parameters["@BitFHVencimiento"].Value = colegiaturas.BitFHVencimiento;
 
@@ -120,10 +120,10 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@BitRecargo", SqlDbType.Bit);
                 comando.Parameters["@BitRecargo"].Value = colegiaturas.BitRecargo;
-                
+
                 comando.Parameters.Add("@VchTipoRecargo", SqlDbType.VarChar);
                 comando.Parameters["@VchTipoRecargo"].Value = colegiaturas.VchTipoRecargo;
-                
+
                 comando.Parameters.Add("@DcmRecargo", SqlDbType.Decimal);
                 comando.Parameters["@DcmRecargo"].Value = colegiaturas.DcmRecargo;
 
@@ -202,7 +202,7 @@ namespace Franquicia.DataAccess.Repository
             return Resultado;
         }
 
-        public bool RegistrarColegiaturaFechas(Guid UidColegiatura, DateTime DtFHInicio, DateTime DtFHLimite, DateTime DtFHVencimiento)
+        public bool RegistrarColegiaturaFechas(Guid UidColegiatura, int IntNum, DateTime DtFHInicio, DateTime DtFHLimite, DateTime DtFHVencimiento)
         {
             bool Resultado = false;
 
@@ -214,6 +214,9 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@UidColegiatura", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidColegiatura"].Value = UidColegiatura;
+
+                comando.Parameters.Add("@IntNum", SqlDbType.Int);
+                comando.Parameters["@IntNum"].Value = IntNum;
 
                 comando.Parameters.Add("@DtFHInicio", SqlDbType.DateTime);
                 comando.Parameters["@DtFHInicio"].Value = DtFHInicio;
@@ -249,7 +252,7 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@UidColegiatura", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidColegiatura"].Value = UidColegiatura;
-                
+
                 Resultado = this.ManipulacionDeDatos(comando);
             }
             catch (Exception)
@@ -270,7 +273,6 @@ namespace Franquicia.DataAccess.Repository
 
             DataTable dt = this.Busquedas(query);
 
-            int num = 1;
             foreach (DataRow item in dt.Rows)
             {
                 string FHLimite = "NO TIENE";
@@ -288,14 +290,60 @@ namespace Franquicia.DataAccess.Repository
                 lsColegiaturasFechasGridViewModel.Add(new ColegiaturasFechasGridViewModel()
                 {
                     UidFechaColegiatura = new Guid(item["UidFechaColegiatura"].ToString()),
-                    IntNumero = num++,
+                    IntNumero = int.Parse(item["IntNum"].ToString()),
                     DtFHInicio = DateTime.Parse(item["DtFHInicio"].ToString()),
                     VchFHLimite = FHLimite,
                     VchFHVencimiento = FHVencimiento
-                });;
+                }); ;
             }
 
             return lsColegiaturasFechasGridViewModel;
+        }
+
+        public bool RegistrarPromocionesColegiatura(Guid UidColegiatura, Guid UidPromocion)
+        {
+            bool Resultado = false;
+
+            SqlCommand comando = new SqlCommand();
+            try
+            {
+                comando.CommandType = System.Data.CommandType.StoredProcedure;
+                comando.CommandText = "sp_ColegiaturasPromocionesRegistrar";
+
+                comando.Parameters.Add("@UidColegiatura", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidColegiatura"].Value = UidColegiatura;
+
+                comando.Parameters.Add("@UidPromocion", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidPromocion"].Value = UidPromocion;
+
+                Resultado = this.ManipulacionDeDatos(comando);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return Resultado;
+        }
+        public bool EliminarPromocionesColegiatura(Guid UidColegiatura)
+        {
+            bool Resultado = false;
+
+            SqlCommand comando = new SqlCommand();
+            try
+            {
+                comando.CommandType = System.Data.CommandType.StoredProcedure;
+                comando.CommandText = "sp_ColegiaturasPromocionesEliminar";
+
+                comando.Parameters.Add("@UidColegiatura", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidColegiatura"].Value = UidColegiatura;
+
+                Resultado = this.ManipulacionDeDatos(comando);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return Resultado;
         }
 
         //public bool EliminarEvento(Guid UidCliente)
@@ -364,51 +412,6 @@ namespace Franquicia.DataAccess.Repository
         //            UidTipoEvento = Guid.Parse(item["UidTipoEvento"].ToString()),
         //        };
         //    }
-        //}
-        //public bool RegistrarPromocionesEvento(Guid UidEvento, Guid UidPromociones)
-        //{
-        //    bool Resultado = false;
-
-        //    SqlCommand comando = new SqlCommand();
-        //    try
-        //    {
-        //        comando.CommandType = System.Data.CommandType.StoredProcedure;
-        //        comando.CommandText = "sp_EventosPromocionesRegistrar";
-
-        //        comando.Parameters.Add("@UidEvento", SqlDbType.UniqueIdentifier);
-        //        comando.Parameters["@UidEvento"].Value = UidEvento;
-
-        //        comando.Parameters.Add("@UidPromocion", SqlDbType.UniqueIdentifier);
-        //        comando.Parameters["@UidPromocion"].Value = UidPromociones;
-
-        //        Resultado = this.ManipulacionDeDatos(comando);
-        //    }
-        //    catch (Exception)
-        //    {
-        //        throw;
-        //    }
-        //    return Resultado;
-        //}
-        //public bool EliminarPromocionesEvento(Guid UidEvento)
-        //{
-        //    bool Resultado = false;
-
-        //    SqlCommand comando = new SqlCommand();
-        //    try
-        //    {
-        //        comando.CommandType = System.Data.CommandType.StoredProcedure;
-        //        comando.CommandText = "sp_EventosPromocionesEliminar";
-
-        //        comando.Parameters.Add("@UidEvento", SqlDbType.UniqueIdentifier);
-        //        comando.Parameters["@UidEvento"].Value = UidEvento;
-
-        //        Resultado = this.ManipulacionDeDatos(comando);
-        //    }
-        //    catch (Exception)
-        //    {
-        //        throw;
-        //    }
-        //    return Resultado;
         //}
         //public string ObtenerUrlLiga(string IdReferencia)
         //{
@@ -839,6 +842,170 @@ namespace Franquicia.DataAccess.Repository
         //        };
         //    }
         //}
+        #endregion
+
+        #region Metodos Padres
+        public List<PagosColegiaturasViewModel> CargarPagosColegiaturas(Guid UidCliente, Guid UidUsuario, DateTime FechaInicio)
+        {
+            List<PagosColegiaturasViewModel> lsPagosColegiaturasViewModel = new List<PagosColegiaturasViewModel>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            // ==>SIN ESTATUS<== query.CommandText = "select cl.VchNombreComercial, al.VchMatricula, al.VchNombres, al.VchApePaterno, al.VchApeMaterno,  co.*, fc.UidFechaColegiatura, fc.IntNum, fc.DtFHInicio as fcInicio, fc.DtFHLimite as fcLimite, fc.DtFHVencimiento as fcVencimiento from clientes cl, Colegiaturas co, FechasColegiaturas fc, ColegiaturasAlumnos ca, Alumnos al, Usuarios us, UsuariosAlumnos ua where not exists (select * from LigasUrls lu, PagosTarjeta pt where pt.IdReferencia = lu.IdReferencia and pt.VchEstatus = 'approved' and lu.UidFechaColegiatura = fc.UidFechaColegiatura) and cl.UidCliente = co.UidCliente and co.UidColegiatura = fc.UidColegiatura and ca.UidColegiatura = co.UidColegiatura and ca.UidAlumno = al.UidAlumno and ua.UidUsuario = us.UidUsuario and ua.UidAlumno = al.UidAlumno and cl.UidCliente = '" + UidCliente + "' and us.UidUsuario = '" + UidUsuario + "' order by al.VchMatricula";
+            query.CommandText = "select cl.VchNombreComercial, al.VchMatricula, al.VchNombres, al.VchApePaterno, al.VchApeMaterno, al.BitBeca, al.VchTipoBeca, al.DcmBeca, co.*, fc.UidFechaColegiatura, fc.IntNum, fc.DtFHInicio as fcInicio, fc.DtFHLimite as fcLimite, fc.DtFHVencimiento as fcVencimiento, efc.VchDescripcion as EstatusFechas from clientes cl, Colegiaturas co, FechasColegiaturas fc, ColegiaturasAlumnos ca, Alumnos al, Usuarios us, UsuariosAlumnos ua, EstatusFechasColegiaturas efc where not exists (select * from LigasUrls lu, PagosTarjeta pt where pt.IdReferencia = lu.IdReferencia and pt.VchEstatus = 'approved' and lu.UidFechaColegiatura = fc.UidFechaColegiatura) and efc.UidEstatusFechaColegiatura = fc.UidEstatusFechaColegiatura and cl.UidCliente = co.UidCliente and co.UidColegiatura = fc.UidColegiatura and ca.UidColegiatura = co.UidColegiatura and ca.UidAlumno = al.UidAlumno and ua.UidUsuario = us.UidUsuario and ua.UidAlumno = al.UidAlumno and cl.UidCliente = '" + UidCliente + "' and us.UidUsuario = '" + UidUsuario + "' order by al.VchMatricula";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                string FHLimite = "NO TIENE";
+                string FHVencimiento = "NO TIENE";
+                bool FHVence = false;
+
+                bool blpagar = false;
+
+                string VchColor = "#007bff";
+
+                if (!string.IsNullOrEmpty(item["EstatusFechas"].ToString()))
+                {
+                    switch (item["EstatusFechas"].ToString())
+                    {
+                        case "VIGENTE":
+                            blpagar = true;
+                            VchColor = "#4caf50 ";
+                            break;
+                        case "VENCIDO":
+                            VchColor = "#f55145 ";
+                            break;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(item["fcLimite"].ToString()))
+                {
+                    FHLimite = DateTime.Parse(item["fcLimite"].ToString()).ToString("dd/MM/yyyy");
+                }
+                if (!string.IsNullOrEmpty(item["fcVencimiento"].ToString()))
+                {
+                    FHVencimiento = DateTime.Parse(item["fcVencimiento"].ToString()).ToString("dd/MM/yyyy");
+                    FHVence = true;
+                }
+
+                if (FHVence)
+                {
+                    if (FechaInicio >= DateTime.Parse(item["fcInicio"].ToString()) && FechaInicio <= DateTime.Parse(item["fcVencimiento"].ToString()))
+                    {
+                        lsPagosColegiaturasViewModel.Add(new PagosColegiaturasViewModel()
+                        {
+                            UidFechaColegiatura = Guid.Parse(item["UidFechaColegiatura"].ToString()),
+                            VchIdentificador = item["VchIdentificador"].ToString(),
+                            DcmImporte = decimal.Parse(item["DcmImporte"].ToString()),
+                            UidColegiatura = Guid.Parse(item["UidColegiatura"].ToString()),
+                            VchNum = int.Parse(item["IntNum"].ToString()) + " de " + int.Parse(item["IntCantPagos"].ToString()),
+                            DtFHInicio = DateTime.Parse(item["fcInicio"].ToString()),
+                            VchFHLimite = FHLimite,
+                            VchFHVencimiento = FHVencimiento,
+                            VchEstatusFechas = item["EstatusFechas"].ToString(),
+                            VchColor = VchColor,
+                            BitRecargo = bool.Parse(item["BitRecargo"].ToString()),
+                            VchTipoRecargo = item["VchTipoRecargo"].ToString(),
+                            DcmRecargo = decimal.Parse(item["DcmRecargo"].ToString()),
+
+                            VchMatricula = item["VchMatricula"].ToString(),
+                            VchNombres = item["VchNombres"].ToString(),
+                            VchApePaterno = item["VchApePaterno"].ToString(),
+                            VchApeMaterno = item["VchApeMaterno"].ToString(),
+                            BitBeca = bool.Parse(item["BitBeca"].ToString()),
+                            VchTipoBeca = item["VchTipoBeca"].ToString(),
+                            DcmBeca = decimal.Parse(item["DcmBeca"].ToString()),
+
+                            blPagar = blpagar
+                        });
+                    }
+                }
+                else
+                {
+                    if (FechaInicio >= DateTime.Parse(item["fcInicio"].ToString()))
+                    {
+                        lsPagosColegiaturasViewModel.Add(new PagosColegiaturasViewModel()
+                        {
+                            UidFechaColegiatura = Guid.Parse(item["UidFechaColegiatura"].ToString()),
+                            VchIdentificador = item["VchIdentificador"].ToString(),
+                            DcmImporte = decimal.Parse(item["DcmImporte"].ToString()),
+                            UidColegiatura = Guid.Parse(item["UidColegiatura"].ToString()),
+                            VchNum = int.Parse(item["IntNum"].ToString()) + " de " + int.Parse(item["IntCantPagos"].ToString()),
+                            DtFHInicio = DateTime.Parse(item["fcInicio"].ToString()),
+                            VchFHLimite = FHLimite,
+                            VchFHVencimiento = FHVencimiento,
+                            VchEstatusFechas = item["EstatusFechas"].ToString(),
+                            VchColor = VchColor,
+                            BitRecargo = bool.Parse(item["BitRecargo"].ToString()),
+                            VchTipoRecargo = item["VchTipoRecargo"].ToString(),
+                            DcmRecargo = decimal.Parse(item["DcmRecargo"].ToString()),
+
+                            VchMatricula = item["VchMatricula"].ToString(),
+                            VchNombres = item["VchNombres"].ToString(),
+                            VchApePaterno = item["VchApePaterno"].ToString(),
+                            VchApeMaterno = item["VchApeMaterno"].ToString(),
+                            BitBeca = bool.Parse(item["BitBeca"].ToString()),
+                            VchTipoBeca = item["VchTipoBeca"].ToString(),
+                            DcmBeca = decimal.Parse(item["DcmBeca"].ToString()),
+
+                            blPagar = blpagar
+                        });
+                    }
+                }
+            }
+
+            return lsPagosColegiaturasViewModel;
+        }
+
+        public bool EliminarLigaColegiatura(string IdReferencia)
+        {
+            bool Resultado = false;
+
+            SqlCommand comando = new SqlCommand();
+            try
+            {
+                comando.CommandType = System.Data.CommandType.StoredProcedure;
+                comando.CommandText = "sp_ColegiaturasLigaEliminar";
+
+                comando.Parameters.Add("@IdReferencia", SqlDbType.VarChar);
+                comando.Parameters["@IdReferencia"].Value = IdReferencia;
+
+                Resultado = this.ManipulacionDeDatos(comando);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return Resultado;
+        }
+        #endregion
+
+
+        #region Procesos Automaticos
+        public bool ActualizarEstatusFechasPagos(DateTime Fecha)
+        {
+            bool Resultado = false;
+
+            SqlCommand comando = new SqlCommand();
+            try
+            {
+                comando.CommandType = System.Data.CommandType.StoredProcedure;
+                comando.CommandText = "sp_ColegiaturasFechasActualizarAutomatico";
+
+                comando.Parameters.Add("@Fecha", SqlDbType.Date);
+                comando.Parameters["@Fecha"].Value = Fecha;
+
+                Resultado = this.ManipulacionDeDatos(comando);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return Resultado;
+        }
         #endregion
     }
 }

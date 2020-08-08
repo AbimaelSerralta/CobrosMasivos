@@ -34,10 +34,21 @@ namespace Franquicia.Bussiness
             set { _prefijosTelefonicosRepository = value; }
         }
 
+        private ValidacionesRepository _validacionesRepository = new ValidacionesRepository();
+        public ValidacionesRepository validacionesRepository
+        {
+            get { return _validacionesRepository; }
+            set { _validacionesRepository = value; }
+        }
+
         public List<Padres> lsPadres = new List<Padres>();
-        
+
         public List<Padres> lsActualizarPadres = new List<Padres>();
-                
+
+        public List<Alumnos> lsExcelInsertarAlumnos = new List<Alumnos>();
+        public List<PadresGridViewModel> lsExcelInsertar = new List<PadresGridViewModel>();
+        public List<PadresGridViewModel> lsExcelErrores = new List<PadresGridViewModel>();
+
         #region MetodosUsuarios
         public void CargarPadres(Guid UidCliente, Guid UidTipoPerfil)
         {
@@ -53,7 +64,7 @@ namespace Franquicia.Bussiness
             string Telefono, Guid UidPrefijo, Guid UidCliente)
         {
             bool result = false;
-            if (padresRepository.RegistrarUsuarios(
+            if (padresRepository.RegistrarPadres(
                 new Padres
                 {
                     UidUsuario = UidUsuario,
@@ -178,5 +189,153 @@ namespace Franquicia.Bussiness
         }
         #endregion
 
+
+        #region METODOS EXCEL
+
+        #region Padres
+        public void ValidarExcelToList(DataTable dataTable, Guid UidCliente)
+        {
+            lsExcelErrores.Clear();
+            lsExcelInsertar.Clear();
+
+            foreach (DataRow item in dataTable.Rows)
+            {
+                if (!string.IsNullOrEmpty(item["NOMBRE(S)"].ToString()) && !string.IsNullOrEmpty(item["APEPATERNO"].ToString()) &&
+                    !string.IsNullOrEmpty(item["APEMATERNO"].ToString()) && !string.IsNullOrEmpty(item["CORREO"].ToString()) &&
+                    !string.IsNullOrEmpty(item["CELULAR"].ToString()))
+                {
+                    bool error = false;
+                    bool errorMatricula = false;
+
+                    List<string> lsErrorMatricula = new List<string>();
+
+                    string regexCorreo = @"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}" + @"\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\" + @".)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$";
+                    Regex reCorreo = new Regex(regexCorreo);
+
+                    if (reCorreo.IsMatch(item["CORREO"].ToString()))
+                    {
+                        if (item["CELULAR"].ToString().Contains("(") && item["CELULAR"].ToString().Contains("+") && item["CELULAR"].ToString().Contains(")"))
+                        {
+                            string output = item["CELULAR"].ToString().Split('(', ')')[1];
+                            prefijosTelefonicosRepository.ValidarPrefijoTelefonico(output);
+
+                            if (item["CELULAR"].ToString().Split('(', ')')[2].Count() == 10)
+                            {
+                                if (prefijosTelefonicosRepository.prefijosTelefonicos.UidPrefijo != null && prefijosTelefonicosRepository.prefijosTelefonicos.UidPrefijo != Guid.Empty)
+                                {
+                                    if (!string.IsNullOrEmpty(item["MATRICULA(S)"].ToString()))
+                                    {
+                                        string[] matriculas = Regex.Split(item["MATRICULA(S)"].ToString().Trim().ToUpper(), ",");
+
+                                        for (int i = 0; i < matriculas.Length; i++)
+                                        {
+                                            var DataAlumno = validacionesRepository.ExisteAlumno(matriculas[i].Trim(), UidCliente);
+
+                                            if (DataAlumno.Item1)
+                                            {
+                                                if (validacionesRepository.ExisteAlumnoAsociado(Guid.Parse(DataAlumno.Item2)))
+                                                {
+                                                    errorMatricula = true;
+                                                }
+                                                else
+                                                {
+                                                    lsExcelInsertarAlumnos.Add(new Alumnos
+                                                    {
+                                                        UidAlumno = Guid.Parse(DataAlumno.Item2)
+                                                    });
+                                                }
+                                            }
+                                            else
+                                            {
+                                                lsErrorMatricula.Add(matriculas[i].Trim());
+                                                errorMatricula = true;
+                                            }
+                                        }
+                                    }
+
+                                    lsExcelInsertar.Add(new PadresGridViewModel()
+                                    {
+                                        StrNombre = item["NOMBRE(S)"].ToString(),
+                                        StrApePaterno = item["APEPATERNO"].ToString(),
+                                        StrApeMaterno = item["APEMATERNO"].ToString(),
+                                        StrCorreo = item["CORREO"].ToString(),
+                                        StrTelefono = item["CELULAR"].ToString().Split('(', ')')[2],
+                                        UidPrefijo = prefijosTelefonicosRepository.prefijosTelefonicos.UidPrefijo
+                                    });
+                                }
+                                else
+                                {
+                                    error = true;
+                                }
+                            }
+                            else
+                            {
+                                error = true;
+                            }
+                        }
+                        else
+                        {
+                            error = true;
+                        }
+                    }
+                    else
+                    {
+                        error = true;
+                    }
+
+                    if (error)
+                    {
+                        lsExcelErrores.Add(new PadresGridViewModel()
+                        {
+                            StrNombre = item["NOMBRE(S)"].ToString(),
+                            StrApePaterno = item["APEPATERNO"].ToString(),
+                            StrApeMaterno = item["APEMATERNO"].ToString(),
+                            StrCorreo = item["CORREO"].ToString(),
+                            StrTelefono = item["CELULAR"].ToString(),
+                            VchMatricula = item["MATRICULA(S)"].ToString()
+                        });
+                    }
+
+                    if (errorMatricula)
+                    {
+                        lsExcelErrores.Add(new PadresGridViewModel()
+                        {
+                            StrNombre = item["NOMBRE(S)"].ToString(),
+                            StrApePaterno = item["APEPATERNO"].ToString(),
+                            StrApeMaterno = item["APEMATERNO"].ToString(),
+                            StrCorreo = item["CORREO"].ToString(),
+                            StrTelefono = item["CELULAR"].ToString(),
+                            VchMatricula = string.Join(", ", lsErrorMatricula.ToArray())
+                        });
+                    }
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(item["NOMBRE(S)"].ToString()) || !string.IsNullOrEmpty(item["APEPATERNO"].ToString()) ||
+                        !string.IsNullOrEmpty(item["APEMATERNO"].ToString()) || !string.IsNullOrEmpty(item["CORREO"].ToString()) ||
+                        !string.IsNullOrEmpty(item["CELULAR"].ToString()))
+                    {
+                        lsExcelErrores.Add(new PadresGridViewModel()
+                        {
+                            StrNombre = item["NOMBRE(S)"].ToString(),
+                            StrApePaterno = item["APEPATERNO"].ToString(),
+                            StrApeMaterno = item["APEMATERNO"].ToString(),
+                            StrCorreo = item["CORREO"].ToString(),
+                            StrTelefono = item["CELULAR"].ToString(),
+                            VchMatricula = item["MATRICULA(S)"].ToString()
+                        });
+                    }
+                }
+            }
+        }
+
+        public void AccionPadresExcelToList(List<Alumnos> lsAlumnos, List<PadresGridViewModel> lsAccionPadres, Guid UidSegPerfil, Guid UidSegPerfilEscuela, Guid UidCliente)
+        {
+            padresRepository.AccionPadresExcelToList(lsAlumnos, lsAccionPadres, UidSegPerfil, UidSegPerfilEscuela, UidCliente);
+        }
+        
+        #endregion
+
+        #endregion
     }
 }

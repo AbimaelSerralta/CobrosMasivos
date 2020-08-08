@@ -50,32 +50,49 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select us.*, su.VchUsuario, su.VchContrasenia, sp.VchNombre as Perfil, es.VchDescripcion, es.VchIcono, sp.UidTipoPerfilFranquicia, cl.VchNombreComercial from SegUsuarios su, SegPerfiles sp, Estatus es, ClientesUsuarios cu, Clientes cl, Usuarios us where sp.UidSegPerfil = su.UidSegPerfil and su.UidUsuario = us.UidUsuario and es.UidEstatus = us.UidEstatus and cu.UidCliente = cl.UidCliente and cu.UidUsuario = us.UidUsuario and cl.UidCliente = '" + UidCliente + "' and sp.UidTipoPerfil = '" + UidTipoPerfil + "'";
+            //query.CommandText = "select us.*, su.VchUsuario, su.VchContrasenia, sp.VchNombre as Perfil, es.VchDescripcion, es.VchIcono, sp.UidTipoPerfilFranquicia, cl.VchNombreComercial from SegUsuarios su, SegPerfiles sp, Estatus es, ClientesUsuarios cu, Clientes cl, Usuarios us where sp.UidSegPerfil = su.UidSegPerfil and su.UidUsuario = us.UidUsuario and es.UidEstatus = us.UidEstatus and cu.UidCliente = cl.UidCliente and cu.UidUsuario = us.UidUsuario and cl.UidCliente = '" + UidCliente + "' and sp.UidTipoPerfil = '" + UidTipoPerfil + "'";
+            query.CommandText = "select us.*, su.VchUsuario, su.VchContrasenia, sp.VchNombre as Perfil, es.VchDescripcion, es.VchIcono, sp.UidTipoPerfilFranquicia, cl.VchNombreComercial, pt.Prefijo, tu.VchTelefono from SegUsuarios su, SegPerfiles sp, Estatus es, ClientesUsuarios cu, Clientes cl, Usuarios us, TelefonosUsuarios tu, PrefijosTelefonicos pt where tu.UidUsuario = us.UidUsuario and tu.UidPrefijo = pt.UidPrefijo and sp.UidSegPerfil = su.UidSegPerfil and su.UidUsuario = us.UidUsuario and es.UidEstatus = us.UidEstatus and cu.UidCliente = cl.UidCliente and cu.UidUsuario = us.UidUsuario and su.UidSegPerfilEscuela is not null and cl.UidCliente = '" + UidCliente + "' and sp.UidTipoPerfil = '" + UidTipoPerfil + "'";
 
             DataTable dt = this.Busquedas(query);
 
             foreach (DataRow item in dt.Rows)
             {
+                List<string> lsMatriculas = new List<string>();
+
+                SqlCommand queMatri = new SqlCommand();
+                queMatri.CommandType = CommandType.Text;
+
+                queMatri.CommandText = "select al.VchMatricula, ua.* from Alumnos al, UsuariosAlumnos ua, Usuarios us where al.UidAlumno = ua.UidAlumno and us.UidUsuario = ua.UidUsuario and us.UidUsuario = '" + item["UidUsuario"].ToString() + "'";
+
+                DataTable dtMatri = this.Busquedas(queMatri);
+
+                foreach (DataRow dtMat in dtMatri.Rows)
+                {
+                    lsMatriculas.Add(dtMat["VchMatricula"].ToString());
+                }
+
                 lsPadres.Add(new Padres()
                 {
-                    UidUsuario = new Guid(item["UidUsuario"].ToString()),
+                    UidUsuario = Guid.Parse(item["UidUsuario"].ToString()),
                     StrNombre = item["VchNombre"].ToString(),
                     StrApePaterno = item["VchApePaterno"].ToString(),
                     StrApeMaterno = item["VchApeMaterno"].ToString(),
                     StrCorreo = item["VchCorreo"].ToString(),
-                    UidEstatus = new Guid(item["UidEstatus"].ToString()),
+                    UidEstatus = Guid.Parse(item["UidEstatus"].ToString()),
                     VchNombreComercial = item["VchNombreComercial"].ToString(),
                     VchUsuario = item["VchUsuario"].ToString(),
                     VchContrasenia = item["VchContrasenia"].ToString(),
                     VchNombrePerfil = item["Perfil"].ToString(),
                     VchDescripcion = item["VchDescripcion"].ToString(),
-                    VchIcono = item["VchIcono"].ToString()
+                    VchIcono = item["VchIcono"].ToString(),
+                    StrTelefono = "(" + item["Prefijo"].ToString() + ")" + item["VchTelefono"].ToString(),
+                    VchMatricula = string.Join(", ", lsMatriculas.ToArray())
                 });
             }
 
             return lsPadres;
         }
-        public bool RegistrarUsuarios(Padres usuariosCompletos, Guid UidSegPerfilEscuela, TelefonosUsuarios telefonosUsuarios, Guid UidCliente)
+        public bool RegistrarPadres(Padres usuariosCompletos, Guid UidSegPerfilEscuela, TelefonosUsuarios telefonosUsuarios, Guid UidCliente)
         {
             bool Resultado = false;
 
@@ -116,7 +133,7 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@VchTelefono", SqlDbType.VarChar, 50);
                 comando.Parameters["@VchTelefono"].Value = telefonosUsuarios.VchTelefono;
-                                
+
                 comando.Parameters.Add("@UidPrefijo", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidPrefijo"].Value = telefonosUsuarios.UidPrefijo;
 
@@ -333,11 +350,11 @@ namespace Franquicia.DataAccess.Repository
 
                 foreach (DataRow item in this.Busquedas(comando).Rows)
                 {
-                    padres.UidUsuario = new Guid(item["UidUsuario"].ToString());
+                    padres.UidUsuario = Guid.Parse(item["UidUsuario"].ToString());
                     padres.StrNombre = item["VchNombre"].ToString();
-                    franquiciatarios.UidFranquiciatarios = new Guid(item["UidFranquiciatarios"].ToString());
+                    franquiciatarios.UidFranquiciatarios = Guid.Parse(item["UidFranquiciatarios"].ToString());
                     franquiciatarios.VchNombreComercial = item["Franquicia"].ToString();
-                    clientes.UidCliente = new Guid(item["UidCliente"].ToString());
+                    clientes.UidCliente = Guid.Parse(item["UidCliente"].ToString());
                     clientes.VchNombreComercial = item["Cliente"].ToString();
                 }
 
@@ -401,12 +418,12 @@ namespace Franquicia.DataAccess.Repository
                 {
                     padres = new Padres()
                     {
-                        UidUsuario = new Guid(item["UidUsuario"].ToString()),
+                        UidUsuario = Guid.Parse(item["UidUsuario"].ToString()),
                         StrNombre = item["VchNombre"].ToString(),
                         StrApePaterno = item["VchApePaterno"].ToString(),
                         StrApeMaterno = item["VchApeMaterno"].ToString(),
                         StrCorreo = item["VchCorreo"].ToString(),
-                        UidEstatus = new Guid(item["UidEstatus"].ToString()),
+                        UidEstatus = Guid.Parse(item["UidEstatus"].ToString()),
                         VchUsuario = item["VchUsuario"].ToString(),
                         VchNombrePerfil = item["Perfil"].ToString(),
                         VchDescripcion = item["VchDescripcion"].ToString(),
@@ -440,12 +457,12 @@ namespace Franquicia.DataAccess.Repository
 
                 foreach (DataRow item in this.Busquedas(comando).Rows)
                 {
-                    padres.UidUsuario = new Guid(item["UidUsuario"].ToString());
+                    padres.UidUsuario = Guid.Parse(item["UidUsuario"].ToString());
                     padres.StrNombre = item["VchNombre"].ToString();
                     padres.StrApePaterno = item["VchApePaterno"].ToString();
                     padres.StrApeMaterno = item["VchApeMaterno"].ToString();
                     padres.StrCorreo = item["VchCorreo"].ToString();
-                    padres.UidEstatus = new Guid(item["UidEstatus"].ToString());
+                    padres.UidEstatus = Guid.Parse(item["UidEstatus"].ToString());
                     padres.VchUsuario = item["VchUsuario"].ToString();
                     padres.VchContrasenia = item["VchContrasenia"].ToString();
                 }
@@ -482,5 +499,161 @@ namespace Franquicia.DataAccess.Repository
         }
         #endregion
 
+
+        #region METODOS EXCEL
+
+        #region Padres
+        public bool AccionPadresExcelToList(List<Alumnos> lsAlumnos, List<PadresGridViewModel> lsAccionPadres, Guid UidSegPerfil, Guid UidSegPerfilEscuela, Guid UidCliente)
+        {
+            bool result = false;
+
+            foreach (var item in lsAccionPadres)
+            {
+                Guid UidUsuario = Guid.Empty;
+                string Usuario = string.Empty;
+                string Password = string.Empty;
+
+                SqlCommand query = new SqlCommand();
+                query.CommandType = CommandType.Text;
+
+                query.CommandText = "select * from usuarios where VchCorreo = '" + item.StrCorreo.ToString() + "'";
+
+                DataTable exist = this.Busquedas(query);
+
+                if (exist.Rows.Count >= 1)
+                {
+                    foreach (DataRow itemExist in exist.Rows)
+                    {
+                        UidUsuario = Guid.Parse(itemExist["UidUsuario"].ToString());
+
+                        SqlCommand comando = new SqlCommand();
+
+                        comando.CommandType = System.Data.CommandType.StoredProcedure;
+                        comando.CommandText = "sp_PadresExcelActualizar";
+
+                        comando.Parameters.Add("@UidUsuario", SqlDbType.UniqueIdentifier);
+                        comando.Parameters["@UidUsuario"].Value = UidUsuario;
+
+                        comando.Parameters.Add("@StrNombre", SqlDbType.VarChar, 50);
+                        comando.Parameters["@StrNombre"].Value = item.StrNombre;
+
+                        comando.Parameters.Add("@StrApePaterno", SqlDbType.VarChar, 50);
+                        comando.Parameters["@StrApePaterno"].Value = item.StrApePaterno;
+
+                        comando.Parameters.Add("@StrApeMaterno", SqlDbType.VarChar, 50);
+                        comando.Parameters["@StrApeMaterno"].Value = item.StrApeMaterno;
+
+                        //===========================TELEFONO==================================================
+
+                        comando.Parameters.Add("@VchTelefono", SqlDbType.VarChar, 50);
+                        comando.Parameters["@VchTelefono"].Value = item.StrTelefono;
+
+                        comando.Parameters.Add("@UidPrefijo", SqlDbType.UniqueIdentifier);
+                        comando.Parameters["@UidPrefijo"].Value = item.UidPrefijo;
+
+                        result = this.ManipulacionDeDatos(comando);
+                    }
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(item.StrNombre) && !string.IsNullOrEmpty(item.StrApePaterno))
+                    {
+                        string[] Descripcion = Regex.Split(item.StrNombre.Trim().ToUpper(), " ");
+                        int numMax = Descripcion.Length;
+                        Usuario = Descripcion[numMax - 1].Substring(0, 1).ToString() + "." + item.StrApePaterno.Trim().ToUpper();
+
+                        SqlCommand quer = new SqlCommand();
+                        quer.CommandType = CommandType.Text;
+                        quer.CommandText = "select VchUsuario from SegUsuarios where VchUsuario = '" + Usuario + "'";
+                        DataTable existUser = this.Busquedas(quer);
+
+                        if (existUser.Rows.Count >= 1)
+                        {
+                            Usuario = Descripcion[numMax - 1].Substring(0, 1).ToString() + "." + item.StrApeMaterno.Trim().ToUpper();
+
+                            SqlCommand que = new SqlCommand();
+                            que.CommandType = CommandType.Text;
+                            que.CommandText = "select VchUsuario from SegUsuarios where VchUsuario = '" + Usuario + "'";
+                            DataTable existUse = this.Busquedas(que);
+
+                            if (existUse.Rows.Count >= 1)
+                            {
+                                DateTime dateTime = DateTime.Now;
+
+                                Usuario = Descripcion[numMax - 1].Substring(0, 1).ToString() + "." + item.StrApePaterno.Trim().ToUpper() + dateTime.ToString("mmssff");
+                            }
+                        }
+                    }
+
+                    Random obj = new Random();
+                    string posibles = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+                    int longitud = posibles.Length;
+                    char letra;
+                    int longitudnuevacadena = 8;
+                    for (int i = 0; i < longitudnuevacadena; i++)
+                    {
+                        letra = posibles[obj.Next(longitud)];
+                        Password += letra.ToString();
+                    }
+
+
+                    if (!string.IsNullOrEmpty(item.StrCorreo))
+                    {
+                        UidUsuario = Guid.NewGuid();
+
+                        result = RegistrarPadres(
+                            new Padres
+                            {
+                                UidUsuario = UidUsuario,
+                                StrNombre = item.StrNombre.Trim().ToUpper(),
+                                StrApePaterno = item.StrApePaterno.Trim().ToUpper(),
+                                StrApeMaterno = item.StrApeMaterno.Trim().ToUpper(),
+                                StrCorreo = item.StrCorreo.Trim().ToUpper(),
+                                VchUsuario = Usuario,
+                                VchContrasenia = Password,
+                                UidSegPerfil = UidSegPerfil
+                            },
+                            UidSegPerfilEscuela,
+                            new TelefonosUsuarios
+                            {
+                                UidTipoTelefono = Guid.Parse("B1055882-BCBA-4AB7-94FA-90E57647E607"),
+                                VchTelefono = item.StrTelefono,
+                                UidPrefijo = item.UidPrefijo
+                            },
+                            UidCliente);
+                    }
+                }
+
+                if (result)
+                {
+                    if (UidUsuario != Guid.Empty)
+                    {
+                        if (lsAlumnos.Count >= 1)
+                        {
+                            foreach (var itAlum in lsAlumnos)
+                            {
+                                SqlCommand comandoAlum = new SqlCommand();
+
+                                comandoAlum.CommandType = System.Data.CommandType.StoredProcedure;
+                                comandoAlum.CommandText = "sp_ClientesAlumnosRegistrar";
+
+                                comandoAlum.Parameters.Add("@UidUsuario", SqlDbType.UniqueIdentifier);
+                                comandoAlum.Parameters["@UidUsuario"].Value = UidUsuario;
+
+                                comandoAlum.Parameters.Add("@UidAlumno", SqlDbType.UniqueIdentifier);
+                                comandoAlum.Parameters["@UidAlumno"].Value = itAlum.UidAlumno;
+
+                                result = this.ManipulacionDeDatos(comandoAlum);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+        #endregion
+
+        #endregion
     }
 }

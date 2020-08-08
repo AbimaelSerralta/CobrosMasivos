@@ -27,10 +27,19 @@ namespace Franquicia.Bussiness
             set { _validacionesRepository = value; }
         }
 
+        private PrefijosTelefonicosRepository _prefijosTelefonicosRepository = new PrefijosTelefonicosRepository();
+        public PrefijosTelefonicosRepository prefijosTelefonicosRepository
+        {
+            get { return _prefijosTelefonicosRepository; }
+            set { _prefijosTelefonicosRepository = value; }
+        }
+
         public List<AlumnosGridViewModel> lsAlumnosGridViewModel = new List<AlumnosGridViewModel>();
         public List<AlumnosGridViewModel> lsSelectAlumnosGridViewModel = new List<AlumnosGridViewModel>();
 
         public List<AlumnosGridViewModel> lsExcelSeleccionar = new List<AlumnosGridViewModel>();
+        public List<AlumnosGridViewModel> lsExcelInsertar = new List<AlumnosGridViewModel>();
+        public List<AlumnosGridViewModel> lsExcelActualizar = new List<AlumnosGridViewModel>();
         public List<AlumnosGridViewModel> lsExcelErrores = new List<AlumnosGridViewModel>();
 
         #region Metodos Alumnos
@@ -43,7 +52,7 @@ namespace Franquicia.Bussiness
             alumnosRepository.alumnosGridViewModel = new AlumnosGridViewModel();
             alumnosRepository.alumnosGridViewModel = lsAlumnosGridViewModel.Find(x => x.UidAlumno == UidAlumno);
         }
-        public bool RegistrarUsuarios(Guid UidAlumno, string Identificador, string Nombre, string ApePaterno, string ApeMaterno, string Matricula, string Correo, bool BitBeca, string TipoBeca, decimal Beca, string Telefono, Guid UidPrefijo, Guid UidCliente)
+        public bool RegistrarAlumno(Guid UidAlumno, string Identificador, string Nombre, string ApePaterno, string ApeMaterno, string Matricula, string Correo, bool BitBeca, string TipoBeca, decimal Beca, string Telefono, Guid UidPrefijo, Guid UidCliente)
         {
             bool result = false;
             if (alumnosRepository.RegistrarAlumno(
@@ -281,6 +290,212 @@ namespace Franquicia.Bussiness
         }
 
         #region Metodos de Excel
+
+        #region Alumnos
+        public void ValidarAlumnosExcelToList(DataTable dataTable)
+        {
+            lsExcelErrores.Clear();
+            lsExcelInsertar.Clear();
+
+            foreach (DataRow item in dataTable.Rows)
+            {
+                if (!string.IsNullOrEmpty(item["IDENTIFICADOR"].ToString()) && !string.IsNullOrEmpty(item["MATRICULA"].ToString())
+                    && !string.IsNullOrEmpty(item["NOMBRE(S)"].ToString()) && !string.IsNullOrEmpty(item["APEPATERNO"].ToString())
+                    && !string.IsNullOrEmpty(item["APEMATERNO"].ToString()) && !string.IsNullOrEmpty(item["ESTATUS"].ToString()))
+                {
+                    bool error = false;
+                    Guid UidEstatus = Guid.Empty;
+                    bool BitBeca = false;
+                    decimal Cantidad = 0;
+
+                    string regexCorreo = @"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}" + @"\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\" + @".)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$";
+                    Regex reCorreo = new Regex(regexCorreo);
+
+                    if (!string.IsNullOrEmpty(item["CORREO"].ToString()))
+                    {
+                        if (reCorreo.IsMatch(item["CORREO"].ToString()))
+                        {
+                        }
+                        else
+                        {
+                            error = true;
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(item["CELULAR"].ToString()))
+                    {
+                        if (item["CELULAR"].ToString().Contains("(") && item["CELULAR"].ToString().Contains("+") && item["CELULAR"].ToString().Contains(")"))
+                        {
+                            string output = item["CELULAR"].ToString().Split('(', ')')[1];
+                            prefijosTelefonicosRepository.ValidarPrefijoTelefonico(output);
+
+                            if (item["CELULAR"].ToString().Split('(', ')')[2].Count() == 10)
+                            {
+                                if (prefijosTelefonicosRepository.prefijosTelefonicos.UidPrefijo != null && prefijosTelefonicosRepository.prefijosTelefonicos.UidPrefijo != Guid.Empty)
+                                {
+
+                                }
+                                else
+                                {
+                                    error = true;
+                                }
+                            }
+                            else
+                            {
+                                error = true;
+                            }
+                        }
+                        else
+                        {
+                            error = true;
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(item["BECA"].ToString()))
+                    {
+                        if (item["BECA"].ToString().ToUpper() == "SI")
+                        {
+                            BitBeca = true;
+
+                            if (!string.IsNullOrEmpty(item["TIPO BECA"].ToString()))
+                            {
+                                if (item["TIPO BECA"].ToString().ToUpper() == "CANTIDAD")
+                                {
+                                    if (decimal.TryParse(item["CANTIDAD"].ToString(), out Cantidad))
+                                    {
+                                        Cantidad = decimal.Parse(item["CANTIDAD"].ToString());
+                                    }
+                                    else
+                                    {
+                                        error = true;
+                                    }
+                                }
+                                else if (item["TIPO BECA"].ToString().ToUpper() == "PORCENTAJE")
+                                {
+                                    if (decimal.TryParse(item["CANTIDAD"].ToString(), out Cantidad))
+                                    {
+                                        if (decimal.Parse(item["CANTIDAD"].ToString()) <= 100)
+                                        {
+                                            Cantidad = decimal.Parse(item["CANTIDAD"].ToString());
+                                        }
+                                        else
+                                        {
+                                            error = true;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        error = true;
+                                    }
+                                }
+                                else
+                                {
+                                    error = true;
+                                }
+                            }
+                            else
+                            {
+                                error = true;
+                            }
+                        }
+                    }
+
+                    string ResultUidEstatus = validacionesRepository.ObtenerUidEstatus(item["ESTATUS"].ToString());
+
+                    if (!string.IsNullOrEmpty(ResultUidEstatus))
+                    {
+                        UidEstatus = Guid.Parse(ResultUidEstatus);
+                    }
+                    else
+                    {
+                        error = true;
+                    }
+
+                    if (error)
+                    {
+                        lsExcelErrores.Add(new AlumnosGridViewModel()
+                        {
+                            VchIdentificador = item["IDENTIFICADOR"].ToString(),
+                            VchMatricula = item["MATRICULA"].ToString(),
+                            VchNombres = item["NOMBRE(S)"].ToString(),
+                            VchApePaterno = item["APEPATERNO"].ToString(),
+                            VchApeMaterno = item["APEMATERNO"].ToString(),
+                            VchCorreo = item["CORREO"].ToString(),
+
+                            VchTelefono = item["CELULAR"].ToString().Split('(', ')')[2],
+                            UidPrefijo = prefijosTelefonicosRepository.prefijosTelefonicos.UidPrefijo,
+                            BitBeca = BitBeca,
+                            VchTipoBeca = item["TIPO BECA"].ToString(),
+                            DcmBeca = Cantidad,
+                            UidEstatus = UidEstatus,
+                            VchDescripcion = item["ESTATUS"].ToString()
+                        });
+                    }
+                    else
+                    {
+                        lsExcelInsertar.Add(new AlumnosGridViewModel()
+                        {
+                            VchIdentificador = item["IDENTIFICADOR"].ToString().ToUpper(),
+                            VchMatricula = item["MATRICULA"].ToString().ToUpper(),
+                            VchNombres = item["NOMBRE(S)"].ToString().ToUpper(),
+                            VchApePaterno = item["APEPATERNO"].ToString().ToUpper(),
+                            VchApeMaterno = item["APEMATERNO"].ToString().ToUpper(),
+                            VchCorreo = item["CORREO"].ToString().ToUpper(),
+
+                            VchTelefono = item["CELULAR"].ToString().Split('(', ')')[2],
+                            UidPrefijo = prefijosTelefonicosRepository.prefijosTelefonicos.UidPrefijo,
+                            BitBeca = BitBeca,
+                            VchTipoBeca = item["TIPO BECA"].ToString().ToUpper(),
+                            DcmBeca = Cantidad,
+                            UidEstatus = UidEstatus,
+                            VchDescripcion = item["ESTATUS"].ToString().ToUpper()
+                        });
+                    }
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(item["IDENTIFICADOR"].ToString()) || !string.IsNullOrEmpty(item["MATRICULA"].ToString())
+                        || !string.IsNullOrEmpty(item["NOMBRE(S)"].ToString()) || !string.IsNullOrEmpty(item["APEPATERNO"].ToString()) ||
+                        !string.IsNullOrEmpty(item["APEMATERNO"].ToString()) || !string.IsNullOrEmpty(item["ESTATUS"].ToString()))
+                    {
+                        bool BitBeca = false;
+
+                        if (!string.IsNullOrEmpty(item["BECA"].ToString()))
+                        {
+                            if (item["BECA"].ToString().ToUpper() == "SI")
+                            {
+                                BitBeca = true;
+                            }
+                        }
+
+                        lsExcelErrores.Add(new AlumnosGridViewModel()
+                        {
+                            VchIdentificador = item["IDENTIFICADOR"].ToString(),
+                            VchMatricula = item["MATRICULA"].ToString(),
+                            VchNombres = item["NOMBRE(S)"].ToString(),
+                            VchApePaterno = item["APEPATERNO"].ToString(),
+                            VchApeMaterno = item["APEMATERNO"].ToString(),
+                            VchCorreo = item["CORREO"].ToString(),
+
+                            VchTelefono = item["CELULAR"].ToString().Split('(', ')')[2],
+                            UidPrefijo = prefijosTelefonicosRepository.prefijosTelefonicos.UidPrefijo,
+                            BitBeca = BitBeca,
+                            VchTipoBeca = item["TIPO BECA"].ToString(),
+                            DcmBeca = decimal.Parse(item["CANTIDAD"].ToString()),
+                            UidEstatus = Guid.Empty,
+                            VchDescripcion = item["ESTATUS"].ToString()
+                        });
+                    }
+                }
+            }
+        }
+        public void AccionAlumnosExcelToList(List<AlumnosGridViewModel> lsAccionAlumnos, Guid UidCliente)
+        {
+            alumnosRepository.AccionAlumnosExcelToList(lsAccionAlumnos, UidCliente);
+        }
+        #endregion
+
+        #region Padres
         public void ValidarExcelToList(DataTable dataTable, Guid UidCliente)
         {
             lsExcelErrores.Clear();
@@ -378,6 +593,8 @@ namespace Franquicia.Bussiness
                 }
             }
         }
+        #endregion
+
         #endregion
 
         #endregion

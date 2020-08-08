@@ -35,7 +35,7 @@ namespace Franquicia.Bussiness
         }
 
         public List<UsuariosCompletos> lsUsuariosCompletos = new List<UsuariosCompletos>();
-        
+
         public List<UsuariosCompletos> lsActualizarUsuarios = new List<UsuariosCompletos>();
 
         public List<LigasUsuariosGridViewModel> lsLigasUsuariosGridViewModel = new List<LigasUsuariosGridViewModel>();
@@ -50,9 +50,10 @@ namespace Franquicia.Bussiness
 
         public List<LigasUsuariosGridViewModel> lsPagoLiga = new List<LigasUsuariosGridViewModel>();
         public List<LigasUsuariosGridViewModel> lsEventoLiga = new List<LigasUsuariosGridViewModel>();
-        
         public List<EventoUsuarioGridViewModel> lsEventoUsuarioGridViewModel = new List<EventoUsuarioGridViewModel>();
         public List<EventoUsuarioGridViewModel> lsSelectEventoUsuarioGridViewModel = new List<EventoUsuarioGridViewModel>();
+
+        public List<LigasUsuariosGridViewModel> lsPagoColegiaturaLiga = new List<LigasUsuariosGridViewModel>();
 
         public void CargarAdministradores(Guid UidTipoPerfil)
         {
@@ -535,7 +536,7 @@ namespace Franquicia.Bussiness
                     VchContrasenia = Password,
                     UidSegPerfil = UidSegPerfil
                 },
-                BitEscuela, 
+                BitEscuela,
                 UidSegPerfilEscuela,
                 new DireccionesUsuarios
                 {
@@ -1706,6 +1707,31 @@ namespace Franquicia.Bussiness
             }
             return result;
         }
+
+        #region Metodos Escuela
+        
+        #region Pagos Padres
+        public void SelectUsuCliColegiatura(Guid UidCliente, Guid UidUsuario)
+        {
+            lsPagoColegiaturaLiga = usuariosCompletosRepository.SelectUsuCliColegiatura(UidCliente, UidUsuario);
+        }
+        public bool GenerarLigasPagosColegiatura(string VchUrl, string VchConcepto, decimal DcmImporte, string IdReferencia, Guid UidUsuario, string VchIdentificador, DateTime DtRegistro, DateTime DtVencimiento, string VchAsunto, Guid UidLigaAsociado, Guid UidPromocion, Guid UidFechaColegiatura, Guid UidPropietario)
+        {
+            Guid UidLigaUrl = Guid.NewGuid();
+
+            bool result = false;
+            if (usuariosCompletosRepository.GenerarLigasPagosColegiatura(
+               UidLigaUrl, VchUrl, VchConcepto, DcmImporte, IdReferencia, UidUsuario, VchIdentificador, DtRegistro, DtVencimiento, VchAsunto, UidLigaAsociado, UidPromocion, UidFechaColegiatura, UidPropietario
+                ))
+            {
+                result = true;
+            }
+            return result;
+        }
+        #endregion
+
+        #endregion 
+        
         #endregion
     }
 }

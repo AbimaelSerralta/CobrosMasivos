@@ -68,7 +68,7 @@
                     <div class="row">
                         <div class="col-lg-12 col-md-12">
                             <div class="card">
-                                <div class="card-header card-header-tabs card-header-primary" style="background:#f33527;padding-top: 0px; padding-bottom: 0px;">
+                                <div class="card-header card-header-tabs card-header-primary" style="background: #326497; padding-top: 0px; padding-bottom: 0px;">
                                     <div class="nav-tabs-navigation">
                                         <div class="nav-tabs-wrapper">
                                             <div class="form-group" style="margin-top: 0px; padding-bottom: 0px;">
@@ -196,7 +196,7 @@
                 <div class="modal-body pt-0" style="padding-bottom: 0px;">
                     <div class="row">
                         <div class="card card-nav-tabs">
-                            <div class="card-header card-header-primary" style="background:#f33527;">
+                            <div class="card-header card-header-primary" style="background: #326497;">
                                 <!-- colors: "header-primary", "header-info", "header-success", "header-warning", "header-danger" -->
                                 <div class="nav-tabs-navigation">
                                     <div class="nav-tabs-wrapper">
@@ -265,18 +265,24 @@
                                                             </asp:Panel>
                                                         </div>
                                                     </div>
-                                                    <div class="form-group col-md-4">
+                                                    <div class="form-group col-md-3">
+                                                        <label for="ddlPeriodicidad" style="color: black;">Periodicidad *</label>
+                                                        <asp:DropDownList ID="ddlPeriodicidad" OnSelectedIndexChanged="ddlPeriodicidad_SelectedIndexChanged" AutoPostBack="true" CssClass="form-control" runat="server">
+                                                        </asp:DropDownList>
+                                                    </div>
+                                                    <div class="form-group col-md-3">
                                                         <label for="txtFHInicio" style="color: black;">F/H Inicio *</label>
                                                         <asp:TextBox ID="txtFHInicio" TextMode="Date" CssClass="form-control" runat="server" />
+                                                        <asp:LinkButton ID="btnCalcular" OnClick="btnCalcular_Click" runat="server" />
                                                     </div>
-                                                    <div class="form-group col-md-4">
+                                                    <div class="form-group col-md-3">
                                                         <asp:CheckBox ID="cbActivarFHL" Text="Fecha Limite" OnCheckedChanged="cbActivarFHL_CheckedChanged" AutoPostBack="true" runat="server" />
 
                                                         <asp:Panel ID="pnlActivarFHL" Enabled="false" Width="100%" runat="server">
                                                             <asp:TextBox ID="txtFHLimite" TextMode="Date" CssClass="form-control" runat="server" />
                                                         </asp:Panel>
                                                     </div>
-                                                    <div class="form-group col-md-4">
+                                                    <div class="form-group col-md-3">
                                                         <asp:CheckBox ID="cbActivarFHV" Text="Fecha Vencimiento" OnCheckedChanged="cbActivarFHV_CheckedChanged" AutoPostBack="true" runat="server" />
 
                                                         <asp:Panel ID="pnlActivarFHV" Enabled="false" Width="100%" runat="server">
@@ -289,9 +295,8 @@
                                                         <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtCantPagos" runat="server" />
                                                     </div>
                                                     <div class="form-group col-md-4">
-                                                        <label for="ddlPeriodicidad" style="color: black;">Periodicidad *</label>
-                                                        <asp:DropDownList ID="ddlPeriodicidad" CssClass="form-control" runat="server">
-                                                        </asp:DropDownList>
+                                                        <label for="ListBoxPromociones" style="color: black; padding-left: 0px;">Promocion(es)</label>
+                                                        <asp:ListBox ID="ListBoxPromociones" runat="server" SelectionMode="Multiple"></asp:ListBox>
                                                     </div>
                                                 </div>
                                             </ContentTemplate>
@@ -623,6 +628,21 @@
         }
         function hideModalMasDetalle() {
             $('#ModalMasDetalle').modal('hide');
+        }
+    </script>
+    <script>
+        function multi() {
+            $('[id*=ListBox]').multiselect({
+                includeSelectAllOption: true
+            });
+        }
+    </script>
+    <script>
+        function button_click(objTextBox, objBtnID) {
+            if (window.event.keyCode != 13) {
+                document.getElementById(objBtnID).focus();
+                document.getElementById(objBtnID).click();
+            }
         }
     </script>
 </asp:Content>

@@ -46,6 +46,13 @@ namespace Franquicia.Bussiness
             set { _clienteCuentaRepository = value; }
         }
 
+        private ClientesRepository _clientesRepository = new ClientesRepository();
+        public ClientesRepository clientesRepository
+        {
+            get { return _clientesRepository; }
+            set { _clientesRepository = value; }
+        }
+
         private bool _BolStatusSesion;
         public bool BolStatusSesion
         {
@@ -289,6 +296,17 @@ namespace Franquicia.Bussiness
                     BolStatusSesion = false;
                 }
             }
+        }
+        #endregion
+
+        #region Metodos Cliente
+        public bool RegistrarLogo(Guid UidCliente, byte[] Imagen)
+        {
+            return clientesRepository.RegistrarLogo(UidCliente, Imagen);
+        }
+        public bool ActualizarLogo(Guid UidCliente, byte[] Imagen)
+        {
+            return clientesRepository.ActualizarLogo(UidCliente, Imagen);
         }
         #endregion
     }

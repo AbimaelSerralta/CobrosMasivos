@@ -5,6 +5,18 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="CPHCaja" runat="server">
     <asp:UpdatePanel runat="server">
         <ContentTemplate>
+            <asp:Panel ID="pnlAlertImportarError" Visible="false" runat="server">
+                <div id="divAlertImportarError" class="alert alert-danger alert-dismissible fade" role="alert" runat="server">
+                    <div class="row">
+                        <asp:Label ID="lblMnsjAlertImportarError" Style="margin-top: 5px; margin-left: 15px;" runat="server" />
+                        <asp:LinkButton ID="btnDescargarError" Visible="false" OnClick="btnDescargarError_Click" Style="padding-bottom: 5px; padding-top: 5px; padding-right: 5px; padding-left: 5px; margin-top: 0px;" class="btn btn-success" runat="server">Descargar Error</asp:LinkButton>
+                        <asp:LinkButton ID="btnMasDetalle" Visible="false" OnClick="btnMasDetalle_Click" Style="padding-bottom: 5px; padding-top: 5px; padding-right: 5px; padding-left: 5px; margin-top: 0px;" class="btn btn-info" runat="server">Más detalle</asp:LinkButton>
+                    </div>
+
+                    <asp:LinkButton ID="btnCloseAlertImportarError" OnClick="btnCloseAlertImportarError_Click" class="close" aria-label="Close" runat="server"><span aria-hidden="true">&times;</span></asp:LinkButton>
+                </div>
+            </asp:Panel>
+
             <asp:Panel ID="pnlAlert" Visible="false" runat="server">
                 <div id="divAlert" class="alert alert-danger alert-dismissible fade" role="alert" runat="server">
                     <asp:Label ID="lblMensajeAlert" runat="server" />
@@ -13,6 +25,30 @@
             </asp:Panel>
         </ContentTemplate>
     </asp:UpdatePanel>
+
+    <asp:UpdatePanel runat="server">
+        <ContentTemplate>
+            <asp:FileUpload ID="fuSelecionarExcel" Style="display: none;" runat="server" />
+
+            <script type="text/javascript">
+                function UploadFile(fileUpload) {
+                    if (fileUpload.value != '') {
+                        var divProgress = document.getElementById("divProgress");
+                        var lblTittleProgress = document.getElementById("lblTittleProgress");
+                        divProgress.style = "block";
+                        lblTittleProgress.innerText = "Importando...";
+
+                        document.getElementById("<%=btnImportarExcel.ClientID %>").click();
+                    }
+                }
+            </script>
+            <asp:Button ID="btnImportarExcel" OnClick="btnImportarExcel_Click" Style="display: none;" Text="Subir" runat="server" />
+        </ContentTemplate>
+        <Triggers>
+            <asp:PostBackTrigger ControlID="btnImportarExcel" />
+        </Triggers>
+    </asp:UpdatePanel>
+
     <asp:UpdatePanel runat="server">
         <ContentTemplate>
             <div class="content">
@@ -20,7 +56,7 @@
                     <div class="row">
                         <div class="col-lg-12 col-md-12">
                             <div class="card">
-                                <div class="card-header card-header-tabs card-header-primary" style="background:#f33527;padding-top: 0px; padding-bottom: 0px;">
+                                <div class="card-header card-header-tabs card-header-primary" style="background: #326497; padding-top: 0px; padding-bottom: 0px;">
                                     <div class="nav-tabs-navigation">
                                         <div class="nav-tabs-wrapper">
                                             <div class="form-group" style="margin-top: 0px; padding-bottom: 0px;">
@@ -29,9 +65,19 @@
                                                 </asp:LinkButton>
                                                 <asp:Label Text="Listado de clientes" runat="server" />
 
-                                                <asp:LinkButton ID="btnNuevo" OnClick="btnNuevo_Click" ToolTip="Agregar clientes." class="btn btn-lg btn-success btn-fab btn-fab-mini btn-round pull-right" runat="server">
+                                                <div class="pull-right">
+                                                    <asp:LinkButton ID="btnCargarExcel" ToolTip="Importar padres." class="btn btn-lg btn-ligh btn-fab btn-fab-mini btn-round" runat="server">
+                                                        <i class="material-icons">file_upload</i>
+                                                    </asp:LinkButton>
+                                                    ||
+                                                    <asp:LinkButton ID="btnExportarLista" OnClick="btnExportarLista_Click" ToolTip="Exportar padres." class="btn btn-lg btn-warning btn-fab btn-fab-mini btn-round" runat="server">
+                                                        <i class="material-icons">file_download</i>
+                                                    </asp:LinkButton>
+                                                    ||
+                                                    <asp:LinkButton ID="btnNuevo" OnClick="btnNuevo_Click" ToolTip="Agregar padres." class="btn btn-lg btn-success btn-fab btn-fab-mini btn-round pull-right" runat="server">
                                                         <i class="material-icons">add</i>
-                                                </asp:LinkButton>
+                                                    </asp:LinkButton>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -137,7 +183,7 @@
                 <div class="modal-body pt-0" style="padding-bottom: 0px;">
                     <div class="row">
                         <div class="card card-nav-tabs">
-                            <div class="card-header card-header-primary" style="background:#f33527;">
+                            <div class="card-header card-header-primary" style="background: #326497;">
                                 <!-- colors: "header-primary", "header-info", "header-success", "header-warning", "header-danger" -->
                                 <div class="nav-tabs-navigation">
                                     <div class="nav-tabs-wrapper">
@@ -221,7 +267,7 @@
                                                     </div>
                                                     <div class="form-group col-md-4">
                                                         <label for="txtCorreo" style="color: black; margin-bottom: 12px;">Correo Eléctronico *</label>
-                                                        <asp:TextBox ID="txtCorreo" CssClass="form-control" required="required" runat="server" />
+                                                        <asp:TextBox ID="txtCorreo" CssClass="form-control" runat="server" />
                                                         <asp:Label CssClass="text-danger" runat="server" ID="lblExiste" />
                                                         <asp:Label CssClass="text-success" runat="server" ID="lblNoExiste" />
                                                         <asp:LinkButton ID="btnValidarCorreo" CssClass="pull-right" Text="Validar" OnClick="btnValidarCorreo_Click" runat="server" />
@@ -234,7 +280,7 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label for="txtNumero" style="color: black;">Celular *</label>
-                                                            <asp:TextBox ID="txtNumero" TextMode="Phone" CssClass="form-control" runat="server" />
+                                                            <asp:TextBox ID="txtNumero" TextMode="Phone" MaxLength="10" CssClass="form-control" runat="server" />
                                                             <asp:RegularExpressionValidator ID="REVNumero" runat="server" ControlToValidate="txtNumero" ErrorMessage="* Valores númericos" ForeColor="Red" ValidationExpression="^[0-9]*"></asp:RegularExpressionValidator>
                                                         </div>
                                                     </div>
@@ -537,6 +583,57 @@
             </div>
         </div>
     </div>
+
+    <div id="ModalMasDetalle" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <asp:UpdatePanel runat="server">
+                    <ContentTemplate>
+                        <div class="modal-header">
+                            <h5 class="modal-title" runat="server">
+                                <asp:Label ID="Label1" Text="Más Detalle" runat="server" /></h5>
+                            <%--<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>--%>
+                        </div>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+                <div class="modal-body pt-0" style="padding-bottom: 0px;">
+                    <div class="tab-content">
+                        <asp:UpdatePanel runat="server">
+                            <ContentTemplate>
+                                <asp:Panel ID="Panel1" runat="server">
+                                    <div class="row">
+                                        <div class="card">
+                                            <img src="../Images/LigaSimple.PNG" class="card-img-top" alt="...">
+                                            <div class="card-body">
+                                                <h5 class="card-title"><strong>Campos obligatorios *</strong></h5>
+                                                <p class="card-text">Nombre(s) *.</p>
+                                                <p class="card-text">ApePaterno *.</p>
+                                                <p class="card-text">ApeMaterno *.</p>
+                                                <p class="card-text">Correo * + Formato correcto (ejemplo@ejemplo.com).</p>
+                                                <p class="card-text">Celular *.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </asp:Panel>
+                            </ContentTemplate>
+                        </asp:UpdatePanel>
+                    </div>
+                </div>
+                <asp:UpdatePanel runat="server">
+                    <ContentTemplate>
+                        <div class="modal-footer justify-content-center">
+                            <asp:LinkButton class="close" data-dismiss="modal" aria-label="Close" CssClass="btn btn-success btn-round" runat="server">
+                            <i class="material-icons">check</i> Aceptar
+                            </asp:LinkButton>
+                        </div>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+            </div>
+        </div>
+    </div>
     <!--END MODAL-->
 
     <script>
@@ -555,6 +652,15 @@
 
         function hideModalBusqueda() {
             $('#ModalBusqueda').modal('hide');
+        }
+    </script>
+    <script>
+        function showModalMasDetalle() {
+            $('#ModalMasDetalle').modal('show');
+        }
+
+        function hideModalMasDetalle() {
+            $('#ModalMasDetalle').modal('hide');
         }
     </script>
 </asp:Content>

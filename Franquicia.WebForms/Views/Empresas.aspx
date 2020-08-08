@@ -2,6 +2,8 @@
 
 <%@ MasterType VirtualPath="~/Views/MasterPage.Master" %>
 
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="CPHCaja" runat="server">
@@ -34,7 +36,7 @@
                     <div class="row">
                         <div class="col-lg-12 col-md-12">
                             <div class="card">
-                                <div class="card-header card-header-tabs card-header-primary" style="background:#b9504c; padding-top: 0px; padding-bottom: 0px;">
+                                <div class="card-header card-header-tabs card-header-primary" style="background: #b9504c; padding-top: 0px; padding-bottom: 0px;">
                                     <div class="nav-tabs-navigation">
                                         <div class="nav-tabs-wrapper">
                                             <div class="form-group" style="margin-top: 0px; padding-bottom: 0px;">
@@ -276,14 +278,26 @@
                                                                                         <tr style="background: transparent;">
                                                                                             <td style="border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
                                                                                                 <div class="form-row">
-                                                                                                    <div class="col-sm-6">
+                                                                                                    <div class="col-sm-4">
                                                                                                         <div class="input-group">
+                                                                                                            <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtComicion" runat="server" />
                                                                                                             <asp:TextBox ID="txtComicion" Font-Size="Large" class="form-control" placeholder="123...100" required="required" runat="server" />
                                                                                                             <div class="input-group-prepend">
                                                                                                                 <span class="input-group-text">
                                                                                                                     <i class="material-icons">%</i>
                                                                                                                 </span>
                                                                                                             </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="col-sm-6">
+                                                                                                        <div class="input-group">
+                                                                                                            <div class="input-group-prepend">
+                                                                                                                <span class="input-group-text">
+                                                                                                                    <i class="material-icons">$</i>
+                                                                                                                </span>
+                                                                                                            </div>
+                                                                                                            <asp:TextBox ID="txtApartirDe" ToolTip="A partir del monto ingresado se activará esta promoción." Font-Size="Large" class="form-control" placeholder="A partir de" required="required" runat="server" />
+                                                                                                            <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtApartirDe" runat="server" />
                                                                                                         </div>
                                                                                                     </div>
                                                                                                 </div>

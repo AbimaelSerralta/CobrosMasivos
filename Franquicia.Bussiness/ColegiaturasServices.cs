@@ -20,6 +20,8 @@ namespace Franquicia.Bussiness
 
         public List<ColegiaturasGridViewModel> lsColegiaturasGridViewModel = new List<ColegiaturasGridViewModel>();
 
+        public List<PagosColegiaturasViewModel> lsPagosColegiaturasViewModel = new List<PagosColegiaturasViewModel>();
+
         #region Metodos Cliente
         public List<ColegiaturasGridViewModel> CargarColegiaturas(Guid UidCliente)
         {
@@ -86,11 +88,11 @@ namespace Franquicia.Bussiness
             return result;
         }
 
-        public bool RegistrarColegiaturaFechas(Guid UidColegiatura, DateTime DtFHInicio, DateTime DtFHLimite, DateTime DtFHVencimiento)
+        public bool RegistrarColegiaturaFechas(Guid UidColegiatura, int IntNumero, DateTime DtFHInicio, DateTime DtFHLimite, DateTime DtFHVencimiento)
         {
             bool result = false;
 
-            if (colegiaturasRepository.RegistrarColegiaturaFechas(UidColegiatura, DtFHInicio, DtFHLimite, DtFHVencimiento))
+            if (colegiaturasRepository.RegistrarColegiaturaFechas(UidColegiatura, IntNumero, DtFHInicio, DtFHLimite, DtFHVencimiento))
             {
                 result = true;
             }
@@ -110,37 +112,25 @@ namespace Franquicia.Bussiness
             return colegiaturasRepository.ObtenerFechaColegiatura(UidColegiatura);
         }
 
-        //public bool EliminarHistorialPagoLigas(Guid UidCliente)
-        //{
-        //    bool result = false;
-        //    if (eventosRepository.EliminarEvento(UidCliente))
-        //    {
-        //        result = true;
-        //    }
-        //    return result;
-        //}
-        //public void ObtenerDatosEvento(Guid UidEvento)
-        //{
-        //    eventosRepository.ObtenerDatosEvento(UidEvento);
-        //}
-        //public bool RegistrarPromocionesEvento(Guid UidEvento, Guid UidPromociones)
-        //{
-        //    bool result = false;
-        //    if (eventosRepository.RegistrarPromocionesEvento(UidEvento, UidPromociones))
-        //    {
-        //        result = true;
-        //    }
-        //    return result;
-        //}
-        //public bool EliminarPromocionesEvento(Guid UidEvento)
-        //{
-        //    bool result = false;
-        //    if (eventosRepository.EliminarPromocionesEvento(UidEvento))
-        //    {
-        //        result = true;
-        //    }
-        //    return result;
-        //}
+        public bool RegistrarPromocionesColegiatura(Guid UidColegiatura, Guid UidPromociones)
+        {
+            bool result = false;
+            if (colegiaturasRepository.RegistrarPromocionesColegiatura(UidColegiatura, UidPromociones))
+            {
+                result = true;
+            }
+            return result;
+        }
+        public bool EliminarPromocionesColegiatura(Guid UidColegiatura)
+        {
+            bool result = false;
+            if (colegiaturasRepository.EliminarPromocionesColegiatura(UidColegiatura))
+            {
+                result = true;
+            }
+            return result;
+        }
+
         //public string ObtenerUrlLiga(string IdReferencia)
         //{
         //    return eventosRepository.ObtenerUrlLiga(IdReferencia);
@@ -196,6 +186,31 @@ namespace Franquicia.Bussiness
         //    }
         //    return result;
         //}
+        #endregion
+
+        #region Metodos Padres
+        public List<PagosColegiaturasViewModel> CargarPagosColegiaturas(Guid UidCliente, Guid UidUsuario, DateTime FechaInicio)
+        {
+            lsPagosColegiaturasViewModel = new List<PagosColegiaturasViewModel>();
+            return lsPagosColegiaturasViewModel = colegiaturasRepository.CargarPagosColegiaturas(UidCliente, UidUsuario, FechaInicio);
+        }
+
+        public bool EliminarLigaColegiatura(string IdReferencia)
+        {
+            bool result = false;
+            if (colegiaturasRepository.EliminarLigaColegiatura(IdReferencia))
+            {
+                result = true;
+            }
+            return result;
+        }
+        #endregion
+
+        #region Procesos Automaticos
+        public void ActualizarEstatusFechasPagos(DateTime Fecha)
+        {
+            colegiaturasRepository.ActualizarEstatusFechasPagos(Fecha);
+        }
         #endregion
     }
 }

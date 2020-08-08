@@ -8,6 +8,18 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="CPHCaja" runat="server">
     <asp:UpdatePanel runat="server">
         <ContentTemplate>
+            <asp:Panel ID="pnlAlertImportarError" Visible="false" runat="server">
+                <div id="divAlertImportarError" class="alert alert-danger alert-dismissible fade" role="alert" runat="server">
+                    <div class="row">
+                        <asp:Label ID="lblMnsjAlertImportarError" Style="margin-top: 5px; margin-left: 15px;" runat="server" />
+                        <asp:LinkButton ID="btnDescargarError" Visible="false" OnClick="btnDescargarError_Click" Style="padding-bottom: 5px; padding-top: 5px; padding-right: 5px; padding-left: 5px; margin-top: 0px;" class="btn btn-success" runat="server">Descargar Error</asp:LinkButton>
+                        <asp:LinkButton ID="btnMasDetalle" Visible="false" OnClick="btnMasDetalle_Click" Style="padding-bottom: 5px; padding-top: 5px; padding-right: 5px; padding-left: 5px; margin-top: 0px;" class="btn btn-info" runat="server">Más detalle</asp:LinkButton>
+                    </div>
+
+                    <asp:LinkButton ID="btnCloseAlertImportarError" OnClick="btnCloseAlertImportarError_Click" class="close" aria-label="Close" runat="server"><span aria-hidden="true">&times;</span></asp:LinkButton>
+                </div>
+            </asp:Panel>
+
             <asp:Panel ID="pnlAlert" Visible="false" runat="server">
                 <div id="divAlert" class="alert alert-danger alert-dismissible fade" role="alert" runat="server">
                     <asp:Label ID="lblMensajeAlert" runat="server" />
@@ -16,6 +28,30 @@
             </asp:Panel>
         </ContentTemplate>
     </asp:UpdatePanel>
+
+    <asp:UpdatePanel runat="server">
+        <ContentTemplate>
+            <asp:FileUpload ID="fuSelecionarExcel" Style="display: none;" runat="server" />
+
+            <script type="text/javascript">
+                function UploadFile(fileUpload) {
+                    if (fileUpload.value != '') {
+                        var divProgress = document.getElementById("divProgress");
+                        var lblTittleProgress = document.getElementById("lblTittleProgress");
+                        divProgress.style = "block";
+                        lblTittleProgress.innerText = "Importando...";
+
+                        document.getElementById("<%=btnImportarExcel.ClientID %>").click();
+                    }
+                }
+            </script>
+            <asp:Button ID="btnImportarExcel" OnClick="btnImportarExcel_Click" Style="display: none;" Text="Subir" runat="server" />
+        </ContentTemplate>
+        <Triggers>
+            <asp:PostBackTrigger ControlID="btnImportarExcel" />
+        </Triggers>
+    </asp:UpdatePanel>
+
     <asp:UpdatePanel runat="server">
         <ContentTemplate>
             <div class="content">
@@ -23,7 +59,7 @@
                     <div class="row">
                         <div class="col-lg-12 col-md-12">
                             <div class="card">
-                                <div class="card-header card-header-tabs card-header-primary" style="background:#f33527; padding-top: 0px; padding-bottom: 0px;">
+                                <div class="card-header card-header-tabs card-header-primary" style="background: #326497; padding-top: 0px; padding-bottom: 0px;">
                                     <div class="nav-tabs-navigation">
                                         <div class="nav-tabs-wrapper">
                                             <div class="form-group" style="margin-top: 0px; padding-bottom: 0px;">
@@ -154,11 +190,11 @@
                             <div class="row">
                                 <div class="form-group col-md-4">
                                     <label for="txtIdentificador" style="color: black;">Identificador *</label>
-                                    <asp:TextBox ID="txtIdentificador" CssClass="form-control" required="required" runat="server" />
+                                    <asp:TextBox ID="txtIdentificador" CssClass="form-control" runat="server" />
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="txtMatricula" style="color: black;">Matrícula *</label>
-                                    <asp:TextBox ID="txtMatricula" CssClass="form-control" required="required" runat="server" />
+                                    <asp:TextBox ID="txtMatricula" CssClass="form-control" runat="server" />
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="txtCorreo" style="color: black;">Correo Eléctronico</label>
@@ -169,15 +205,15 @@
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="txtNombre" style="color: black;">Nombre *</label>
-                                    <asp:TextBox ID="txtNombre" CssClass="form-control" required="required" runat="server" />
+                                    <asp:TextBox ID="txtNombre" CssClass="form-control" runat="server" />
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="txtApePaterno" style="color: black;">Apellido Paterno *</label>
-                                    <asp:TextBox ID="txtApePaterno" CssClass="form-control" required="required" runat="server" />
+                                    <asp:TextBox ID="txtApePaterno" CssClass="form-control" runat="server" />
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="txtApeMaterno" style="color: black;">Apellido Materno *</label>
-                                    <asp:TextBox ID="txtApeMaterno" CssClass="form-control" required="required" runat="server" />
+                                    <asp:TextBox ID="txtApeMaterno" CssClass="form-control" runat="server" />
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="ddlPrefijo" style="color: black;">Código pais</label>
@@ -370,6 +406,57 @@
             </div>
         </div>
     </div>
+
+    <div id="ModalMasDetalle" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <asp:UpdatePanel runat="server">
+                    <ContentTemplate>
+                        <div class="modal-header">
+                            <h5 class="modal-title" runat="server">
+                                <asp:Label ID="Label1" Text="Más Detalle" runat="server" /></h5>
+                            <%--<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>--%>
+                        </div>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+                <div class="modal-body pt-0" style="padding-bottom: 0px;">
+                    <div class="tab-content">
+                        <asp:UpdatePanel runat="server">
+                            <ContentTemplate>
+                                <asp:Panel ID="Panel1" runat="server">
+                                    <div class="row">
+                                        <div class="card">
+                                            <img src="../Images/LigaSimple.PNG" class="card-img-top" alt="...">
+                                            <div class="card-body">
+                                                <h5 class="card-title"><strong>Campos obligatorios *</strong></h5>
+                                                <p class="card-text">Nombre(s) *.</p>
+                                                <p class="card-text">ApePaterno *.</p>
+                                                <p class="card-text">ApeMaterno *.</p>
+                                                <p class="card-text">Correo * + Formato correcto (ejemplo@ejemplo.com).</p>
+                                                <p class="card-text">Celular *.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </asp:Panel>
+                            </ContentTemplate>
+                        </asp:UpdatePanel>
+                    </div>
+                </div>
+                <asp:UpdatePanel runat="server">
+                    <ContentTemplate>
+                        <div class="modal-footer justify-content-center">
+                            <asp:LinkButton class="close" data-dismiss="modal" aria-label="Close" CssClass="btn btn-success btn-round" runat="server">
+                            <i class="material-icons">check</i> Aceptar
+                            </asp:LinkButton>
+                        </div>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+            </div>
+        </div>
+    </div>
     <!--END MODAL-->
 
     <script>
@@ -388,6 +475,15 @@
 
         function hideModalBusqueda() {
             $('#ModalBusqueda').modal('hide');
+        }
+    </script>
+    <script>
+        function showModalMasDetalle() {
+            $('#ModalMasDetalle').modal('show');
+        }
+
+        function hideModalMasDetalle() {
+            $('#ModalMasDetalle').modal('hide');
         }
     </script>
 </asp:Content>

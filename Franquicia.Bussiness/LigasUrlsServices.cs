@@ -20,7 +20,7 @@ namespace Franquicia.Bussiness
 
         public List<LigasUrlsListViewModel> lsLigasUrlsListViewModel = new List<LigasUrlsListViewModel>();
         public List<LigasUrlsGridViewModel> lsLigasUrlsGridViewModel = new List<LigasUrlsGridViewModel>();
-        
+
         public List<LigasUsuariosFinalGridViewModel> lsLigasUsuariosFinalGridViewModel = new List<LigasUsuariosFinalGridViewModel>();
 
         public List<LigasUrlsListViewModel> TotalEnvioLigas(Guid UidCliente)
@@ -93,6 +93,34 @@ namespace Franquicia.Bussiness
 
             return lsLigasUrlsGridViewModel = ligasUrlsRepository.BuscarLigasFranquicia(UidFranquicia, Identificador, Nombre, ApePaterno, ApeMaterno, Asunto, Concepto, ImporteMayor, ImporteMenor, RegistroDesde, RegistroHasta, VencimientoDesde, VencimientoHasta, Estatus);
         }
+        #endregion
+
+        #region Metodos Escuela
+
+        #region ReporteLigasPadres
+        public List<LigasUsuariosFinalGridViewModel> ConsultarLigaPadres(Guid UidCliente)
+        {
+            lsLigasUsuariosFinalGridViewModel = new List<LigasUsuariosFinalGridViewModel>();
+
+            return lsLigasUsuariosFinalGridViewModel = ligasUrlsRepository.ConsultarLigaPadres(UidCliente);
+        }
+        public List<LigasUsuariosFinalGridViewModel> BuscarLigasPadres(Guid UidUsuario, string Identificador, string Asunto, string Concepto, decimal ImporteMayor, decimal ImporteMenor, string RegistroDesde, string RegistroHasta, string VencimientoDesde, string VencimientoHasta, string Estatus)
+        {
+            lsLigasUsuariosFinalGridViewModel = new List<LigasUsuariosFinalGridViewModel>();
+
+            return lsLigasUsuariosFinalGridViewModel = ligasUrlsRepository.BuscarLigasPadres(UidUsuario, Identificador, Asunto, Concepto, ImporteMayor, ImporteMenor, RegistroDesde, RegistroHasta, VencimientoDesde, VencimientoHasta, Estatus);
+        }
+        #endregion
+
+        #region ReporteLigasEscuela
+        public List<LigasUrlsGridViewModel> ConsultarEstatusLigaEscuela(Guid UidCliente)
+        {
+            lsLigasUrlsGridViewModel = new List<LigasUrlsGridViewModel>();
+
+            return lsLigasUrlsGridViewModel = ligasUrlsRepository.ConsultarEstatusLigaEscuela(UidCliente);
+        }
+        #endregion
+
         #endregion
     }
 }

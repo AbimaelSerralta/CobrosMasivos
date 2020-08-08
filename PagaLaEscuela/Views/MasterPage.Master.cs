@@ -1,6 +1,8 @@
 ﻿using Franquicia.Bussiness;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -62,14 +64,17 @@ namespace PagaLaEscuela.Views
                     {
                         if (Session["lblAccMenu"] != null && Session["lblAccMenu"].ToString() != "")
                         {
-                            
+
                             myDIV.Attributes.Add("class", "sidebar-mini");
                         }
                         else
                         {
                             Session["lblAccMenu"] = "";
-                            
+
                         }
+
+                        btnSeleccionarLogo.Attributes.Add("onclick", "document.getElementById('" + fuSelecionarLogo.ClientID + "').click(); return false;");
+                        fuSelecionarLogo.Attributes["onchange"] = "UploadFileLogo(this)";
 
                         manejoSesionServices.perfilesRepository.appWebRepository.ObtenerAppWeb(manejoSesionServices.perfilesRepository.perfiles.UidAppWeb);
                         manejoSesionServices.ObtenerAppWeb();
@@ -100,6 +105,10 @@ namespace PagaLaEscuela.Views
 
                             dlSubMenuCliente.DataSource = manejoSesionServices.lsAccesosPermitidos.Where(x => x.UidAppWeb == new Guid("0D910772-AE62-467A-A7A3-79540F0445CB")).ToList().OrderBy(x => x.IntGerarquia);
                             dlSubMenuCliente.DataBind();
+
+                            lblMnsjImgLogoCliente.Visible = false;
+                            imgLogoCliente.Visible = false;
+                            liMenuClienteEsc.Visible = false;
 
                             if (Session["NombreComercial"] == null)
                             {
@@ -145,6 +154,10 @@ namespace PagaLaEscuela.Views
 
                             lblNombreComercial.Text = "<b>FRANQUICIA:</b>&nbsp;" + manejoSesionServices.usuarioCompletoRepository.franquiciatarios.VchNombreComercial;
 
+                            lblMnsjImgLogoCliente.Visible = false;
+                            imgLogoCliente.Visible = false;
+                            liMenuClienteEsc.Visible = false;
+
                             if (Session["NombreClienteMaster"] == null)
                             {
                                 Session["NombreComercial"] = lblNombreComercial.Text;
@@ -167,7 +180,26 @@ namespace PagaLaEscuela.Views
                         {
                             lblTitleMenu.Text = "Panel Escuela";
 
-                            ViewState["ColorSide"] = "#f33527";
+                            byte[] imagen = manejoSesionServices.clientesRepository.CargarLogo(manejoSesionServices.usuarioCompletoRepository.clientes.UidCliente);
+
+                            if (imagen != null)
+                            {
+                                imgLogoCliente.ImageUrl = "data:image/png;base64," + Convert.ToBase64String(imagen);
+                                imgLogoCliente.DataBind();
+                                ViewState["AccionLogo"] = "Actualizar";
+                            }
+                            else
+                            {
+                                imgLogoCliente.ImageUrl = "../Images/SinLogo2.png";
+                                imgLogoCliente.DataBind();
+                                ViewState["AccionLogo"] = "Registrar";
+                            }
+
+
+                            aMenuClienteEsc.Attributes.Add("class", "dropdown-toggle font-weight-bold");
+                            aMenuClienteEsc.InnerText = manejoSesionServices.usuarioCompletoRepository.clientes.VchNombreComercial;
+
+                            ViewState["ColorSide"] = "#326497";
 
                             liMenuFranquicia.Visible = false;
                             liMenuCliente.Visible = false;
@@ -188,10 +220,15 @@ namespace PagaLaEscuela.Views
                         {
                             lblTitleMenu.Text = "Panel Tutor";
 
-                            ViewState["ColorSide"] = "#00bcd4";
+                            ViewState["ColorSide"] = "#0099d4";
 
                             liMenuFranquicia.Visible = false;
                             liMenuCliente.Visible = false;
+
+                            lblMnsjImgLogoCliente.Visible = false;
+                            imgLogoCliente.Visible = false;
+                            liMenuClienteEsc.Visible = false;
+
 
                             dlMenu.DataSource = manejoSesionServices.lsAccesosPermitidos.Where(x => x.UidAppWeb == new Guid("9C8AD059-A37B-42EE-BF37-FEB7ACA84088")).ToList();
                             dlMenu.DataBind();
@@ -206,6 +243,7 @@ namespace PagaLaEscuela.Views
                     }
                     else
                     {
+                        lblMnsjErrorFu.Text = "";
                     }
                     LblNombreUsuario.Text = manejoSesionServices.usuarioCompletoRepository.usuarioCompleto.StrNombre + " " + manejoSesionServices.usuarioCompletoRepository.usuarioCompleto.StrApePaterno;
                     //Session["UiIdEmpleadoPerfilUsuario"] = manejoSesionServices.CUsuario.UiIdEmpleado;
@@ -346,6 +384,57 @@ namespace PagaLaEscuela.Views
             //{
             //    myDIV.Attributes.Add("class", "sidebar-mini");
             //}
+        }
+
+        protected void btnSubirLogo_Click(object sender, EventArgs e)
+        {
+            if (fuSelecionarLogo.PostedFile.ContentLength <= 12288)
+            {
+                if (ValidarExtencionImagen(Path.GetExtension(fuSelecionarLogo.FileName).ToLower()))
+                {
+                    //Cambia el tamaño de la imagen
+                    System.Drawing.Image FuImg = System.Drawing.Image.FromStream(fuSelecionarLogo.FileContent);
+
+                    MemoryStream ms = new MemoryStream();
+                    FuImg.Save(ms, ImageFormat.Jpeg);
+                    byte[] bmpBytes = ms.ToArray();
+
+                    //El control de imagen carga la imagen desde la ruta y esta es actualizado con el servidor
+                    imgLogoCliente.ImageUrl = "data:image/png;base64," + Convert.ToBase64String(bmpBytes);
+                    imgLogoCliente.DataBind();
+
+                    if (ViewState["AccionLogo"].ToString() == "Registrar")
+                    {
+                        manejoSesionServices.RegistrarLogo(Guid.Parse(Session["UidClienteMaster"].ToString()), bmpBytes);
+                    }
+                    else if(ViewState["AccionLogo"].ToString() == "Actualizar")
+                    {
+                        manejoSesionServices.ActualizarLogo(Guid.Parse(Session["UidClienteMaster"].ToString()), bmpBytes);
+                    }
+                }
+                else
+                {
+                    lblMnsjErrorFu.Text = "Solo se admite los formatos: jpg, png y jpeg.";
+                }
+            }
+            else
+            {
+                lblMnsjErrorFu.Text = "El tamaño del archivo es superior al permitido. (Max. 12.0 KB)";
+            }
+        }
+        public bool ValidarExtencionImagen(string extencion)
+        {
+            bool correcto = false;
+            string[] extensionePerfmitidas = { ".png", ".jpg", ".jpeg" };
+
+            for (int i = 0; i < extensionePerfmitidas.Length; i++)
+            {
+                if (extencion == extensionePerfmitidas[i])
+                {
+                    correcto = true;
+                }
+            }
+            return correcto;
         }
     }
 }

@@ -11,6 +11,7 @@ namespace Franquicia.Domain.ViewModels
     {
         public Guid UidCliente { get; set; }
         public string VchNombreComercial { get; set; }
+        public byte[] Imagen { get; set; }
         
         public string Calle { get; set; }
         public string EntreCalle { get; set; }

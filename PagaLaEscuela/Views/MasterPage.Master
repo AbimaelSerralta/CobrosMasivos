@@ -21,7 +21,7 @@
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title><%= Page.Title %></title>
-    <link rel="shortcut icon" href="../Images/logoCobroscontarjetas.png" />
+    <link rel="shortcut icon" href="../Images/logoPagaLaEscuela.png" />
     <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
     <link href="../assets/css/style2.css" rel="stylesheet" />
@@ -48,11 +48,20 @@
             <ContentTemplate>--%>
         <asp:ScriptManager runat="server" />
 
+        <div id="divProgress" style="display: none" class="PogressModal">
+            <div>
+                <img height="150" width="150" src="../Images/loaderEscuela.gif" alt="imgPagaLaEscuela">
+
+                <br>
+                <span style="color: white;"><asp:Label ID="lblTittleProgress" runat="server" /></span>
+            </div>
+        </div>
+
         <asp:UpdateProgress runat="server">
             <ProgressTemplate>
                 <div class="PogressModal">
                     <div>
-                        <img height="150" width="150" src="../CSSPropio/loader.gif" alt="imgCobrosMasivos" />
+                        <img height="150" width="150" src="../Images/loaderEscuela.gif" alt="imgPagaLaEscuela" />
                         <%--<div class="loader"></div>--%>
                         <br />
                         <asp:Label Text="Espere por favor..." Style="color: white;" runat="server" />
@@ -60,6 +69,24 @@
                 </div>
             </ProgressTemplate>
         </asp:UpdateProgress>
+
+        <asp:UpdatePanel runat="server">
+            <ContentTemplate>
+                <asp:FileUpload ID="fuSelecionarLogo" Style="display: none;" runat="server" />
+
+                <script type="text/javascript">
+                    function UploadFileLogo(fileUpload) {
+                        if (fileUpload.value != '') {
+                            document.getElementById("<%=btnSubirLogo.ClientID %>").click();
+                        }
+                    }
+                </script>
+                <asp:Button ID="btnSubirLogo" OnClick="btnSubirLogo_Click" Style="display: none;" Text="Subir" runat="server" />
+            </ContentTemplate>
+            <Triggers>
+                <asp:PostBackTrigger ControlID="btnSubirLogo" />
+            </Triggers>
+        </asp:UpdatePanel>
 
         <div class="wrapper ">
             <div class="sidebar" data-color="purple" data-background-color="white" data-image="../assets/img/sidebar-1.jpg">
@@ -88,7 +115,7 @@
                                     </ItemTemplate>
                                 </asp:DataList>
                                 <li class="nav-item active-pro ">
-                                    <a class="nav" style="cursor: text;margin-right: 0px;padding-right: 10px;">
+                                    <a class="nav" style="cursor: text; margin-right: 0px; padding-right: 10px;">
                                         <asp:Label CssClass="navbar-text pull-right" ID="lblFecha" Style="color: black;" runat="server" />
 
                                         <asp:Label ID="lblversion" Style="color: black;" runat="server" CssClass="navbar-text pull-right"></asp:Label>
@@ -173,9 +200,31 @@
                                                 </asp:DataList>
                                             </ul>
                                         </li>
-                                        <li>
-                                            <asp:Label ID="lblDescripcionCliente" Style="color: black;" CssClass="navbar-text" runat="server"></asp:Label>
+                                        <li style="padding-right: 5px;">
+                                            <asp:Label ID="lblDescripcionCliente" Visible="false" Style="color: black;" CssClass="navbar-text" runat="server"></asp:Label>
+                                            <asp:Label ID="lblMnsjErrorFu" Style="color: red;" CssClass="navbar-text" runat="server"></asp:Label>
+                                            <asp:Label ID="lblMnsjImgLogoCliente" Style="cursor: help;" ToolTip="Dimención: 245 x 160 &#10;     Tamaño: 12KB" runat="server">
+                                                <i class="material-icons">info_outline</i>
+                                            </asp:Label>
+                                            <asp:Image ID="imgLogoCliente" CssClass="thumbnail img-raised" Width="61" Height="40" runat="server" />
                                         </li>
+
+                                        <li class="dropdown" id="liMenuClienteEsc" runat="server">
+                                            <a id="aMenuClienteEsc" href="#" class="dropdown-toggle font-weight-bold" data-toggle="dropdown" runat="server">&nbsp; COMERCIOS </a>
+                                            <ul class="dropdown-menu">
+                                                <li runat="server">
+                                                    <%--<a class="nav-link" href='<%# Eval("VchUrl") %>'>
+                                                        <i class="material-icons"><%#Eval("VchIcono")%></i>
+                                                        <p><%#Eval("VchNombre")%></p>
+                                                    </a>--%>
+
+                                                    <asp:LinkButton ID="btnSeleccionarLogo" CssClass="nav-link" runat="server">
+                                                        <i class="material-icons"><%#Eval("VchIcono")%></i> Subir Logo
+                                                    </asp:LinkButton>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li></li>
 
                                         <%--<li class="nav-item">
                                     <a class="nav-link" href="#pablo">
@@ -260,7 +309,7 @@
         function sideAction() {
 
             let elm = document.getElementById('myDIV');
-            
+
             if (elm.className === 'sidebar-mini') {
                 elm.className = '';
             } else {

@@ -267,5 +267,66 @@ namespace Franquicia.DataAccess.Repository
 
             return result;
         }
+
+        public string ObtenerUidEstatus(string VchDescripcion)
+        {
+            string result = "";
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select UidEstatus from Estatus where VchDescripcion = '" + VchDescripcion + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                result = item["UidEstatus"].ToString();
+            };
+
+            return result;
+        }
+
+        public Tuple<bool, string> ExisteAlumno(string Matricula, Guid UidCliente)
+        {
+            bool result = false;
+            string UidAlumno = string.Empty;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select * from Alumnos where VchMatricula = '" + Matricula + "' and UidCliente = '" + UidCliente + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            if (dt.Rows.Count >= 1)
+            {
+                foreach (DataRow item in dt.Rows)
+                {
+                    UidAlumno = item["UidAlumno"].ToString();
+                }
+                result = true;
+            }
+
+            return Tuple.Create(result, UidAlumno);
+        }
+        public bool ExisteAlumnoAsociado(Guid UidAlumno)
+        {
+            bool result = false;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select UidUsuarioAlumno from UsuariosAlumnos where UidAlumno = '" + UidAlumno + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            if (dt.Rows.Count >= 1)
+            {
+                result = true;
+            }
+
+            return result;
+        }
     }
 }

@@ -63,6 +63,9 @@
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="PresentationCore" />
+    <Reference Include="RestSharp, Version=106.0.0.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.106.10.1\lib\net452\RestSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System.Security" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -171,13 +174,17 @@
     <Content Include="Images\icoSms.jpg" />
     <Content Include="Images\icoWhats.png" />
     <Content Include="Images\LigaSimple.PNG" />
+    <Content Include="Images\loaderEscuela.gif" />
     <Content Include="Images\logo-cobroscontarjetas.png" />
     <Content Include="Images\logo-compuandsoft.png" />
     <Content Include="Images\logo-mit.png" />
     <Content Include="Images\logoCobroscontarjetas.png" />
     <Content Include="Images\logoCobroscontarjetasLetras.png" />
+    <Content Include="Images\logoPagaLaEscuela.png" />
     <Content Include="Images\mountain.png" />
     <Content Include="Images\Multiple.PNG" />
+    <Content Include="Images\SinLogo.png" />
+    <Content Include="Images\SinLogo2.png" />
     <Content Include="Images\think.png" />
     <Content Include="Multiselect\css\bootstrap-multiselect.css" />
     <Content Include="Multiselect\js\bootstrap-multiselect.min.js" />
@@ -185,6 +192,7 @@
     <Content Include="Views\Alumnos.aspx" />
     <Content Include="Views\CicloEscolar.aspx" />
     <Content Include="Views\Colegiatura.aspx" />
+    <Content Include="Views\Excel\ExportarExcelPadres.aspx" />
     <Content Include="Views\Excel\ExportarExcelAlumnos.aspx" />
     <Content Include="Views\File.aspx" />
     <Content Include="Views\Movimientos.aspx" />
@@ -192,8 +200,11 @@
     <Content Include="Views\Configuracion.aspx" />
     <Content Include="Views\Login.aspx" />
     <Content Include="Views\Pagos.aspx" />
+    <Content Include="Views\Procesos.aspx" />
     <Content Include="Views\Prue.aspx" />
     <Content Include="Views\Pruebas.aspx" />
+    <Content Include="Views\ReporteLigasEscuelas.aspx" />
+    <Content Include="Views\ReporteLigasPadres.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -226,6 +237,13 @@
     </Compile>
     <Compile Include="Views\Colegiatura.aspx.designer.cs">
       <DependentUpon>Colegiatura.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Excel\ExportarExcelPadres.aspx.cs">
+      <DependentUpon>ExportarExcelPadres.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\Excel\ExportarExcelPadres.aspx.designer.cs">
+      <DependentUpon>ExportarExcelPadres.aspx</DependentUpon>
     </Compile>
     <Compile Include="Views\Excel\ExportarExcelAlumnos.aspx.cs">
       <DependentUpon>ExportarExcelAlumnos.aspx</DependentUpon>
@@ -283,6 +301,13 @@
     <Compile Include="Views\Pagos.aspx.designer.cs">
       <DependentUpon>Pagos.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Views\Procesos.aspx.cs">
+      <DependentUpon>Procesos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\Procesos.aspx.designer.cs">
+      <DependentUpon>Procesos.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Views\Prue.aspx.cs">
       <DependentUpon>Prue.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -303,6 +328,20 @@
     </Compile>
     <Compile Include="Views\Pruebas.aspx.designer.cs">
       <DependentUpon>Pruebas.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ReporteLigasEscuelas.aspx.cs">
+      <DependentUpon>ReporteLigasEscuelas.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\ReporteLigasEscuelas.aspx.designer.cs">
+      <DependentUpon>ReporteLigasEscuelas.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ReporteLigasPadres.aspx.cs">
+      <DependentUpon>ReporteLigasPadres.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\ReporteLigasPadres.aspx.designer.cs">
+      <DependentUpon>ReporteLigasPadres.aspx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -501,6 +540,7 @@
     <None Include="packages.config" />
     <Content Include="Views\MasterPage.Master" />
     <Content Include="Views\Prueba.Master" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

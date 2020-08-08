@@ -18,7 +18,7 @@
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Login</title>
-    <link rel="shortcut icon" href="../Images/logoCobroscontarjetas.png" />
+    <link rel="shortcut icon" href="../Images/logoPagaLaEscuela.png" />
 
     <script>
         function button_click(objTextBox, objBtnID) {
@@ -38,7 +38,7 @@
             <ProgressTemplate>
                 <div class="PogressModal" style="top: 0px;">
                     <div>
-                        <img height="150" width="150" src="../CSSPropio/loader.gif" alt="imgCobrosMasivos" />
+                        <img height="150" width="150" src="../Images/loaderEscuela.gif" alt="imgPagaLaEscuela" />
                         <%--<div class="loader"></div>--%>
                         <br />
                         <asp:Label Text="Validando..." Style="color: white;" runat="server" />
@@ -55,7 +55,7 @@
                     <div class="modal-content">
 
                         <div class="col-12 user-img">
-                            <asp:Image src="../Images/logoCobroscontarjetas.png" runat="server" />
+                            <asp:Image src="../Images/logoPagaLaEscuela.png" runat="server" />
                         </div>
 
                         <div class="col-12 form-input">

@@ -19,14 +19,16 @@ namespace Franquicia.Bussiness
 
         public List<LigasUrlsPromocionesModel> lsLigasUrlsPromocionesModel = new List<LigasUrlsPromocionesModel>();
         public List<LigasMultiplePromocionesModel> lsLigasMultiplePromocionesModel = new List<LigasMultiplePromocionesModel>();
-        
+
         public List<FranquiciasCBLPromocionesModel> lsFranquiciasCBLPromocionesModel = new List<FranquiciasCBLPromocionesModel>();
 
         public List<EventosGenerarLigasModel> lsEventosGenerarLigasModel = new List<EventosGenerarLigasModel>();
         public List<EventosPromocionesModel> lsEventosPromocionesModel = new List<EventosPromocionesModel>();
-        
+
+
         public List<SelectPagoLigaModel> lsSelectPagoLigaModel = new List<SelectPagoLigaModel>();
 
+        public List<PromocionesColegiaturaModel> lsPromocionesColegiaturaModel = new List<PromocionesColegiaturaModel>();
         public void CargarPromociones()
         {
             lsPromociones = new List<Promociones>();
@@ -79,7 +81,7 @@ namespace Franquicia.Bussiness
             return lsCBLPromocionesModel = promocionesRepository.CargarPromociones(UidCliente);
         }
 
-        public bool RegistrarPromociones(Guid UidCliente, Guid UidPromocion, decimal DcmComicion)
+        public bool RegistrarPromociones(Guid UidCliente, Guid UidPromocion, decimal DcmComicion, decimal DcmApartirDe)
         {
             bool result = false;
             if (promocionesRepository.RegistrarPromociones(
@@ -87,7 +89,8 @@ namespace Franquicia.Bussiness
                 {
                     UidCliente = UidCliente,
                     UidPromocion = UidPromocion,
-                    DcmComicion = DcmComicion 
+                    DcmComicion = DcmComicion,
+                    DcmApartirDe = DcmApartirDe
                 }))
             {
                 result = true;
@@ -190,13 +193,36 @@ namespace Franquicia.Bussiness
         }
         public void EliminarPromocionesMultiples(int IdUsuario)
         {
-            List<LigasMultiplePromocionesModel> lsLigasMultiplePromocionesModelCopia = lsLigasMultiplePromocionesModel.Where(x=> x.IdUsuario == IdUsuario).ToList();
+            List<LigasMultiplePromocionesModel> lsLigasMultiplePromocionesModelCopia = lsLigasMultiplePromocionesModel.Where(x => x.IdUsuario == IdUsuario).ToList();
 
             foreach (var item in lsLigasMultiplePromocionesModelCopia)
             {
                 lsLigasMultiplePromocionesModel.RemoveAt(lsLigasMultiplePromocionesModel.FindIndex(x => x.IdUsuario == item.IdUsuario));
             }
         }
+        #endregion
+
+
+
+
+        #region Metodos Escuela
+
+        #region Colegiatura
+        public List<PromocionesColegiaturaModel> ObtenerPromocionesColegiatura(Guid UidCliente)
+        {
+            return lsPromocionesColegiaturaModel = promocionesRepository.ObtenerPromocionesColegiatura(UidCliente);
+        }
+        #endregion
+
+        #region Pagos
+        public void CargarPromocionesPagosImporte(Guid UidCliente, Guid UidColegiatura, string Importe)
+        {
+            lsPromocionesColegiaturaModel = new List<PromocionesColegiaturaModel>();
+
+            lsPromocionesColegiaturaModel = promocionesRepository.CargarPromocionesPagosImporte(UidCliente, UidColegiatura, Importe);
+        }
+        #endregion
+
         #endregion
     }
 }

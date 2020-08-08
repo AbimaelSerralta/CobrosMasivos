@@ -213,6 +213,15 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.TextBox txtRecargo;
 
         /// <summary>
+        /// Control ddlPeriodicidad.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlPeriodicidad;
+
+        /// <summary>
         /// Control txtFHInicio.
         /// </summary>
         /// <remarks>
@@ -220,6 +229,15 @@ namespace PagaLaEscuela.Views
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtFHInicio;
+
+        /// <summary>
+        /// Control btnCalcular.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnCalcular;
 
         /// <summary>
         /// Control cbActivarFHL.
@@ -285,13 +303,13 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.TextBox txtCantPagos;
 
         /// <summary>
-        /// Control ddlPeriodicidad.
+        /// Control ListBoxPromociones.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlPeriodicidad;
+        protected global::System.Web.UI.WebControls.ListBox ListBoxPromociones;
 
         /// <summary>
         /// Control btnFiltroLimpiar.

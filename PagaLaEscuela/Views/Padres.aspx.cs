@@ -1,8 +1,11 @@
-﻿using Franquicia.Bussiness;
+﻿using ClosedXML.Excel;
+using Franquicia.Bussiness;
 using Franquicia.Domain.ViewModels;
 using Franquicia.WebForms.Util;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -69,6 +72,9 @@ namespace PagaLaEscuela.Views
 
             if (!IsPostBack)
             {
+                btnCargarExcel.Attributes.Add("onclick", "document.getElementById('" + fuSelecionarExcel.ClientID + "').click(); return false;");
+                fuSelecionarExcel.Attributes["onchange"] = "UploadFile(this)";
+
                 ViewState["gvPadres"] = SortDirection.Ascending;
                 ViewState["gvAlumnos"] = SortDirection.Ascending;
 
@@ -86,7 +92,7 @@ namespace PagaLaEscuela.Views
                 Session["prefijosTelefonicosServices"] = prefijosTelefonicosServices;
                 Session["alumnosServices"] = alumnosServices;
 
-                padresServices.CargarPadres(new Guid(ViewState["UidClienteLocal"].ToString()), new Guid("E39FF705-8A01-4302-829A-7CFB9615CC8F"));
+                padresServices.CargarPadres(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse("E39FF705-8A01-4302-829A-7CFB9615CC8F"));
                 gvPadres.DataSource = padresServices.lsPadres;
                 gvPadres.DataBind();
 
@@ -114,7 +120,7 @@ namespace PagaLaEscuela.Views
                 ddlPais.DataValueField = "UidPais";
                 ddlPais.DataBind();
 
-                perfilesServices.CargarPerfilesClienteDropDownListModel(new Guid(ViewState["UidClienteLocal"].ToString()), new Guid("E39FF705-8A01-4302-829A-7CFB9615CC8F"));
+                perfilesServices.CargarPerfilesClienteDropDownListModel(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse("E39FF705-8A01-4302-829A-7CFB9615CC8F"));
                 ddlPerfil.DataSource = perfilesServices.lsPerfilesDropDownListModel;
                 ddlPerfil.DataTextField = "VchNombre";
                 ddlPerfil.DataValueField = "UidSegPerfil";
@@ -403,7 +409,7 @@ namespace PagaLaEscuela.Views
             #endregion
 
             List<PermisosMenuModel> permisosMenuModels = (List<PermisosMenuModel>)Session["lsAccesosPermitidos"];
-            permisosMenuModels = permisosMenuModels.Where(x => x.UidSegModulo == new Guid("4F6FDB13-85D0-4720-949F-6315FBC23B72")).ToList();
+            permisosMenuModels = permisosMenuModels.Where(x => x.UidSegModulo == Guid.Parse("4F6FDB13-85D0-4720-949F-6315FBC23B72")).ToList();
             foreach (var item in permisosMenuModels)
             {
                 if (ViewState["Accion"].ToString() == "Guardar")
@@ -452,7 +458,7 @@ namespace PagaLaEscuela.Views
                                             alumnosServices.RegistrarClienteAlumnos(UidUsuario, itAlum.UidAlumno);
                                         }
 
-                                        padresServices.CargarPadres(new Guid(ViewState["UidClienteLocal"].ToString()), new Guid("E39FF705-8A01-4302-829A-7CFB9615CC8F"));
+                                        padresServices.CargarPadres(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse("E39FF705-8A01-4302-829A-7CFB9615CC8F"));
                                         gvPadres.DataSource = padresServices.lsPadres;
                                         gvPadres.DataBind();
 
@@ -509,8 +515,8 @@ namespace PagaLaEscuela.Views
                             if (Actualizar)
                             {
                                 if (padresServices.ActualizarPadres(
-                                new Guid(ViewState["UidRequerido"].ToString()), txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), new Guid(ddlEstatus.SelectedValue), txtUsuario.Text.Trim().ToUpper(), txtPassword.Text.Trim(), new Guid("18E9669B-C238-4BCC-9213-AF995644A5A4"),
-                                txtNumero.Text.Trim(), new Guid(ddlPrefijo.SelectedValue), new Guid(ViewState["UidClienteLocal"].ToString())))
+                                Guid.Parse(ViewState["UidRequerido"].ToString()), txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), Guid.Parse(ddlEstatus.SelectedValue), txtUsuario.Text.Trim().ToUpper(), txtPassword.Text.Trim(), Guid.Parse("18E9669B-C238-4BCC-9213-AF995644A5A4"),
+                                txtNumero.Text.Trim(), Guid.Parse(ddlPrefijo.SelectedValue), Guid.Parse(ViewState["UidClienteLocal"].ToString())))
                                 {
                                     if (ddlIncluirDir.SelectedValue == "SI")
                                     {
@@ -558,7 +564,7 @@ namespace PagaLaEscuela.Views
                                         alumnosServices.RegistrarClienteAlumnos(Guid.Parse(ViewState["UidRequerido"].ToString()), itAlum.UidAlumno);
                                     }
 
-                                    padresServices.CargarPadres(new Guid(ViewState["UidClienteLocal"].ToString()), new Guid("E39FF705-8A01-4302-829A-7CFB9615CC8F"));
+                                    padresServices.CargarPadres(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse("E39FF705-8A01-4302-829A-7CFB9615CC8F"));
                                     gvPadres.DataSource = padresServices.lsPadres;
                                     gvPadres.DataBind();
 
@@ -588,7 +594,7 @@ namespace PagaLaEscuela.Views
                     {
                         if (padresServices.AsociarClienteUsuario(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse(ViewState["usuarioCompleto.UidUsuario"].ToString())))
                         {
-                            padresServices.CargarPadres(new Guid(ViewState["UidClienteLocal"].ToString()), new Guid("E39FF705-8A01-4302-829A-7CFB9615CC8F"));
+                            padresServices.CargarPadres(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse("E39FF705-8A01-4302-829A-7CFB9615CC8F"));
                             gvPadres.DataSource = padresServices.lsPadres;
                             gvPadres.DataBind();
 
@@ -619,7 +625,7 @@ namespace PagaLaEscuela.Views
             btnGuardar.Visible = true;
             btnEditar.Visible = false;
             pnlAsosiarUsuario.Visible = true;
-            lblTituloModal.Text = "Registro de Usuario";
+            lblTituloModal.Text = "Registro del Padre";
             btnGuardar.Text = "<i class=" + "material-icons>" + "check </i> Guardar";
 
             ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
@@ -751,7 +757,7 @@ namespace PagaLaEscuela.Views
                 btnGuardar.Visible = true;
                 btnEditar.Visible = false;
                 pnlAsosiarUsuario.Visible = false;
-                lblTituloModal.Text = "Actualizar Usuario";
+                lblTituloModal.Text = "Actualizar Padre";
                 btnGuardar.Text = "<i class=" + "material-icons>" + "refresh </i> Actualizar";
 
                 int index = Convert.ToInt32(e.CommandArgument.ToString());
@@ -812,7 +818,7 @@ namespace PagaLaEscuela.Views
                     pnlIncluirDir.Visible = false;
                 }
 
-                lblTituloModal.Text = "Visualización de Usuario";
+                lblTituloModal.Text = "Visualización del Padre";
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
             }
@@ -1109,7 +1115,7 @@ namespace PagaLaEscuela.Views
 
         protected void btnBuscar_Click(object sender, EventArgs e)
         {
-            padresServices.BuscarUsuariosFinales(new Guid(ViewState["UidClienteLocal"].ToString()), new Guid("E39FF705-8A01-4302-829A-7CFB9615CC8F"), FiltroNombre.Text, FiltroApePaterno.Text, FiltroApeMaterno.Text, FiltroCorreo.Text, Guid.Parse(FiltroEstatus.SelectedValue));
+            padresServices.BuscarUsuariosFinales(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse("E39FF705-8A01-4302-829A-7CFB9615CC8F"), FiltroNombre.Text, FiltroApePaterno.Text, FiltroApeMaterno.Text, FiltroCorreo.Text, Guid.Parse(FiltroEstatus.SelectedValue));
             gvPadres.DataSource = padresServices.lsPadres;
             gvPadres.DataBind();
 
@@ -1299,5 +1305,133 @@ namespace PagaLaEscuela.Views
             gvAlumnos.DataSource = alumnosServices.lsAlumnosGridViewModel;
             gvAlumnos.DataBind();
         }
+
+        #region IMPORTACION DE PADRES
+        protected void btnExportarLista_Click(object sender, EventArgs e)
+        {
+            Session["lsPadres"] = padresServices.lsPadres;
+            Session["lsPadresExcelErrores"] = null;
+            string _open = "window.open('Excel/ExportarExcelPadres.aspx', '_blank');";
+            ScriptManager.RegisterStartupScript(this, this.GetType(), Guid.NewGuid().ToString(), _open, true);
+        }
+        protected void btnDescargarError_Click(object sender, EventArgs e)
+        {
+            Session["lsPadres"] = null;
+            Session["lsPadresExcelErrores"] = padresServices.lsExcelErrores;
+            string _open = "window.open('Excel/ExportarExcelPadres.aspx', '_blank');";
+            ScriptManager.RegisterStartupScript(this, this.GetType(), Guid.NewGuid().ToString(), _open, true);
+        }
+        protected void btnMasDetalle_Click(object sender, EventArgs e)
+        {
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalMasDetalle()", true);
+        }
+        protected void btnCloseAlertImportarError_Click(object sender, EventArgs e)
+        {
+            pnlAlertImportarError.Visible = false;
+            lblMnsjAlertImportarError.Text = "";
+            divAlertImportarError.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
+            Session["lsLigasUsuariosGridViewModelError"] = null;
+        }
+
+        protected void btnImportarExcel_Click(object sender, EventArgs e)
+        {
+            if (fuSelecionarExcel.HasFile)
+            {
+                if (".xlsx" == Path.GetExtension(fuSelecionarExcel.FileName))
+                {
+                    try
+                    {
+                        byte[] buffer = new byte[fuSelecionarExcel.FileBytes.Length];
+                        fuSelecionarExcel.FileContent.Seek(0, SeekOrigin.Begin);
+                        fuSelecionarExcel.FileContent.Read(buffer, 0, Convert.ToInt32(fuSelecionarExcel.FileContent.Length));
+
+                        Stream stream2 = new MemoryStream(buffer);
+
+                        DataTable dt = new DataTable();
+                        using (XLWorkbook workbook = new XLWorkbook(stream2))
+                        {
+                            IXLWorksheet sheet = workbook.Worksheet(1);
+                            bool FirstRow = true;
+                            string readRange = "1:1";
+                            foreach (IXLRow row in sheet.RowsUsed())
+                            {
+                                //If Reading the First Row (used) then add them as column name  
+                                if (FirstRow)
+                                {
+                                    //Checking the Last cellused for column generation in datatable  
+                                    readRange = string.Format("{0}:{1}", 1, row.LastCellUsed().Address.ColumnNumber);
+                                    foreach (IXLCell cell in row.Cells(readRange))
+                                    {
+                                        dt.Columns.Add(cell.Value.ToString());
+                                    }
+                                    FirstRow = false;
+                                }
+                                else
+                                {
+                                    //Adding a Row in datatable  
+                                    dt.Rows.Add();
+                                    int cellIndex = 0;
+                                    //Updating the values of datatable  
+                                    foreach (IXLCell cell in row.Cells(readRange))
+                                    {
+                                        dt.Rows[dt.Rows.Count - 1][cellIndex] = cell.Value.ToString();
+                                        cellIndex++;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (dt.Columns.Contains("NOMBRE(S)".Trim()) && dt.Columns.Contains("APEPATERNO".Trim()) && dt.Columns.Contains("APEMATERNO".Trim())
+                            && dt.Columns.Contains("CORREO".Trim()) && dt.Columns.Contains("CELULAR".Trim()) && dt.Columns.Contains("MATRICULA(S)".Trim()))
+                        {
+                            padresServices.ValidarExcelToList(dt, Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+
+                            if (padresServices.lsExcelInsertar.Count >= 1)
+                            {
+                                padresServices.AccionPadresExcelToList(padresServices.lsExcelInsertarAlumnos, padresServices.lsExcelInsertar, Guid.Parse("18E9669B-C238-4BCC-9213-AF995644A5A4"), Guid.Parse("A4B4F919-FDD2-4076-BD4A-59E4011E71C8"), Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+
+                                pnlAlert.Visible = true;
+                                lblMensajeAlert.Text = "<strong>¡Felicidades! </strong> " + padresServices.lsExcelInsertar.Count() + "padre(s) se ha registrado/actualizado exitosamente.";
+                                divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+
+                                padresServices.CargarPadres(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse("E39FF705-8A01-4302-829A-7CFB9615CC8F"));
+                                gvPadres.DataSource = padresServices.lsPadres;
+                                gvPadres.DataBind();
+                            }
+
+                            if (padresServices.lsExcelErrores.Count >= 1)
+                            {
+                                btnDescargarError.Visible = true;
+                                btnMasDetalle.Visible = false;
+                                pnlAlertImportarError.Visible = true;
+                                lblMnsjAlertImportarError.Text = "<strong>!Lo sentimos¡</strong> algunos padres no se han importado.";
+                                divAlertImportarError.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                            }
+                        }
+                        else
+                        {
+                            btnDescargarError.Visible = false;
+                            btnMasDetalle.Visible = true;
+                            pnlAlertImportarError.Visible = true;
+                            lblMnsjAlertImportarError.Text = "<strong>!Lo sentimos¡</strong> el archivo no tiene las columnas correctas.";
+                            divAlertImportarError.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        pnlAlert.Visible = true;
+                        lblMensajeAlert.Text = ex.Message;
+                        divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                    }
+                }
+                else
+                {
+                    pnlAlert.Visible = true;
+                    lblMensajeAlert.Text = "Solo se admite los formatos xlsx";
+                    divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                }
+            }
+        }
+        #endregion
     }
 }

@@ -11,7 +11,7 @@ using System.Web.UI.WebControls;
 
 namespace PagaLaEscuela.Views.Excel
 {
-    public partial class ExportarExcelAlumnos : System.Web.UI.Page
+    public partial class ExportarExcelPadres : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -19,38 +19,38 @@ namespace PagaLaEscuela.Views.Excel
             {
                 DateTime dateTime = DateTime.Now;
 
-                List<AlumnosGridViewModel> ls = (List<AlumnosGridViewModel>)Session["lsAlumnosGridViewModel"];
-                List<AlumnosGridViewModel> lsError = (List<AlumnosGridViewModel>)Session["lsExcelErrores"];
+                List<Franquicia.Domain.Models.Padres> ls = (List<Franquicia.Domain.Models.Padres>)Session["lsPadres"];
+                List<PadresGridViewModel> lsError = (List<PadresGridViewModel>)Session["lsPadresExcelErrores"];
 
                 if (lsError != null && lsError.Count >= 1)
                 {
-                    gvAlumnos.DataSource = lsError;
-                    gvAlumnos.DataBind();
+                    gvPadres.DataSource = lsError;
+                    gvPadres.DataBind();
 
-                    Expor("Error " + dateTime.ToString("ddMMyyyyHHmmssfff"), gvAlumnos);
+                    Expor("Error " + dateTime.ToString("ddMMyyyyHHmmssfff"), gvPadres);
                 }
                 else
                 {
                     if (ls != null && ls.Count >= 1)
                     {
-                        gvAlumnos.DataSource = ls;
-                        gvAlumnos.DataBind();
+                        gvPadres.DataSource = ls;
+                        gvPadres.DataBind();
 
-                        Expor(dateTime.ToString("ddMMyyyyHHmmssfff"), gvAlumnos);
+                        Expor(dateTime.ToString("ddMMyyyyHHmmssfff"), gvPadres);
                     }
                     else
                     {
-                        List<AlumnosGridViewModel> l = new List<AlumnosGridViewModel>();
+                        List<PadresGridViewModel> l = new List<PadresGridViewModel>();
 
-                        l.Add(new AlumnosGridViewModel
+                        l.Add(new PadresGridViewModel
                         {
                             VchMatricula = ""
                         });
 
-                        gvAlumnos.DataSource = l;
-                        gvAlumnos.DataBind();
+                        gvPadres.DataSource = l;
+                        gvPadres.DataBind();
 
-                        Expor(dateTime.ToString("ddMMyyyyHHmmssfff"), gvAlumnos);
+                        Expor(dateTime.ToString("ddMMyyyyHHmmssfff"), gvPadres);
                     }
                 }
             }
@@ -84,21 +84,8 @@ namespace PagaLaEscuela.Views.Excel
                 {
                     header = gridView.HeaderRow.Cells[j].Text;
 
-                    if (header == "BECA")
-                    {
-                        if (row.Cells[j].Text == "True")
-                        {
-                            dr[header] = "SI";
-                        }
-                        else if (row.Cells[j].Text == "False")
-                        {
-                            dr[header] = "NO";
-                        }
-                    }
-                    else
-                    {
-                        dr[header] = HttpUtility.HtmlDecode(row.Cells[j].Text.Replace("&nbsp;", ""));
-                    }
+                    dr[header] = HttpUtility.HtmlDecode(row.Cells[j].Text.Replace("&nbsp;", ""));
+
                 }
 
                 data.Rows.Add(dr);
@@ -119,7 +106,7 @@ namespace PagaLaEscuela.Views.Excel
             HttpContext.Current.Response.ContentEncoding = System.Text.Encoding.UTF8;
             HttpContext.Current.Response.Cache.SetCacheability(HttpCacheability.NoCache);
             HttpContext.Current.Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-            HttpContext.Current.Response.AddHeader("content-disposition", "attachment;filename= Alumnos" + filename + ".xlsx");
+            HttpContext.Current.Response.AddHeader("content-disposition", "attachment;filename= Padres" + filename + ".xlsx");
 
 
             using (ExcelPackage pack = new ExcelPackage())

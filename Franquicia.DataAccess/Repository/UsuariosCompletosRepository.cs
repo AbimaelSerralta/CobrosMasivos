@@ -4035,6 +4035,105 @@ namespace Franquicia.DataAccess.Repository
             return resultado;
 
         }
+
+        #region Pagos padres
+        public List<LigasUsuariosGridViewModel> SelectUsuCliColegiatura(Guid UidCliente, Guid UidUsuario)
+        {
+            List<LigasUsuariosGridViewModel> lsLigasUsuariosGridViewModel = new List<LigasUsuariosGridViewModel>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select us.*, cl.IdCliente, cl.VchNombreComercial, tu.VchTelefono from TelefonosUsuarios tu, SegUsuarios su, SegPerfiles sp, Estatus es, ClientesUsuarios cu, Clientes cl, Usuarios us where tu.UidUsuario = us.UidUsuario and sp.UidSegPerfil = su.UidSegPerfilEscuela and su.UidUsuario = us.UidUsuario and es.UidEstatus = us.UidEstatus and cu.UidCliente = cl.UidCliente and cu.UidUsuario = us.UidUsuario and cl.UidCliente = '" + UidCliente + "' and us.UidUsuario = '" + UidUsuario + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                lsLigasUsuariosGridViewModel.Add(new LigasUsuariosGridViewModel()
+                {
+                    UidUsuario = new Guid(item["UidUsuario"].ToString()),
+                    IdUsuario = int.Parse(item["IdUsuario"].ToString()),
+                    StrNombre = item["VchNombre"].ToString(),
+                    StrApePaterno = item["VchApePaterno"].ToString(),
+                    StrApeMaterno = item["VchApeMaterno"].ToString(),
+                    StrCorreo = item["VchCorreo"].ToString(),
+                    UidEstatus = new Guid(item["UidEstatus"].ToString()),
+                    StrTelefono = item["VchTelefono"].ToString(),
+                    IdCliente = int.Parse(item["IdCliente"].ToString()),
+                    VchNombreComercial = item["VchNombreComercial"].ToString()
+                });
+            }
+
+            return lsLigasUsuariosGridViewModel;
+        }
+        public bool GenerarLigasPagosColegiatura(Guid UidLigaUrl, string VchUrl, string VchConcepto, decimal DcmImporte, string IdReferencia, Guid UidUsuario, string VchIdentificador, DateTime DtRegistro, DateTime DtVencimiento, string VchAsunto, Guid UidLigaAsociado, Guid UidPromocion, Guid UidFechaColegiatura, Guid UidPropietario)
+        {
+            bool Resultado = false;
+
+            SqlCommand comando = new SqlCommand();
+            try
+            {
+                comando.CommandType = System.Data.CommandType.StoredProcedure;
+                comando.CommandText = "sp_LigasRegistrarPagosPadres";
+
+                comando.Parameters.Add("@UidLigaUrl", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidLigaUrl"].Value = UidLigaUrl;
+
+                comando.Parameters.Add("@VchUrl", SqlDbType.VarChar, 100);
+                comando.Parameters["@VchUrl"].Value = VchUrl;
+
+                comando.Parameters.Add("@VchConcepto", SqlDbType.VarChar, 100);
+                comando.Parameters["@VchConcepto"].Value = VchConcepto;
+
+                comando.Parameters.Add("@DcmImporte", SqlDbType.Decimal);
+                comando.Parameters["@DcmImporte"].Value = DcmImporte;
+
+                comando.Parameters.Add("@IdReferencia", SqlDbType.VarChar, 100);
+                comando.Parameters["@IdReferencia"].Value = IdReferencia;
+
+                comando.Parameters.Add("@UidUsuario", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidUsuario"].Value = UidUsuario;
+
+                comando.Parameters.Add("@VchIdentificador", SqlDbType.VarChar, 50);
+                comando.Parameters["@VchIdentificador"].Value = VchIdentificador;
+
+                comando.Parameters.Add("@DtRegistro", SqlDbType.DateTime);
+                comando.Parameters["@DtRegistro"].Value = DtRegistro;
+
+                comando.Parameters.Add("@DtVencimiento", SqlDbType.DateTime);
+                comando.Parameters["@DtVencimiento"].Value = DtVencimiento;
+
+                comando.Parameters.Add("@VchAsunto", SqlDbType.VarChar, 50);
+                comando.Parameters["@VchAsunto"].Value = VchAsunto;
+
+                if (UidLigaAsociado != Guid.Empty)
+                {
+                    comando.Parameters.Add("@UidLigaAsociado", SqlDbType.UniqueIdentifier);
+                    comando.Parameters["@UidLigaAsociado"].Value = UidLigaAsociado;
+                }
+
+                if (UidPromocion != Guid.Empty)
+                {
+                    comando.Parameters.Add("@UidPromocion", SqlDbType.UniqueIdentifier);
+                    comando.Parameters["@UidPromocion"].Value = UidPromocion;
+                }
+
+                comando.Parameters.Add("@UidFechaColegiatura", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidFechaColegiatura"].Value = UidFechaColegiatura;
+
+                comando.Parameters.Add("@UidPropietario", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidPropietario"].Value = UidPropietario;
+
+                Resultado = this.ManipulacionDeDatos(comando);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return Resultado;
+        }
+        #endregion
         #endregion
     }
 }

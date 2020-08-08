@@ -33,7 +33,7 @@ namespace Franquicia.Bussiness
         {
             return lsPadresComerciosViewModels = pagosPadresRepository.CargarComercios(UidUsuario);
         }
-        
+
         #endregion
     }
 }

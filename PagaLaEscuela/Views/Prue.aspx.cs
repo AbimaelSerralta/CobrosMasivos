@@ -14,10 +14,14 @@ namespace PagaLaEscuela.Views
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            lblReloj.Text = DateTime.Now.ToLongTimeString();
+
             if (!IsPostBack)
             {
                 btnCargarExcel.Attributes.Add("onclick", "document.getElementById('" + AsyncFileUpload2.ClientID + "').click(); return false;");
                 fuSelecionarExcel.Attributes["onchange"] = "UploadFile(this)";
+
+
             }
             else
             {
@@ -159,6 +163,16 @@ namespace PagaLaEscuela.Views
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
             }
+        }
+
+        private void UpdateTimer()
+        {
+            lblReloj.Text = DateTime.Now.ToLongTimeString();
+        }
+
+        protected void tmrRelojInterno_Tick1(object sender, EventArgs e)
+        {
+            UpdateTimer();
         }
     }
 }

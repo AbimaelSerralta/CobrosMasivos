@@ -154,7 +154,8 @@ namespace Franquicia.DataAccess.Repository
                     UidClientePromocion = new Guid(item["UidClientePromocion"].ToString()),
                     UidCliente = new Guid(item["UidCliente"].ToString()),
                     UidPromocion = new Guid(item["UidPromocion"].ToString()),
-                    DcmComicion = decimal.Parse(item["DcmComicion"].ToString())
+                    DcmComicion = decimal.Parse(item["DcmComicion"].ToString()),
+                    DcmApartirDe = decimal.Parse(item["DcmApartirDe"].ToString())
                 });
             }
 
@@ -178,6 +179,9 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@DcmComicion", SqlDbType.Decimal);
                 comando.Parameters["@DcmComicion"].Value = cBLPromocionesModel.DcmComicion;
+                
+                comando.Parameters.Add("@DcmApartirDe", SqlDbType.Decimal);
+                comando.Parameters["@DcmApartirDe"].Value = cBLPromocionesModel.DcmApartirDe;
 
                 Resultado = this.ManipulacionDeDatos(comando);
             }
@@ -443,6 +447,64 @@ namespace Franquicia.DataAccess.Repository
 
             return lsLigasUrlsPromocionesModel;
         }
+        #endregion
+
+
+
+        #region Metodos Escuela
+
+        #region Colegiatura
+        public List<PromocionesColegiaturaModel> ObtenerPromocionesColegiatura(Guid UidColegiatura)
+        {
+            List<PromocionesColegiaturaModel> lsPromocionesColegiaturaModel = new List<PromocionesColegiaturaModel>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select * from Colegiaturas co, ColegiaturasPromociones cp where co.UidColegiatura = cp.UidColegiatura and co.UidColegiatura = '" + UidColegiatura + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                lsPromocionesColegiaturaModel.Add(new PromocionesColegiaturaModel()
+                {
+                    UidPromocion = new Guid(item["UidPromocion"].ToString())
+                });
+            }
+            return lsPromocionesColegiaturaModel;
+        }
+        #endregion
+
+        #region Pagos
+        public List<PromocionesColegiaturaModel> CargarPromocionesPagosImporte(Guid UidCliente, Guid UidColegiatura, string Importe)
+        {
+            List<PromocionesColegiaturaModel> lsPromocionesColegiaturaModel = new List<PromocionesColegiaturaModel>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select pr.*, cp.* from Colegiaturas co, ColegiaturasPromociones cop, Promociones pr, Clientes cl, ClientesPromociones cp where co.UidColegiatura = cop.UidColegiatura and cop.UidPromocion = pr.UidPromocion and cl.UidCliente = cp.UidCliente and cp.UidPromocion = pr.UidPromocion and cl.UidCliente = '" + UidCliente + "' and co.UidColegiatura = '" + UidColegiatura + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+
+                if (decimal.Parse(Importe) >= decimal.Parse(item["DcmApartirDe"].ToString()))
+                {
+                    lsPromocionesColegiaturaModel.Add(new PromocionesColegiaturaModel()
+                    {
+                        UidPromocion = new Guid(item["UidPromocion"].ToString()),
+                        VchDescripcion = item["VchDescripcion"].ToString(),
+                        DcmComicion = decimal.Parse(item["DcmComicion"].ToString()),
+                        IntGerarquia = int.Parse(item["IntGerarquia"].ToString())
+                    });
+                }
+            }
+            return lsPromocionesColegiaturaModel.OrderBy(x => x.IntGerarquia).ToList();
+        }
+        #endregion
         #endregion
     }
 }
