@@ -18,7 +18,12 @@ namespace Franquicia.Bussiness
             set { _clientes = value; }
         }
 
-        ClientesRepository clientesRepository = new ClientesRepository();
+        private ClientesRepository _clientesRepository = new ClientesRepository();
+        public ClientesRepository clientesRepository
+        {
+            get { return _clientesRepository; }
+            set { _clientesRepository = value; }
+        }
 
         public List<Clientes> lsClientes = new List<Clientes>();
         public List<ClientesGridViewModel> lsClientesGridViewModel = new List<ClientesGridViewModel>();
@@ -36,12 +41,11 @@ namespace Franquicia.Bussiness
             clientes = lsClientesGridViewModel.Find(x => x.UidCliente == UidCliente);
         }
 
-        public bool RegistrarClientes(
-            string Rfc, string RazonSocial, string NombreComercial, DateTime FechaAlta, string Correo,
+        public bool RegistrarClientes(Guid UidCliente,
+            string Rfc, string RazonSocial, string NombreComercial, DateTime FechaAlta, string Correo, string IdWAySMS, string ZonaHoraria, bool BitEscuela,
             string Identificador, Guid UidPais, Guid UidEstado, Guid Municipio, Guid UidCiudad, Guid UidColonia, string Calle, string EntreCalle, string YCalle, string NumeroExterior, string NumeroInterior, string CodigoPostal, string Referencia,
             string Telefono, Guid UidTipoTelefono, Guid UidFranquiciatario)
         {
-            Guid UidCliente = Guid.NewGuid();
 
             bool result = false;
             if (clientesRepository.RegistrarClientes(
@@ -53,6 +57,9 @@ namespace Franquicia.Bussiness
                     VchNombreComercial = NombreComercial,
                     DtFechaAlta = FechaAlta,
                     VchCorreoElectronico = Correo,
+                    VchIdWAySMS = IdWAySMS,
+                    VchZonaHoraria = ZonaHoraria,
+                    BitEscuela = BitEscuela,
                     UidFranquiciatario = UidFranquiciatario
                 }, 
                 new DireccionesClientes 
@@ -85,7 +92,7 @@ namespace Franquicia.Bussiness
         }
 
         public bool ActualizarClientes(
-            Guid UidCliente, string Rfc, string RazonSocial, string NombreComercial, string Correo, Guid UidEstatus,
+            Guid UidCliente, string Rfc, string RazonSocial, string NombreComercial, string Correo, Guid UidEstatus, string IdWAySMS, string ZonaHoraria, bool BitEscuela,
             string Identificador, Guid UidPais, Guid UidEstado, Guid Municipio, Guid UidCiudad, Guid UidColonia, string Calle, string EntreCalle, string YCalle, string NumeroExterior, string NumeroInterior, string CodigoPostal, string Referencia,
             string Telefono, Guid UidTipoTelefono)
         {
@@ -99,7 +106,10 @@ namespace Franquicia.Bussiness
                     VchRazonSocial = RazonSocial,
                     VchNombreComercial = NombreComercial,
                     VchCorreoElectronico = Correo,
-                    UidEstatus = UidEstatus
+                    UidEstatus = UidEstatus,
+                    VchIdWAySMS = IdWAySMS,
+                    VchZonaHoraria = ZonaHoraria,
+                    BitEscuela = BitEscuela
                 },
                 new DireccionesClientes
                 {
@@ -137,5 +147,11 @@ namespace Franquicia.Bussiness
         }
         #endregion
 
+        #region AdminCliente
+        public void ObtenerClientes(Guid UidAdministrador)
+        {
+            clientesRepository.ObtenerClientes(UidAdministrador);
+        }
+        #endregion
     }
 }

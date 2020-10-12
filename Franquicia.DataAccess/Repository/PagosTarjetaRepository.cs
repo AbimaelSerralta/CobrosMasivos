@@ -27,6 +27,13 @@ namespace Franquicia.DataAccess.Repository
             get { return _pagosTarjetaDetalleGridViewModel; }
             set { _pagosTarjetaDetalleGridViewModel = value; }
         }
+        
+        private PagTarjDetalUsFinalGridViewModel _pagTarjDetalUsFinalGridViewModel = new PagTarjDetalUsFinalGridViewModel();
+        public PagTarjDetalUsFinalGridViewModel pagTarjDetalUsFinalGridViewModel
+        {
+            get { return _pagTarjDetalUsFinalGridViewModel; }
+            set { _pagTarjDetalUsFinalGridViewModel = value; }
+        }
 
 
         public List<PagosTarjeta> ObtenerEstatusLiga(string Liga)
@@ -101,6 +108,162 @@ namespace Franquicia.DataAccess.Repository
 
             return lsPagosTarjetaDetalleGridViewModel;
         }
+        public List<PagosTarjetaDetalleGridViewModel> DetalleLigaPromocion(Guid UidLigaAsociado)
+        {
+            List<PagosTarjetaDetalleGridViewModel> lsPagosTarjetaDetalleGridViewModel = new List<PagosTarjetaDetalleGridViewModel>();
 
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select pt.* from PagosTarjeta pt, LigasUrls lu where pt.IdReferencia = lu.IdReferencia and lu.UidLigaAsociado = '" + UidLigaAsociado + "' order by DtmFechaDeRegistro asc";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                string VchColor = "#007bff";
+
+                if (!string.IsNullOrEmpty(item["VchEstatus"].ToString()))
+                {
+                    switch (item["VchEstatus"].ToString())
+                    {
+                        case "approved":
+                            VchColor = "#4caf50 ";
+                            break;
+                        case "denied":
+                            VchColor = "#ff9800 ";
+                            break;
+                        case "error":
+                            VchColor = "#f55145 ";
+                            break;
+                    }
+                }
+
+                pagosTarjetaDetalleGridViewModel = new PagosTarjetaDetalleGridViewModel()
+                {
+                    UidPagoTarjeta = new Guid(item["UidPagoTarjeta"].ToString()),
+                    IdReferencia = item["IdReferencia"].ToString(),
+                    DtmFechaDeRegistro = DateTime.Parse(item["DtmFechaDeRegistro"].ToString()),
+                    VchEstatus = item["VchEstatus"].ToString(),
+                    VchColor = VchColor
+                };
+
+                lsPagosTarjetaDetalleGridViewModel.Add(pagosTarjetaDetalleGridViewModel);
+            }
+
+            return lsPagosTarjetaDetalleGridViewModel;
+        }
+
+
+        #region UsuariosFinales
+        public bool ValidarPagoUsuarioFinal(string IdReferencia)
+        {
+            bool result = false;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select * from PagosTarjeta where VchEstatus = 'approved' and IdReferencia = '" + IdReferencia + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            if (dt.Rows.Count >= 1)
+            {
+                result = true;
+            }
+
+            return result;
+        }
+        public List<PagTarjDetalUsFinalGridViewModel> DetalleLigaUsuarioFinal(Guid UidLigaUrl)
+        {
+            List<PagTarjDetalUsFinalGridViewModel> lsPagTarjDetalUsFinalGridViewModel = new List<PagTarjDetalUsFinalGridViewModel>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select pt.* from PagosTarjeta pt, LigasUrls lu where pt.IdReferencia = lu.IdReferencia and lu.UidLigaUrl = '" + UidLigaUrl + "' order by DtmFechaDeRegistro asc";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                string VchColor = "#007bff";
+
+                if (!string.IsNullOrEmpty(item["VchEstatus"].ToString()))
+                {
+                    switch (item["VchEstatus"].ToString())
+                    {
+                        case "approved":
+                            VchColor = "#4caf50 ";
+                            break;
+                        case "denied":
+                            VchColor = "#ff9800 ";
+                            break;
+                        case "error":
+                            VchColor = "#f55145 ";
+                            break;
+                    }
+                }
+
+                pagTarjDetalUsFinalGridViewModel = new PagTarjDetalUsFinalGridViewModel()
+                {
+                    UidPagoTarjeta = new Guid(item["UidPagoTarjeta"].ToString()),
+                    IdReferencia = item["IdReferencia"].ToString(),
+                    DtmFechaDeRegistro = DateTime.Parse(item["DtmFechaDeRegistro"].ToString()),
+                    VchEstatus = item["VchEstatus"].ToString(),
+                    VchColor = VchColor
+                };
+
+                lsPagTarjDetalUsFinalGridViewModel.Add(pagTarjDetalUsFinalGridViewModel);
+            }
+
+            return lsPagTarjDetalUsFinalGridViewModel;
+        }
+        public List<PagTarjDetalUsFinalGridViewModel> DetalleLigaPromocionUsuarioFinal(Guid UidLigaAsociado)
+        {
+            List<PagTarjDetalUsFinalGridViewModel> lsPagTarjDetalUsFinalGridViewModel = new List<PagTarjDetalUsFinalGridViewModel>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select pt.* from PagosTarjeta pt, LigasUrls lu where pt.IdReferencia = lu.IdReferencia and lu.UidLigaAsociado = '" + UidLigaAsociado + "' order by DtmFechaDeRegistro asc";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                string VchColor = "#007bff";
+
+                if (!string.IsNullOrEmpty(item["VchEstatus"].ToString()))
+                {
+                    switch (item["VchEstatus"].ToString())
+                    {
+                        case "approved":
+                            VchColor = "#4caf50 ";
+                            break;
+                        case "denied":
+                            VchColor = "#ff9800 ";
+                            break;
+                        case "error":
+                            VchColor = "#f55145 ";
+                            break;
+                    }
+                }
+
+                pagTarjDetalUsFinalGridViewModel = new PagTarjDetalUsFinalGridViewModel()
+                {
+                    UidPagoTarjeta = new Guid(item["UidPagoTarjeta"].ToString()),
+                    IdReferencia = item["IdReferencia"].ToString(),
+                    DtmFechaDeRegistro = DateTime.Parse(item["DtmFechaDeRegistro"].ToString()),
+                    VchEstatus = item["VchEstatus"].ToString(),
+                    VchColor = VchColor
+                };
+
+                lsPagTarjDetalUsFinalGridViewModel.Add(pagTarjDetalUsFinalGridViewModel);
+            }
+
+            return lsPagTarjDetalUsFinalGridViewModel;
+        }
+        #endregion
     }
 }

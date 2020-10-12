@@ -1,14 +1,17 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="AdministradoresClientes.aspx.cs" Inherits="Franquicia.WebForms.Views.AdministradoresClientes" %>
+﻿<%@ Page Title="AdministradoresClientes" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="AdministradoresClientes.aspx.cs" Inherits="Franquicia.WebForms.Views.AdministradoresClientes" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="CPHCaja" runat="server">
     <asp:UpdatePanel runat="server">
         <ContentTemplate>
-            <div id="divAlert" class="alert alert-danger alert-dismissible fade" role="alert" runat="server">
-                <asp:Label ID="lblMensajeAlert" runat="server" />
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            </div>
+            <asp:Panel ID="pnlAlert" Visible="false" runat="server">
+                <div id="divAlert" class="alert alert-danger alert-dismissible fade" role="alert" runat="server">
+                    <asp:Label ID="lblMensajeAlert" runat="server" />
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+            </asp:Panel>
         </ContentTemplate>
     </asp:UpdatePanel>
     <asp:UpdatePanel runat="server">
@@ -18,7 +21,7 @@
                     <div class="row">
                         <div class="col-lg-12 col-md-12">
                             <div class="card">
-                                <div class="card-header card-header-tabs card-header-primary" style="padding-top: 0px; padding-bottom: 0px;">
+                                <div class="card-header card-header-tabs card-header-primary" style="background: #024693; padding-top: 0px; padding-bottom: 0px;">
                                     <div class="nav-tabs-navigation">
                                         <div class="nav-tabs-wrapper">
                                             <div class="form-group">
@@ -44,7 +47,8 @@
                                                 <Columns>
                                                     <asp:BoundField SortExpression="NombreCompleto" DataField="NombreCompleto" HeaderText="NOMBRE COMPLETO" />
                                                     <asp:BoundField SortExpression="VchUsuario" DataField="VchUsuario" HeaderText="USUARIO" />
-                                                    <asp:BoundField SortExpression="VchNombrePerfil" DataField="VchNombrePerfil" HeaderText="PERFIL" />
+                                                    <asp:BoundField SortExpression="VchNombreComercial" DataField="VchNombreComercial" HeaderText="COMERCIO" />
+                                                    <%--<asp:BoundField SortExpression="VchNombrePerfil" DataField="VchNombrePerfil" HeaderText="PERFIL" />--%>
                                                     <asp:TemplateField SortExpression="UidEstatus" HeaderText="ESTATUS">
                                                         <ItemTemplate>
                                                             <div class="col-md-6">
@@ -102,7 +106,7 @@
 <asp:Content ID="Content3" ContentPlaceHolderID="cBodyBottom" runat="server">
     <!--MODAL-->
     <div class="modal fade" id="ModalNuevo" tabindex="-1" role="dialog" data-backdrop="static" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <asp:UpdatePanel runat="server">
                     <ContentTemplate>
@@ -127,14 +131,14 @@
                 <div class="modal-body pt-0" style="padding-bottom: 0px;">
                     <div class="row">
                         <div class="card card-nav-tabs">
-                            <div class="card-header card-header-primary">
+                            <div class="card-header card-header-primary" style="background: #024693;">
                                 <!-- colors: "header-primary", "header-info", "header-success", "header-warning", "header-danger" -->
                                 <div class="nav-tabs-navigation">
                                     <div class="nav-tabs-wrapper">
                                         <ul class="nav nav-tabs" data-tabs="tabs">
                                             <li class="nav-item">
                                                 <a class="nav-link active show" href="#franquicia" data-toggle="tab">
-                                                    <i class="material-icons">business</i>Franquicia<div class="ripple-container"></div>
+                                                    <i class="material-icons">business</i>Comercio<div class="ripple-container"></div>
                                                 </a>
                                             </li>
                                             <li class="nav-item">
@@ -195,21 +199,21 @@
                                                 </div>
                                                 <asp:Panel ID="panelFranquicias" Visible="false" runat="server">
                                                     <div class="row">
-                                                    <div class="table-responsive">
-                                                        <asp:GridView ID="gvClientes" OnSelectedIndexChanged="gvClientes_SelectedIndexChanged" OnRowDataBound="gvClientes_RowDataBound" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidCliente" GridLines="None" border="0" runat="server">
-                                                            <EmptyDataTemplate>
-                                                                <div class="alert alert-info">No hay clientes registrados</div>
-                                                            </EmptyDataTemplate>
-                                                            <Columns>
-                                                                <asp:ButtonField CommandName="Select" HeaderStyle-CssClass="hide" ItemStyle-CssClass="hide" />
-                                                                <asp:BoundField SortExpression="VchRFC" DataField="VchRFC" HeaderText="RFC" />
-                                                                <asp:BoundField SortExpression="VchRazonSocial" DataField="VchRazonSocial" HeaderText="RAZÓN SOCIAL" />
-                                                                <asp:BoundField SortExpression="VchNombreComercial" DataField="VchNombreComercial" HeaderText="NOMBRE COMERCIAL" />
-                                                            </Columns>
-                                                            <SelectedRowStyle BackColor="#dff0d8" />
-                                                        </asp:GridView>
+                                                        <div class="table-responsive">
+                                                            <asp:GridView ID="gvClientes" OnSelectedIndexChanged="gvClientes_SelectedIndexChanged" OnRowDataBound="gvClientes_RowDataBound" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidCliente" GridLines="None" border="0" runat="server">
+                                                                <EmptyDataTemplate>
+                                                                    <div class="alert alert-info">No hay clientes registrados</div>
+                                                                </EmptyDataTemplate>
+                                                                <Columns>
+                                                                    <asp:ButtonField CommandName="Select" HeaderStyle-CssClass="hide" ItemStyle-CssClass="hide" />
+                                                                    <asp:BoundField SortExpression="VchRFC" DataField="VchRFC" HeaderText="RFC" />
+                                                                    <asp:BoundField SortExpression="VchRazonSocial" DataField="VchRazonSocial" HeaderText="RAZÓN SOCIAL" />
+                                                                    <asp:BoundField SortExpression="VchNombreComercial" DataField="VchNombreComercial" HeaderText="NOMBRE COMERCIAL" />
+                                                                </Columns>
+                                                                <SelectedRowStyle BackColor="#dff0d8" />
+                                                            </asp:GridView>
+                                                        </div>
                                                     </div>
-                                                </div>
                                                 </asp:Panel>
                                             </ContentTemplate>
                                             <Triggers>
@@ -257,13 +261,13 @@
                                                     </div>
                                                     <div class="form-group col-md-4">
                                                         <label for="txtPassword" style="color: black;">Contraseña</label>
-                                                        <asp:TextBox ID="txtPassword" TextMode="Password" CssClass="form-control" runat="server" />
+                                                        <asp:TextBox ID="txtPassword" autocomplete="new-password" TextMode="Password" CssClass="form-control" runat="server" />
                                                     </div>
                                                     <div class="form-group col-md-4">
                                                         <label for="txtRepetirPassword" style="color: black;">Repetir Contraseña</label>
                                                         <asp:TextBox ID="txtRepetirPassword" TextMode="Password" CssClass="form-control" runat="server" />
                                                     </div>
-                                                    <div class="form-group col-md-4">
+                                                    <div class="form-group col-md-4" visible="false" runat="server">
                                                         <label for="ddlPerfil" style="color: black;">Perfil</label>
                                                         <asp:DropDownList ID="ddlPerfil" CssClass="form-control" runat="server">
                                                         </asp:DropDownList>

@@ -26,11 +26,6 @@ namespace Franquicia.WebForms.Views
                 gvEmpresas.DataSource = clientesServices.lsClientesGridViewEmpresasModel;
                 gvEmpresas.DataBind();
 
-                promocionesServices.CargarPromociones();
-                cblPromociones.DataSource = promocionesServices.lsPromociones;
-                cblPromociones.DataTextField = "VchDescripcion";
-                cblPromociones.DataValueField = "UidPromocion";
-                cblPromociones.DataBind();
             }
             else
             {
@@ -45,6 +40,10 @@ namespace Franquicia.WebForms.Views
                 pnlAlertCredenciales.Visible = false;
                 lblMnsjAlertCredenciales.Text = "";
                 divAlertCredenciales.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
+
+                pnlAlertPromociones.Visible = false;
+                lblMnsjAlertPromociones.Text = "";
+                divAlertPromociones.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
             }
         }
 
@@ -54,7 +53,7 @@ namespace Franquicia.WebForms.Views
             {
                 if (validacionesServices.isUrl(txtUrl.Text))
                 {
-                    switch (ViewState["ActualizarParametros"].ToString())
+                    switch (ViewState["AccionParametros"].ToString())
                     {
 
                         case "ActualizarParametros":
@@ -121,52 +120,140 @@ namespace Franquicia.WebForms.Views
                 parametrosEntradaServices.ObtenerParametrosEntradaCliente(dataKeys);
                 txtIdCompany.Text = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.IdCompany;
                 txtIdBranch.Text = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.IdBranch;
-                txtMoneda.Text = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchModena;
                 txtUsuario.Text = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchUsuario;
                 txtPassword.Text = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchPassword;
-                txtCanal.Text = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchCanal;
-                txtData.Text = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchData0;
-                txtUrl.Text = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchUrl;
-                txtSemillaAES.Text = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchSemillaAES;
-
-                promocionesServices.CargarPromociones(dataKeys);
-                foreach (ListItem li in cblPromociones.Items)
-                {
-                    foreach (var item in promocionesServices.lsCBLPromocionesModel)
-                    {
-                        if (li.Value == item.UidPromocion.ToString())
-                        {
-                            li.Selected = true;
-                        }
-                    }
-                }
 
                 if (!string.IsNullOrEmpty(txtIdCompany.Text) && !string.IsNullOrEmpty(txtIdBranch.Text))
                 {
-                    ViewState["ActualizarParametros"] = "ActualizarParametros";
+                    txtMoneda.Text = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchModena;
+                    txtCanal.Text = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchCanal;
+                    txtData.Text = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchData0;
+                    txtUrl.Text = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchUrl;
+                    txtSemillaAES.Text = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchSemillaAES;
+
+                    ViewState["AccionParametros"] = "ActualizarParametros";
                     btnGuardarCredenciales.Text = "<i class=" + "material-icons>" + "refresh </i> Actualizar";
                 }
                 else
                 {
-                    ViewState["ActualizarParametros"] = "GuardarParametros";
+                    ViewState["AccionParametros"] = "GuardarParametros";
                     btnGuardarCredenciales.Text = "<i class=" + "material-icons>" + "check </i> Guardar";
                 }
-
+                
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalCredenciales()", true);
+            }
+
+            if (e.CommandName == "btnPromociones")
+            {
+                int index = Convert.ToInt32(e.CommandArgument.ToString());
+                GridViewRow Seleccionado = gvEmpresas.Rows[index];
+                GridView valor = (GridView)sender;
+                Guid dataKeys = Guid.Parse(valor.DataKeys[Seleccionado.RowIndex].Value.ToString());
+                ViewState["UidCliente"] = dataKeys;
+
+                //lblTituloModal.Text = "Visualización de la Franquicia";
+
+                promocionesServices.CargarPromociones();
+
+                promocionesServices.lsCBLPromocionesModel.Clear();
+                promocionesServices.CargarPromociones(dataKeys);
+
+                if (promocionesServices.lsCBLPromocionesModel.Count >= 1)
+                {
+                    ViewState["AccionPromociones"] = "ActualizarPromociones";
+                    btnGuardarPromociones.Text = "<i class=" + "material-icons>" + "refresh </i> Actualizar";
+                }
+                else
+                {
+                    ViewState["AccionPromociones"] = "GuardarPromociones";
+                    btnGuardarPromociones.Text = "<i class=" + "material-icons>" + "check </i> Guardar";
+                }
+
+                gvPromociones.DataSource = promocionesServices.lsPromociones;
+                gvPromociones.DataBind();
+
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalPromociones()", true);
             }
         }
 
-        protected void ddlPromociones_SelectedIndexChanged(object sender, EventArgs e)
+        protected void gvPromociones_RowDataBound(object sender, GridViewRowEventArgs e)
         {
-            switch (ddlPromociones.Text)
+            if (e.Row.RowType == DataControlRowType.DataRow)
             {
-                case "SI":
-                    pnlPromociones.Visible = true;
-                    break;
-                case "NO":
-                    pnlPromociones.Visible = false;
-                    break;
+                //e.Row.Attributes["onclick"] = Page.ClientScript.GetPostBackClientHyperlink(DGVCajas, "Select$" + e.Row.RowIndex);
+
+                CheckBox cbPromocion = e.Row.FindControl("cbPromocion") as CheckBox;
+                TextBox txtComicion = e.Row.FindControl("txtComicion") as TextBox;
+                TextBox txtDcmApartirDe = e.Row.FindControl("txtApartirDe") as TextBox;
+
+
+                foreach (var item in promocionesServices.lsCBLPromocionesModel)
+                {
+                    if (e.Row.Cells[0].Text == item.UidPromocion.ToString())
+                    {
+                        cbPromocion.Checked = true;
+                        txtComicion.Text = item.DcmComicion.ToString();
+                        txtDcmApartirDe.Text = item.DcmApartirDe.ToString("N2");
+                    }
+                }
             }
+        }
+
+        protected void btnGuardarPromociones_Click(object sender, EventArgs e)
+        {
+            promocionesServices.EliminarPromociones(Guid.Parse(ViewState["UidCliente"].ToString()));
+
+            foreach (GridViewRow row in gvPromociones.Rows)
+            {
+                CheckBox cbPromocion = row.FindControl("cbPromocion") as CheckBox;
+                TextBox txtComicion = row.FindControl("txtComicion") as TextBox;
+                TextBox txtApartirDe = row.FindControl("txtApartirDe") as TextBox;
+
+                if (cbPromocion.Checked)
+                {
+                    Guid UidPromocion = Guid.Parse(row.Cells[0].Text);
+                    decimal DcmComicion = 0;
+                    decimal DcmApartirDe = 0;
+
+                    if (!string.IsNullOrEmpty(txtComicion.Text))
+                    {
+                        DcmComicion = decimal.Parse(txtComicion.Text);
+                    }
+                    
+                    if (!string.IsNullOrEmpty(txtApartirDe.Text))
+                    {
+                        DcmApartirDe = decimal.Parse(txtApartirDe.Text);
+                    }
+
+                    if (promocionesServices.RegistrarPromociones(Guid.Parse(ViewState["UidCliente"].ToString()), UidPromocion, DcmComicion, DcmApartirDe))
+                    {
+                    }
+                }
+
+                switch (ViewState["AccionPromociones"].ToString())
+                {
+                    case "ActualizarPromociones":
+                        pnlAlert.Visible = true;
+                        lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha actualizado exitosamente.";
+                        divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                        break;
+
+                    case "GuardarPromociones":
+                        pnlAlert.Visible = true;
+                        lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
+                        divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                        break;
+                }
+
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModalPromociones()", true);
+            }
+        }
+
+        protected void gvEmpresas_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvEmpresas.PageIndex = e.NewPageIndex;
+            gvEmpresas.DataSource = clientesServices.lsClientesGridViewEmpresasModel;
+            gvEmpresas.DataBind();
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Franquicia.WebForms.Util
         /// <returns></returns>
         public static bool EmptyTextBox(this TextBox textBox)
         {
-            if (string.IsNullOrEmpty(textBox.Text))
+            if (string.IsNullOrWhiteSpace(textBox.Text))
             {
                 // set border to red
                 textBox.BackColor = System.Drawing.Color.FromName("#f2dede");

@@ -1,0 +1,354 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Prueba.master.cs" Inherits="PagaLaEscuela.Views.Prueba" %>
+
+<!DOCTYPE html>
+
+<html>
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Hello, world!</title>
+
+    <!-- Required meta tags -->
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+    <!--     Fonts and icons     -->
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" />
+
+    <!-- Material Dashboard CSS -->
+    <link rel="stylesheet" href="../../assets/css/material-dashboard.css" />
+
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+
+    <style>
+        .sidebar .logo a.logo-mini {
+            opacity: 1;
+            float: left;
+            width: 30px;
+            text-align: center;
+            margin-left: 23px;
+            margin-right: 15px;
+        }
+    </style>
+
+</head>
+<body id="myDIV">
+    <form id="form2" runat="server">
+        <%--<asp:UpdatePanel runat="server">
+            <ContentTemplate>--%>
+        <asp:ScriptManager runat="server" />
+
+        <asp:UpdateProgress runat="server">
+            <ProgressTemplate>
+                <div class="PogressModal">
+                    <div>
+                        <img height="150" width="150" src="../CSSPropio/loader.gif" alt="imgCobrosMasivos" />
+                        <%--<div class="loader"></div>--%>
+                        <br />
+                        <asp:Label Text="Espere por favor..." Style="color: white;" runat="server" />
+                    </div>
+                </div>
+            </ProgressTemplate>
+        </asp:UpdateProgress>
+
+        <div class="wrapper ">
+            <div class="sidebar" data-color="purple" data-background-color="white" data-image="../../assets/img/sidebar-1.jpg">
+                <div class="logo">
+                    <a href="#" class="simple-text logo-mini">CT
+                    </a>
+                    <a href="#" class="simple-text logo-normal">
+                        <asp:Label ID="lblTitleMenu" runat="server" />
+                    </a>
+                </div>
+                <div class="sidebar-wrapper">
+                    <asp:UpdatePanel runat="server">
+                        <ContentTemplate>
+                            <ul class="nav">
+                                <asp:DataList ID="dlMenu" Style="width: 100%;" RepeatDirection="Vertical" runat="server">
+                                    <ItemTemplate>
+                                        <li id="liMenuActivar" class="nav-item" visible='<%# Eval("Lectura") %>' runat="server">
+                                            <a id="aActive" class="nav-link" href='<%# Eval("VchUrl") %>' runat="server">
+                                                <i class="material-icons"><%#Eval("VchIcono")%></i>
+                                                <p><%#Eval("VchNombre")%></p>
+                                            </a>
+                                        </li>
+                                        <asp:Label ID="lblUrl" Visible="false" Text='<%# Eval("VchUrl") %>' runat="server" />
+                                    </ItemTemplate>
+                                </asp:DataList>
+                                <li class="nav-item active-pro ">
+                                    <a class="nav" style="cursor: text;">
+                                        <asp:Label CssClass="navbar-text pull-right" ID="lblFecha" Style="color: black;" runat="server" />
+
+                                        <asp:Label ID="lblversion" Style="color: black;" runat="server" CssClass="navbar-text pull-right"></asp:Label>
+                                    </a>
+
+                                </li>
+                            </ul>
+                        </ContentTemplate>
+                    </asp:UpdatePanel>
+                </div>
+            </div>
+            <div class="main-panel">
+                <!-- Navbar -->
+                <nav class="navbar navbar-expand-lg navbar-absolute fixed-top">
+                    <div class="container-fluid">
+                        <asp:UpdatePanel runat="server">
+                            <ContentTemplate>
+                                <asp:Label ID="lblGvSaldo" runat="server" />
+                            </ContentTemplate>
+                        </asp:UpdatePanel>
+                        <%-- <asp:UpdateProgress runat="server">
+                            <ProgressTemplate>
+                                <div class="loader"></div>
+                            </ProgressTemplate>
+                        </asp:UpdateProgress>--%>
+                        <div class="navbar-wrapper">
+                            <div class="navbar-minimize">
+
+                                <label id="minimizeSidebar" onclick="sideAction()" class="btn btn-just-icon btn-white btn-fab btn-round">
+                                    <i class="material-icons text_align-center visible-on-sidebar-regular">more_vert</i>
+                                    <i class="material-icons design_bullet-list-67 visible-on-sidebar-mini">view_list</i>
+                                </label>
+                            </div>
+                            <a class="navbar-brand" href="#pablo">Menu</a>
+                        </div>
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="navbar-toggler-icon icon-bar"></span>
+                            <span class="navbar-toggler-icon icon-bar"></span>
+                            <span class="navbar-toggler-icon icon-bar"></span>
+                        </button>
+                        <div class="collapse navbar-collapse justify-content-end">
+                            <asp:UpdatePanel runat="server">
+                                <ContentTemplate>
+                                    <ul class="navbar-nav">
+                                        <li class="dropdown" id="liMenuFranquicia" runat="server">
+                                            <a id="aMenuFranquicia" href="#" class="dropdown-toggle font-weight-bold" data-toggle="dropdown" runat="server">FRANQUICIAS</a>
+                                            <ul class="dropdown-menu">
+                                                <asp:DataList ID="dlSubMenuFranquicia" Style="width: 100%;" RepeatDirection="Vertical" runat="server">
+                                                    <ItemTemplate>
+                                                        <li visible='<%# Eval("Lectura") %>' runat="server">
+                                                            <a class="nav-link" href='<%# Eval("VchUrl") %>'>
+                                                                <i class="material-icons"><%#Eval("VchIcono")%></i>
+                                                                <p><%#Eval("VchNombre")%></p>
+                                                            </a>
+                                                        </li>
+                                                    </ItemTemplate>
+                                                </asp:DataList>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <asp:Label ID="lblNombreComercial" Style="color: black;" CssClass="navbar-text" runat="server"></asp:Label>
+                                        </li>
+                                        <li class="dropdown" id="liMenuCliente" runat="server">
+                                            <a id="aMenuCliente" href="#" class="dropdown-toggle font-weight-bold" data-toggle="dropdown" runat="server">&nbsp; COMERCIOS </a>
+                                            <ul class="dropdown-menu">
+                                                <asp:DataList ID="dlSubMenuCliente" Style="width: 100%;" RepeatDirection="Vertical" runat="server">
+                                                    <ItemTemplate>
+                                                        <li visible='<%# Eval("Lectura") %>' runat="server">
+                                                            <a class="nav-link" href='<%# Eval("VchUrl") %>'>
+                                                                <i class="material-icons"><%#Eval("VchIcono")%></i>
+                                                                <p><%#Eval("VchNombre")%></p>
+                                                            </a>
+                                                        </li>
+                                                    </ItemTemplate>
+                                                </asp:DataList>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <asp:Label ID="lblDescripcionCliente" Style="color: black;" CssClass="navbar-text" runat="server"></asp:Label>
+                                        </li>
+
+                                        <%--<li class="nav-item">
+                                    <a class="nav-link" href="#pablo">
+                                        <i class="material-icons">dashboard</i>
+                                        <p class="d-lg-none d-md-block">
+                                            Stats
+                                        </p>
+                                    </a>
+                                </li>--%>
+                                        <%--<li class="nav-item dropdown">
+                                    <a class="nav-link" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="material-icons">notifications</i>
+                                        <span class="notification">5</span>
+                                        <p class="d-lg-none d-md-block">
+                                            Some Actions
+                                        </p>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                                        <a class="dropdown-item" href="#">Mike John responded to your email</a>
+                                        <a class="dropdown-item" href="#">You have 5 new tasks</a>
+                                        <a class="dropdown-item" href="#">You're now friend with Andrew</a>
+                                        <a class="dropdown-item" href="#">Another Notification</a>
+                                        <a class="dropdown-item" href="#">Another One</a>
+                                    </div>
+                                </li>--%>
+                                        <li class="nav-item dropdown">
+                                            <a class="nav-link" href="#pablo" id="navbarDropdownProfile" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <asp:Label ID="LblNombreUsuario" runat="server" />
+                                                <i class="material-icons">person</i>
+                                                <p class="d-lg-none d-md-block">
+                                                    Account
+                                                </p>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownProfile">
+                                                <a class="dropdown-item" href="#">Profile</a>
+                                                <a class="dropdown-item" href="#">Settings</a>
+                                                <div class="dropdown-divider"></div>
+                                                <asp:LinkButton ID="btnSalir" CssClass="dropdown-item" Text="Salir" runat="server" />
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </ContentTemplate>
+                            </asp:UpdatePanel>
+                        </div>
+                    </div>
+                </nav>
+                <!-- End Navbar -->
+                <div class="content" style="padding-top: 0px; padding-bottom: 0px;">
+                    <asp:ContentPlaceHolder ID="CPHCaja" runat="server">
+                    </asp:ContentPlaceHolder>
+                </div>
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <nav class="float-left">
+                            <ul>
+                                <li>
+                                    <div class="row">
+                                        <asp:Label Style="padding-top: 15px;" Text="Una solución de" runat="server" />
+                                        <a style="padding-top: 0px;" href="https://www.cobroscontarjeta.com/" target="_blank">
+                                            <asp:Image Height="50" Width="200" src="../Images/logo-cobroscontarjetas.png" runat="server" /></a>
+                                        <asp:Label Style="padding-top: 15px;" Text="desarrollado por " runat="server" />
+                                        <a href="https://compuandsoft.com/" target="_blank">
+                                            <asp:Image Height="30" Width="130" src="../Images/logo-compuandsoft.png" runat="server" /></a>
+                                        <asp:Label Style="padding-top: 15px;" Text="en colaboracion con" runat="server" />
+                                        <a href="https://www.mitec.com.mx/" target="_blank">
+                                            <asp:Image Height="25" Width="90" src="../Images/logo-mit.png" runat="server" /></a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </nav>
+                        <!-- your footer here -->
+                    </div>
+                </footer>
+            </div>
+        </div>
+
+        <asp:ContentPlaceHolder ID="cBodyBottom" runat="server">
+        </asp:ContentPlaceHolder>
+
+        <div id="ModalBusqueda" class="modal fade bd-example-modal-lg show" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" style="padding-right: 17px; display: block;">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div id="cBodyBottom_ctl04">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <span id="cBodyBottom_lblTittleLigas">Filtro de busqueda</span></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-12 pt-3">
+                        <div id="cBodyBottom_ctl05" style="display: none;" role="status" aria-hidden="true">
+
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="modal-body pt-0" style="padding-bottom: 0px;">
+                        <div class="tab-content">
+                            <div id="cBodyBottom_ctl06">
+                                <div id="cBodyBottom_pnlFiltrosBusqueda">
+
+                                    <div class="card" style="margin-top: 0px;">
+                                        <div class="card-header card-header-tabs card-header" style="padding-top: 0px; padding-bottom: 0px;">
+                                            <div class="nav-tabs-navigation">
+                                                <div class="nav-tabs-wrapper">
+                                                    <div class="form-group">
+                                                        <span>Busqueda</span>
+                                                        <div class="row">
+                                                            <div class="form-group col-md-4">
+                                                                <label for="FiltroNombre" style="color: black;">Nombre</label>
+                                                                <input name="ctl00$cBodyBottom$FiltroNombre" type="text" id="cBodyBottom_FiltroNombre" class="form-control" aria-label="Search">
+                                                            </div>
+                                                            <div class="form-group col-md-4">
+                                                                <label for="FiltroApePaterno" style="color: black;">ApePaterno</label>
+                                                                <input name="ctl00$cBodyBottom$FiltroApePaterno" type="text" id="cBodyBottom_FiltroApePaterno" class="form-control" aria-label="Search">
+                                                            </div>
+                                                            <div class="form-group col-md-4">
+                                                                <label for="FiltroApeMaterno" style="color: black;">ApeMaterno</label>
+                                                                <input name="ctl00$cBodyBottom$FiltroApeMaterno" type="text" id="cBodyBottom_FiltroApeMaterno" class="form-control" aria-label="Search">
+                                                            </div>
+                                                            <div class="form-group col-md-8">
+                                                                <label for="FiltroCorreo" style="color: black;">Correo</label>
+                                                                <input name="ctl00$cBodyBottom$FiltroCorreo" type="text" id="cBodyBottom_FiltroCorreo" class="form-control" aria-label="Search">
+                                                            </div>
+                                                            <div class="form-group col-md-4">
+                                                                <label for="FiltroEstatus" style="color: black;">Estatus</label>
+                                                                <select name="ctl00$cBodyBottom$FiltroEstatus" id="cBodyBottom_FiltroEstatus" class="form-control">
+                                                                    <option selected="selected" value="00000000-0000-0000-0000-000000000000">Seleccione</option>
+                                                                    <option value="65e46bc9-1864-4145-ad1a-70f5b5f69739">ACTIVO</option>
+                                                                    <option value="3b0db4df-5687-4d80-8d32-3a2ac76af453">INACTIVO</option>
+
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="cBodyBottom_upBusqueda">
+                        <div class="modal-footer justify-content-center">
+                            <a id="cBodyBottom_btnBuscar" class="btn btn-primary btn-round" href="javascript:__doPostBack('ctl00$cBodyBottom$btnBuscar','')">
+                                <i class="material-icons">search</i> Buscar
+                            </a>
+                            <a id="cBodyBottom_btnLimpiar" class="btn btn-warning btn-round" href="javascript:__doPostBack('ctl00$cBodyBottom$btnLimpiar','')">
+                                <i class="material-icons">clear_all</i> Limpiar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+
+    <!--   Core JS Files   -->
+    <script src="../assets/js/core/jquery.min.js" type="text/javascript"></script>
+    <script src="../assets/js/core/popper.min.js" type="text/javascript"></script>
+    <script src="../assets/js/core/bootstrap-material-design.min.js" type="text/javascript"></script>
+    <script src="../assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
+    <!-- Chartist JS -->
+    <script src="../assets/js/plugins/chartist.min.js"></script>
+    <!--  Notifications Plugin    -->
+    <script src="../assets/js/plugins/bootstrap-notify.js"></script>
+    <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+    <script src="../assets/js/material-dashboard.js" type="text/javascript"></script>
+    <!--Plugin for Select, full documentation here: http://silviomoreto.github.io/bootstrap-select -->
+    <script src="../assets/js/plugins/bootstrap-selectpicker.js"></script>
+
+    <script>
+        function sideAction() {
+
+            let elm = document.getElementById('myDIV');
+
+            if (elm.className === 'sidebar-mini') {
+                elm.className = '';
+            } else {
+                elm.className = 'sidebar-mini';
+            }
+        }
+    </script>
+</body>
+</html>

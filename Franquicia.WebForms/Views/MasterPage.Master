@@ -10,28 +10,48 @@
     <link href="../CSSPropio/BtnPaginacion.css" rel="stylesheet" />
     <link href="../CSSPropio/StyleVentanaModal.css" rel="stylesheet" />
     <link href="../CSSPropio/Loader.css" rel="stylesheet" />
+
     <!-- Required meta tags -->
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <!--     Fonts and icons     -->
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+    <%--<link href="../assets/css/MaterialIcons.css" type="text/css" rel="stylesheet" />--%>
+    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
     <!-- Material Kit CSS -->
-    <link href="../assets/css/material-dashboard.css?v=2.1.1" rel="stylesheet" />
-
-
+    <link href="../assets/css/material-dashboard.css" rel="stylesheet" />
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title><%:Page.Title %></title>
+    <title><%= Page.Title %></title>
     <link rel="shortcut icon" href="../Images/logoCobroscontarjetas.png" />
     <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
+    <link href="../assets/css/style2.css" rel="stylesheet" />
+
+    <script src="../Multiselect/js/jquery-3.3.1.min.js"></script>
+    <%--<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/css/bootstrap-multiselect.css" rel="stylesheet" type="text/css" />--%>
+    <link href="../Multiselect/css/bootstrap-multiselect.css" rel="stylesheet" />
+    <%--<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.15/js/bootstrap-multiselect.min.js"></script>--%>
+    <script src="../Multiselect/js/bootstrap-multiselect.min.js"></script>
 </head>
-<body>
+<body id="myDIV" runat="server">
     <form id="form1" runat="server">
         <%--<asp:UpdatePanel runat="server">
             <ContentTemplate>--%>
         <asp:ScriptManager runat="server" />
+
+        <asp:UpdateProgress runat="server">
+            <ProgressTemplate>
+                <div class="PogressModal">
+                    <div>
+                        <img height="150" width="150" src="../CSSPropio/loader.gif" alt="imgCobrosMasivos" />
+                        <%--<div class="loader"></div>--%>
+                        <br />
+                        <asp:Label Text="Espere por favor..." Style="color: white;" runat="server" />
+                    </div>
+                </div>
+            </ProgressTemplate>
+        </asp:UpdateProgress>
 
         <div class="wrapper ">
             <div class="sidebar" data-color="purple" data-background-color="white" data-image="../assets/img/sidebar-1.jpg">
@@ -47,7 +67,7 @@
                                 <asp:DataList ID="dlMenu" OnItemDataBound="dlMenu_ItemDataBound" Style="width: 100%;" RepeatDirection="Vertical" runat="server">
                                     <ItemTemplate>
                                         <li id="liMenuActivar" class="nav-item" visible='<%# Eval("Lectura") %>' runat="server">
-                                            <a class="nav-link" href='<%# Eval("VchUrl") %>'>
+                                            <a id="aActive" class="nav-link" href='<%# Eval("VchUrl") %>' runat="server">
                                                 <i class="material-icons"><%#Eval("VchIcono")%></i>
                                                 <p><%#Eval("VchNombre")%></p>
                                             </a>
@@ -55,6 +75,13 @@
                                         <asp:Label ID="lblUrl" Visible="false" Text='<%# Eval("VchUrl") %>' runat="server" />
                                     </ItemTemplate>
                                 </asp:DataList>
+                                <li class="nav-item d-block d-sm-block d-md-block d-lg-none" runat="server">
+                                    <asp:LinkButton CssClass="nav-link" OnClick="btnSalir_Click" runat="server">
+                                        <i class="material-icons">login</i>
+                                        <p>Salir</p>
+                                    </asp:LinkButton>
+                                </li>
+
                                 <li class="nav-item active-pro ">
                                     <a class="nav" style="cursor: text;">
                                         <asp:Label CssClass="navbar-text pull-right" ID="lblFecha" Style="color: black;" runat="server" />
@@ -72,13 +99,25 @@
                 <!-- Navbar -->
                 <nav class="navbar navbar-expand-lg navbar-absolute fixed-top">
                     <div class="container-fluid">
-                        <asp:UpdateProgress runat="server">
+                        <asp:UpdatePanel runat="server">
+                            <ContentTemplate>
+                                <asp:Label ID="lblGvSaldo" runat="server" />
+                            </ContentTemplate>
+                        </asp:UpdatePanel>
+                        <%-- <asp:UpdateProgress runat="server">
                             <ProgressTemplate>
                                 <div class="loader"></div>
                             </ProgressTemplate>
-                        </asp:UpdateProgress>
+                        </asp:UpdateProgress>--%>
                         <div class="navbar-wrapper">
-                            <a class="navbar-brand" href="#pablo"></a>
+                            <%--<div class="navbar-minimize">
+                                <asp:LinkButton OnClick="Unnamed_Click" Text="text" runat="server" />
+                                <button id="minimizeSidebar" onclick="sideAction()" class="btn btn-just-icon btn-white btn-fab btn-round">
+                                    <i class="material-icons text_align-center visible-on-sidebar-regular">more_vert</i>
+                                    <i class="material-icons design_bullet-list-67 visible-on-sidebar-mini">view_list</i>
+                                </button>
+                            </div>
+                            <a class="navbar-brand" href="#pablo">Menu</a>--%>
                         </div>
                         <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
                             <span class="sr-only">Toggle navigation</span>
@@ -109,7 +148,7 @@
                                             <asp:Label ID="lblNombreComercial" Style="color: black;" CssClass="navbar-text" runat="server"></asp:Label>
                                         </li>
                                         <li class="dropdown" id="liMenuCliente" runat="server">
-                                            <a id="aMenuCliente" href="#" class="dropdown-toggle font-weight-bold" data-toggle="dropdown" runat="server">&nbsp; CLIENTES </a>
+                                            <a id="aMenuCliente" href="#" class="dropdown-toggle font-weight-bold" data-toggle="dropdown" runat="server">&nbsp; COMERCIOS </a>
                                             <ul class="dropdown-menu">
                                                 <asp:DataList ID="dlSubMenuCliente" Style="width: 100%;" RepeatDirection="Vertical" runat="server">
                                                     <ItemTemplate>
@@ -160,9 +199,10 @@
                                                 </p>
                                             </a>
                                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownProfile">
-                                                <a class="dropdown-item" href="#">Profile</a>
-                                                <a class="dropdown-item" href="#">Settings</a>
+                                                <asp:LinkButton ID="btnMiPerfil" Text="Mi perfil" OnClick="btnMiPerfil_Click" CssClass="dropdown-item" runat="server" />
+                                                <%--<a class="dropdown-item" href="#">Settings</a>--%>
                                                 <div class="dropdown-divider"></div>
+                                                <asp:LinkButton ID="btnComprar" Visible="false" CssClass="dropdown-item" OnClick="btnComprar_Click" Text="Comprar Whats/Sms" runat="server" />
                                                 <asp:LinkButton ID="btnSalir" CssClass="dropdown-item" OnClick="btnSalir_Click" Text="Salir" runat="server" />
                                             </div>
                                         </li>
@@ -223,18 +263,371 @@
         <asp:ContentPlaceHolder ID="cBodyBottom" runat="server">
         </asp:ContentPlaceHolder>
 
+        <div id="ModalMasDeta" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <asp:UpdatePanel runat="server">
+                        <ContentTemplate>
+                            <div class="modal-header">
+                                <h5 class="modal-title" runat="server">
+                                    <asp:Label ID="lblTituloModal" Text="Selección" runat="server" /></h5>
+                                <%--<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>--%>
+                            </div>
+                        </ContentTemplate>
+                    </asp:UpdatePanel>
+                    <div class="modal-body pt-0" style="padding-bottom: 0px;">
+                        <div class="tab-content">
+                            <asp:UpdatePanel runat="server">
+                                <ContentTemplate>
+                                    <asp:Panel ID="pnlSeleccion" runat="server">
+                                        <div class="row">
+                                            <asp:ListView ID="lvTarifa" runat="server">
+                                                <ItemTemplate>
+                                                    <div class="col-lg-6 col-md-6 col-sm-6 col-6">
+                                                        <div class="card card-stats">
+                                                            <div class="card-header card-header-success card-header-icon">
+                                                                <div class="card-icon">
+                                                                    <img class="card-img-top" style="height: 50px; width: 50px" src="https://is5-ssl.mzstatic.com/image/thumb/Purple113/v4/b8/d8/7a/b8d87ae1-b9df-1cb6-bbce-c71932ac9ce7/AppIcon-0-0-1x_U007emarketing-0-0-0-6-0-0-85-220.png/246x0w.png" alt="whatsapp">
+                                                                </div>
+                                                                <p class="card-category">Whatsapp</p>
+                                                                <h3 class="card-title">
+                                                                    <asp:Label ID="lblDcmWhatsapp" runat="server"> <%# Eval("DcmWhatsapp", "{0:C}") %></asp:Label></h3>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-6 col-6">
+                                                        <div class="card card-stats">
+                                                            <div class="card-header card-header-warning card-header-icon">
+                                                                <div class="card-icon">
+                                                                    <img class="card-img-top" style="height: 50px; width: 50px" src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTZ5jK9GXD0SBrKIlY3X4RuVYp9xgvF1dpHPyvGmaYwq3bVXpWg&usqp=CAU" alt="sms">
+                                                                </div>
+                                                                <p class="card-category">Sms</p>
+                                                                <h3 class="card-title"><%# Eval("DcmSms", "{0:C}") %></h3>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </ItemTemplate>
+                                            </asp:ListView>
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">Descripción</th>
+                                                        <th scope="col">Cantidad
+                                                            <asp:LinkButton ID="btnCalcular" OnClick="btnCalcular_Click" CssClass="btn btn-sm btn-success btn-round" runat="server">Calcular</asp:LinkButton></th>
+                                                        <th scope="col" class="text-right">Precio unitario</th>
+                                                        <th scope="col" class="text-right">Precio total</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <th scope="row">Whatsapp</th>
+                                                        <td>
+                                                            <asp:TextBox ID="txtCantWhats" Text="0" CssClass="form-control" runat="server"></asp:TextBox>
+                                                            <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars="" TargetControlID="txtCantWhats" runat="server" />
+                                                        </td>
+                                                        <td class="text-right">
+                                                            <asp:Label ID="lblPrecioWhats" runat="server" />
+                                                        </td>
+                                                        <td class="text-right">
+                                                            <asp:Label ID="lblTotalWhats" Text="0.00" runat="server" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">Sms</th>
+                                                        <td>
+                                                            <asp:TextBox ID="txtCantSms" Text="0" CssClass="form-control" runat="server"></asp:TextBox>
+                                                            <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars="" TargetControlID="txtCantSms" runat="server" />
+                                                        </td>
+                                                        <td class="text-right">
+                                                            <asp:Label ID="lblPrecioSms" runat="server" />
+                                                        </td>
+                                                        <td class="text-right">
+                                                            <asp:Label ID="lblTotalSms" Text="0.00" runat="server" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th></th>
+                                                        <td></td>
+                                                        <td class="text-right">Total</td>
+                                                        <td class="text-right">
+                                                            <asp:Label ID="lblSumTotal" Text="0.00" runat="server" />
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </asp:Panel>
+
+                                    <asp:Panel ID="pnlResumen" Visible="false" runat="server">
+                                        <div class="card text-white bg-success mb-3">
+                                            <div class="card-header">Resumen</div>
+                                            <div class="card-body">
+                                                <h5 class="card-title">
+                                                    <asp:Label ID="lblResumenTotal" runat="server" /></h5>
+                                                <p class="card-text">
+                                                    <asp:Label ID="lblResumenDesc" runat="server" />
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <asp:LinkButton ID="LinkButton1" CssClass="btn btn-success btn-round" runat="server">
+                            <i class="material-icons">link</i> Generar
+                                        </asp:LinkButton>
+                                    </asp:Panel>
+
+
+                                    <asp:Panel ID="pnlIframe" Visible="false" runat="server">
+                                        <asp:Label ID="lblUrl" Text="https://wppsandbox.mit.com.mx/i/SNDBX001" runat="server" />
+
+                                        <button onclick="myFunction()">Try it</button>
+
+                                        <div class="row">
+                                            <div style="width: 100%;">
+                                                <iframe id="ifrLiga" style="width: 80%; margin: 0 auto; display: block;" width="450px" height="479px" class="centrado" src="https://u.mitec.com.mx/p/i/EHXYPEKR" frameborder="0" seamless="seamless"></iframe>
+                                            </div>
+                                        </div>
+                                    </asp:Panel>
+                                </ContentTemplate>
+
+                            </asp:UpdatePanel>
+                        </div>
+                    </div>
+                    <asp:UpdatePanel runat="server" ID="upRegistro">
+                        <ContentTemplate>
+                            <div class="modal-footer justify-content-center">
+                                <asp:LinkButton ID="btnAnterior" OnClick="btnAnterior_Click" CssClass="btn btn-info btn-round" runat="server">
+                             <i class="material-icons">arrow_back</i>Anterior
+                                </asp:LinkButton>
+                                <asp:LinkButton ID="btnGenerar" Visible="false" CssClass="btn btn-success btn-round" runat="server">
+                            <i class="material-icons">link</i> Generar
+                                </asp:LinkButton>
+
+                                <asp:LinkButton ID="btnCancelar" class="close" data-dismiss="modal" aria-label="Close" CssClass="btn btn-danger btn-round" runat="server">
+                            <i class="material-icons">close</i> Cancelar
+                                </asp:LinkButton>
+
+                                <asp:LinkButton ID="btnSiguiente" OnClick="btnSiguiente_Click" CssClass="btn btn-info btn-round" runat="server">
+                             Siguiente <i class="material-icons">arrow_forward</i>
+                                </asp:LinkButton>
+                            </div>
+                        </ContentTemplate>
+                        <Triggers>
+                            <asp:AsyncPostBackTrigger ControlID="btnGenerar" EventName="Click" />
+                            <asp:AsyncPostBackTrigger ControlID="btnCancelar" EventName="Click" />
+                        </Triggers>
+                    </asp:UpdatePanel>
+                </div>
+            </div>
+        </div>
+
+        <%--ModalPopupExtender--%>
+        <asp:ModalPopupExtender ID="mpeActivarUsuario" TargetControlID="btnMpeActivarUsuario" BackgroundCssClass="ModalPopupBG" PopupControlID="pnlContenidoActivarUsuario" runat="server" />
+        <asp:Button ID="btnMpeActivarUsuario" runat="server" />
+
+        <asp:Panel ID="pnlContenidoActivarUsuario" Style="width: 80%; height: auto;" runat="server">
+            <div style="max-height: 700px; overflow: auto;">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-body pt-0" style="padding-bottom: 0px;">
+                            <div class="tab-content" style="padding-top: 10px;">
+                                <asp:UpdatePanel runat="server">
+                                    <ContentTemplate>
+                                        <asp:Panel ID="pnlEnProceso" runat="server">
+                                            <div class="alert alert-info" role="alert">
+                                                <h4 class="alert-heading">Bienvenido!</h4>
+                                                <p>Hemos detectado que su cuenta es nueva, por favor actualice su contraseña y confirme sus datos.</p>
+                                                <hr>
+                                                <p class="mb-0"><%--Ya que haya revisado su información bastará con hacer clic en el boton aceptar para finalizar el proceso de activación.--%></p>
+                                                <p class="mb-0"><%--=> Si la información esta mal, puede corregir sus datos.--%></p>
+                                            </div>
+
+                                            <asp:Label CssClass="text-danger" runat="server" ID="lblValidar" />
+
+                                            <div class="card" style="padding-bottom: 10px;">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label for="txtPassword" style="color: black;">Nueva Contraseña</label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text" style="padding-left: 0px;">
+                                                                    <i class="material-icons">lock</i>
+                                                                </span>
+                                                            </div>
+                                                            <asp:TextBox ID="txtPassword" TextMode="Password" Placeholder="Ingrese su contraseña" CssClass="form-control" runat="server" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="txtRepetir" style="color: black;">Repetir Contraseña</label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text" style="padding-left: 0px;">
+                                                                    <i class="material-icons">lock</i>
+                                                                </span>
+                                                            </div>
+                                                            <asp:TextBox ID="txtRepetir" TextMode="Password" Placeholder="Repita su contraseña" CssClass="form-control" runat="server" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="card">
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <label for="txtNombres" style="color: black;">Nombre(s)</label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text" style="padding-left: 0px;">
+                                                                    <i class="material-icons">face</i>
+                                                                </span>
+                                                            </div>
+                                                            <asp:TextBox ID="txtNombres" CssClass="form-control" runat="server" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="txtApePaterno" style="color: black;">Ape Paterno</label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text" style="padding-left: 0px;">
+                                                                    <i class="material-icons">accessibility</i>
+                                                                </span>
+                                                            </div>
+                                                            <asp:TextBox ID="txtApePaterno" CssClass="form-control" runat="server" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="txtApeMaterno" style="color: black;">Ape Materno</label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text" style="padding-left: 0px;">
+                                                                    <i class="material-icons">accessibility</i>
+                                                                </span>
+                                                            </div>
+                                                            <asp:TextBox ID="txtApeMaterno" CssClass="form-control" runat="server" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="ddlPrefijo" style="color: black;">Código pais *</label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text" style="padding-left: 0px;">
+                                                                    <i class="material-icons">format_list_numbered</i>
+                                                                </span>
+                                                            </div>
+                                                            <asp:DropDownList ID="ddlPrefijo" CssClass="form-control" runat="server">
+                                                        </asp:DropDownList>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="txtTelefono" style="color: black;">Celular</label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text" style="padding-left: 0px;">
+                                                                    <i class="material-icons">call</i>
+                                                                </span>
+                                                            </div>
+                                                            <asp:TextBox ID="txtTelefono" MaxLength="10" CssClass="form-control" runat="server" />
+                                                            <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtTelefono" runat="server" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                            <asp:UpdatePanel runat="server">
+                                                <ContentTemplate>
+                                                    <div class="modal-footer justify-content-center">
+                                                        <asp:LinkButton ID="btnActivarCuenta" OnClick="btnActivarCuenta_Click" CssClass="btn btn-success btn-round" runat="server">
+                                                    <i class="material-icons">check</i> Aceptar
+                                                        </asp:LinkButton>
+                                                        <asp:LinkButton ID="btnCerrarSesion" OnClick="btnCerrarSesion_Click" CssClass="btn btn-danger btn-round" runat="server">
+                                                    <i class="material-icons">close</i> Cerrar sesión
+                                                        </asp:LinkButton>
+                                                    </div>
+                                                </ContentTemplate>
+                                            </asp:UpdatePanel>
+                                        </asp:Panel>
+
+                                        <asp:Panel ID="pnlActivado" Visible="false" runat="server">
+                                            <div class="alert alert-success" role="alert">
+                                                <h4 class="alert-heading">Felicidades!</h4>
+                                                <p>Su cuenta se ha activado exitosamente.</p>
+                                                <hr>
+                                            </div>
+                                            <asp:UpdatePanel runat="server">
+                                                <ContentTemplate>
+                                                    <div class="modal-footer justify-content-center">
+                                                        <asp:LinkButton ID="btnAceptarActivacion" OnClick="btnAceptarActivacion_Click" CssClass="btn btn-success btn-round" runat="server">
+                                                <i class="material-icons">check</i> Aceptar
+                                                        </asp:LinkButton>
+                                                    </div>
+                                                </ContentTemplate>
+                                            </asp:UpdatePanel>
+                                        </asp:Panel>
+                                    </ContentTemplate>
+                                </asp:UpdatePanel>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </asp:Panel>
+        <%--End ModalPopupExtender--%>
+    </form>
     </form>
 
 
 
-    <script>
+    <%--<script>
         $("#menu-toggle").click(function (e) {
             e.preventDefault();
             $("#wrapper").toggleClass("toggled");
         });
+    </script>--%>
+
+    <script>
+        function sideAction() {
+
+            let elm = document.getElementById('myDIV');
+
+            if (elm.className === 'sidebar-mini') {
+                elm.className = '';
+            } else {
+                elm.className = 'sidebar-mini';
+            }
+        }
     </script>
+
+    
+    <script>
+        $(function () {
+            $('[id*=ListBox]').multiselect({
+                includeSelectAllOption: true
+            });
+        });
+    </script>
+
+    <script>
+        function myFunction() {
+            var x = document.getElementById("lblUrl").innerText;
+            document.getElementById("ifrLiga").src = x;
+        }
+    </script>
+
+    <script>
+        $('.copyboard').on('click', function (e) {
+            e.preventDefault();
+
+            var copyText = $(this).attr('data-text');
+            var el = $('<input style="position: absolute; bottom: -120%" type="text" value="' + copyText + '"/>').appendTo('body');
+            el[0].select();
+            document.execCommand("copy");
+            el.remove();
+        })
+    </script>
+
     <!--   Core JS Files   -->
-    <script src="../assets/js/core/jquery.min.js"></script>
+    <%--<script src="../assets/js/core/jquery.min.js"></script>--%>
     <script src="../assets/js/core/popper.min.js"></script>
     <script src="../assets/js/core/bootstrap-material-design.min.js"></script>
     <script src="../assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
@@ -441,13 +834,13 @@
                 });
             });
         });
-  </script>
+    </script>
     <script>
         $(document).ready(function () {
             // Javascript method's body can be found in assets/js/demos.js
             md.initDashboardPageCharts();
 
         });
-  </script>
+    </script>
 </body>
 </html>

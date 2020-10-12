@@ -17,6 +17,8 @@ namespace Franquicia.Domain.Models
         public Guid UidUltimoModulo { get; set; }
         public DateTime DtUltimaActividad { get; set; }
         public Guid UidSegPerfil { get; set; }
+
+        public Guid UidEstatusCuenta { get; set; }
         #endregion
 
         #region SegModulos
@@ -49,10 +51,11 @@ namespace Franquicia.Domain.Models
 
         #region Fanquicias
         public Guid UidEstatusEmpresa { get; set; }
+        public string VchNombreComercial { get; set; }
         #endregion
 
         #region Otros Modelos
-
+        public string VchAccion { get; set; }
         #endregion
         #endregion
 

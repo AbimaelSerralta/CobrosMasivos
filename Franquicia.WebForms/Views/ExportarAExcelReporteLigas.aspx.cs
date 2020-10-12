@@ -67,7 +67,7 @@ namespace Franquicia.WebForms.Views
 
                 for (int j = 0; j < gvReporteLigas.Columns.Count; j++)
                 {
-                    header = gvReporteLigas.HeaderRow.Cells[j].Text;
+                    header = HttpUtility.HtmlDecode(gvReporteLigas.HeaderRow.Cells[j].Text);
 
                     dr[header] = HttpUtility.HtmlDecode(row.Cells[j].Text);
                 }

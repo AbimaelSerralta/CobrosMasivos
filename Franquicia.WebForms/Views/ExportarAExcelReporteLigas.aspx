@@ -12,11 +12,14 @@
         <asp:GridView ID="gvReporteLigas" AutoGenerateColumns="false" runat="server">
             <Columns>
                 <asp:BoundField DataField="VchIdentificador" HeaderText="IDENTIFICADOR" />
+                <asp:BoundField DataField="NombreCompleto" HeaderText="CLIENTE" />
                 <asp:BoundField DataField="VchUrl" HeaderText="LIGA" />
                 <asp:BoundField DataField="VchAsunto" HeaderText="ASUNTO" />
                 <asp:BoundField DataField="VchConcepto" HeaderText="CONCEPTO" />
-                <asp:BoundField DataField="DcmImporte" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:C}" HeaderText="IMPORTE" />
+                <asp:BoundField DataField="DcmImporte" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:C}" HeaderText="SUBTOTAL" />
                 <asp:BoundField DataField="DtVencimiento" DataFormatString="{0:d}" HeaderText="VENCIMIENTO" />
+                <asp:BoundField SortExpression="VchPromocion" DataField="VchPromocion" HeaderText="PROMOCIÓN" />
+                <asp:BoundField SortExpression="DcmImportePromocion" DataField="DcmImportePromocion" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:C}" HeaderText="TOTAL" />
                 <asp:BoundField DataField="VchEstatus" HeaderText="ESTATUS" />
             </Columns>
         </asp:GridView>

@@ -88,6 +88,70 @@ namespace Franquicia.Bussiness
         {
             return validacionesRepository.ExisteUsuario(Usuario);
         }
+
+        public bool ExisteUsuarioFranquicia(Guid UidFranquicia, Guid UidUsuario)
+        {
+            return validacionesRepository.ExisteUsuarioFranquicia(UidFranquicia, UidUsuario);
+        }
+
+        public bool ExisteUsuarioCliente(Guid UidCliente, Guid UidUsuario)
+        {
+            return validacionesRepository.ExisteUsuarioCliente(UidCliente, UidUsuario);
+        }
+
+        public bool ExisteDireccionUsuario(Guid UidUsuario)
+        {
+            return validacionesRepository.ExisteDireccionUsuario(UidUsuario);
+        }
+
+        public bool LigaAsociadoPagado(Guid UidLigaAsociado)
+        {
+            return validacionesRepository.LigaAsociadoPagado(UidLigaAsociado);
+        }
+        public bool ValidarPagoCliente(string IdReferencia)
+        {
+            return validacionesRepository.ValidarPagoCliente(IdReferencia);
+        }
+        public bool ValidarPagoClientePayCard(string IdReferencia)
+        {
+            return validacionesRepository.ValidarPagoClientePayCard(IdReferencia);
+        }
+        public bool ExisteCuentaDineroCliente(Guid UidCliente)
+        {
+            return validacionesRepository.ExisteCuentaDineroCliente(UidCliente);
+        }
+
+        public string EstatusWhatsApp(string Telefono)
+        {
+            return validacionesRepository.EstatusWhatsApp(Telefono);
+        }
+        public string ObtenerNombreCliente(Guid UidCliente)
+        {
+            return validacionesRepository.ObtenerNombreCliente(UidCliente);
+        }
+        public string ObtenerNombreClienteCompleto(Guid UidCliente)
+        {
+            return validacionesRepository.ObtenerNombreClienteCompleto(UidCliente);
+        }
+        public string ObtenerDatosUsuario(Guid UidUsuario, Guid UidCliente)
+        {
+            return validacionesRepository.ObtenerDatosUsuario(UidUsuario, UidCliente);
+        }
+
+        public string EstatusCuentaPadre(Guid UidUsuario)
+        {
+            return validacionesRepository.EstatusCuentaPadre(UidUsuario);
+        }
+        
+        public Tuple<string, string, string> Creden(Guid UidUsuario, Guid UidCliente)
+        {
+            return validacionesRepository.Creden(UidUsuario, UidCliente);
+        }
+
+        public bool ExisteMatricula(string Matricula)
+        {
+            return validacionesRepository.ExisteMatricula(Matricula);
+        }
         #endregion
     }
 }

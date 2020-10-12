@@ -32,6 +32,8 @@ namespace Franquicia.WebForms.Views
         {
             if (!IsPostBack)
             {
+                ViewState["gvAdministradores"] = SortDirection.Ascending;
+
                 #region Direccion
                 Session["paisesServices"] = paisesServices;
                 Session["estadosServices"] = estadosServices;
@@ -43,6 +45,7 @@ namespace Franquicia.WebForms.Views
                 Session["usuariosCompletosServices"] = usuariosCompletosServices;
                 //Session["telefonosUsuariosServices"] = telefonosUsuariosServices;
                 Session["estatusService"] = estatusService;
+                Session["franquiciatariosServices"] = franquiciatariosServices;
 
                 usuariosCompletosServices.CargarAdministradores(new Guid("7F5587BF-10C7-4164-A3F8-3D17962AB17E"));
                 gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
@@ -65,7 +68,7 @@ namespace Franquicia.WebForms.Views
                 ddlPais.DataTextField = "VchPais";
                 ddlPais.DataValueField = "UidPais";
                 ddlPais.DataBind();
-                
+
                 perfilesServices.CargarPerfilesDropDownListModel(new Guid("7F5587BF-10C7-4164-A3F8-3D17962AB17E"));
                 ddlPerfil.DataSource = perfilesServices.lsPerfilesDropDownListModel;
                 ddlPerfil.DataTextField = "VchNombre";
@@ -84,12 +87,14 @@ namespace Franquicia.WebForms.Views
 
                 usuariosCompletosServices = (UsuariosCompletosServices)Session["usuariosCompletosServices"];
                 //telefonosUsuariosServices = (TelefonosUsuariosServices)Session["telefonosUsuariosServices"];
+                franquiciatariosServices = (FranquiciatariosServices)Session["franquiciatariosServices"];
 
                 estatusService = (EstatusServices)Session["estatusService"];
                 tiposTelefonosServices = (TiposTelefonosServices)Session["tiposTelefonosServices"];
 
                 lblValidar.Text = string.Empty;
 
+                pnlAlert.Visible = false;
                 lblMensajeAlert.Text = "";
                 divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
 
@@ -233,11 +238,7 @@ namespace Franquicia.WebForms.Views
                 lblValidar.Text = "El campo Repetir contraseña es obligatorio";
                 return;
             }
-            if (ddlPerfil.EmptyDropDownList())
-            {
-                lblValidar.Text = "El campo Estado es obligatorio";
-                return;
-            }
+
             if (ddlEstatus.EmptyDropDownList())
             {
                 lblValidar.Text = "El campo Municipio es obligatorio";
@@ -303,24 +304,46 @@ namespace Franquicia.WebForms.Views
                 {
                     if (item.Agregar)
                     {
-                        if (usuariosCompletosServices.RegistrarAdministradores(
-                txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), txtUsuario.Text.Trim().ToUpper(), txtPassword.Text.Trim(), new Guid(ddlPerfil.SelectedValue),
-                txtIdentificador.Text.Trim().ToUpper(), new Guid(ddlPais.SelectedValue), new Guid(ddlEstado.SelectedValue), new Guid(ddlMunicipio.SelectedValue), new Guid(ddlCiudad.SelectedValue), new Guid(ddlColonia.SelectedValue), txtCalle.Text.Trim().ToUpper(), txtEntreCalle.Text.Trim().ToUpper(), txtYCalle.Text.Trim().ToUpper(), txtNumeroExterior.Text.Trim().ToUpper(), txtNumeroInterior.Text.Trim().ToUpper(), txtCodigoPostal.Text.Trim().ToUpper(), txtReferencia.Text.Trim().ToUpper(),
-                txtNumero.Text.Trim(), new Guid(ddlTipoTelefono.SelectedValue), new Guid(ViewState["UidFranquicia"].ToString())
-                ))
+                        if (!validacionesServices.ExisteUsuario(txtUsuario.Text.Trim()))
                         {
-                            usuariosCompletosServices.CargarAdministradores(new Guid("7F5587BF-10C7-4164-A3F8-3D17962AB17E"));
-                            gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
-                            gvAdministradores.DataBind();
+                            if (txtPassword.Text.Equals(txtRepetirPassword.Text.Trim()))
+                            {
+                                if (!validacionesServices.ExisteCorreo(txtCorreo.Text.Trim()))
+                                {
+                                    if (usuariosCompletosServices.RegistrarAdministradores(
+                                    txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), txtUsuario.Text.Trim().ToUpper(), txtPassword.Text.Trim(), new Guid("18523b2b-c671-44ae-a3f6-f0255c4d11a8"),
+                                    txtIdentificador.Text.Trim().ToUpper(), new Guid(ddlPais.SelectedValue), new Guid(ddlEstado.SelectedValue), new Guid(ddlMunicipio.SelectedValue), new Guid(ddlCiudad.SelectedValue), new Guid(ddlColonia.SelectedValue), txtCalle.Text.Trim().ToUpper(), txtEntreCalle.Text.Trim().ToUpper(), txtYCalle.Text.Trim().ToUpper(), txtNumeroExterior.Text.Trim().ToUpper(), txtNumeroInterior.Text.Trim().ToUpper(), txtCodigoPostal.Text.Trim().ToUpper(), txtReferencia.Text.Trim().ToUpper(),
+                                    txtNumero.Text.Trim(), new Guid(ddlTipoTelefono.SelectedValue), new Guid(ViewState["UidFranquicia"].ToString())))
+                                    {
+                                        usuariosCompletosServices.CargarAdministradores(new Guid("7F5587BF-10C7-4164-A3F8-3D17962AB17E"));
+                                        gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
+                                        gvAdministradores.DataBind();
 
-                            lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
-                            divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                                        pnlAlert.Visible = true;
+                                        lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
+                                        divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
 
-                            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
+                                        ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
+                                    }
+                                }
+                                else
+                                {
+                                    lblValidar.Text = "El correo ingresado ya existe por favor intente con otro.";
+                                }
+                            }
+                            else
+                            {
+                                lblValidar.Text = "Las contraseña ingresadas no son iguales por favor reviselo.";
+                            }
+                        }
+                        else
+                        {
+                            lblValidar.Text = "El usuario ingresado ya existe por favor intente con otro.";
                         }
                     }
                     else
                     {
+                        pnlAlert.Visible = true;
                         lblMensajeAlert.Text = "<b>Lo sentimos,</b> no tiene permisos para esta acción.";
                         divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
@@ -330,24 +353,54 @@ namespace Franquicia.WebForms.Views
                 {
                     if (item.Actualizar)
                     {
-                        if (usuariosCompletosServices.ActualizarAdministradores(
-                new Guid(ViewState["UidRequerido"].ToString()), txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), new Guid(ddlEstatus.SelectedValue), txtUsuario.Text.Trim().ToUpper(), txtPassword.Text.Trim(), new Guid(ddlPerfil.SelectedValue),
-                txtIdentificador.Text.Trim().ToUpper(), new Guid(ddlPais.SelectedValue), new Guid(ddlEstado.SelectedValue), new Guid(ddlMunicipio.SelectedValue), new Guid(ddlCiudad.SelectedValue), new Guid(ddlColonia.SelectedValue), txtCalle.Text.Trim().ToUpper(), txtEntreCalle.Text.Trim().ToUpper(), txtYCalle.Text.Trim().ToUpper(), txtNumeroExterior.Text.Trim().ToUpper(), txtNumeroInterior.Text.Trim().ToUpper(), txtCodigoPostal.Text.Trim().ToUpper(), txtReferencia.Text.Trim().ToUpper(),
-                txtNumero.Text.Trim(), new Guid(ddlTipoTelefono.SelectedValue), new Guid(ViewState["UidFranquicia"].ToString())
-                ))
+                        bool Actualizar = false;
+
+                        if (txtPassword.Text.Equals(txtRepetirPassword.Text))
                         {
-                            usuariosCompletosServices.CargarAdministradores(new Guid("7F5587BF-10C7-4164-A3F8-3D17962AB17E"));
-                            gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
-                            gvAdministradores.DataBind();
+                            if (ViewState["ActualizarCorreo"].ToString() != txtCorreo.Text)
+                            {
+                                if (validacionesServices.ExisteCorreo(txtCorreo.Text))
+                                {
+                                    lblValidar.Text = "El correo ingresado ya existe por favor intente con otro.";
+                                    return;
+                                }
+                                else
+                                {
+                                    Actualizar = true;
+                                }
+                            }
+                            else
+                            {
+                                Actualizar = true;
+                            }
 
-                            lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha actualizado exitosamente.";
-                            divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                            if (Actualizar)
+                            {
+                                if (usuariosCompletosServices.ActualizarAdministradores(
+                                new Guid(ViewState["UidRequerido"].ToString()), txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), new Guid(ddlEstatus.SelectedValue), txtUsuario.Text.Trim().ToUpper(), txtPassword.Text.Trim(), new Guid("18523b2b-c671-44ae-a3f6-f0255c4d11a8"),
+                                txtIdentificador.Text.Trim().ToUpper(), new Guid(ddlPais.SelectedValue), new Guid(ddlEstado.SelectedValue), new Guid(ddlMunicipio.SelectedValue), new Guid(ddlCiudad.SelectedValue), new Guid(ddlColonia.SelectedValue), txtCalle.Text.Trim().ToUpper(), txtEntreCalle.Text.Trim().ToUpper(), txtYCalle.Text.Trim().ToUpper(), txtNumeroExterior.Text.Trim().ToUpper(), txtNumeroInterior.Text.Trim().ToUpper(), txtCodigoPostal.Text.Trim().ToUpper(), txtReferencia.Text.Trim().ToUpper(),
+                                txtNumero.Text.Trim(), new Guid(ddlTipoTelefono.SelectedValue), new Guid(ViewState["UidFranquicia"].ToString())))
+                                {
+                                    usuariosCompletosServices.CargarAdministradores(new Guid("7F5587BF-10C7-4164-A3F8-3D17962AB17E"));
+                                    gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
+                                    gvAdministradores.DataBind();
 
-                            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
+                                    pnlAlert.Visible = true;
+                                    lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha actualizado exitosamente.";
+                                    divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+
+                                    ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            lblValidar.Text = "Las contraseña ingresadas no son iguales por favor reviselo.";
                         }
                     }
                     else
                     {
+                        pnlAlert.Visible = true;
                         lblMensajeAlert.Text = "<b>Lo sentimos,</b> no tiene permisos para esta acción.";
                         divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
@@ -406,11 +459,27 @@ namespace Franquicia.WebForms.Views
             txtApePaterno.Enabled = true;
             txtApeMaterno.Enabled = true;
             txtCorreo.Enabled = true;
-            txtUsuario.Enabled = true;
             txtPassword.Enabled = true;
             txtRepetirPassword.Enabled = true;
             ddlPerfil.Enabled = true;
-            ddlEstatus.Enabled = true;
+
+            if (ViewState["Accion"].ToString() == "Actualizar")
+            {
+                txtUsuario.Enabled = false;
+            }
+            else
+            {
+                txtUsuario.Enabled = true;
+            }
+
+            if (ViewState["Accion"].ToString() == "Guardar")
+            {
+                ddlEstatus.Enabled = false;
+            }
+            else
+            {
+                ddlEstatus.Enabled = true;
+            }
 
             txtIdentificador.Enabled = true;
             ddlPais.Enabled = true;
@@ -436,8 +505,8 @@ namespace Franquicia.WebForms.Views
             txtApeMaterno.Text = string.Empty;
             txtCorreo.Text = string.Empty;
             txtUsuario.Text = string.Empty;
-            txtPassword.Text = string.Empty;
-            txtRepetirPassword.Text = string.Empty;
+            txtPassword.Attributes.Add("value", string.Empty);
+            txtRepetirPassword.Attributes.Add("value", string.Empty);
             ddlPerfil.SelectedIndex = -1;
             ddlEstatus.SelectedIndex = -1;
 
@@ -515,15 +584,23 @@ namespace Franquicia.WebForms.Views
 
         private void ManejoDatos(Guid dataKeys)
         {
+            //==================FRANQUICIA============================
+            franquiciatariosServices.ObtenerFranquicia(dataKeys);
+            ViewState["UidFranquicia"] = franquiciatariosServices.franquiciatariosRepository.franquiciasGridViewModel.UidFranquiciatarios;
+            FiltroRFC.Text = franquiciatariosServices.franquiciatariosRepository.franquiciasGridViewModel.VchRFC;
+            FiltroRazonSocial.Text = franquiciatariosServices.franquiciatariosRepository.franquiciasGridViewModel.VchRazonSocial;
+            FiltroNombreComercial.Text = franquiciatariosServices.franquiciatariosRepository.franquiciasGridViewModel.VchNombreComercial;
+
             //==================FRANQUICIATARIO============================
             usuariosCompletosServices.ObtenerAdministrador(dataKeys);
             txtNombre.Text = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.StrNombre;
             txtApePaterno.Text = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.StrApePaterno;
             txtApeMaterno.Text = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.StrApeMaterno;
             txtCorreo.Text = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.StrCorreo;
+            ViewState["ActualizarCorreo"] = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.StrCorreo;
             txtUsuario.Text = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.VchUsuario;
-            txtPassword.Text = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.VchContrasenia;
-            txtRepetirPassword.Text = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.VchContrasenia;
+            txtPassword.Attributes.Add("value", usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.VchContrasenia);
+            txtRepetirPassword.Attributes.Add("value", usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.VchContrasenia);
             ddlPerfil.SelectedIndex = ddlPerfil.Items.IndexOf(ddlPerfil.Items.FindByValue(usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.UidSegPerfil.ToString()));
             ddlEstatus.SelectedIndex = ddlEstatus.Items.IndexOf(ddlEstatus.Items.FindByValue(usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.UidEstatus.ToString()));
 
@@ -547,7 +624,7 @@ namespace Franquicia.WebForms.Views
             txtCodigoPostal.Text = direccionesUsuariosServices.direccionesUsuariosRepository.direccionesUsuarios.CodigoPostal;
             txtReferencia.Text = direccionesUsuariosServices.direccionesUsuariosRepository.direccionesUsuarios.Referencia;
             //==================TELÉFONO===================================
-            telefonosUsuariosServices.ObtenerTelefonoUsuario(dataKeys);
+            telefonosUsuariosServices.ObtenerTelefonoUsuarioSinPrefijo(dataKeys);
             txtNumero.Text = telefonosUsuariosServices.telefonosUsuariosRepository.telefonosUsuarios.VchTelefono;
             ddlTipoTelefono.SelectedIndex = ddlTipoTelefono.Items.IndexOf(ddlTipoTelefono.Items.FindByValue(telefonosUsuariosServices.telefonosUsuariosRepository.telefonosUsuarios.UidTipoTelefono.ToString()));
         }
@@ -691,6 +768,82 @@ namespace Franquicia.WebForms.Views
             {
                 lblNoExisteUsuario.Text = string.Empty;
                 lblExisteUsuario.Text = string.Empty;
+            }
+        }
+
+        protected void gvAdministradores_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvAdministradores.PageIndex = e.NewPageIndex;
+            gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
+            gvAdministradores.DataBind();
+        }
+
+        protected void gvAdministradores_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            string SortExpression = e.SortExpression;
+            SortDirection direccion;
+            string Orden = string.Empty;
+
+            if (ViewState["gvAdministradores"] != null)
+            {
+                direccion = (SortDirection)ViewState["gvAdministradores"];
+                if (direccion == SortDirection.Ascending)
+                {
+                    ViewState["gvAdministradores"] = SortDirection.Descending;
+                    Orden = "ASC";
+                }
+                else
+                {
+                    ViewState["gvAdministradores"] = SortDirection.Ascending;
+                    Orden = "DESC";
+                }
+
+                switch (SortExpression)
+                {
+                    case "NombreCompleto":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderBy(x => x.NombreCompleto).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.NombreCompleto).ToList();
+                        }
+                        break;
+                    case "VchUsuario":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderBy(x => x.VchUsuario).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.VchUsuario).ToList();
+                        }
+                        break;
+                    case "VchNombreComercial":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderBy(x => x.VchNombreComercial).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.VchNombreComercial).ToList();
+                        }
+                        break;
+                    case "UidEstatus":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderBy(x => x.UidEstatus).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.UidEstatus).ToList();
+                        }
+                        break;
+                }
+
+                gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
+                gvAdministradores.DataBind();
             }
         }
     }

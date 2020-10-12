@@ -5,15 +5,43 @@ using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Twilio;
+using Twilio.Rest.Api.V2010.Account;
 using WebApplication1.Vista;
 
 namespace Franquicia.WebForms.Views
 {
     public partial class Usuarios : System.Web.UI.Page
     {
+        #region Propiedades
+        // Nombre del servidor
+        string ServerName
+        {
+            get { return Request.ServerVariables["SERVER_NAME"].ToString(); }
+        }
+        // Puerto del servidor
+        string ServerPort
+        {
+            get { return Request.ServerVariables["SERVER_PORT"].ToString(); }
+        }
+
+        // Obtener URL Base
+        public string URLBase
+        {
+            get
+            {
+                if (ServerPort != string.Empty && ServerPort.Trim() != "")
+                { return "https://" + ServerName + ":" + ServerPort + "/"; }
+                else
+                { return "https://" + ServerName + "/"; }
+            }
+        }
+        #endregion
+
         UsuariosCompletosServices usuariosCompletosServices = new UsuariosCompletosServices();
         DireccionesUsuariosServices direccionesUsuariosServices = new DireccionesUsuariosServices();
         TelefonosUsuariosServices telefonosUsuariosServices = new TelefonosUsuariosServices();
@@ -28,6 +56,13 @@ namespace Franquicia.WebForms.Views
         ColoniasServices coloniasServices = new ColoniasServices();
 
         PerfilesServices perfilesServices = new PerfilesServices();
+        PrefijosTelefonicosServices prefijosTelefonicosServices = new PrefijosTelefonicosServices();
+
+        ClienteCuentaServices clienteCuentaServices = new ClienteCuentaServices();
+        TarifasServices tarifasServices = new TarifasServices();
+        TicketsServices ticketsServices = new TicketsServices();
+        ParametrosTwiServices parametrosTwiServices = new ParametrosTwiServices();
+        CorreosServices correosServices = new CorreosServices();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -55,6 +90,7 @@ namespace Franquicia.WebForms.Views
                 Session["usuariosCompletosServices"] = usuariosCompletosServices;
                 //Session["telefonosUsuariosServices"] = telefonosUsuariosServices;
                 Session["estatusService"] = estatusService;
+                Session["prefijosTelefonicosServices"] = prefijosTelefonicosServices;
 
                 usuariosCompletosServices.CargarUsuariosFinales(new Guid(ViewState["UidClienteLocal"].ToString()), new Guid("E39FF705-8A01-4302-829A-7CFB9615CC8F"));
                 gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
@@ -65,6 +101,12 @@ namespace Franquicia.WebForms.Views
                 ddlEstatus.DataTextField = "VchDescripcion";
                 ddlEstatus.DataValueField = "UidEstatus";
                 ddlEstatus.DataBind();
+
+                prefijosTelefonicosServices.CargarPrefijosTelefonicos();
+                ddlPrefijo.DataSource = prefijosTelefonicosServices.lsPrefijosTelefonicos;
+                ddlPrefijo.DataTextField = "VchCompleto";
+                ddlPrefijo.DataValueField = "UidPrefijo";
+                ddlPrefijo.DataBind();
 
                 FiltroEstatus.DataSource = estatusService.lsEstatus;
                 FiltroEstatus.Items.Insert(0, new ListItem("Seleccione", "00000000-0000-0000-0000-000000000000"));
@@ -105,6 +147,7 @@ namespace Franquicia.WebForms.Views
 
                 estatusService = (EstatusServices)Session["estatusService"];
                 tiposTelefonosServices = (TiposTelefonosServices)Session["tiposTelefonosServices"];
+                prefijosTelefonicosServices = (PrefijosTelefonicosServices)Session["prefijosTelefonicosServices"];
 
                 lblValidar.Text = string.Empty;
 
@@ -194,6 +237,24 @@ namespace Franquicia.WebForms.Views
         #endregion
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
+            string Identificador = string.Empty;
+            Guid Pais = Guid.Empty;
+            Guid Estado = Guid.Empty;
+            Guid Municipio = Guid.Empty;
+            Guid Ciudad = Guid.Empty;
+            Guid Colonia = Guid.Empty;
+            string Calle = string.Empty;
+            string EntreCalle = string.Empty;
+            string YCalle = string.Empty;
+            string NumeroExterior = string.Empty;
+            string NumeroInterior = string.Empty;
+            string CodigoPostal = string.Empty;
+            string Referencia = string.Empty;
+
+            ViewState["txtUsuario.Text"] = string.Empty;
+            ViewState["txtPassword.Text"] = string.Empty;
+            ViewState["txtRepetirPassword.Text"] = string.Empty;
+
             #region ValidarCampos
 
             if (txtNombre.EmptyTextBox())
@@ -214,78 +275,131 @@ namespace Franquicia.WebForms.Views
                 return;
             }
 
+            if (string.IsNullOrEmpty(txtUsuario.Text) && string.IsNullOrEmpty(txtPassword.Text) && string.IsNullOrEmpty(txtRepetirPassword.Text))
+            {
+                string[] Descripcion = Regex.Split(txtNombre.Text.Trim().ToUpper(), " ");
+                int numMax = Descripcion.Length;
+                ViewState["txtUsuario.Text"] = Descripcion[numMax - 1].Substring(0, 1).ToString() + "." + txtApePaterno.Text.Trim().ToUpper();
+
+                if (validacionesServices.ExisteUsuario(ViewState["txtUsuario.Text"].ToString()))
+                {
+                    DateTime dateTime = DateTime.Now;
+
+                    ViewState["txtUsuario.Text"] = Descripcion[numMax - 1].Substring(0, 1).ToString() + "." + txtApeMaterno.Text.Trim().ToUpper();
+
+                    if (validacionesServices.ExisteUsuario(ViewState["txtUsuario.Text"].ToString()))
+                    {
+                        ViewState["txtUsuario.Text"] = Descripcion[numMax - 1].Substring(0, 1).ToString() + "." + txtApePaterno.Text.Trim().ToUpper() + dateTime.ToString("mmssff");
+                    }
+                }
+
+                Random obj = new Random();
+                string posibles = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+                int longitud = posibles.Length;
+                char letra;
+                int longitudnuevacadena = 8;
+                for (int i = 0; i < longitudnuevacadena; i++)
+                {
+                    letra = posibles[obj.Next(longitud)];
+                    ViewState["txtPassword.Text"] += letra.ToString();
+                    ViewState["txtRepetirPassword.Text"] += letra.ToString();
+                }
+            }
+            else
+            {
+                if (txtUsuario.EmptyTextBox())
+                {
+                    lblValidar.Text = "El campo Usuario es obligatorio";
+                    return;
+                }
+                else
+                {
+                    ViewState["txtUsuario.Text"] = txtUsuario.Text;
+                }
+
+                if (txtPassword.EmptyTextBox())
+                {
+                    lblValidar.Text = "El campo Contraseña es obligatorio";
+                    return;
+                }
+                else
+                {
+                    ViewState["txtPassword.Text"] = txtPassword.Text;
+                }
+
+                if (txtRepetirPassword.EmptyTextBox())
+                {
+                    lblValidar.Text = "El campo Repetir contraseña es obligatorio";
+                    return;
+                }
+                else
+                {
+                    ViewState["txtRepetirPassword.Text"] = txtRepetirPassword.Text;
+                }
+            }
+
             if (txtCorreo.EmptyTextBox())
             {
                 lblValidar.Text = "El campo Correo Eléctronico es obligatorio";
                 return;
             }
 
-            if (txtUsuario.EmptyTextBox())
-            {
-                lblValidar.Text = "El campo Usuario es obligatorio";
-                return;
-            }
-
-            if (txtPassword.EmptyTextBox())
-            {
-                lblValidar.Text = "El campo Contraseña es obligatorio";
-                return;
-            }
-            if (txtRepetirPassword.EmptyTextBox())
-            {
-                lblValidar.Text = "El campo Repetir contraseña es obligatorio";
-                return;
-            }
-            if (ddlPerfil.EmptyDropDownList())
-            {
-                lblValidar.Text = "El campo Estado es obligatorio";
-                return;
-            }
             if (ddlEstatus.EmptyDropDownList())
             {
-                lblValidar.Text = "El campo Municipio es obligatorio";
+                lblValidar.Text = "El campo Estatus es obligatorio";
                 return;
             }
+            if (ddlIncluirDir.SelectedValue == "SI")
+            {
+                if (ddlPais.EmptyDropDownList())
+                {
+                    lblValidar.Text = "El campo Pais es obligatorio";
+                    return;
+                }
+                if (ddlEstado.EmptyDropDownList())
+                {
+                    lblValidar.Text = "El campo Estado es obligatorio";
+                    return;
+                }
+                if (ddlMunicipio.EmptyDropDownList())
+                {
+                    lblValidar.Text = "El campo Municipio es obligatorio";
+                    return;
+                }
+                if (ddlCiudad.EmptyDropDownList())
+                {
+                    lblValidar.Text = "El campo Ciudad es obligatorio";
+                    return;
+                }
+                if (ddlColonia.EmptyDropDownList())
+                {
+                    lblValidar.Text = "El campo Colonia es obligatorio";
+                    return;
+                }
+                if (txtCalle.EmptyTextBox())
+                {
+                    lblValidar.Text = "El campo Calle es obligatorio";
+                    return;
+                }
+                if (txtCodigoPostal.EmptyTextBox())
+                {
+                    lblValidar.Text = "El campo Código Postal es obligatorio";
+                    return;
+                }
 
-            if (ddlPais.EmptyDropDownList())
-            {
-                lblValidar.Text = "El campo Pais es obligatorio";
-                return;
-            }
-            if (ddlEstado.EmptyDropDownList())
-            {
-                lblValidar.Text = "El campo Estado es obligatorio";
-                return;
-            }
-            if (ddlMunicipio.EmptyDropDownList())
-            {
-                lblValidar.Text = "El campo Municipio es obligatorio";
-                return;
-            }
-            if (ddlCiudad.EmptyDropDownList())
-            {
-                lblValidar.Text = "El campo Ciudad es obligatorio";
-                return;
-            }
-            if (ddlColonia.EmptyDropDownList())
-            {
-                lblValidar.Text = "El campo Colonia es obligatorio";
-                return;
-            }
-            if (txtCalle.EmptyTextBox())
-            {
-                lblValidar.Text = "El campo Calle es obligatorio";
-                return;
-            }
-            if (txtCodigoPostal.EmptyTextBox())
-            {
-                lblValidar.Text = "El campo Código Postal es obligatorio";
-                return;
-            }
-            if (ddlTipoTelefono.EmptyDropDownList())
-            {
-                lblValidar.Text = "El campo Tipo Telefono es obligatorio";
-                return;
+                Identificador = string.Empty;
+                Pais = Guid.Parse(ddlPais.SelectedValue);
+                Estado = Guid.Parse(ddlEstado.SelectedValue);
+                Municipio = Guid.Parse(ddlMunicipio.SelectedValue);
+                Ciudad = Guid.Parse(ddlCiudad.SelectedValue);
+                Colonia = Guid.Parse(ddlColonia.SelectedValue);
+                Calle = txtCalle.Text.Trim().ToUpper();
+                EntreCalle = txtEntreCalle.Text.Trim().ToUpper();
+                YCalle = txtYCalle.Text.Trim().ToUpper();
+                NumeroExterior = txtNumeroExterior.Text.Trim().ToUpper();
+                NumeroInterior = txtNumeroInterior.Text.Trim().ToUpper();
+                CodigoPostal = txtCodigoPostal.Text.Trim().ToUpper();
+                Referencia = txtReferencia.Text.Trim().ToUpper();
             }
             if (txtNumero.EmptyTextBox())
             {
@@ -306,20 +420,164 @@ namespace Franquicia.WebForms.Views
                 {
                     if (item.Agregar)
                     {
-                        if (usuariosCompletosServices.RegistrarUsuarios(
-                txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), txtUsuario.Text.Trim().ToUpper(), txtPassword.Text.Trim(), new Guid(ddlPerfil.SelectedValue),
-                txtIdentificador.Text.Trim().ToUpper(), new Guid(ddlPais.SelectedValue), new Guid(ddlEstado.SelectedValue), new Guid(ddlMunicipio.SelectedValue), new Guid(ddlCiudad.SelectedValue), new Guid(ddlColonia.SelectedValue), txtCalle.Text.Trim().ToUpper(), txtEntreCalle.Text.Trim().ToUpper(), txtYCalle.Text.Trim().ToUpper(), txtNumeroExterior.Text.Trim().ToUpper(), txtNumeroInterior.Text.Trim().ToUpper(), txtCodigoPostal.Text.Trim().ToUpper(), txtReferencia.Text.Trim().ToUpper(),
-                txtNumero.Text.Trim(), new Guid(ddlTipoTelefono.SelectedValue), new Guid(ViewState["UidClienteLocal"].ToString())
-                ))
+                        if (!validacionesServices.ExisteUsuario(ViewState["txtUsuario.Text"].ToString()))
                         {
-                            usuariosCompletosServices.CargarUsuariosFinales(new Guid(ViewState["UidClienteLocal"].ToString()), new Guid("E39FF705-8A01-4302-829A-7CFB9615CC8F"));
-                            gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
-                            gvAdministradores.DataBind();
+                            if (ViewState["txtPassword.Text"].ToString().Equals(ViewState["txtRepetirPassword.Text"].ToString()))
+                            {
+                                if (!validacionesServices.ExisteCorreo(txtCorreo.Text))
+                                {
+                                    Guid UidUsuario = Guid.NewGuid();
 
-                            lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
-                            divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                                    if (usuariosCompletosServices.RegistrarUsuarios(UidUsuario,
+                                    txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), ViewState["txtUsuario.Text"].ToString().Trim().ToUpper(), ViewState["txtPassword.Text"].ToString().Trim(), Guid.Parse("18E9669B-C238-4BCC-9213-AF995644A5A4"),
+                                    txtNumero.Text.Trim(), Guid.Parse("B1055882-BCBA-4AB7-94FA-90E57647E607"), Guid.Parse(ddlPrefijo.SelectedValue), Guid.Parse(ViewState["UidClienteLocal"].ToString())))
+                                    {
+                                        string NombreComercialCorreo = validacionesServices.ObtenerNombreCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+                                        CorreoEnvioCredenciales(txtNombre.Text.Trim().ToUpper() + " " + txtApePaterno.Text.Trim().ToUpper() + " " + txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), ViewState["txtPassword.Text"].ToString().Trim(), txtCorreo.Text.Trim(), NombreComercialCorreo);
 
-                            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
+                                        if (ddlIncluirDir.SelectedValue == "SI")
+                                        {
+                                            if (usuariosCompletosServices.RegistrarDireccionUsuarios(UidUsuario, Identificador, Pais, Estado, Municipio, Ciudad, Colonia, Calle, EntreCalle, YCalle, NumeroExterior, NumeroInterior, CodigoPostal, Referencia))
+                                            {
+                                                pnlAlert.Visible = true;
+                                                lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
+                                                divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                                            }
+                                            else
+                                            {
+                                                pnlAlert.Visible = true;
+                                                lblMensajeAlert.Text = "<b>Lo sentimos, </b> el usuario se ha registrado exitosamente, sin embargo la dirección no se pudo registrar.";
+                                                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                                            }
+                                        }
+                                        else
+                                        {
+                                            pnlAlert.Visible = true;
+                                            lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
+                                            divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                                        }
+
+                                        #region EnviarWhats
+
+                                        string NumberTo = txtNumero.Text;
+                                        string nombreTrun = string.Empty;
+                                        string NombreComercial = string.Empty;
+                                        string prefijo = prefijosTelefonicosServices.lsPrefijosTelefonicos[ddlPrefijo.SelectedIndex].Prefijo;
+
+                                        if (prefijo == "+52")
+                                        {
+                                            prefijo = prefijo + "1";
+                                        }
+
+                                        string[] Descripcion = Regex.Split(txtNombre.Text, " ");
+
+                                        if (Descripcion.Length >= 2)
+                                        {
+                                            nombreTrun = Descripcion[0];
+                                        }
+                                        else
+                                        {
+                                            nombreTrun = txtNombre.Text;
+                                        }
+
+                                        NombreComercial = validacionesServices.ObtenerNombreCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+
+                                        string body = "Hola " + nombreTrun + "," +
+                                            "\r\n" + NombreComercial + " le agradece su registro." +
+                                            "\r\n" + "Responda SI para activar las notificaciones";
+
+                                        string EstaWhats = validacionesServices.EstatusWhatsApp(NumberTo);
+                                        if (EstaWhats == "PENDIENTE")
+                                        {
+                                            //******Configuracion de Twilio******
+                                            parametrosTwiServices.ObtenerParametrosTwi();
+                                            string accountSid = parametrosTwiServices.parametrosTwiRepository.parametrosTwi.AccountSid;
+                                            string authToken = parametrosTwiServices.parametrosTwiRepository.parametrosTwi.AuthToken;
+                                            string NumberFrom = parametrosTwiServices.parametrosTwiRepository.parametrosTwi.NumberFrom;
+
+                                            //string accountSid = "ACc7561cb09df3180ee1368e40055eedf5";
+                                            //string authToken = "3f914e588826df9a93ed849cee73eae2";
+                                            ////string NumberFrom = "+14158739087";
+                                            //string NumberFrom = "+14155238886";
+
+                                            try
+                                            {
+                                                tarifasServices.CargarTarifas();
+                                                clienteCuentaServices.ObtenerDineroCuentaCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+                                                decimal DcmCuenta = clienteCuentaServices.clienteCuentaRepository.clienteCuenta.DcmDineroCuenta;
+
+                                                decimal DcmWhatsapp = 0;
+                                                foreach (var tariWhats in tarifasServices.lsTarifasGridViewModel)
+                                                {
+                                                    DcmWhatsapp = tariWhats.DcmWhatsapp;
+                                                }
+
+                                                if (DcmCuenta >= DcmWhatsapp)
+                                                {
+                                                    TwilioClient.Init(accountSid, authToken);
+
+                                                    var message = MessageResource.Create(
+                                                    body: body.Replace("\r", ""),
+                                                    from: new Twilio.Types.PhoneNumber("whatsapp:" + NumberFrom),
+                                                    to: new Twilio.Types.PhoneNumber("whatsapp:" + prefijo + NumberTo)
+                                                    //to: new Twilio.Types.PhoneNumber("whatsapp:+5219841651607")
+                                                    );
+
+                                                    string Id = telefonosUsuariosServices.ObtenerIdTelefono(NumberTo);
+                                                    telefonosUsuariosServices.ActualizarEstatusWhats(Guid.Parse(Id), Guid.Parse("C8A2C506-7655-4102-B987-D13AE3E25A66"));
+
+                                                    decimal NuevoSaldo = DcmCuenta - DcmWhatsapp;
+
+                                                    string[] DatosUsuario = Regex.Split(validacionesServices.ObtenerDatosUsuario(UidUsuario, Guid.Parse(ViewState["UidClienteLocal"].ToString())), ",");
+
+                                                    string IdCliente = string.Empty;
+                                                    string IdUsuario = string.Empty;
+
+                                                    if (DatosUsuario.Length >= 2)
+                                                    {
+                                                        IdCliente = DatosUsuario[0];
+                                                        IdUsuario = DatosUsuario[1];
+                                                    }
+
+                                                    string Folio = IdCliente + IdUsuario + DateTime.Now.ToString("ddMMyyyyHHmmssfff");
+
+                                                    if (ticketsServices.RegistrarTicketPago(Folio, DcmWhatsapp, 0, DcmWhatsapp, "Pago de WhatsApp", Guid.Parse(ViewState["UidClienteLocal"].ToString()), DateTime.Now, 1, 0, 0, DcmCuenta, DcmWhatsapp, NuevoSaldo))
+                                                    {
+                                                        clienteCuentaServices.ActualizarDineroCuentaCliente(NuevoSaldo, Guid.Parse(ViewState["UidClienteLocal"].ToString()), "");
+
+                                                        clienteCuentaServices.ObtenerDineroCuentaCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+                                                        Master.GvSaldo.Text = "Saldo: $ " + clienteCuentaServices.clienteCuentaRepository.clienteCuenta.DcmDineroCuenta.ToString("N2");
+                                                    }
+                                                }
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                //lblResumen.Text += "WhatsApp: " + ex.Message;
+                                            }
+                                        }
+
+                                        #endregion
+
+                                        usuariosCompletosServices.CargarUsuariosFinales(new Guid(ViewState["UidClienteLocal"].ToString()), new Guid("E39FF705-8A01-4302-829A-7CFB9615CC8F"));
+                                        gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
+                                        gvAdministradores.DataBind();
+
+                                        ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
+                                    }
+                                }
+                                else
+                                {
+                                    lblValidar.Text = "El correo ingresado ya existe por favor intente con otro.";
+                                }
+                            }
+                            else
+                            {
+                                lblValidar.Text = "Las contraseña ingresadas no son iguales por favor reviselo.";
+                            }
+                        }
+                        else
+                        {
+                            lblValidar.Text = "El usuario ingresado ya existe por favor intente con otro.";
                         }
                     }
                     else
@@ -333,20 +591,84 @@ namespace Franquicia.WebForms.Views
                 {
                     if (item.Actualizar)
                     {
-                        if (usuariosCompletosServices.ActualizarUsuarios(
-                new Guid(ViewState["UidRequerido"].ToString()), txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), new Guid(ddlEstatus.SelectedValue), txtUsuario.Text.Trim().ToUpper(), txtPassword.Text.Trim(), new Guid(ddlPerfil.SelectedValue),
-                txtIdentificador.Text.Trim().ToUpper(), new Guid(ddlPais.SelectedValue), new Guid(ddlEstado.SelectedValue), new Guid(ddlMunicipio.SelectedValue), new Guid(ddlCiudad.SelectedValue), new Guid(ddlColonia.SelectedValue), txtCalle.Text.Trim().ToUpper(), txtEntreCalle.Text.Trim().ToUpper(), txtYCalle.Text.Trim().ToUpper(), txtNumeroExterior.Text.Trim().ToUpper(), txtNumeroInterior.Text.Trim().ToUpper(), txtCodigoPostal.Text.Trim().ToUpper(), txtReferencia.Text.Trim().ToUpper(),
-                txtNumero.Text.Trim(), new Guid(ddlTipoTelefono.SelectedValue), new Guid(ViewState["UidClienteLocal"].ToString())
-                ))
+                        bool Actualizar = false;
+
+                        if (txtPassword.Text.Equals(txtRepetirPassword.Text))
                         {
-                            usuariosCompletosServices.CargarUsuariosFinales(new Guid(ViewState["UidClienteLocal"].ToString()), new Guid("E39FF705-8A01-4302-829A-7CFB9615CC8F"));
-                            gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
-                            gvAdministradores.DataBind();
+                            if (ViewState["ActualizarCorreo"].ToString() != txtCorreo.Text)
+                            {
+                                if (validacionesServices.ExisteCorreo(txtCorreo.Text))
+                                {
+                                    lblValidar.Text = "El correo ingresado ya existe por favor intente con otro.";
+                                    return;
+                                }
+                                else
+                                {
+                                    Actualizar = true;
+                                }
+                            }
+                            else
+                            {
+                                Actualizar = true;
+                            }
 
-                            lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha actualizado exitosamente.";
-                            divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                            if (Actualizar)
+                            {
+                                if (usuariosCompletosServices.ActualizarUsuarios(
+                                new Guid(ViewState["UidRequerido"].ToString()), txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), new Guid(ddlEstatus.SelectedValue), txtUsuario.Text.Trim().ToUpper(), txtPassword.Text.Trim(), new Guid("18E9669B-C238-4BCC-9213-AF995644A5A4"),
+                                txtNumero.Text.Trim(), new Guid(ddlTipoTelefono.SelectedValue), new Guid(ddlPrefijo.SelectedValue), new Guid(ViewState["UidClienteLocal"].ToString())))
+                                {
+                                    if (ddlIncluirDir.SelectedValue == "SI")
+                                    {
+                                        if (validacionesServices.ExisteDireccionUsuario(Guid.Parse(ViewState["UidRequerido"].ToString())))
+                                        {
+                                            if (usuariosCompletosServices.ActualizarDireccionUsuarios(Guid.Parse(ViewState["UidRequerido"].ToString()), Identificador, Pais, Estado, Municipio, Ciudad, Colonia, Calle, EntreCalle, YCalle, NumeroExterior, NumeroInterior, CodigoPostal, Referencia))
+                                            {
+                                                pnlAlert.Visible = true;
+                                                lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha actualizado exitosamente.";
+                                                divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                                            }
+                                            else
+                                            {
+                                                pnlAlert.Visible = true;
+                                                lblMensajeAlert.Text = "<b>Lo sentimos, </b> los datos del usuario se ha actualizado exitosamente, sin embargo la dirección no se pudo registrar.";
+                                                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (usuariosCompletosServices.RegistrarDireccionUsuarios(Guid.Parse(ViewState["UidRequerido"].ToString()), Identificador, Pais, Estado, Municipio, Ciudad, Colonia, Calle, EntreCalle, YCalle, NumeroExterior, NumeroInterior, CodigoPostal, Referencia))
+                                            {
+                                                pnlAlert.Visible = true;
+                                                lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
+                                                divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                                            }
+                                            else
+                                            {
+                                                pnlAlert.Visible = true;
+                                                lblMensajeAlert.Text = "<b>Lo sentimos, </b> el usuario se ha registrado exitosamente, sin embargo la dirección no se pudo registrar.";
+                                                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        pnlAlert.Visible = true;
+                                        lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha actualizado exitosamente.";
+                                        divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                                    }
 
-                            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
+                                    usuariosCompletosServices.CargarUsuariosFinales(new Guid(ViewState["UidClienteLocal"].ToString()), new Guid("E39FF705-8A01-4302-829A-7CFB9615CC8F"));
+                                    gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
+                                    gvAdministradores.DataBind();
+
+                                    ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            lblValidar.Text = "Las contraseña ingresadas no son iguales por favor reviselo.";
                         }
                     }
                     else
@@ -356,10 +678,36 @@ namespace Franquicia.WebForms.Views
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
                     }
                 }
+                else if (ViewState["Accion"].ToString() == "AsosiarUsuario")
+                {
+                    if (validacionesServices.ExisteUsuarioCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse(ViewState["usuarioCompleto.UidUsuario"].ToString())))
+                    {
+                        lblValidar.Text = "Lo sentimos, el usuario ya esta asociado.";
+                    }
+                    else
+                    {
+                        if (usuariosCompletosServices.AsociarClienteUsuario(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse(ViewState["usuarioCompleto.UidUsuario"].ToString())))
+                        {
+                            usuariosCompletosServices.CargarUsuariosFinales(new Guid(ViewState["UidClienteLocal"].ToString()), new Guid("E39FF705-8A01-4302-829A-7CFB9615CC8F"));
+                            gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
+                            gvAdministradores.DataBind();
+
+                            pnlAlert.Visible = true;
+                            lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
+                            divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+
+                            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
+                        }
+                    }
+                }
             }
         }
         protected void btnNuevo_Click(object sender, EventArgs e)
         {
+            ddlIncluirDir.SelectedIndex = 0;
+            ddlIncluirDir.Enabled = true;
+            pnlIncluirDir.Visible = false;
+
             lblValidar.Text = string.Empty;
             ViewState["Accion"] = "Guardar";
             LimpiarCampos();
@@ -368,10 +716,12 @@ namespace Franquicia.WebForms.Views
             btnCancelar.Visible = true;
             btnGuardar.Visible = true;
             btnEditar.Visible = false;
+            pnlAsosiarUsuario.Visible = true;
             lblTituloModal.Text = "Registro de Usuario";
             btnGuardar.Text = "<i class=" + "material-icons>" + "check </i> Guardar";
 
             ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
+
         }
 
         private void BloquearCampos()
@@ -402,6 +752,7 @@ namespace Franquicia.WebForms.Views
 
             ddlTipoTelefono.Enabled = false;
             txtNumero.Enabled = false;
+            ddlPrefijo.Enabled = false;
         }
         private void DesbloquearCampos()
         {
@@ -409,11 +760,27 @@ namespace Franquicia.WebForms.Views
             txtApePaterno.Enabled = true;
             txtApeMaterno.Enabled = true;
             txtCorreo.Enabled = true;
-            txtUsuario.Enabled = true;
             txtPassword.Enabled = true;
             txtRepetirPassword.Enabled = true;
             ddlPerfil.Enabled = true;
-            ddlEstatus.Enabled = true;
+
+            if (ViewState["Accion"].ToString() == "Actualizar")
+            {
+                txtUsuario.Enabled = false;
+            }
+            else
+            {
+                txtUsuario.Enabled = true;
+            }
+
+            if (ViewState["Accion"].ToString() == "Guardar")
+            {
+                ddlEstatus.Enabled = false;
+            }
+            else
+            {
+                ddlEstatus.Enabled = true;
+            }
 
             txtIdentificador.Enabled = true;
             ddlPais.Enabled = true;
@@ -431,16 +798,19 @@ namespace Franquicia.WebForms.Views
 
             ddlTipoTelefono.Enabled = true;
             txtNumero.Enabled = true;
+            ddlPrefijo.Enabled = true;
         }
         private void LimpiarCampos()
         {
+            FiltroCorreoUsuario.Text = string.Empty;
+
             txtNombre.Text = string.Empty;
             txtApePaterno.Text = string.Empty;
             txtApeMaterno.Text = string.Empty;
             txtCorreo.Text = string.Empty;
             txtUsuario.Text = string.Empty;
-            txtPassword.Text = string.Empty;
-            txtRepetirPassword.Text = string.Empty;
+            txtPassword.Attributes.Add("value", "");
+            txtRepetirPassword.Attributes.Add("value", "");
             ddlPerfil.SelectedIndex = -1;
             ddlEstatus.SelectedIndex = -1;
 
@@ -460,6 +830,7 @@ namespace Franquicia.WebForms.Views
 
             ddlTipoTelefono.SelectedIndex = -1;
             txtNumero.Text = string.Empty;
+            ddlPrefijo.SelectedIndex = ddlPrefijo.Items.IndexOf(ddlPrefijo.Items.FindByValue("abb854c4-e7ed-420f-8561-aa4b61bf5b0f"));
         }
 
         protected void gvAdministradores_RowDataBound(object sender, GridViewRowEventArgs e)
@@ -480,6 +851,7 @@ namespace Franquicia.WebForms.Views
                 btnCancelar.Visible = true;
                 btnGuardar.Visible = true;
                 btnEditar.Visible = false;
+                pnlAsosiarUsuario.Visible = false;
                 lblTituloModal.Text = "Actualizar Usuario";
                 btnGuardar.Text = "<i class=" + "material-icons>" + "refresh </i> Actualizar";
 
@@ -491,6 +863,19 @@ namespace Franquicia.WebForms.Views
 
                 ManejoDatos(dataKeys);
 
+                if (!string.IsNullOrEmpty(txtCalle.Text) && !string.IsNullOrEmpty(txtEntreCalle.Text))
+                {
+                    ddlIncluirDir.SelectedIndex = 1;
+                    ddlIncluirDir.Enabled = false;
+                    pnlIncluirDir.Visible = true;
+                }
+                else
+                {
+                    ddlIncluirDir.SelectedIndex = 0;
+                    ddlIncluirDir.Enabled = true;
+                    pnlIncluirDir.Visible = false;
+                }
+
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
             }
 
@@ -501,7 +886,7 @@ namespace Franquicia.WebForms.Views
                 btnCancelar.Visible = false;
                 btnGuardar.Visible = false;
                 btnEditar.Visible = true;
-
+                pnlAsosiarUsuario.Visible = false;
                 int index = Convert.ToInt32(e.CommandArgument.ToString());
                 GridViewRow Seleccionado = gvAdministradores.Rows[index];
                 GridView valor = (GridView)sender;
@@ -510,9 +895,62 @@ namespace Franquicia.WebForms.Views
 
                 ManejoDatos(dataKeys);
 
+                if (!string.IsNullOrEmpty(txtCalle.Text) && !string.IsNullOrEmpty(txtEntreCalle.Text))
+                {
+                    ddlIncluirDir.SelectedIndex = 1;
+                    ddlIncluirDir.Enabled = false;
+                    pnlIncluirDir.Visible = true;
+                }
+                else
+                {
+                    ddlIncluirDir.SelectedIndex = 0;
+                    ddlIncluirDir.Enabled = true;
+                    pnlIncluirDir.Visible = false;
+                }
+
                 lblTituloModal.Text = "Visualización de Usuario";
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
+            }
+
+            if (e.CommandName == "Enviar")
+            {
+                int index = Convert.ToInt32(e.CommandArgument.ToString());
+                GridViewRow Seleccionado = gvAdministradores.Rows[index];
+                GridView valor = (GridView)sender;
+                Guid dataKeys = Guid.Parse(valor.DataKeys[Seleccionado.RowIndex].Value.ToString());
+                ViewState["UidRequerido"] = dataKeys;
+
+                usuariosCompletosServices.ObtenerAdministrador(dataKeys);
+
+                string Nombre = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.NombreCompleto;
+                string Usuario = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.VchUsuario;
+                string Contrasenia = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.VchContrasenia;
+                string Correo = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.StrCorreo;
+                string NombreComercial = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.VchNombreComercial;
+
+                CorreoEnvioCredenciales(Nombre, Correo, Contrasenia, Correo, NombreComercial);
+            }
+        }
+
+        private void CorreoEnvioCredenciales(string Nombre, string Usuario, string Contrasenia, string Correo, string NombreComercial)
+        {
+            string Asunto = "Acceso al sistema Cobros Masivos";
+            string LigaUrl = URLBase + "Views/Login.aspx";
+
+            string mnsj = correosServices.CorreoEnvioCredenciales(Nombre, Asunto, Usuario, Contrasenia, LigaUrl, Correo, NombreComercial);
+
+            if (mnsj == string.Empty)
+            {
+                pnlAlert.Visible = true;
+                lblMensajeAlert.Text = "<strong>¡Felicidades! </strong> se ha enviado las credenciales de acceso exitosamente.";
+                divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+            }
+            else
+            {
+                pnlAlert.Visible = true;
+                lblMensajeAlert.Text = "<strong>Lo sentimos, </strong> no se ha podido enviar las credenciales de acceso, por favor intentelo más tarde. Si el error persiste comuniquese con los administradores.";
+                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
             }
         }
 
@@ -520,13 +958,27 @@ namespace Franquicia.WebForms.Views
         {
             //==================FRANQUICIATARIO============================
             usuariosCompletosServices.ObtenerAdministrador(dataKeys);
+            if (usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.UidEstatusCuenta == Guid.Parse("2C859517-9507-4B5B-BB3E-C7341F6630DD"))
+            {
+                BloquearCampos();
+            }
+            else if (usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.VchAccion == "CREADO")
+            {
+                DesbloquearCampos();
+            }
+            else if (usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.VchAccion == "ASOCIADO")
+            {
+                BloquearCampos();
+            }
+
             txtNombre.Text = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.StrNombre;
             txtApePaterno.Text = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.StrApePaterno;
             txtApeMaterno.Text = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.StrApeMaterno;
             txtCorreo.Text = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.StrCorreo;
+            ViewState["ActualizarCorreo"] = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.StrCorreo;
             txtUsuario.Text = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.VchUsuario;
-            txtPassword.Text = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.VchContrasenia;
-            txtRepetirPassword.Text = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.VchContrasenia;
+            txtPassword.Attributes.Add("value", usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.VchContrasenia);
+            txtRepetirPassword.Attributes.Add("value", usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.VchContrasenia);
             ddlPerfil.SelectedIndex = ddlPerfil.Items.IndexOf(ddlPerfil.Items.FindByValue(usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.UidSegPerfil.ToString()));
             ddlEstatus.SelectedIndex = ddlEstatus.Items.IndexOf(ddlEstatus.Items.FindByValue(usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.UidEstatus.ToString()));
 
@@ -553,6 +1005,7 @@ namespace Franquicia.WebForms.Views
             telefonosUsuariosServices.ObtenerTelefonoUsuario(dataKeys);
             txtNumero.Text = telefonosUsuariosServices.telefonosUsuariosRepository.telefonosUsuarios.VchTelefono;
             ddlTipoTelefono.SelectedIndex = ddlTipoTelefono.Items.IndexOf(ddlTipoTelefono.Items.FindByValue(telefonosUsuariosServices.telefonosUsuariosRepository.telefonosUsuarios.UidTipoTelefono.ToString()));
+            ddlPrefijo.SelectedIndex = ddlPrefijo.Items.IndexOf(ddlPrefijo.Items.FindByValue(telefonosUsuariosServices.telefonosUsuariosRepository.telefonosUsuarios.UidPrefijo.ToString()));
         }
 
         #region Combobox de Direcciones
@@ -597,6 +1050,7 @@ namespace Franquicia.WebForms.Views
 
         protected void btnCancelar_Click(object sender, EventArgs e)
         {
+            pnlAsosiarUsuario.Visible = false;
             ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
         }
 
@@ -613,6 +1067,19 @@ namespace Franquicia.WebForms.Views
             btnCancelar.Visible = true;
             btnGuardar.Visible = true;
             btnEditar.Visible = false;
+
+            if (!string.IsNullOrEmpty(txtCalle.Text) && !string.IsNullOrEmpty(txtEntreCalle.Text))
+            {
+                ddlIncluirDir.SelectedIndex = 1;
+                ddlIncluirDir.Enabled = false;
+                pnlIncluirDir.Visible = true;
+            }
+            else
+            {
+                ddlIncluirDir.SelectedIndex = 0;
+                ddlIncluirDir.Enabled = true;
+                pnlIncluirDir.Visible = false;
+            }
 
             btnGuardar.Text = "<i class=" + "material-icons>" + "refresh </i> Actualizar";
         }
@@ -700,6 +1167,16 @@ namespace Franquicia.WebForms.Views
                             usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.NombreCompleto).ToList();
                         }
                         break;
+                    case "StrCorreo":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderBy(x => x.StrCorreo).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.StrCorreo).ToList();
+                        }
+                        break;
                     case "VchUsuario":
                         if (Orden == "ASC")
                         {
@@ -754,6 +1231,97 @@ namespace Franquicia.WebForms.Views
         protected void btnLimpiar_Click(object sender, EventArgs e)
         {
 
+        }
+
+        protected void btnBuscarUsuario_Click(object sender, EventArgs e)
+        {
+            if (FiltroCorreoUsuario.EmptyTextBox())
+            {
+                lblValidar.Text = "Por favor ingrese un correo.";
+                return;
+            }
+
+            usuariosCompletosServices.AsociarUsuariosFinales(FiltroCorreoUsuario.Text);
+
+            //==================FRANQUICIATARIO============================
+            txtNombre.Text = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.StrNombre;
+            txtApePaterno.Text = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.StrApePaterno;
+            txtApeMaterno.Text = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.StrApeMaterno;
+            txtCorreo.Text = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.StrCorreo;
+            txtUsuario.Text = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.VchUsuario;
+            txtPassword.Attributes.Add("value", usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.VchContrasenia);
+            txtRepetirPassword.Attributes.Add("value", usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.VchContrasenia);
+            ddlPerfil.SelectedIndex = ddlPerfil.Items.IndexOf(ddlPerfil.Items.FindByValue(usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.UidSegPerfil.ToString()));
+            ddlEstatus.SelectedIndex = ddlEstatus.Items.IndexOf(ddlEstatus.Items.FindByValue(usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.UidEstatus.ToString()));
+
+            //==================DIRECCIÓN==================================
+            direccionesUsuariosServices.ObtenerDireccionesUsuarios(usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.UidUsuario);
+            txtIdentificador.Text = direccionesUsuariosServices.direccionesUsuariosRepository.direccionesUsuarios.Identificador;
+            ddlPais.SelectedIndex = ddlPais.Items.IndexOf(ddlPais.Items.FindByValue(direccionesUsuariosServices.direccionesUsuariosRepository.direccionesUsuarios.UidPais.ToString()));
+            MuestraEstados(direccionesUsuariosServices.direccionesUsuariosRepository.direccionesUsuarios.UidPais.ToString());
+            ddlEstado.SelectedIndex = ddlEstado.Items.IndexOf(ddlEstado.Items.FindByValue(direccionesUsuariosServices.direccionesUsuariosRepository.direccionesUsuarios.UidEstado.ToString()));
+            MuestraMunicipio(direccionesUsuariosServices.direccionesUsuariosRepository.direccionesUsuarios.UidEstado.ToString());
+            ddlMunicipio.SelectedIndex = ddlMunicipio.Items.IndexOf(ddlMunicipio.Items.FindByValue(direccionesUsuariosServices.direccionesUsuariosRepository.direccionesUsuarios.UidMunicipio.ToString()));
+            MuestraCiudades(direccionesUsuariosServices.direccionesUsuariosRepository.direccionesUsuarios.UidMunicipio.ToString());
+            ddlCiudad.SelectedIndex = ddlCiudad.Items.IndexOf(ddlCiudad.Items.FindByValue(direccionesUsuariosServices.direccionesUsuariosRepository.direccionesUsuarios.UidCiudad.ToString()));
+            MuestraColonia(direccionesUsuariosServices.direccionesUsuariosRepository.direccionesUsuarios.UidCiudad.ToString());
+            ddlColonia.SelectedIndex = ddlColonia.Items.IndexOf(ddlColonia.Items.FindByValue(direccionesUsuariosServices.direccionesUsuariosRepository.direccionesUsuarios.UidColonia.ToString()));
+            txtCalle.Text = direccionesUsuariosServices.direccionesUsuariosRepository.direccionesUsuarios.Calle;
+            txtEntreCalle.Text = direccionesUsuariosServices.direccionesUsuariosRepository.direccionesUsuarios.EntreCalle;
+            txtYCalle.Text = direccionesUsuariosServices.direccionesUsuariosRepository.direccionesUsuarios.YCalle;
+            txtNumeroExterior.Text = direccionesUsuariosServices.direccionesUsuariosRepository.direccionesUsuarios.NumeroExterior;
+            txtNumeroInterior.Text = direccionesUsuariosServices.direccionesUsuariosRepository.direccionesUsuarios.NumeroInterior;
+            txtCodigoPostal.Text = direccionesUsuariosServices.direccionesUsuariosRepository.direccionesUsuarios.CodigoPostal;
+            txtReferencia.Text = direccionesUsuariosServices.direccionesUsuariosRepository.direccionesUsuarios.Referencia;
+            //==================TELÉFONO===================================
+            telefonosUsuariosServices.ObtenerTelefonoUsuario(usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.UidUsuario);
+            txtNumero.Text = telefonosUsuariosServices.telefonosUsuariosRepository.telefonosUsuarios.VchTelefono;
+            ddlTipoTelefono.SelectedIndex = ddlTipoTelefono.Items.IndexOf(ddlTipoTelefono.Items.FindByValue(telefonosUsuariosServices.telefonosUsuariosRepository.telefonosUsuarios.UidTipoTelefono.ToString()));
+
+            if (usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.UidUsuario != Guid.Empty && usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.UidUsuario != null)
+            {
+                if (!string.IsNullOrEmpty(txtCalle.Text) && !string.IsNullOrEmpty(txtEntreCalle.Text))
+                {
+                    ddlIncluirDir.SelectedIndex = 1;
+                    ddlIncluirDir.Enabled = false;
+                    pnlIncluirDir.Visible = true;
+                }
+                else
+                {
+                    ddlIncluirDir.SelectedIndex = 0;
+                    ddlIncluirDir.Enabled = true;
+                    pnlIncluirDir.Visible = false;
+                }
+
+                ViewState["usuarioCompleto.UidUsuario"] = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.UidUsuario;
+                ViewState["Accion"] = "AsosiarUsuario";
+                btnGuardar.Text = "<i class=" + "material-icons>" + "check </i> Asociar";
+                BloquearCampos();
+            }
+            else
+            {
+                ViewState["Accion"] = "Guardar";
+                lblValidar.Text = "Lo sentimos no hemos encontado ningun usuario.";
+                DesbloquearCampos();
+            }
+        }
+
+        protected void btnLimpiarUsuario_Click(object sender, EventArgs e)
+        {
+            LimpiarCampos();
+        }
+
+        protected void ddlIncluirDir_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+            if (ddlIncluirDir.SelectedValue == "SI")
+            {
+                pnlIncluirDir.Visible = true;
+            }
+            else
+            {
+                pnlIncluirDir.Visible = false;
+            }
         }
     }
 }

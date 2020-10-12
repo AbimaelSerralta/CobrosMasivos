@@ -20,12 +20,12 @@ namespace Franquicia.Bussiness
         
         
         #region Metodos Franquicia
-        public void ObtenerParametrosEntrada(Guid UidFranquiciatario)
+        public void ObtenerParametrosEntradaFraquicia(Guid UidFranquiciatario)
         {
             parametrosEntradaRepository.ObtenerParametrosEntrada(UidFranquiciatario);
         }
 
-        public bool RegistrarParametrosEntrada(string IdCompany, string IdBranch, string VchModena, string VchUsuario, string VchPassword, string VchCanal, string VchData0, string VchUrl, string VchSemillaAES, Guid UidPropietario)
+        public bool RegistrarParametrosEntradaFraquicia(string IdCompany, string IdBranch, string VchModena, string VchUsuario, string VchPassword, string VchCanal, string VchData0, string VchUrl, string VchSemillaAES, Guid UidPropietario)
         {
             bool result = false;
             if (parametrosEntradaRepository.RegistrarParametrosEntrada(
@@ -49,7 +49,7 @@ namespace Franquicia.Bussiness
             return result;
         }
 
-        public bool ActualizarParametrosEntrada(string IdCompany, string IdBranch, string VchModena, string VchUsuario, string VchPassword, string VchCanal, string VchData0, string VchUrl, string VchSemillaAES, Guid UidPropietario)
+        public bool ActualizarParametrosEntradaFraquicia(string IdCompany, string IdBranch, string VchModena, string VchUsuario, string VchPassword, string VchCanal, string VchData0, string VchUrl, string VchSemillaAES, Guid UidPropietario)
         {
             bool result = false;
             if (parametrosEntradaRepository.ActualizarParametrosEntrada(
@@ -75,9 +75,9 @@ namespace Franquicia.Bussiness
         #endregion
 
         #region Metodos Cliente
-        public void ObtenerParametrosEntradaCliente(Guid UidFranquiciatario)
+        public void ObtenerParametrosEntradaCliente(Guid UidCliente)
         {
-            parametrosEntradaRepository.ObtenerParametrosEntradaCliente(UidFranquiciatario);
+            parametrosEntradaRepository.ObtenerParametrosEntradaCliente(UidCliente);
         }
 
         public bool RegistrarParametrosEntradaCliente(string IdCompany, string IdBranch, string VchModena, string VchUsuario, string VchPassword, string VchCanal, string VchData0, string VchUrl, string VchSemillaAES, Guid UidPropietario)

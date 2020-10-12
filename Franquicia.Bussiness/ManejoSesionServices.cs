@@ -17,6 +17,7 @@ namespace Franquicia.Bussiness
             get { return _accesosRepository; }
             set { _accesosRepository = value; }
         }
+        
         ModulosRepository _modulosRepository = new ModulosRepository();
         public ModulosRepository modulosRepository
         {
@@ -38,6 +39,20 @@ namespace Franquicia.Bussiness
             set { _perfilesRepository = value; }
         }
 
+        private ClienteCuentaRepository _clienteCuentaRepository = new ClienteCuentaRepository();
+        public ClienteCuentaRepository clienteCuentaRepository
+        {
+            get { return _clienteCuentaRepository; }
+            set { _clienteCuentaRepository = value; }
+        }
+
+        private ClientesRepository _clientesRepository = new ClientesRepository();
+        public ClientesRepository clientesRepository
+        {
+            get { return _clientesRepository; }
+            set { _clientesRepository = value; }
+        }
+
         private bool _BolStatusSesion;
         public bool BolStatusSesion
         {
@@ -49,6 +64,8 @@ namespace Franquicia.Bussiness
 
         public List<PermisosMenuModel> lsmodulos = new List<PermisosMenuModel>();
         public List<PermisosMenuModel> lsAccesosPermitidos = new List<PermisosMenuModel>();
+
+        public List<UsuariosCompletos> lsRecoveryPassword = new List<UsuariosCompletos>();
 
         #region Metodos
         public void IniciarSesion(string Usuario, string Password)
@@ -223,6 +240,86 @@ namespace Franquicia.Bussiness
         {
             usuarioCompletoRepository.ObtenerFranquiciaClienteUsuario(usuarioCompletoRepository.usuarioCompleto.UidUsuario);
         }
+
+        public void ObtenerDineroCuentaCliente(Guid UidCliente)
+        {
+            clienteCuentaRepository.ObtenerDineroCuentaCliente(UidCliente);
+        }
+
+        public List<UsuariosCompletos> RecoveryPassword(string Parametro, string Dato)
+        {
+            return lsRecoveryPassword = usuarioCompletoRepository.RecoveryPassword(Parametro, Dato);
+        }
+        #endregion
+
+        #region MetodosEscuela
+        public void IniciarSesionEscuela(string Usuario, string Password)
+        {
+            BolStatusSesion = false;
+
+            usuarioCompletoRepository.LoginUsuarioEscuela(Usuario, Password);
+
+            if (usuarioCompletoRepository.usuarioCompleto.UidAppWeb == new Guid("514433C7-4439-42F5-ABE4-6BF1C330F0CA"))
+            {
+                if (usuarioCompletoRepository.ObtenerDatosUsuarioEscuela(usuarioCompletoRepository.usuarioCompleto.UidUsuario))
+                {
+                    BolStatusSesion = true;
+                }
+            }
+            else
+            {
+                if (usuarioCompletoRepository.usuarioCompleto.UidUsuario != Guid.Empty)
+                {
+                    usuarioCompletoRepository.ObtenerEstatusdeEmpresaUsuarioEscuela(usuarioCompletoRepository.usuarioCompleto.UidUsuario);
+
+                    if (usuarioCompletoRepository.usuarioCompleto.UidUsuario != Guid.Empty)
+                    {
+                        if (usuarioCompletoRepository.usuarioCompleto.UidEstatusEmpresa.ToString() == "65e46bc9-1864-4145-ad1a-70f5b5f69739")
+                        {
+                            if (usuarioCompletoRepository.usuarioCompleto.UidEstatus.ToString() == "65e46bc9-1864-4145-ad1a-70f5b5f69739")
+                            {
+                                BolStatusSesion = true;
+                            }
+                            else
+                            {
+                                BolStatusSesion = false;
+                            }
+                        }
+                        else
+                        {
+                            BolStatusSesion = false;
+                        }
+                    }
+                    else
+                    {
+                        //limpiarPropiedadesUsuarioEmpresas();
+                        BolStatusSesion = true;
+
+                    }
+                }
+                else
+                {
+                    //limpiarPropiedadesUsuarioEmpresas();
+                    BolStatusSesion = false;
+                }
+            }
+        }
+
+        public List<UsuariosCompletos> RecoveryPasswordEscuela(string Parametro, string Dato)
+        {            
+            return lsRecoveryPassword = usuarioCompletoRepository.RecoveryPasswordEscuela(Parametro, Dato);
+        }
+
+        #region Metodos Cliente
+        public bool RegistrarLogo(Guid UidCliente, byte[] Imagen)
+        {
+            return clientesRepository.RegistrarLogo(UidCliente, Imagen);
+        }
+        public bool ActualizarLogo(Guid UidCliente, byte[] Imagen)
+        {
+            return clientesRepository.ActualizarLogo(UidCliente, Imagen);
+        }
+        #endregion
         #endregion
     }
 }

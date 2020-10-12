@@ -37,6 +37,10 @@
     <Reference Include="Dapper.SimpleCRUD, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Dapper.SimpleCRUD.2.0.1\lib\net45\Dapper.SimpleCRUD.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL" />
+    <Reference Include="SendGrid">
+      <HintPath>..\PagaLaEscuela\Bin\SendGrid.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -55,6 +59,30 @@
     <Compile Include="Common\SqlDapper.cs" />
     <Compile Include="Common\SqlDataRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\DetallesPagosColegiaturasRepository.cs" />
+    <Compile Include="Repository\PagosColegiaturasRepository.cs" />
+    <Compile Include="Repository\ColegiaturasRepository.cs" />
+    <Compile Include="Repository\ComisionesTarjetasRepository.cs" />
+    <Compile Include="Repository\CorreosRepository.cs" />
+    <Compile Include="Repository\PeriodicidadesRepository.cs" />
+    <Compile Include="Repository\ProcesosEnsenianzasRepository.cs" />
+    <Compile Include="Repository\SuperPromocionesRepository.cs" />
+    <Compile Include="Repository\ComisionesTarjetasClientesRepository.cs" />
+    <Compile Include="Repository\TelefonosAlumnosRepository.cs" />
+    <Compile Include="Repository\PagosPadresRepository.cs" />
+    <Compile Include="Repository\TiposEnsenianzasRepository.cs" />
+    <Compile Include="Repository\NivelesEnsenianzasRepository.cs" />
+    <Compile Include="Repository\ParametrosTwiRepository.cs" />
+    <Compile Include="Repository\TiposEventosRepository.cs" />
+    <Compile Include="Repository\AlumnosRepository.cs" />
+    <Compile Include="Repository\PadresRepository.cs" />
+    <Compile Include="Repository\WhatsAppPendientesRepository.cs" />
+    <Compile Include="Repository\EventosRepository.cs" />
+    <Compile Include="Repository\PrefijosTelefonicosRepository.cs" />
+    <Compile Include="Repository\TicketsRepository.cs" />
+    <Compile Include="Repository\HistorialPagosRepository.cs" />
+    <Compile Include="Repository\ClienteCuentaRepository.cs" />
+    <Compile Include="Repository\TarifasRepository.cs" />
     <Compile Include="Repository\AccesosRepository.cs" />
     <Compile Include="Repository\AppWebRepository.cs" />
     <Compile Include="Repository\ColoniasRepository.cs" />

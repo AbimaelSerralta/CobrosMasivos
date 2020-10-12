@@ -1,20 +1,20 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="ReporteLigas.aspx.cs" Inherits="Franquicia.WebForms.Views.ReporteLigas" %>
+﻿<%@ Page Title="ReporteLigas" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="ReporteLigas.aspx.cs" Inherits="Franquicia.WebForms.Views.ReporteLigas" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="CPHCaja" runat="server">
-    <asp:Panel ID="pnlAlert" Visible="false" runat="server">
-        <asp:UpdatePanel runat="server">
-            <ContentTemplate>
+    <asp:UpdatePanel runat="server">
+        <ContentTemplate>
+            <asp:Panel ID="pnlAlert" Visible="false" runat="server">
                 <div id="divAlert" class="alert alert-danger alert-dismissible fade" role="alert" runat="server">
                     <asp:Label ID="lblMensajeAlert" runat="server" />
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 </div>
-            </ContentTemplate>
-        </asp:UpdatePanel>
-    </asp:Panel>
+            </asp:Panel>
+        </ContentTemplate>
+    </asp:UpdatePanel>
     <asp:UpdatePanel runat="server">
         <ContentTemplate>
             <div class="content">
@@ -31,6 +31,9 @@
                                                 </asp:LinkButton>
                                                 <asp:Label Text="Listado de ligas" runat="server" />
 
+                                                <asp:LinkButton ID="btnActualizarLista" OnClick="btnActualizarLista_Click" ToolTip="Actualizar tabla." class="btn btn-lg btn-success btn-fab btn-fab-mini btn-round pull-right" runat="server">
+                                                        <i class="material-icons">sync</i>
+                                                </asp:LinkButton>
                                                 <asp:LinkButton ID="btnExportarLista" OnClick="btnExportarLista_Click" ToolTip="Exportar tabla a excel." class="btn btn-lg btn-warning btn-fab btn-fab-mini btn-round pull-right" runat="server">
                                                         <i class="material-icons">file_download</i>
                                                 </asp:LinkButton>
@@ -47,11 +50,14 @@
                                                 </EmptyDataTemplate>
                                                 <Columns>
                                                     <asp:BoundField SortExpression="VchIdentificador" DataField="VchIdentificador" HeaderText="IDENTIFICADOR" />
+                                                    <asp:BoundField SortExpression="NombreCompleto" DataField="NombreCompleto" HeaderText="CLIENTE" />
                                                     <asp:BoundField SortExpression="VchUrl" DataField="VchUrl" HeaderText="LIGA" />
                                                     <asp:BoundField SortExpression="VchAsunto" DataField="VchAsunto" HeaderText="ASUNTO" />
                                                     <asp:BoundField SortExpression="VchConcepto" DataField="VchConcepto" HeaderText="CONCEPTO" />
-                                                    <asp:BoundField SortExpression="DcmImporte" DataField="DcmImporte" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:C}" HeaderText="IMPORTE" />
+                                                    <asp:BoundField SortExpression="DcmImporte" DataField="DcmImporte" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:C}" HeaderText="SUBTOTAL" />
                                                     <asp:BoundField SortExpression="DtVencimiento" DataField="DtVencimiento" DataFormatString="{0:d}" HeaderText="VENCIMIENTO" />
+                                                    <asp:BoundField SortExpression="VchPromocion" DataField="VchPromocion" HeaderText="PROMOCIÓN" />
+                                                    <asp:BoundField SortExpression="DcmImportePromocion" DataField="DcmImportePromocion" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:C}" HeaderText="TOTAL" />
                                                     <%--<asp:BoundField SortExpression="VchEstatus" DataField="VchEstatus" HeaderText="ESTATUS" />--%>
                                                     <asp:TemplateField SortExpression="VchEstatus" HeaderText="ESTATUS">
                                                         <ItemTemplate>
@@ -76,7 +82,7 @@
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                 </Columns>
-                                                <PagerStyle CssClass="pagination-ys" />
+                                                <PagerStyle HorizontalAlign="Center" CssClass="pagination-ys" />
                                             </asp:GridView>
                                         </div>
                                     </div>
@@ -204,19 +210,27 @@
                                                     <div class="form-group">
                                                         <asp:Label Text="Busqueda" runat="server" />
                                                         <div class="row">
-                                                            <div class="form-group col-md-6">
+                                                            <div class="form-group col-md-4">
                                                                 <label for="txtIdentificador" style="color: black;">Identificador</label>
                                                                 <asp:TextBox ID="txtIdentificador" CssClass="form-control" aria-label="Search" runat="server" />
                                                             </div>
-                                                            <div class="form-group col-md-6">
-                                                                <label for="txtUsuario" visible="false" style="color: black;"></label>
-                                                                <asp:TextBox ID="txtUsuario" Visible="false" CssClass="form-control" aria-label="Search" runat="server" />
+                                                            <div class="form-group col-md-4">
+                                                                <label for="txtNombre" style="color: black;">Nombre(s)</label>
+                                                                <asp:TextBox ID="txtNombre" CssClass="form-control" aria-label="Search" runat="server" />
                                                             </div>
-                                                            <div class="form-group col-md-6">
+                                                            <div class="form-group col-md-4">
+                                                                <label for="txtApePaterno" style="color: black;">Ape Paterno</label>
+                                                                <asp:TextBox ID="txtApePaterno" CssClass="form-control" aria-label="Search" runat="server" />
+                                                            </div>
+                                                            <div class="form-group col-md-4">
+                                                                <label for="txtApeMaterno" style="color: black;">Ape Materno</label>
+                                                                <asp:TextBox ID="txtApeMaterno" CssClass="form-control" aria-label="Search" runat="server" />
+                                                            </div>
+                                                            <div class="form-group col-md-4">
                                                                 <label for="txtAsunto" style="color: black;">Asunto</label>
                                                                 <asp:TextBox ID="txtAsunto" CssClass="form-control" aria-label="Search" runat="server" />
                                                             </div>
-                                                            <div class="form-group col-md-6">
+                                                            <div class="form-group col-md-4">
                                                                 <label for="txtConcepto" style="color: black;">Concepto</label>
                                                                 <asp:TextBox ID="txtConcepto" CssClass="form-control" aria-label="Search" runat="server" />
                                                             </div>
@@ -235,8 +249,8 @@
                                                             <div class="form-group col-md-3">
                                                                 <label for="ddlImporteMenor" style="color: black;"></label>
                                                                 <asp:DropDownList ID="ddlImporteMenor" CssClass="form-control" Style="margin-top: 6px;" runat="server">
-                                                                    <asp:ListItem Text="(<=) Mayor o igual que" Value="<=" />
-                                                                    <asp:ListItem Text="(<) Mayor que" Value="<" />
+                                                                    <asp:ListItem Text="(<=) Menor o igual que" Value="<=" />
+                                                                    <asp:ListItem Text="(<) Menor que" Value="<" />
                                                                 </asp:DropDownList>
                                                             </div>
                                                             <div class="form-group col-md-3">
@@ -245,12 +259,30 @@
                                                                 <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtImporteMenor" runat="server" />
                                                             </div>
                                                             <div class="form-group col-md-6">
-                                                                <label for="txtVencimientoDesde" style="color: black;">Vencimiento</label>
+                                                                <label for="txtRegistroDesde" style="color: black;">Fecha Registro</label>
+                                                                <asp:TextBox ID="txtRegistroDesde" CssClass="form-control" TextMode="Date" aria-label="Search" runat="server" />
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label for="txtRegistroHasta" style="color: black;"></label>
+                                                                <asp:TextBox ID="txtRegistroHasta" CssClass="form-control" TextMode="Date" aria-label="Search" runat="server" />
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label for="txtVencimientoDesde" style="color: black;">Fecha Vencimiento</label>
                                                                 <asp:TextBox ID="txtVencimientoDesde" CssClass="form-control" TextMode="Date" aria-label="Search" runat="server" />
                                                             </div>
                                                             <div class="form-group col-md-6">
                                                                 <label for="txtVencimientoHasta" style="color: black;"></label>
                                                                 <asp:TextBox ID="txtVencimientoHasta" CssClass="form-control" TextMode="Date" aria-label="Search" runat="server" />
+                                                            </div>
+                                                            <div class="form-group col-md-3">
+                                                                <label for="ddlEstatus" style="color: black;">Estatus</label>
+                                                                <asp:DropDownList ID="ddlEstatus" CssClass="form-control" Style="margin-top: 6px;" runat="server">
+                                                                    <asp:ListItem Text="Todos" Value="" />
+                                                                    <asp:ListItem Text="approved" Value="approved" />
+                                                                    <asp:ListItem Text="denied" Value="denied" />
+                                                                    <asp:ListItem Text="error" Value="error" />
+                                                                    <asp:ListItem Text="Pendiente" Value="Pendiente" />
+                                                                </asp:DropDownList>
                                                             </div>
                                                         </div>
                                                     </div>

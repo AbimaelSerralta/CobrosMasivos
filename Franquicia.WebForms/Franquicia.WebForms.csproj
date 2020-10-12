@@ -16,7 +16,7 @@
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
-    <IISExpressSSLPort>44371</IISExpressSSLPort>
+    <IISExpressSSLPort>44374</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
@@ -62,6 +62,12 @@
       <HintPath>..\packages\FastMember.1.3.0\lib\net45\FastMember.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.IdentityModel.Logging, Version=1.1.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Logging.1.1.2\lib\net451\Microsoft.IdentityModel.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Tokens, Version=5.1.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Tokens.5.1.2\lib\net451\Microsoft.IdentityModel.Tokens.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
@@ -72,10 +78,18 @@
     <Reference Include="RestSharp, Version=106.0.0.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.106.10.1\lib\net452\RestSharp.dll</HintPath>
     </Reference>
+    <Reference Include="StarkbankEcdsa, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\starkbank-ecdsa.1.2.0\lib\net452\StarkbankEcdsa.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IdentityModel.Tokens.Jwt, Version=5.1.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.5.1.2\lib\net451\System.IdentityModel.Tokens.Jwt.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -117,6 +131,15 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Twilio, Version=5.39.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Twilio.5.39.1\lib\net451\Twilio.dll</HintPath>
+    </Reference>
+    <Reference Include="Twilio.AspNet.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Twilio.AspNet.Common.5.33.1\lib\net45\Twilio.AspNet.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Twilio.AspNet.Mvc, Version=5.33.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Twilio.AspNet.Mvc.5.33.1\lib\net451\Twilio.AspNet.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
@@ -125,9 +148,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="assets\css\font-awesome.min.css" />
+    <Content Include="assets\css\MaterialIcons.css" />
     <Content Include="assets\css\material-dashboard-rtl.css" />
     <Content Include="assets\css\material-dashboard.css" />
     <Content Include="assets\css\material-dashboard.min.css" />
+    <Content Include="assets\css\style2.css" />
     <Content Include="assets\demo\demo.css" />
     <Content Include="assets\demo\demo.js" />
     <Content Include="assets\img\angular.png" />
@@ -189,32 +215,72 @@
     <Content Include="bootstrap4.0.0\js\bootstrap.bundle.min.js" />
     <Content Include="bootstrap4.0.0\js\bootstrap.js" />
     <Content Include="bootstrap4.0.0\js\bootstrap.min.js" />
+    <Content Include="CSSPropio\BasicEventos.css" />
     <Content Include="CSSPropio\BtnPaginacion.css" />
     <Content Include="CSSPropio\Loader.css" />
+    <Content Include="CSSPropio\loader.gif" />
     <Content Include="CSSPropio\Login.css" />
     <Content Include="CSSPropio\style2.css" />
+    <Content Include="CSSPropio\StyleLoadingEvento.css" />
     <Content Include="CSSPropio\StyleVentanaModal.css" />
     <Content Include="Default.aspx" />
+    <Content Include="Evento.aspx" />
     <Content Include="Global.asax" />
+    <Content Include="Images\BannerEvent.png" />
+    <Content Include="Images\BannerEvent2.png" />
+    <Content Include="Images\EventoCerrado.png" />
     <Content Include="Images\face.png" />
+    <Content Include="Images\icoSms.jpg" />
+    <Content Include="Images\icoWhats.png" />
     <Content Include="Images\LigaSimple.PNG" />
+    <Content Include="Images\llave.png" />
     <Content Include="Images\logo-cobroscontarjetas.png" />
     <Content Include="Images\logo-compuandsoft.png" />
     <Content Include="Images\logo-mit.png" />
     <Content Include="Images\logoCobroscontarjetas.png" />
     <Content Include="Images\logoCobroscontarjetasLetras.png" />
     <Content Include="Images\mountain.png" />
+    <Content Include="Images\Multiple.PNG" />
+    <Content Include="Images\think.png" />
+    <Content Include="Multiselect\css\bootstrap-multiselect.css" />
+    <Content Include="Multiselect\js\bootstrap-multiselect.min.js" />
+    <Content Include="Multiselect\js\jquery-3.3.1.min.js" />
+    <Content Include="Pago.aspx" />
+    <Content Include="PlantillasHtml\CorreoCadena.html" />
+    <Content Include="PlantillasHtml\CorreoEnvioCredenciales.html" />
+    <Content Include="PlantillasHtml\CorreoEnvioPagoColegiatura.html" />
+    <Content Include="PlantillasHtml\CorreoLiga.html" />
+    <Content Include="PlantillasHtml\CorreoLigaMultiple.html" />
+    <Content Include="PlantillasHtml\CorreoRecoveryPassword.html" />
     <Content Include="Views\AccesosUsuarios.aspx" />
     <Content Include="Views\AdministradoresFranquicias.aspx" />
     <Content Include="Views\AdministradoresClientes.aspx" />
+    <Content Include="Views\ComercioTarifas.aspx" />
+    <Content Include="Views\CrearEventos.aspx" />
+    <Content Include="Views\Eventos.aspx" />
+    <Content Include="Views\EventosUsuario.aspx" />
+    <Content Include="Views\ExportarAExcelFranquicia.aspx" />
     <Content Include="Views\ExportarAExcel.aspx" />
+    <Content Include="Views\ExportarAExcelMultipleFranquicia.aspx" />
     <Content Include="Views\ExportarAExcelMultiple.aspx" />
     <Content Include="Views\ExportarAExcelReporteLigas.aspx" />
+    <Content Include="Views\File.aspx" />
+    <Content Include="Views\GenerarLigasFranquicias.aspx" />
     <Content Include="Views\GenerarLigas.aspx" />
+    <Content Include="Views\GenerarLigasMultiplesFranquicias.aspx" />
     <Content Include="Views\GenerarLigasMultiples.aspx" />
+    <Content Include="Views\HistorialPagosComercio.aspx" />
+    <Content Include="Views\Multiselect.aspx" />
     <Content Include="Views\PageNoFound.aspx" />
+    <Content Include="Views\Promociones.aspx" />
+    <Content Include="Views\ReporteLigasFranquicias.aspx" />
     <Content Include="Views\ReporteLigas.aspx" />
+    <Content Include="Views\Pagos.aspx" />
+    <Content Include="Views\ReporteLigaUsuario.aspx" />
+    <Content Include="Views\Solo2.aspx" />
+    <Content Include="Views\Tarifas.aspx" />
     <Content Include="Views\UsuariosClientes.aspx" />
+    <Content Include="Views\UsuariosFinalesFranquicias.aspx" />
     <Content Include="Views\UsuariosFranquicias.aspx" />
     <Content Include="Views\UsuariosPrincipal.aspx" />
     <Content Include="Views\UsuarioFinal.aspx" />
@@ -232,9 +298,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\HookPayCardController.cs" />
     <Compile Include="Controllers\PayCardController.cs" />
-    <Compile Include="Controllers\PruebaController.cs" />
+    <Compile Include="Controllers\PayCardHookController.cs" />
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -242,8 +310,22 @@
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Evento.aspx.cs">
+      <DependentUpon>Evento.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Evento.aspx.designer.cs">
+      <DependentUpon>Evento.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Pago.aspx.cs">
+      <DependentUpon>Pago.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Pago.aspx.designer.cs">
+      <DependentUpon>Pago.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Response\ResponseHelpers.cs" />
@@ -269,12 +351,54 @@
     <Compile Include="Views\AdministradoresClientes.aspx.designer.cs">
       <DependentUpon>AdministradoresClientes.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Views\ComercioTarifas.aspx.cs">
+      <DependentUpon>ComercioTarifas.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\ComercioTarifas.aspx.designer.cs">
+      <DependentUpon>ComercioTarifas.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CrearEventos.aspx.cs">
+      <DependentUpon>CrearEventos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\CrearEventos.aspx.designer.cs">
+      <DependentUpon>CrearEventos.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Eventos.aspx.cs">
+      <DependentUpon>Eventos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\Eventos.aspx.designer.cs">
+      <DependentUpon>Eventos.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EventosUsuario.aspx.cs">
+      <DependentUpon>EventosUsuario.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\EventosUsuario.aspx.designer.cs">
+      <DependentUpon>EventosUsuario.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ExportarAExcelFranquicia.aspx.cs">
+      <DependentUpon>ExportarAExcelFranquicia.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\ExportarAExcelFranquicia.aspx.designer.cs">
+      <DependentUpon>ExportarAExcelFranquicia.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Views\ExportarAExcel.aspx.cs">
       <DependentUpon>ExportarAExcel.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Views\ExportarAExcel.aspx.designer.cs">
       <DependentUpon>ExportarAExcel.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ExportarAExcelMultipleFranquicia.aspx.cs">
+      <DependentUpon>ExportarAExcelMultipleFranquicia.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\ExportarAExcelMultipleFranquicia.aspx.designer.cs">
+      <DependentUpon>ExportarAExcelMultipleFranquicia.aspx</DependentUpon>
     </Compile>
     <Compile Include="Views\ExportarAExcelMultiple.aspx.cs">
       <DependentUpon>ExportarAExcelMultiple.aspx</DependentUpon>
@@ -290,12 +414,33 @@
     <Compile Include="Views\ExportarAExcelReporteLigas.aspx.designer.cs">
       <DependentUpon>ExportarAExcelReporteLigas.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Views\File.aspx.cs">
+      <DependentUpon>File.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\File.aspx.designer.cs">
+      <DependentUpon>File.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GenerarLigasFranquicias.aspx.cs">
+      <DependentUpon>GenerarLigasFranquicias.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\GenerarLigasFranquicias.aspx.designer.cs">
+      <DependentUpon>GenerarLigasFranquicias.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Views\GenerarLigas.aspx.cs">
       <DependentUpon>GenerarLigas.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Views\GenerarLigas.aspx.designer.cs">
       <DependentUpon>GenerarLigas.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GenerarLigasMultiplesFranquicias.aspx.cs">
+      <DependentUpon>GenerarLigasMultiplesFranquicias.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\GenerarLigasMultiplesFranquicias.aspx.designer.cs">
+      <DependentUpon>GenerarLigasMultiplesFranquicias.aspx</DependentUpon>
     </Compile>
     <Compile Include="Views\GenerarLigasMultiples.aspx.cs">
       <DependentUpon>GenerarLigasMultiples.aspx</DependentUpon>
@@ -304,12 +449,40 @@
     <Compile Include="Views\GenerarLigasMultiples.aspx.designer.cs">
       <DependentUpon>GenerarLigasMultiples.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Views\HistorialPagosComercio.aspx.cs">
+      <DependentUpon>HistorialPagosComercio.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\HistorialPagosComercio.aspx.designer.cs">
+      <DependentUpon>HistorialPagosComercio.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Multiselect.aspx.cs">
+      <DependentUpon>Multiselect.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\Multiselect.aspx.designer.cs">
+      <DependentUpon>Multiselect.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Views\PageNoFound.aspx.cs">
       <DependentUpon>PageNoFound.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Views\PageNoFound.aspx.designer.cs">
       <DependentUpon>PageNoFound.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Promociones.aspx.cs">
+      <DependentUpon>Promociones.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\Promociones.aspx.designer.cs">
+      <DependentUpon>Promociones.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ReporteLigasFranquicias.aspx.cs">
+      <DependentUpon>ReporteLigasFranquicias.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\ReporteLigasFranquicias.aspx.designer.cs">
+      <DependentUpon>ReporteLigasFranquicias.aspx</DependentUpon>
     </Compile>
     <Compile Include="Views\ReporteLigas.aspx.cs">
       <DependentUpon>ReporteLigas.aspx</DependentUpon>
@@ -318,12 +491,47 @@
     <Compile Include="Views\ReporteLigas.aspx.designer.cs">
       <DependentUpon>ReporteLigas.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Views\Pagos.aspx.cs">
+      <DependentUpon>Pagos.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\Pagos.aspx.designer.cs">
+      <DependentUpon>Pagos.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ReporteLigaUsuario.aspx.cs">
+      <DependentUpon>ReporteLigaUsuario.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\ReporteLigaUsuario.aspx.designer.cs">
+      <DependentUpon>ReporteLigaUsuario.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Solo2.aspx.cs">
+      <DependentUpon>Solo2.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\Solo2.aspx.designer.cs">
+      <DependentUpon>Solo2.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Tarifas.aspx.cs">
+      <DependentUpon>Tarifas.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\Tarifas.aspx.designer.cs">
+      <DependentUpon>Tarifas.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Views\UsuariosClientes.aspx.cs">
       <DependentUpon>UsuariosClientes.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Views\UsuariosClientes.aspx.designer.cs">
       <DependentUpon>UsuariosClientes.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\UsuariosFinalesFranquicias.aspx.cs">
+      <DependentUpon>UsuariosFinalesFranquicias.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\UsuariosFinalesFranquicias.aspx.designer.cs">
+      <DependentUpon>UsuariosFinalesFranquicias.aspx</DependentUpon>
     </Compile>
     <Compile Include="Views\UsuariosFranquicias.aspx.cs">
       <DependentUpon>UsuariosFranquicias.aspx</DependentUpon>
@@ -601,9 +809,26 @@
     <Content Include="bootstrap4.0.0\js\bootstrap.bundle.min.js.map" />
     <Content Include="bootstrap4.0.0\js\bootstrap.js.map" />
     <Content Include="bootstrap4.0.0\js\bootstrap.min.js.map" />
+    <Content Include="assets\MaterialIcons\flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2" />
+    <Content Include="assets\MaterialIcons\KFOlCnqEu92Fr1MmSU5fABc4EsA.woff2" />
+    <Content Include="assets\MaterialIcons\KFOlCnqEu92Fr1MmSU5fBBc4.woff2" />
+    <Content Include="assets\MaterialIcons\KFOlCnqEu92Fr1MmSU5fBxc4EsA.woff2" />
+    <Content Include="assets\MaterialIcons\KFOlCnqEu92Fr1MmSU5fCBc4EsA.woff2" />
+    <Content Include="assets\MaterialIcons\KFOlCnqEu92Fr1MmSU5fChc4EsA.woff2" />
+    <Content Include="assets\MaterialIcons\KFOlCnqEu92Fr1MmSU5fCRc4EsA.woff2" />
+    <Content Include="assets\MaterialIcons\KFOlCnqEu92Fr1MmSU5fCxc4EsA.woff2" />
+    <Content Include="assets\MaterialIcons\KFOmCnqEu92Fr1Mu4mxK.woff2" />
+    <Content Include="assets\MaterialIcons\KFOmCnqEu92Fr1Mu4WxKOzY.woff2" />
+    <Content Include="assets\MaterialIcons\KFOmCnqEu92Fr1Mu5mxKOzY.woff2" />
+    <Content Include="assets\MaterialIcons\KFOmCnqEu92Fr1Mu72xKOzY.woff2" />
+    <Content Include="assets\MaterialIcons\KFOmCnqEu92Fr1Mu7GxKOzY.woff2" />
+    <Content Include="assets\MaterialIcons\KFOmCnqEu92Fr1Mu7mxKOzY.woff2" />
+    <Content Include="assets\MaterialIcons\KFOmCnqEu92Fr1Mu7WxKOzY.woff2" />
+    <Content Include="libman.json" />
     <None Include="packages.config" />
     <Content Include="Views\MasterPage.Master" />
-    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\CobrosMasivos.pubxml" />
+    <None Include="Properties\PublishProfiles\CobrosMasivosPub.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -625,6 +850,9 @@
       <Name>Franquicia.Domain</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Views\HookPayCard\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -640,7 +868,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>53340</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>https://localhost:44371/</IISUrl>
+          <IISUrl>https://localhost:44374/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

@@ -17,6 +17,9 @@ namespace Franquicia.Domain.Models
         public Guid UidEstatus { get; set; }
         public Guid UidFranquiciatario { get; set; }
         public int IdCliente { get; set; }
+        public string VchIdWAySMS { get; set; }
+        public string VchZonaHoraria { get; set; }
+        public bool BitEscuela { get; set; }
 
     }
 }

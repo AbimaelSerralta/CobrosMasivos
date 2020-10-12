@@ -1,4 +1,4 @@
-﻿<%@ Page Culture="es-MX" Title="" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="GenerarLigas.aspx.cs" Inherits="Franquicia.WebForms.Views.GenerarLigas" %>
+﻿<%@ Page Culture="es-MX" Title="GenerarLigas" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="GenerarLigas.aspx.cs" Inherits="Franquicia.WebForms.Views.GenerarLigas" %>
 
 <%@ MasterType VirtualPath="~/Views/MasterPage.Master" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
@@ -6,10 +6,14 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="CPHCaja" runat="server">
-
     <style>
         .form-check, label {
-            color: white;
+            font-size: 14px;
+            line-height: 1.42857;
+            color: #333333;
+            font-weight: 400;
+            padding-left: 5px;
+            padding-right: 20px;
         }
     </style>
 
@@ -32,7 +36,7 @@
                         <asp:LinkButton ID="btnMasDetalle" Visible="false" OnClick="btnMasDetalle_Click" Style="padding-bottom: 5px; padding-top: 5px; padding-right: 5px; padding-left: 5px; margin-top: 0px;" class="btn btn-info" runat="server">Más detalle</asp:LinkButton>
                     </div>
 
-                    <asp:LinkButton ID="btnCloseAlertImportarError" OnClick="btnCloseAlertImportarError_Click" class="close" aria-label="Close" runat="server" ><span aria-hidden="true">&times;</span></asp:LinkButton>
+                    <asp:LinkButton ID="btnCloseAlertImportarError" OnClick="btnCloseAlertImportarError_Click" class="close" aria-label="Close" runat="server"><span aria-hidden="true">&times;</span></asp:LinkButton>
                 </div>
             </asp:Panel>
 
@@ -62,6 +66,7 @@
             <asp:PostBackTrigger ControlID="btnImportarExcel" />
         </Triggers>
     </asp:UpdatePanel>
+
     <asp:UpdatePanel runat="server">
         <ContentTemplate>
             <div class="content">
@@ -72,29 +77,40 @@
                                 <div class="card-header card-header-tabs card-header-primary" style="padding-top: 0px; padding-bottom: 0px;">
                                     <div class="nav-tabs-navigation">
                                         <div class="nav-tabs-wrapper">
-                                            <div class="form-group">
-
-                                                <asp:Label Text="Listado de Usuarios" runat="server" />
-
-                                                <div class="pull-right">
-                                                    <asp:LinkButton ID="btnCargarExcel" ToolTip="Importar usuarios a excel." class="btn btn-lg btn-ligh btn-fab btn-fab-mini btn-round" runat="server">
+                                            <div class="row">
+                                                <table style="width: 100%">
+                                                    <tr>
+                                                        <td style="width: 40%">
+                                                            <asp:LinkButton ID="btnFiltros" Visible="false" ToolTip="Filtros de busqueda." BackColor="#4db6ac" class="btn btn-lg btn-fab btn-fab-mini btn-round" runat="server">
+                                                        <i class="material-icons">search</i>
+                                                            </asp:LinkButton>
+                                                            <asp:Label Text="Listado de Usuarios" runat="server" />
+                                                        </td>
+                                                        <td style="width: 20%">
+                                                            <asp:Label ID="lblGvSaldo" CssClass="text-center" runat="server" /></td>
+                                                        <td style="width: 40%">
+                                                            <div class="pull-right">
+                                                                <asp:LinkButton ID="btnCargarExcel" ToolTip="Importar usuarios a excel." class="btn btn-lg btn-ligh btn-fab btn-fab-mini btn-round" runat="server">
                                                         <i class="material-icons">file_upload</i>
-                                                    </asp:LinkButton>
-                                                    <asp:LinkButton ID="btnExportarLista" OnClick="btnExportarLista_Click" ToolTip="Exportar usuarios de excel." class="btn btn-lg btn-warning btn-fab btn-fab-mini btn-round" runat="server">
+                                                                </asp:LinkButton>
+                                                                <asp:LinkButton ID="btnExportarLista" OnClick="btnExportarLista_Click" ToolTip="Exportar usuarios de excel." class="btn btn-lg btn-warning btn-fab btn-fab-mini btn-round" runat="server">
                                                         <i class="material-icons">file_download</i>
-                                                    </asp:LinkButton>
-                                                    ||
+                                                                </asp:LinkButton>
+                                                                ||
                                                     <asp:LinkButton ID="btnReiniciar" ToolTip="Reiniciar todo." OnClick="btnReiniciar_Click" class="btn btn-lg btn-danger btn-fab btn-fab-mini btn-round" runat="server">
                                                         <i class="material-icons">refresh</i>
                                                     </asp:LinkButton>
-                                                    <asp:LinkButton ID="btnSeleccionar" OnClick="btnSeleccionar_Click" ToolTip="Agregar usuarios." class="btn btn-lg btn-info btn-fab btn-fab-mini btn-round" runat="server">
+                                                                <asp:LinkButton ID="btnSeleccionar" OnClick="btnSeleccionar_Click" ToolTip="Agregar usuarios." class="btn btn-lg btn-info btn-fab btn-fab-mini btn-round" runat="server">
                                                         <i class="material-icons">add</i>
-                                                    </asp:LinkButton>
-                                                    ||
+                                                                </asp:LinkButton>
+                                                                ||
                                                     <asp:LinkButton ID="btnGenerarLigas" OnClick="btnGenerarLigas_Click" ToolTip="Generar ligas." class="btn btn-lg btn-success btn-fab btn-fab-mini btn-round" runat="server">
                                                         <i class="material-icons">link</i>
                                                     </asp:LinkButton>
-                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
                                             </div>
                                         </div>
                                     </div>
@@ -114,15 +130,35 @@
                                                 <label for="txtConcepto" style="color: black;">Concepto *</label>
                                                 <asp:TextBox ID="txtConcepto" CssClass="form-control" runat="server" />
                                             </div>
-                                            <div class="form-group col-md-4" style="padding-left: 0px;">
+                                            <div class="form-group col-md-2" style="padding-left: 0px;">
                                                 <label for="txtImporte" style="color: black;">Importe *</label>
-                                                <asp:TextBox ID="txtImporte" CssClass="form-control" TextMode="Phone" runat="server" />
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            <i class="material-icons">$</i>
+                                                        </span>
+                                                    </div>
+                                                    <asp:TextBox ID="txtImporte" Text="50" PlaceHolder="Min $50" CssClass="form-control" TextMode="Phone" runat="server" />
+                                                </div>
+
                                                 <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtImporte" runat="server" />
                                             </div>
-                                            <div class="form-group col-md-4" style="padding-left: 0px;">
+                                            <div class="form-group col-md-2" style="padding-left: 0px;">
                                                 <label for="txtVencimiento" style="color: black;">Vencimiento *</label>
                                                 <asp:TextBox ID="txtVencimiento" TextMode="Date" CssClass="form-control" runat="server" />
                                             </div>
+                                            <asp:Panel ID="pnlPromociones" runat="server">
+                                                <div class="form-group col-md-4" visible="false" style="padding-left: 0px;" runat="server">
+                                                    <asp:ListBox ID="ListBoxSimple" runat="server" SelectionMode="Multiple"></asp:ListBox>
+                                                </div>
+                                                <div class="form-group col-md-12" runat="server" style="padding-bottom: 0px;">
+                                                    <div class="card card-stats bg-light border-info" style="margin-top: 0px; margin-bottom: 0px;" runat="server">
+                                                        <label for="cblPromociones" style="color: black;">Promociones</label>
+                                                        <asp:CheckBoxList ID="cblPromociones" RepeatDirection="Horizontal" CssClass="form-check" runat="server">
+                                                        </asp:CheckBoxList>
+                                                    </div>
+                                                </div>
+                                            </asp:Panel>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -134,7 +170,7 @@
                                                 <Columns>
                                                     <asp:BoundField SortExpression="NombreCompleto" DataField="NombreCompleto" HeaderText="NOMBRE" />
                                                     <asp:BoundField SortExpression="StrCorreo" DataField="StrCorreo" HeaderText="CORREO" />
-                                                    <asp:BoundField SortExpression="StrTelefono" DataField="StrTelefono" HeaderText="TELÉFONO" />
+                                                    <asp:BoundField SortExpression="StrTelefono" DataField="StrTelefono" HeaderText="CELULAR" />
                                                     <asp:TemplateField>
                                                         <ItemTemplate>
                                                             <table>
@@ -154,7 +190,7 @@
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                 </Columns>
-                                                <PagerStyle CssClass="pagination-ys" />
+                                                <PagerStyle HorizontalAlign="Center" CssClass="pagination-ys" />
                                             </asp:GridView>
 
                                             <asp:GridView ID="gridview" AutoGenerateColumns="false" CssClass="table table-hover" GridLines="None" border="0" runat="server">
@@ -174,7 +210,7 @@
                                                     </asp:TemplateField>
                                                     <asp:BoundField DataField="NombreCompleto" HeaderText="NOMBRE" />
                                                     <asp:BoundField DataField="StrCorreo" HeaderText="CORREO" />
-                                                    <asp:BoundField DataField="StrTelefono" HeaderText="TELEFONO" />
+                                                    <asp:BoundField DataField="StrTelefono" HeaderText="CELULAR" />
                                                 </Columns>
                                             </asp:GridView>
                                         </div>
@@ -284,6 +320,7 @@
             </asp:LinkButton></a>--%>
         </ContentTemplate>
     </asp:UpdatePanel>
+    
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="cBodyBottom" runat="server">
     <!--MODAL-->
@@ -321,50 +358,76 @@
                                     </div>
                                 </asp:Panel>
                                 <div class="row">
-                                    <div class="col-lg-12 col-md-12">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <div class="row">
-                                                    <div class="table-responsive">
-                                                        <table class="table">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th class="text-center"></th>
-                                                                    <th class="text-center"></th>
-                                                                    <th class="text-center">Disponible</th>
-                                                                    <th class="text-center">Usado</th>
-                                                                    <th class="text-center">Saldo</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td class="text-center">
-                                                                        <asp:CheckBox Checked="true" runat="server" /></td>
-                                                                    <td class="text-center">Correo</td>
-                                                                    <td class="text-center">Ilimitado</td>
-                                                                    <td class="text-center">
-                                                                        <asp:Label ID="lblCorreoUsado" Text="0" runat="server" /></td>
-                                                                    <td class="text-center">Ilimitado</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td class="text-center">
-                                                                        <asp:CheckBox Enabled="false" runat="server" /></td>
-                                                                    <td class="text-center">SMS</td>
-                                                                    <td class="text-center">0</td>
-                                                                    <td class="text-center">0</td>
-                                                                    <td class="text-center">0</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td class="text-center">
-                                                                        <asp:CheckBox Enabled="false" runat="server" /></td>
-                                                                    <td class="text-center">WhatsApp</td>
-                                                                    <td class="text-center">0</td>
-                                                                    <td class="text-center">0</td>
-                                                                    <td class="text-center">0</td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
+                                    <div class="card" style="margin-top: 0px; margin-bottom: 0px;">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-12 col-sm-6 col-md-6 col-lg-6">
+                                                    <div class="card card-stats">
+                                                        <div class="card-header card-header-success card-header-icon">
+                                                            <div class="card-icon">
+                                                                <img class="card-img-top" style="height: 50px; width: 50px" src="../Images/icoWhats.png" alt="whatsapp">
+                                                            </div>
+                                                            <p class="card-category">Whatsapp</p>
+                                                            <h3 class="card-title">
+                                                                <asp:Label ID="lblDcmWhatsapp" runat="server">$2,000.00 <%--<%# Eval("DcmWhatsapp", "{0:C}") %>--%></asp:Label>
+                                                            </h3>
+                                                        </div>
                                                     </div>
+                                                </div>
+                                                <div class="col-12 col-sm-6 col-md-6 col-lg-6">
+                                                    <div class="card card-stats">
+                                                        <div class="card-header card-header-warning card-header-icon">
+                                                            <div class="card-icon">
+                                                                <img class="card-img-top" style="height: 50px; width: 50px" src="../Images/icoSms.jpg" alt="sms">
+                                                            </div>
+                                                            <p class="card-category">Sms</p>
+                                                            <h3 class="card-title">
+                                                                <asp:Label ID="lblDcmSms" runat="server">2,000.00 <%--<%# Eval("DcmSms", "{0:C}") %>--%></asp:Label></h3>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="table-responsive">
+                                                    <table class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="text-center"></th>
+                                                                <th class="text-center"></th>
+                                                                <th class="text-center">Disponible</th>
+                                                                <th class="text-center">Utilizado</th>
+                                                                <th class="text-center">Saldo</th>
+                                                                <th class="text-center">Pendiente(s)</th>
+                                                                <th id="thError" visible="false" class="text-center" runat="server">Error(es)</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td class="text-center"><asp:CheckBox ID="cbCorreo" Checked="true" runat="server" /></td>
+                                                                <td class="text-center">Correo</td>
+                                                                <td class="text-center">Ilimitado</td>
+                                                                <td class="text-center"><asp:Label ID="lblCorreoUsado" Text="0" runat="server" /></td>
+                                                                <td class="text-center">Ilimitado</td>
+                                                                <td class="text-center">$0.00</td>
+                                                                <td id="tdErrorCorreo" visible="false" class="text-center" runat="server"><asp:Label ID="lblErrorCorreo" Text="0" runat="server" /></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="text-center"><asp:CheckBox ID="cbSms" AutoPostBack="true" OnCheckedChanged="cbSms_CheckedChanged" runat="server" /></td>
+                                                                <td class="text-center">SMS</td>
+                                                                <td rowspan="2" class="text-center"><asp:Label Text="$" runat="server" /><asp:Label ID="lblDcmCuenta" runat="server" /></td>
+                                                                <td class="text-center"><asp:Label ID="lblAUtilizarSms" Visible="false" Text="0" runat="server" /><asp:Label Text="$" runat="server" /><asp:Label ID="lblTotalUtilizarSms" runat="server" /></td>
+                                                                <td rowspan="2" class="text-center"><asp:Label Text="$" runat="server" /><asp:Label ID="lblDcmSaldo" Text="0.00" runat="server" /></td>
+                                                                <td class="text-center">$0.00</td>
+                                                                <td id="tdErrorSms" visible="false" class="text-center" runat="server"><asp:Label ID="lblErrorSms" Text="0" runat="server" /></td>
+                                                                
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="text-center"><asp:CheckBox ID="cbWhats" Checked="false" AutoPostBack="true" OnCheckedChanged="cbWhats_CheckedChanged" runat="server" /></td>
+                                                                <td class="text-center">WhatsApp</td>
+                                                                <td class="text-center"><asp:Label ID="lblAUtilizarWA" Visible="false" Text="0" runat="server" /><asp:Label Text="$" runat="server" /><asp:Label ID="lblTotalUtilizarWA" runat="server" /></td>
+                                                                <td class="text-center"><asp:Label ID="lblPendienteWA" Text="0" runat="server" /></td>
+                                                                <td id="tdErrorWA" visible="false" class="text-center" runat="server"><asp:Label ID="lblErrorWA" Text="0" runat="server" /></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
                                                 </div>
                                             </div>
                                         </div>
@@ -523,9 +586,9 @@
                                                             </asp:TemplateField>
                                                             <asp:BoundField SortExpression="NombreCompleto" DataField="NombreCompleto" HeaderText="NOMBRE" />
                                                             <asp:BoundField SortExpression="StrCorreo" DataField="StrCorreo" HeaderText="CORREO" />
-                                                            <asp:BoundField SortExpression="StrTelefono" DataField="StrTelefono" HeaderText="TELEFONO" />
+                                                            <asp:BoundField SortExpression="StrTelefono" DataField="StrTelefono" HeaderText="CELULAR" />
                                                         </Columns>
-                                                        <PagerStyle CssClass="pagination-ys" />
+                                                        <PagerStyle HorizontalAlign="Center" CssClass="pagination-ys" />
                                                     </asp:GridView>
                                                 </div>
                                             </div>
@@ -632,6 +695,14 @@
 
         function hideModalMasDetalle() {
             $('#ModalMasDetalle').modal('hide');
+        }
+    </script>
+
+    <script>
+        function multi() {
+            $('[id*=ListBox]').multiselect({
+                includeSelectAllOption: true
+            });
         }
     </script>
 </asp:Content>

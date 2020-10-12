@@ -15,11 +15,15 @@
                 <asp:BoundField DataField="StrApePaterno" HeaderText="APEPATERNO" />
                 <asp:BoundField DataField="StrApeMaterno" HeaderText="APEMATERNO" />
                 <asp:BoundField DataField="StrCorreo" HeaderText="CORREO" />
-                <asp:BoundField DataField="StrTelefono" HeaderText="TELEFONO" />
+                <asp:BoundField DataField="StrTelefono" HeaderText="CELULAR" />
                 <asp:BoundField DataField="StrAsunto" HeaderText="ASUNTO" />
                 <asp:BoundField DataField="StrConcepto" HeaderText="CONCEPTO" />
                 <asp:BoundField DataField="DcmImporte" HeaderText="IMPORTE" />
                 <asp:BoundField DataField="DtVencimiento" HeaderText="VENCIMIENTO" DataFormatString="{0:d}" />
+                <asp:BoundField DataField="CBCorreo" HeaderText="EMAIL" />
+                <asp:BoundField DataField="CBWhatsApp" HeaderText="WHATS" />
+                <asp:BoundField DataField="CBSms" HeaderText="SMS" />
+                <asp:BoundField DataField="StrPromociones" HeaderText="PROMOCION(ES)" />
             </Columns>
         </asp:GridView>
     </form>

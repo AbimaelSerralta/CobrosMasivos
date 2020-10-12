@@ -85,6 +85,7 @@ namespace Franquicia.WebForms.Views
                 listPermisosPrincipal = (List<string>)Session["listPermisosPrincipal"];
                 listDenegarPermisos = (List<string>)Session["listDenegarPermisos"];
 
+                pnlAlert.Visible = false;
                 lblMensajeAlert.Text = "";
                 divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
 
@@ -93,17 +94,18 @@ namespace Franquicia.WebForms.Views
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
             Guid UidSegPerfil = Guid.NewGuid();
-            Guid UidAppWeb = Guid.Empty;
+            //Guid UidAppWeb = Guid.Empty;
+            Guid UidAppWeb = new Guid("6d70f88d-3ce0-4c8b-87a1-92666039f5b2");
 
-            switch (ddlTipoPerfil.SelectedItem.ToString())
-            {
-                case "FRANQUICIA ADMIN":
-                    UidAppWeb = new Guid("6d70f88d-3ce0-4c8b-87a1-92666039f5b2");
-                    break;
-                case "CLIENTE ADMIN":
-                    UidAppWeb = new Guid("0d910772-ae62-467a-a7a3-79540f0445cb");
-                    break;
-            }
+            //switch (ddlTipoPerfil.SelectedItem.ToString())
+            //{
+            //    case "FRANQUICIA ADMIN":
+            //        UidAppWeb = new Guid("6d70f88d-3ce0-4c8b-87a1-92666039f5b2");
+            //        break;
+            //    case "CLIENTE ADMIN":
+            //        UidAppWeb = new Guid("0d910772-ae62-467a-a7a3-79540f0445cb");
+            //        break;
+            //}
 
             #region ValidarCampos
             if (txtNombre.EmptyTextBox())
@@ -135,7 +137,7 @@ namespace Franquicia.WebForms.Views
                 {
                     if (item.Agregar)
                     {
-                        if (perfilesServices.RegistrarPerfilesFranquicia(UidSegPerfil, txtNombre.Text.Trim().ToUpper(), UidAppWeb, new Guid(ViewState["UidFranquiciaLocal"].ToString()), new Guid(ddlModuloInicial.SelectedValue), new Guid(ddlTipoPerfil.SelectedValue)))
+                        if (perfilesServices.RegistrarPerfilesFranquicia(UidSegPerfil, txtNombre.Text.Trim().ToUpper(), UidAppWeb, new Guid(ViewState["UidFranquiciaLocal"].ToString()), new Guid(ddlModuloInicial.SelectedValue), new Guid("8490c81d-5979-49ac-92cc-e34a50a497d5")))
                         {
                             permisosServices.RegistrarModulosPermisos(UidSegPerfil, listPermisosPrincipal, permisosServices.lsModulosPermisos);
 
@@ -143,6 +145,7 @@ namespace Franquicia.WebForms.Views
                             gvPerfiles.DataSource = perfilesServices.lsperfilesGridViewModel;
                             gvPerfiles.DataBind();
 
+                            pnlAlert.Visible = true;
                             lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
                             divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
 
@@ -151,6 +154,7 @@ namespace Franquicia.WebForms.Views
                     }
                     else
                     {
+                        pnlAlert.Visible = true;
                         lblMensajeAlert.Text = "<b>Lo sentimos,</b> no tiene permisos para esta acción.";
                         divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
@@ -160,7 +164,7 @@ namespace Franquicia.WebForms.Views
                 {
                     if (item.Actualizar)
                     {
-                        if (perfilesServices.ActualizarPerfilesFranquicia(new Guid(ViewState["dataKeysRequerido"].ToString()), txtNombre.Text.Trim().ToUpper(), UidAppWeb, new Guid(ddlEstatus.SelectedValue), new Guid(ddlModuloInicial.SelectedValue), new Guid(ddlTipoPerfil.SelectedValue)))
+                        if (perfilesServices.ActualizarPerfilesFranquicia(new Guid(ViewState["dataKeysRequerido"].ToString()), txtNombre.Text.Trim().ToUpper(), UidAppWeb, new Guid(ddlEstatus.SelectedValue), new Guid(ddlModuloInicial.SelectedValue), new Guid("8490c81d-5979-49ac-92cc-e34a50a497d5")))
                         {
                             permisosServices.ActualizarModulosPermisos(new Guid(ViewState["dataKeysRequerido"].ToString()), listDenegarPermisos, permisosServices.lsModulosPermisos, listPermisosPrincipal);
 
@@ -168,6 +172,7 @@ namespace Franquicia.WebForms.Views
                             gvPerfiles.DataSource = perfilesServices.lsperfilesGridViewModel;
                             gvPerfiles.DataBind();
 
+                            pnlAlert.Visible = true;
                             lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha actualizado exitosamente.";
                             divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
 
@@ -176,6 +181,7 @@ namespace Franquicia.WebForms.Views
                     }
                     else
                     {
+                        pnlAlert.Visible = true;
                         lblMensajeAlert.Text = "<b>Lo sentimos,</b> no tiene permisos para esta acción.";
                         divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
@@ -515,33 +521,39 @@ namespace Franquicia.WebForms.Views
             }
         }
         protected void ddlTipoPerfil_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            switch (ddlTipoPerfil.SelectedItem.ToString())
-            {
-                case "FRANQUICIA ADMIN":
-                    modulosServices.CargarModulosNivelFranquicias();
-                    ddlModuloInicial.DataSource = modulosServices.lsmodulos;
-                    ddlModuloInicial.DataTextField = "VchNombre";
-                    ddlModuloInicial.DataValueField = "UidSegModulo";
-                    ddlModuloInicial.DataBind();
+        {            
+            modulosServices.CargarModulosNivelFranquicias();
+            ddlModuloInicial.DataSource = modulosServices.lsmodulos;
+            ddlModuloInicial.DataTextField = "VchNombre";
+            ddlModuloInicial.DataValueField = "UidSegModulo";
+            ddlModuloInicial.DataBind();
 
-                    liFranquicias.Visible = true;
-                    aFranquicias.Attributes.Add("class", "nav-link active");
-                    //aCliente.Attributes.Add("class", "nav-link");
+            //switch (ddlTipoPerfil.SelectedItem.ToString())
+            //{
+            //    case "FRANQUICIA ADMIN":
+            //        modulosServices.CargarModulosNivelFranquicias();
+            //        ddlModuloInicial.DataSource = modulosServices.lsmodulos;
+            //        ddlModuloInicial.DataTextField = "VchNombre";
+            //        ddlModuloInicial.DataValueField = "UidSegModulo";
+            //        ddlModuloInicial.DataBind();
 
-                    break;
-                case "CLIENTE ADMIN":
-                    modulosServices.CargarModulosNivelClientes();
-                    ddlModuloInicial.DataSource = modulosServices.lsmodulos;
-                    ddlModuloInicial.DataTextField = "VchNombre";
-                    ddlModuloInicial.DataValueField = "UidSegModulo";
-                    ddlModuloInicial.DataBind();
+            //        liFranquicias.Visible = true;
+            //        aFranquicias.Attributes.Add("class", "nav-link active");
+            //        //aCliente.Attributes.Add("class", "nav-link");
 
-                    //liCliente.Visible = false;
-                    //aCliente.Attributes.Add("class", "nav-link");
-                    //aFranquicias.Attributes.Add("class", "nav-link active");
-                    break;
-            }
+            //        break;
+            //    case "CLIENTE ADMIN":
+            //        modulosServices.CargarModulosNivelClientes();
+            //        ddlModuloInicial.DataSource = modulosServices.lsmodulos;
+            //        ddlModuloInicial.DataTextField = "VchNombre";
+            //        ddlModuloInicial.DataValueField = "UidSegModulo";
+            //        ddlModuloInicial.DataBind();
+
+            //        //liCliente.Visible = false;
+            //        //aCliente.Attributes.Add("class", "nav-link");
+            //        //aFranquicias.Attributes.Add("class", "nav-link active");
+            //        break;
+            //}
         }
 
     }

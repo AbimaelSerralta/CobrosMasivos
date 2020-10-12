@@ -25,5 +25,21 @@ namespace Franquicia.Bussiness
             return telefonosUsuariosRepository.ObtenerTelefonoUsuario(UidUsuario);
         }
 
+        public TelefonosUsuarios ObtenerTelefonoUsuarioSinPrefijo(Guid UidUsuario)
+        {
+            return telefonosUsuariosRepository.ObtenerTelefonoUsuarioSinPrefijo(UidUsuario);
+        }
+
+        #region Twilio
+        public bool ActualizarEstatusWhats(Guid UidTelefono, Guid UidPermisoWhats)
+        {
+            return telefonosUsuariosRepository.ActualizarEstatusWhats(UidTelefono, UidPermisoWhats);
+        }
+        public string ObtenerIdTelefono(string Telefono)
+        {
+            return telefonosUsuariosRepository.ObtenerIdTelefono(Telefono);
+        }
+        #endregion
+
     }
 }

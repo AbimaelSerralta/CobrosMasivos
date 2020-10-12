@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="Clientes.aspx.cs" Inherits="Franquicia.WebForms.Views.UsuariosClientes" %>
+﻿<%@ Page Title="Clientes" Culture="es-MX" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="Clientes.aspx.cs" Inherits="Franquicia.WebForms.Views.UsuariosClientes" %>
 
 <%@ MasterType VirtualPath="~/Views/MasterPage.Master" %>
 
@@ -7,10 +7,12 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="CPHCaja" runat="server">
     <asp:UpdatePanel runat="server">
         <ContentTemplate>
-            <div id="divAlert" class="alert alert-danger alert-dismissible fade" role="alert" runat="server">
-                <asp:Label ID="lblMensajeAlert" runat="server" />
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            </div>
+            <asp:Panel ID="pnlAlert" Visible="false" runat="server">
+                <div id="divAlert" class="alert alert-danger alert-dismissible fade" role="alert" runat="server">
+                    <asp:Label ID="lblMensajeAlert" runat="server" />
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+            </asp:Panel>
         </ContentTemplate>
     </asp:UpdatePanel>
     <asp:UpdatePanel runat="server">
@@ -20,12 +22,12 @@
                     <div class="row">
                         <div class="col-lg-12 col-md-12">
                             <div class="card">
-                                <div class="card-header card-header-tabs card-header-primary" style="padding-top: 0px; padding-bottom: 0px;">
+                                <div class="card-header card-header-tabs card-header-primary" style="background: #024693; padding-top: 0px; padding-bottom: 0px;">
                                     <div class="nav-tabs-navigation">
                                         <div class="nav-tabs-wrapper">
                                             <div class="form-group">
 
-                                                <asp:Label Text="Listado de Clientes" runat="server" />
+                                                <asp:Label Text="Listado de Comercio" runat="server" />
 
                                                 <div class="pull-right">
                                                     <asp:LinkButton ID="btnNuevo" OnClick="btnNuevo_Click" class="btn btn-lg btn-success btn-fab btn-fab-mini btn-round" runat="server">
@@ -41,13 +43,14 @@
                                         <div class="table-responsive">
                                             <asp:GridView ID="gvClientes" OnSelectedIndexChanged="gvClientes_SelectedIndexChanged" OnRowCommand="gvClientes_RowCommand" OnRowDataBound="gvClientes_RowDataBound" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidCliente" GridLines="None" border="0" runat="server">
                                                 <EmptyDataTemplate>
-                                                    <div class="alert alert-info">No hay clientes registrados</div>
+                                                    <div class="alert alert-info">No hay comercios registrados</div>
                                                 </EmptyDataTemplate>
                                                 <Columns>
                                                     <asp:ButtonField CommandName="Select" HeaderStyle-CssClass="hide" ItemStyle-CssClass="hide" />
                                                     <asp:BoundField SortExpression="VchRFC" DataField="VchRFC" HeaderText="RFC" />
                                                     <asp:BoundField SortExpression="VchRazonSocial" DataField="VchRazonSocial" HeaderText="RAZÓN SOCIAL" />
                                                     <asp:BoundField SortExpression="VchNombreComercial" DataField="VchNombreComercial" HeaderText="NOMBRE COMERCIAL" />
+                                                    <asp:BoundField SortExpression="VchIdWAySMS" DataField="VchIdWAySMS" HeaderText="DESCRIPCION WA/SMS" />
                                                     <asp:TemplateField SortExpression="UidEstatus" HeaderText="ESTATUS">
                                                         <ItemTemplate>
                                                             <div class="col-md-6">
@@ -105,16 +108,16 @@
 <asp:Content ID="Content3" ContentPlaceHolderID="cBodyBottom" runat="server">
     <!--MODAL-->
     <div class="modal fade" id="ModalNuevo" tabindex="-1" role="dialog" data-backdrop="static" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <asp:UpdatePanel runat="server">
                     <ContentTemplate>
                         <div class="modal-header">
                             <h5 class="modal-title" runat="server">
                                 <asp:Label ID="lblTituloModal" runat="server" /></h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <%--<button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
-                            </button>
+                            </button>--%>
                         </div>
                     </ContentTemplate>
                 </asp:UpdatePanel>
@@ -130,14 +133,14 @@
                 <div class="modal-body pt-0" style="padding-bottom: 0px;">
                     <div class="row">
                         <div class="card card-nav-tabs">
-                            <div class="card-header card-header-primary">
+                            <div class="card-header card-header-primary" style="background: #024693;">
                                 <!-- colors: "header-primary", "header-info", "header-success", "header-warning", "header-danger" -->
                                 <div class="nav-tabs-navigation">
                                     <div class="nav-tabs-wrapper">
                                         <ul class="nav nav-tabs" data-tabs="tabs">
                                             <li class="nav-item">
                                                 <a class="nav-link active show" href="#empresa" data-toggle="tab">
-                                                    <i class="material-icons">business</i>Empresa<div class="ripple-container"></div>
+                                                    <i class="material-icons">business</i>Comercio<div class="ripple-container"></div>
                                                 </a>
                                             </li>
                                             <li class="nav-item">
@@ -167,6 +170,10 @@
                                             <ContentTemplate>
                                                 <div class="row">
                                                     <div class="form-group col-md-6">
+                                                        <label for="txtRFC" style="color: black;">Descripcion para Whats y SMS</label>
+                                                        <asp:TextBox ID="txtIdentificadorWASMS" PlaceHolder="Max 20 caracteres" MaxLength="20" CssClass="form-control" runat="server" />
+                                                    </div>
+                                                    <div class="form-group col-md-6">
                                                         <label for="txtRFC" style="color: black;">RFC</label>
                                                         <asp:TextBox ID="txtRFC" CssClass="form-control" runat="server" />
                                                     </div>
@@ -183,13 +190,25 @@
                                                         <asp:TextBox ID="txtFechaAlta" Enabled="false" CssClass="form-control" runat="server" />
                                                     </div>
                                                     <div class="form-group col-md-6">
-                                                        <label for="txtCorreo" style="color: black; margin-bottom:12px;">Correo Eléctronico</label>
+                                                        <label for="txtCorreo" style="color: black; margin-bottom: 12px;">Correo Eléctronico</label>
                                                         <asp:TextBox ID="txtCorreo" CssClass="form-control" required="required" runat="server" />
                                                         <asp:Label CssClass="text-danger" runat="server" ID="lblExiste" />
                                                         <asp:Label CssClass="text-success" runat="server" ID="lblNoExiste" />
                                                         <asp:LinkButton ID="btnValidarCorreo" CssClass="pull-right" Text="Validar" OnClick="btnValidarCorreo_Click" runat="server" />
                                                     </div>
                                                     <div class="form-group col-md-6">
+                                                        <label for="ddlZonaHoraria" style="color: black;">Zona horaria</label>
+                                                        <asp:DropDownList ID="ddlZonaHoraria" CssClass="form-control" runat="server">
+                                                        </asp:DropDownList>
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="ddlEscuela" style="font-weight:bold; color: black;">¿Es una escuela?</label>
+                                                        <asp:DropDownList ID="ddlEscuela" CssClass="form-control" runat="server">
+                                                            <asp:ListItem Text="NO" Value="false" />
+                                                            <asp:ListItem Text="SI" Value="true" />
+                                                        </asp:DropDownList>
+                                                    </div>
+                                                    <div class="form-group col-md-3">
                                                         <label for="ddlEstatus" style="color: black;">Estatus</label>
                                                         <asp:DropDownList ID="ddlEstatus" CssClass="form-control" runat="server">
                                                         </asp:DropDownList>
@@ -203,7 +222,7 @@
                                         <asp:UpdatePanel runat="server">
                                             <ContentTemplate>
                                                 <div class="row">
-                                                    <div class="form-group col-md-4 d-lg-none">
+                                                    <div class="form-group col-md-4" visible="false" runat="server">
                                                         <label for="txtIdentificador" style="color: black;">Identificador</label>
                                                         <asp:TextBox ID="txtIdentificador" CssClass="form-control" runat="server" />
                                                     </div>
