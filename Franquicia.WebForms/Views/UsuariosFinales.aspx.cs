@@ -17,6 +17,31 @@ namespace Franquicia.WebForms.Views
 {
     public partial class Usuarios : System.Web.UI.Page
     {
+        #region Propiedades
+        // Nombre del servidor
+        string ServerName
+        {
+            get { return Request.ServerVariables["SERVER_NAME"].ToString(); }
+        }
+        // Puerto del servidor
+        string ServerPort
+        {
+            get { return Request.ServerVariables["SERVER_PORT"].ToString(); }
+        }
+
+        // Obtener URL Base
+        public string URLBase
+        {
+            get
+            {
+                if (ServerPort != string.Empty && ServerPort.Trim() != "")
+                { return "https://" + ServerName + ":" + ServerPort + "/"; }
+                else
+                { return "https://" + ServerName + "/"; }
+            }
+        }
+        #endregion
+
         UsuariosCompletosServices usuariosCompletosServices = new UsuariosCompletosServices();
         DireccionesUsuariosServices direccionesUsuariosServices = new DireccionesUsuariosServices();
         TelefonosUsuariosServices telefonosUsuariosServices = new TelefonosUsuariosServices();
@@ -36,6 +61,8 @@ namespace Franquicia.WebForms.Views
         ClienteCuentaServices clienteCuentaServices = new ClienteCuentaServices();
         TarifasServices tarifasServices = new TarifasServices();
         TicketsServices ticketsServices = new TicketsServices();
+        ParametrosTwiServices parametrosTwiServices = new ParametrosTwiServices();
+        CorreosServices correosServices = new CorreosServices();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -405,6 +432,9 @@ namespace Franquicia.WebForms.Views
                                     txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), ViewState["txtUsuario.Text"].ToString().Trim().ToUpper(), ViewState["txtPassword.Text"].ToString().Trim(), Guid.Parse("18E9669B-C238-4BCC-9213-AF995644A5A4"),
                                     txtNumero.Text.Trim(), Guid.Parse("B1055882-BCBA-4AB7-94FA-90E57647E607"), Guid.Parse(ddlPrefijo.SelectedValue), Guid.Parse(ViewState["UidClienteLocal"].ToString())))
                                     {
+                                        string NombreComercialCorreo = validacionesServices.ObtenerNombreCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+                                        CorreoEnvioCredenciales(txtNombre.Text.Trim().ToUpper() + " " + txtApePaterno.Text.Trim().ToUpper() + " " + txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), ViewState["txtPassword.Text"].ToString().Trim(), txtCorreo.Text.Trim(), NombreComercialCorreo);
+
                                         if (ddlIncluirDir.SelectedValue == "SI")
                                         {
                                             if (usuariosCompletosServices.RegistrarDireccionUsuarios(UidUsuario, Identificador, Pais, Estado, Municipio, Ciudad, Colonia, Calle, EntreCalle, YCalle, NumeroExterior, NumeroInterior, CodigoPostal, Referencia))
@@ -460,12 +490,10 @@ namespace Franquicia.WebForms.Views
                                         if (EstaWhats == "PENDIENTE")
                                         {
                                             //******Configuracion de Twilio******
-                                            const string accountSid = "ACcf4d1380ccb0be6d47e78a73036a29ab";
-                                            ////string authToken = "30401e7bf2b7b3a2ab24c0a22203acc1";
-                                            const string authToken = "915ce4d30dc09473b5ed753490436281";
-                                            //var accountSid = Environment.GetEnvironmentVariable("ACcf4d1380ccb0be6d47e78a73036a29ab");
-                                            //var authToken = Environment.GetEnvironmentVariable("f6b99afa9cdf4da4e685ff4837b2f911");
-                                            string NumberFrom = "+14582243212";
+                                            parametrosTwiServices.ObtenerParametrosTwi();
+                                            string accountSid = parametrosTwiServices.parametrosTwiRepository.parametrosTwi.AccountSid;
+                                            string authToken = parametrosTwiServices.parametrosTwiRepository.parametrosTwi.AuthToken;
+                                            string NumberFrom = parametrosTwiServices.parametrosTwiRepository.parametrosTwi.NumberFrom;
 
                                             //string accountSid = "ACc7561cb09df3180ee1368e40055eedf5";
                                             //string authToken = "3f914e588826df9a93ed849cee73eae2";
@@ -884,12 +912,65 @@ namespace Franquicia.WebForms.Views
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
             }
+
+            if (e.CommandName == "Enviar")
+            {
+                int index = Convert.ToInt32(e.CommandArgument.ToString());
+                GridViewRow Seleccionado = gvAdministradores.Rows[index];
+                GridView valor = (GridView)sender;
+                Guid dataKeys = Guid.Parse(valor.DataKeys[Seleccionado.RowIndex].Value.ToString());
+                ViewState["UidRequerido"] = dataKeys;
+
+                usuariosCompletosServices.ObtenerAdministrador(dataKeys);
+
+                string Nombre = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.NombreCompleto;
+                string Usuario = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.VchUsuario;
+                string Contrasenia = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.VchContrasenia;
+                string Correo = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.StrCorreo;
+                string NombreComercial = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.VchNombreComercial;
+
+                CorreoEnvioCredenciales(Nombre, Correo, Contrasenia, Correo, NombreComercial);
+            }
+        }
+
+        private void CorreoEnvioCredenciales(string Nombre, string Usuario, string Contrasenia, string Correo, string NombreComercial)
+        {
+            string Asunto = "Acceso al sistema Cobros Masivos";
+            string LigaUrl = URLBase + "Views/Login.aspx";
+
+            string mnsj = correosServices.CorreoEnvioCredenciales(Nombre, Asunto, Usuario, Contrasenia, LigaUrl, Correo, NombreComercial);
+
+            if (mnsj == string.Empty)
+            {
+                pnlAlert.Visible = true;
+                lblMensajeAlert.Text = "<strong>¡Felicidades! </strong> se ha enviado las credenciales de acceso exitosamente.";
+                divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+            }
+            else
+            {
+                pnlAlert.Visible = true;
+                lblMensajeAlert.Text = "<strong>Lo sentimos, </strong> no se ha podido enviar las credenciales de acceso, por favor intentelo más tarde. Si el error persiste comuniquese con los administradores.";
+                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+            }
         }
 
         private void ManejoDatos(Guid dataKeys)
         {
             //==================FRANQUICIATARIO============================
             usuariosCompletosServices.ObtenerAdministrador(dataKeys);
+            if (usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.UidEstatusCuenta == Guid.Parse("2C859517-9507-4B5B-BB3E-C7341F6630DD"))
+            {
+                BloquearCampos();
+            }
+            else if (usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.VchAccion == "CREADO")
+            {
+                DesbloquearCampos();
+            }
+            else if (usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.VchAccion == "ASOCIADO")
+            {
+                BloquearCampos();
+            }
+
             txtNombre.Text = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.StrNombre;
             txtApePaterno.Text = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.StrApePaterno;
             txtApeMaterno.Text = usuariosCompletosServices.usuariosCompletosRepository.usuarioCompleto.StrApeMaterno;

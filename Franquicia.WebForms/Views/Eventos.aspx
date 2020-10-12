@@ -82,37 +82,42 @@
                                                                 <asp:TextBox ID="txtNombreComercial" ReadOnly="true" Text="Nombre comercial" CssClass="form-control-plaintext" runat="server" />
                                                             </td>
                                                         </tr>
-                                                        <tr>
-                                                            <td>
-                                                                <asp:TextBox Text="TELÉFONO:" Width="100px" ReadOnly="true" CssClass="form-control-plaintext text-right" runat="server" />
-                                                            </td>
-                                                            <td style="width: 100%">
-                                                                <asp:TextBox ID="txtComeCelular" ReadOnly="true" Text="+521234567890" CssClass="form-control-plaintext" runat="server" />
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>
-                                                                <asp:TextBox Text="CORREO:" Width="100px" ReadOnly="true" CssClass="form-control-plaintext text-right" runat="server" />
-                                                            </td>
-                                                            <td style="width: 100%">
-                                                                <asp:TextBox ID="txtComeCorreo" ReadOnly="true" Text="EJEMPLO@EJEMPLO.COM" CssClass="form-control-plaintext" runat="server" />
-                                                            </td>
-                                                        </tr>
                                                     </table>
-                                                    <div class="row" style="padding-left: 15px; padding-right: 15px;">
-                                                        <div class="form-group col-md-2" style="padding-left: 0px;" runat="server">
+
+                                                    <asp:Panel ID="pnlDatosBeneficiario" Visible="true" runat="server">
+                                                        <table>
+                                                            <tr>
+                                                                <td>
+                                                                    <asp:TextBox Text="TELÉFONO:" Width="100px" ReadOnly="true" CssClass="form-control-plaintext text-right" runat="server" />
+                                                                </td>
+                                                                <td style="width: 100%">
+                                                                    <asp:TextBox ID="txtComeCelular" ReadOnly="true" Text="+521234567890" CssClass="form-control-plaintext" runat="server" />
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <asp:TextBox Text="CORREO:" Width="100px" ReadOnly="true" CssClass="form-control-plaintext text-right" runat="server" />
+                                                                </td>
+                                                                <td style="width: 100%">
+                                                                    <asp:TextBox ID="txtComeCorreo" ReadOnly="true" Text="EJEMPLO@EJEMPLO.COM" CssClass="form-control-plaintext" runat="server" />
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                        <div class="row" style="padding-left: 15px; padding-right: 15px;">
+                                                            <%--<div class="form-group col-md-2" style="padding-left: 0px;" runat="server">
+                                                            </div>
+                                                            <div class="form-group col-md-4" style="padding-left: 0px;" runat="server">
+                                                            </div>
+                                                            <div class="form-group col-md-4" style="padding-left: 0px;" runat="server">
+                                                            </div>--%>
+                                                            <div class="form-group col-md-4" style="padding-left: 0px;" runat="server">
+                                                                <asp:Label ID="lblNombreEvento" Style="color: black; font-weight: bold;" CssClass="form-control-plaintext" Text="Nombre del evento" runat="server" />
+                                                            </div>
+                                                            <div class="form-group col-md-12" style="padding-left: 0px;" runat="server">
+                                                                <asp:TextBox ID="txtDescripcion" Rows="4" ReadOnly="true" class="form-control-plaintext" TextMode="MultiLine" runat="server" />
+                                                            </div>
                                                         </div>
-                                                        <div class="form-group col-md-4" style="padding-left: 0px;" runat="server">
-                                                        </div>
-                                                        <div class="form-group col-md-4" style="padding-left: 0px;" runat="server">
-                                                        </div>
-                                                        <div class="form-group col-md-4" style="padding-left: 0px;" runat="server">
-                                                            <asp:Label ID="lblNombreEvento" Style="color: black; font-weight: bold;" CssClass="form-control-plaintext" Text="Nombre del evento" runat="server" />
-                                                        </div>
-                                                        <div class="form-group col-md-12" style="padding-left: 0px;" runat="server">
-                                                            <asp:TextBox ID="txtDescripcion" Rows="4" ReadOnly="true" class="form-control-plaintext" TextMode="MultiLine" runat="server" />
-                                                        </div>
-                                                    </div>
+                                                    </asp:Panel>
                                                 </div>
                                             </div>
                                         </asp:Panel>
@@ -316,7 +321,7 @@
                                         <div class="pull-right">
                                             <asp:LinkButton ID="btnGenerarLigas" OnClick="btnGenerarPago_Click" ToolTip="Generar pago" runat="server">
                                                 <asp:Label class="btn btn-primary btn-round" runat="server">
-                                                    <asp:label ID="lblTotalPago" runat="server" /><i class="material-icons">arrow_forward</i>
+                                                    <asp:Label ID="lblTotalPago" runat="server" /><i class="material-icons">arrow_forward</i>
                                                 </asp:Label>
                                             </asp:LinkButton>
                                         </div>

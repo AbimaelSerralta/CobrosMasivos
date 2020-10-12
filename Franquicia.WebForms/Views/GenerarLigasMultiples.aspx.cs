@@ -58,6 +58,7 @@ namespace Franquicia.WebForms.Views
         ValidacionesServices validacionesServices = new ValidacionesServices();
         WhatsAppPendientesServices whatsAppPendientesServices = new WhatsAppPendientesServices();
         TelefonosUsuariosServices telefonosUsuariosServices = new TelefonosUsuariosServices();
+        ParametrosTwiServices parametrosTwiServices = new ParametrosTwiServices();
 
         List<string> listPromocionesSeleccionados = new List<string>();
 
@@ -274,7 +275,7 @@ namespace Franquicia.WebForms.Views
 
                             if (usuariosCompletosServices.lsLigasInsertarMultiple.Count >= 1)
                             {
-                                usuariosCompletosServices.ExcelToListMultiple(usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple, usuariosCompletosServices.lsLigasInsertarMultiple, Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+                                usuariosCompletosServices.ExcelToListMultiple(usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple, usuariosCompletosServices.lsLigasInsertarMultiple, Guid.Parse(ViewState["UidClienteLocal"].ToString()), URLBase);
 
                                 #region EnviarWhats
                                 foreach (var item in usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple)
@@ -307,12 +308,10 @@ namespace Franquicia.WebForms.Views
                                     if (EstaWhats == "PENDIENTE")
                                     {
                                         //******Configuracion de Twilio******
-                                        const string accountSid = "ACcf4d1380ccb0be6d47e78a73036a29ab";
-                                        ////string authToken = "30401e7bf2b7b3a2ab24c0a22203acc1";
-                                        const string authToken = "915ce4d30dc09473b5ed753490436281";
-                                        //var accountSid = Environment.GetEnvironmentVariable("ACcf4d1380ccb0be6d47e78a73036a29ab");
-                                        //var authToken = Environment.GetEnvironmentVariable("f6b99afa9cdf4da4e685ff4837b2f911");
-                                        string NumberFrom = "+14582243212";
+                                        parametrosTwiServices.ObtenerParametrosTwi();
+                                        string accountSid = parametrosTwiServices.parametrosTwiRepository.parametrosTwi.AccountSid;
+                                        string authToken = parametrosTwiServices.parametrosTwiRepository.parametrosTwi.AuthToken;
+                                        string NumberFrom = parametrosTwiServices.parametrosTwiRepository.parametrosTwi.NumberFrom;
 
                                         //string accountSid = "ACc7561cb09df3180ee1368e40055eedf5";
                                         //string authToken = "3f914e588826df9a93ed849cee73eae2";
@@ -1037,13 +1036,10 @@ namespace Franquicia.WebForms.Views
             bool resu = false;
 
             //******Configuracion de Twilio******
-            const string accountSid = "ACcf4d1380ccb0be6d47e78a73036a29ab";
-            ////string authToken = "30401e7bf2b7b3a2ab24c0a22203acc1";Anterior
-            //const string authToken = "f6b99afa9cdf4da4e685ff4837b2f911"; //Temporal
-            const string authToken = "915ce4d30dc09473b5ed753490436281";
-            //var accountSid = Environment.GetEnvironmentVariable("ACcf4d1380ccb0be6d47e78a73036a29ab");
-            //var authToken = Environment.GetEnvironmentVariable("f6b99afa9cdf4da4e685ff4837b2f911");
-            string NumberFrom = "+14582243212";
+            parametrosTwiServices.ObtenerParametrosTwi();
+            string accountSid = parametrosTwiServices.parametrosTwiRepository.parametrosTwi.AccountSid;
+            string authToken = parametrosTwiServices.parametrosTwiRepository.parametrosTwi.AuthToken;
+            string NumberFrom = parametrosTwiServices.parametrosTwiRepository.parametrosTwi.NumberFrom;
 
             //string accountSid = "ACc7561cb09df3180ee1368e40055eedf5";
             //////string authToken = "0f47ce2d28c9211ac6a9ae42f630d1d6";
@@ -1105,33 +1101,43 @@ namespace Franquicia.WebForms.Views
                                     resu = true;
                                     foreach (var itPromo in promocionesServices.lsLigasMultiplePromocionesModel.Where(x => x.IdUsuario == item.IdUsuario && x.IntAuxiliar == item.IntAuxiliar).ToList())
                                     {
-                                        int i = promocionesServices.lsCBLPromocionesModelCliente.IndexOf(promocionesServices.lsCBLPromocionesModelCliente.First(x => x.UidPromocion == itPromo.UidPromocion));
+                                        SuperPromocionesServices superPromocionesServices = new SuperPromocionesServices();
+                                        superPromocionesServices.CargarSuperPromociones();
 
-                                        if (item.DcmImporte >= promocionesServices.lsCBLPromocionesModelCliente[i].DcmApartirDe)
+                                        foreach (var itSP in superPromocionesServices.lsCBLSuperPromociones)
                                         {
-                                            decimal cobro = promocionesServices.lsCBLPromocionesModelCliente[i].DcmComicion;
-
-                                            decimal Valor = cobro * item.DcmImporte / 100;
-                                            decimal Importe = Valor + item.DcmImporte;
-
-                                            string promocion = itPromo.VchDescripcion.Replace(" MESES", "");
-
-                                            DateTime thisDay2 = DateTime.Now;
-                                            string Referencia = item.IdCliente.ToString() + item.IdUsuario.ToString() + thisDay2.ToString("ddMMyyyyHHmmssfff");
-
-                                            url = GenLigaPara(id_company, id_branch, user, pwd, Referencia, Importe, moneda, canal, promocion, item.DtVencimiento, item.StrCorreo, item.StrConcepto, semillaAES, data0, urlGen);
-
-                                            if (url.Contains("https://"))
+                                            if (itSP.UidPromocion == itPromo.UidPromocion)
                                             {
-                                                if (usuariosCompletosServices.GenerarLigasPagos(url, item.StrConcepto, Importe, Referencia, item.UidUsuario, txtIdentificador.Text, thisDay, item.DtVencimiento, item.StrAsunto, UidLigaAsociado, itPromo.UidPromocion, Guid.Parse(ViewState["UidClienteLocal"].ToString())))
+
+                                                int i = promocionesServices.lsCBLPromocionesModelCliente.IndexOf(promocionesServices.lsCBLPromocionesModelCliente.First(x => x.UidPromocion == itPromo.UidPromocion));
+
+                                                if (item.DcmImporte >= promocionesServices.lsCBLPromocionesModelCliente[i].DcmApartirDe)
                                                 {
-                                                    resu = true;
+                                                    decimal cobro = promocionesServices.lsCBLPromocionesModelCliente[i].DcmComicion;
+
+                                                    decimal Valor = cobro * item.DcmImporte / 100;
+                                                    decimal Importe = Valor + item.DcmImporte;
+
+                                                    string promocion = itPromo.VchDescripcion.Replace(" MESES", "");
+
+                                                    DateTime thisDay2 = DateTime.Now;
+                                                    string Referencia = item.IdCliente.ToString() + item.IdUsuario.ToString() + thisDay2.ToString("ddMMyyyyHHmmssfff");
+
+                                                    url = GenLigaPara(id_company, id_branch, user, pwd, Referencia, Importe, moneda, canal, promocion, item.DtVencimiento, item.StrCorreo, item.StrConcepto, semillaAES, data0, urlGen);
+
+                                                    if (url.Contains("https://"))
+                                                    {
+                                                        if (usuariosCompletosServices.GenerarLigasPagos(url, item.StrConcepto, Importe, Referencia, item.UidUsuario, txtIdentificador.Text, thisDay, item.DtVencimiento, item.StrAsunto, UidLigaAsociado, itPromo.UidPromocion, Guid.Parse(ViewState["UidClienteLocal"].ToString())))
+                                                        {
+                                                            resu = true;
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        resu = false;
+                                                        break;
+                                                    }
                                                 }
-                                            }
-                                            else
-                                            {
-                                                resu = false;
-                                                break;
                                             }
                                         }
                                     }

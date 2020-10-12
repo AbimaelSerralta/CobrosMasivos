@@ -12,5 +12,8 @@ namespace Franquicia.Domain.ViewModels
         public string VchFHLimite { get; set; }
         public string VchFHVencimiento { get; set; }
         public string VchDescripcion { get; set; }
+        public string VchEstatus { get; set; }
+        public string VchIconoEstatus { get; set; }
+        public bool blEditar { get; set; }
     }
 }

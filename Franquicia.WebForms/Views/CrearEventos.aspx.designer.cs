@@ -213,15 +213,6 @@ namespace Franquicia.WebForms.Views
         protected global::System.Web.UI.WebControls.TextBox txtConcepto;
 
         /// <summary>
-        /// Control ListBoxMultipleMod.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.ListBox ListBoxMultipleMod;
-
-        /// <summary>
         /// Control ddlPedirDatos.
         /// </summary>
         /// <remarks>
@@ -238,6 +229,33 @@ namespace Franquicia.WebForms.Views
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlTipoEvento;
+
+        /// <summary>
+        /// Control pnlDatosBeneficiario.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl pnlDatosBeneficiario;
+
+        /// <summary>
+        /// Control ddlDatosBeneficiario.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlDatosBeneficiario;
+
+        /// <summary>
+        /// Control ListBoxMultipleMod.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListBox ListBoxMultipleMod;
 
         /// <summary>
         /// Control ddlEstatus.

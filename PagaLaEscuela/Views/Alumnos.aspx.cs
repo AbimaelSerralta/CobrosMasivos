@@ -5,6 +5,7 @@ using Franquicia.WebForms.Util;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -22,7 +23,7 @@ namespace PagaLaEscuela.Views
 
         EstatusServices estatusService = new EstatusServices();
         PrefijosTelefonicosServices prefijosTelefonicosServices = new PrefijosTelefonicosServices();
-
+        PadresServices padresServices = new PadresServices();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -46,6 +47,7 @@ namespace PagaLaEscuela.Views
                 Session["telefonosAlumnosServices"] = telefonosAlumnosServices;
                 Session["estatusService"] = estatusService;
                 Session["prefijosTelefonicosServices"] = prefijosTelefonicosServices;
+                Session["padresServices"] = padresServices;
 
                 alumnosServices.CargarAlumnos(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
                 gvAlumnos.DataSource = alumnosServices.lsAlumnosGridViewModel;
@@ -64,7 +66,7 @@ namespace PagaLaEscuela.Views
                 ddlPrefijo.DataBind();
 
                 FiltroEstatus.DataSource = estatusService.lsEstatus;
-                FiltroEstatus.Items.Insert(0, new ListItem("Seleccione", "00000000-0000-0000-0000-000000000000"));
+                FiltroEstatus.Items.Insert(0, new ListItem("TODOS", "00000000-0000-0000-0000-000000000000"));
                 FiltroEstatus.DataTextField = "VchDescripcion";
                 FiltroEstatus.DataValueField = "UidEstatus";
                 FiltroEstatus.DataBind();
@@ -73,15 +75,19 @@ namespace PagaLaEscuela.Views
             {
                 alumnosServices = (AlumnosServices)Session["alumnosServices"];
                 telefonosAlumnosServices = (TelefonosAlumnosServices)Session["telefonosAlumnosServices"];
-
                 estatusService = (EstatusServices)Session["estatusService"];
                 prefijosTelefonicosServices = (PrefijosTelefonicosServices)Session["prefijosTelefonicosServices"];
+                padresServices = (PadresServices)Session["padresServices"];
 
                 lblValidar.Text = string.Empty;
 
                 pnlAlert.Visible = false;
                 lblMensajeAlert.Text = "";
                 divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
+
+                pnlAlertMnsjModalDesasociar.Visible = false;
+                lblMnsjModalDesasociar.Text = "";
+                divAlertMnsjModalDesasociar.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
             }
         }
         protected void btnGuardar_Click(object sender, EventArgs e)
@@ -157,29 +163,40 @@ namespace PagaLaEscuela.Views
             permisosMenuModels = permisosMenuModels.Where(x => x.UidSegModulo == Guid.Parse("C1E64F99-F72E-4C68-89DE-6E32BD5C0525")).ToList();
             foreach (var item in permisosMenuModels)
             {
+                txtMatricula.BackColor = System.Drawing.Color.Transparent;
+
                 if (ViewState["Accion"].ToString() == "Guardar")
                 {
                     if (item.Agregar)
                     {
                         Guid UidAlumno = Guid.NewGuid();
 
-                        if (alumnosServices.RegistrarAlumno(UidAlumno, txtIdentificador.Text.Trim().ToUpper(), txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtMatricula.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), bool.Parse(ddlBeca.SelectedValue), ddlTipoBeca.SelectedValue, decimal.Parse(txtBeca.Text), txtNumero.Text.Trim(), Guid.Parse(ddlPrefijo.SelectedValue), Guid.Parse(ViewState["UidClienteLocal"].ToString())))
+                        if (validacionesServices.ExisteMatricula(txtMatricula.Text))
                         {
-                            pnlAlert.Visible = true;
-                            lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
-                            divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                            txtMatricula.BackColor = System.Drawing.Color.FromName("#f2dede");
+                            lblValidar.Text = "La matricula ingresado ya existe por favor intente con otro.";
+                        }
+                        else
+                        {
+                            if (alumnosServices.RegistrarAlumno(UidAlumno, txtIdentificador.Text.Trim().ToUpper(), txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtMatricula.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), bool.Parse(ddlBeca.SelectedValue), ddlTipoBeca.SelectedValue, decimal.Parse(txtBeca.Text), txtNumero.Text.Trim(), Guid.Parse(ddlPrefijo.SelectedValue), Guid.Parse(ViewState["UidClienteLocal"].ToString())))
+                            {
+                                pnlAlert.Visible = true;
+                                lblMensajeAlert.Text = "<strong>¡Felicidades! </strong> se ha registrado exitosamente.";
+                                divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
 
-                            alumnosServices.CargarAlumnos(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
-                            gvAlumnos.DataSource = alumnosServices.lsAlumnosGridViewModel;
-                            gvAlumnos.DataBind();
+                                ViewState["NewPageIndex"] = null;
+                                alumnosServices.CargarAlumnos(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+                                gvAlumnos.DataSource = alumnosServices.lsAlumnosGridViewModel;
+                                gvAlumnos.DataBind();
 
-                            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
+                                ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
+                            }
                         }
                     }
                     else
                     {
                         pnlAlert.Visible = true;
-                        lblMensajeAlert.Text = "<b>Lo sentimos,</b> no tiene permisos para esta acción.";
+                        lblMensajeAlert.Text = "<strong>Lo sentimos,</strong> no tiene permisos para esta acción.";
                         divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
                     }
@@ -188,23 +205,39 @@ namespace PagaLaEscuela.Views
                 {
                     if (item.Actualizar)
                     {
-                        if (alumnosServices.ActualizarAlumno(Guid.Parse(ViewState["UidRequerido"].ToString()), txtIdentificador.Text.Trim().ToUpper(), txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtMatricula.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), bool.Parse(ddlBeca.SelectedValue), ddlTipoBeca.SelectedValue, decimal.Parse(txtBeca.Text), Guid.Parse(ddlEstatus.SelectedValue), txtNumero.Text.Trim(), Guid.Parse(ddlPrefijo.SelectedValue)))
+                        bool Actualizar = true;
+
+                        if (ViewState["ActualizarMatricula"].ToString() != txtMatricula.Text)
                         {
-                            pnlAlert.Visible = true;
-                            lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha actualizado exitosamente.";
-                            divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                            if (validacionesServices.ExisteMatricula(txtMatricula.Text))
+                            {
+                                txtMatricula.BackColor = System.Drawing.Color.FromName("#f2dede");
+                                lblValidar.Text = "La matricula que desea actualizar ya existe por favor intente con otro.";
+                                Actualizar = false;
+                            }
+                        }
 
-                            alumnosServices.CargarAlumnos(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
-                            gvAlumnos.DataSource = alumnosServices.lsAlumnosGridViewModel;
-                            gvAlumnos.DataBind();
+                        if (Actualizar)
+                        {
+                            if (alumnosServices.ActualizarAlumno(Guid.Parse(ViewState["UidRequerido"].ToString()), txtIdentificador.Text.Trim().ToUpper(), txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtMatricula.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), bool.Parse(ddlBeca.SelectedValue), ddlTipoBeca.SelectedValue, decimal.Parse(txtBeca.Text), Guid.Parse(ddlEstatus.SelectedValue), txtNumero.Text.Trim(), Guid.Parse(ddlPrefijo.SelectedValue)))
+                            {
+                                pnlAlert.Visible = true;
+                                lblMensajeAlert.Text = "<strong>¡Felicidades! </strong> se ha actualizado exitosamente.";
+                                divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
 
-                            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
+                                ViewState["NewPageIndex"] = null;
+                                alumnosServices.CargarAlumnos(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+                                gvAlumnos.DataSource = alumnosServices.lsAlumnosGridViewModel;
+                                gvAlumnos.DataBind();
+
+                                ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
+                            }
                         }
                     }
                     else
                     {
                         pnlAlert.Visible = true;
-                        lblMensajeAlert.Text = "<b>Lo sentimos,</b> no tiene permisos para esta acción.";
+                        lblMensajeAlert.Text = "<strong>Lo sentimos,</strong> no tiene permisos para esta acción.";
                         divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
                     }
@@ -223,6 +256,9 @@ namespace PagaLaEscuela.Views
             btnEditar.Visible = false;
             lblTituloModal.Text = "Registro de Alumno";
             btnGuardar.Text = "<i class=" + "material-icons>" + "check </i> Guardar";
+
+            btnActivarGeneral_Click(null, null);
+            liActivarDatosPadre.Visible = false;
 
             ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
 
@@ -291,9 +327,65 @@ namespace PagaLaEscuela.Views
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
                 e.Row.Attributes["onclick"] = Page.ClientScript.GetPostBackClientHyperlink(gvAlumnos, "Select$" + e.Row.RowIndex);
+
+                GridView valor = (GridView)sender;
+                Guid dataKeys = Guid.Parse(valor.DataKeys[e.Row.RowIndex].Value.ToString());
+
+                if (ViewState["UidRequerido"] != null)
+                {
+                    if (dataKeys == Guid.Parse(ViewState["UidRequerido"].ToString()))
+                    {
+                        e.Row.BackColor = Color.FromName("#dff0d8");
+                    }
+                }
+            }
+
+            if (e.Row.RowType == DataControlRowType.Footer)
+            {
+                Label lblPaginado = (Label)e.Row.FindControl("lblPaginado");
+
+                int PageSize = gvAlumnos.PageSize;
+                int antNum = 0;
+
+                int numTotal = alumnosServices.lsAlumnosGridViewModel.Count;
+
+                if (numTotal >= 1)
+                {
+                    if (ViewState["NewPageIndex"] != null)
+                    {
+                        int gh = int.Parse(ViewState["NewPageIndex"].ToString());
+                        ViewState["NewPageIndex"] = gh + 1;
+
+                        int r1 = int.Parse(ViewState["NewPageIndex"].ToString()) * PageSize;
+                        antNum = r1 - (PageSize - 1);
+                    }
+                    else
+                    {
+                        ViewState["NewPageIndex"] = 1;
+                        antNum = 1;
+                    }
+
+                    int NewPageIndex = int.Parse(ViewState["NewPageIndex"].ToString());
+
+                    int newNum = NewPageIndex * PageSize;
+
+                    if (numTotal >= newNum)
+                    {
+                        lblPaginado.Text = "Del " + antNum + " al " + newNum + " de " + numTotal;
+                    }
+                    else
+                    {
+                        lblPaginado.Text = "Del " + antNum + " al " + numTotal + " de " + numTotal;
+                    }
+
+                    ViewState["lblPaginado"] = lblPaginado.Text;
+                }
+                else
+                {
+                    lblPaginado.Text = ViewState["lblPaginado"].ToString();
+                }
             }
         }
-
         protected void gvAlumnos_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandName == "Editar")
@@ -314,6 +406,20 @@ namespace PagaLaEscuela.Views
 
                 ManejoDatos(dataKeys);
                 DesbloquearCampos();
+
+                padresServices.ObtenerAlumnoPadres(dataKeys);
+                gvDatosPadres.DataSource = padresServices.lsPadresAlumnosViewModel;
+                gvDatosPadres.DataBind();
+
+                if (padresServices.lsPadresAlumnosViewModel.Count >= 1)
+                {
+                    liActivarDatosPadre.Visible = true;
+                }
+                else
+                {
+                    btnActivarGeneral_Click(null, null);
+                    liActivarDatosPadre.Visible = false;
+                }
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
             }
@@ -337,83 +443,26 @@ namespace PagaLaEscuela.Views
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
             }
-        }
 
-        private void ManejoDatos(Guid dataKeys)
-        {
-            //==================ALUMNO============================
-            alumnosServices.ObtenerAlumno(dataKeys);
-            txtIdentificador.Text = alumnosServices.alumnosRepository.alumnosGridViewModel.VchIdentificador;
-            txtNombre.Text = alumnosServices.alumnosRepository.alumnosGridViewModel.VchNombres;
-            txtApePaterno.Text = alumnosServices.alumnosRepository.alumnosGridViewModel.VchApePaterno;
-            txtApeMaterno.Text = alumnosServices.alumnosRepository.alumnosGridViewModel.VchApeMaterno;
-            txtMatricula.Text = alumnosServices.alumnosRepository.alumnosGridViewModel.VchMatricula;
-            txtCorreo.Text = alumnosServices.alumnosRepository.alumnosGridViewModel.VchCorreo;
-            if (alumnosServices.alumnosRepository.alumnosGridViewModel.BitBeca)
+            if (e.CommandName == "Desasociar")
             {
-                ddlBeca.SelectedIndex = 1;
-                ddlTipoBeca.SelectedValue = alumnosServices.alumnosRepository.alumnosGridViewModel.VchTipoBeca;
-                txtBeca.Text = alumnosServices.alumnosRepository.alumnosGridViewModel.DcmBeca.ToString();
-            }
-            else
-            {
-                ddlBeca.SelectedIndex = 0;
-                txtBeca.Text = string.Empty;
-            }
-            ViewState["ActualizarCorreo"] = alumnosServices.alumnosRepository.alumnosGridViewModel.VchCorreo;
-            ddlEstatus.SelectedIndex = ddlEstatus.Items.IndexOf(ddlEstatus.Items.FindByValue(alumnosServices.alumnosRepository.alumnosGridViewModel.UidEstatus.ToString()));
+                int index = Convert.ToInt32(e.CommandArgument.ToString());
+                GridViewRow Seleccionado = gvAlumnos.Rows[index];
+                GridView valor = (GridView)sender;
+                Guid dataKeys = Guid.Parse(valor.DataKeys[Seleccionado.RowIndex].Value.ToString());
+                ViewState["UidRequerido"] = dataKeys;
 
-            //==================TELÉFONO===================================
-            telefonosAlumnosServices.ObtenerTelefonosAlumnos(dataKeys);
-            txtNumero.Text = telefonosAlumnosServices.telefonosAlumnosRepository.telefonosAlumnos.VchTelefono;
-            ddlPrefijo.SelectedIndex = ddlPrefijo.Items.IndexOf(ddlPrefijo.Items.FindByValue(telefonosAlumnosServices.telefonosAlumnosRepository.telefonosAlumnos.UidPrefijo.ToString()));
-        }
+                padresServices.ObtenerAlumnoPadres(dataKeys);
+                gvPadres.DataSource = padresServices.lsPadresAlumnosViewModel;
+                gvPadres.DataBind();
 
-        protected void btnCancelar_Click(object sender, EventArgs e)
-        {
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
-        }
-        protected void btnCerrar_Click(object sender, EventArgs e)
-        {
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
-        }
-        protected void btnEditar_Click(object sender, EventArgs e)
-        {
-            ViewState["Accion"] = "Actualizar";
-            DesbloquearCampos();
-            btnCerrar.Visible = false;
-            btnCancelar.Visible = true;
-            btnGuardar.Visible = true;
-            btnEditar.Visible = false;
-
-            btnGuardar.Text = "<i class=" + "material-icons>" + "refresh </i> Actualizar";
-        }
-
-        protected void btnValidarCorreo_Click(object sender, EventArgs e)
-        {
-            if (!string.IsNullOrEmpty(txtCorreo.Text))
-            {
-                if (validacionesServices.ExisteCorreo(txtCorreo.Text))
-                {
-                    lblExiste.Text = "Correo existente";
-                    lblNoExiste.Text = string.Empty;
-                }
-                else
-                {
-                    lblNoExiste.Text = "Correo valido";
-                    lblExiste.Text = string.Empty;
-                }
-            }
-            else
-            {
-                lblNoExiste.Text = string.Empty;
-                lblExiste.Text = string.Empty;
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalDesasociar()", true);
             }
         }
-
         protected void gvAlumnos_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             gvAlumnos.PageIndex = e.NewPageIndex;
+            ViewState["NewPageIndex"] = e.NewPageIndex;
             gvAlumnos.DataSource = alumnosServices.lsAlumnosGridViewModel;
             gvAlumnos.DataBind();
         }
@@ -489,6 +538,16 @@ namespace PagaLaEscuela.Views
                             alumnosServices.lsAlumnosGridViewModel = alumnosServices.lsAlumnosGridViewModel.OrderByDescending(x => x.VchCorreo).ToList();
                         }
                         break;
+                    case "IntCantPadres":
+                        if (Orden == "ASC")
+                        {
+                            alumnosServices.lsAlumnosGridViewModel = alumnosServices.lsAlumnosGridViewModel.OrderBy(x => x.IntCantPadres).ToList();
+                        }
+                        else
+                        {
+                            alumnosServices.lsAlumnosGridViewModel = alumnosServices.lsAlumnosGridViewModel.OrderByDescending(x => x.IntCantPadres).ToList();
+                        }
+                        break;
                     case "UidEstatus":
                         if (Orden == "ASC")
                         {
@@ -501,26 +560,113 @@ namespace PagaLaEscuela.Views
                         break;
                 }
 
+                ViewState["NewPageIndex"] = int.Parse(ViewState["NewPageIndex"].ToString()) - 1;
                 gvAlumnos.DataSource = alumnosServices.lsAlumnosGridViewModel;
                 gvAlumnos.DataBind();
             }
         }
 
+        private void ManejoDatos(Guid dataKeys)
+        {
+            //==================ALUMNO============================
+            alumnosServices.ObtenerAlumno(dataKeys);
+            txtIdentificador.Text = alumnosServices.alumnosRepository.alumnosGridViewModel.VchIdentificador;
+            txtNombre.Text = alumnosServices.alumnosRepository.alumnosGridViewModel.VchNombres;
+            txtApePaterno.Text = alumnosServices.alumnosRepository.alumnosGridViewModel.VchApePaterno;
+            txtApeMaterno.Text = alumnosServices.alumnosRepository.alumnosGridViewModel.VchApeMaterno;
+            txtMatricula.Text = alumnosServices.alumnosRepository.alumnosGridViewModel.VchMatricula;
+            ViewState["ActualizarMatricula"] = alumnosServices.alumnosRepository.alumnosGridViewModel.VchMatricula;
+            txtCorreo.Text = alumnosServices.alumnosRepository.alumnosGridViewModel.VchCorreo;
+            if (alumnosServices.alumnosRepository.alumnosGridViewModel.BitBeca)
+            {
+                ddlBeca.SelectedIndex = 1;
+                ddlTipoBeca.SelectedValue = alumnosServices.alumnosRepository.alumnosGridViewModel.VchTipoBeca;
+                txtBeca.Text = alumnosServices.alumnosRepository.alumnosGridViewModel.DcmBeca.ToString();
+            }
+            else
+            {
+                ddlBeca.SelectedIndex = 0;
+                txtBeca.Text = string.Empty;
+            }
+            ViewState["ActualizarCorreo"] = alumnosServices.alumnosRepository.alumnosGridViewModel.VchCorreo;
+            ddlEstatus.SelectedIndex = ddlEstatus.Items.IndexOf(ddlEstatus.Items.FindByValue(alumnosServices.alumnosRepository.alumnosGridViewModel.UidEstatus.ToString()));
+
+            //==================TELÉFONO===================================
+            telefonosAlumnosServices.ObtenerTelefonosAlumnos(dataKeys);
+            txtNumero.Text = telefonosAlumnosServices.telefonosAlumnosRepository.telefonosAlumnos.VchTelefono;
+            ddlPrefijo.SelectedIndex = ddlPrefijo.Items.IndexOf(ddlPrefijo.Items.FindByValue(telefonosAlumnosServices.telefonosAlumnosRepository.telefonosAlumnos.UidPrefijo.ToString()));
+        }
+
+        protected void btnCancelar_Click(object sender, EventArgs e)
+        {
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
+        }
+        protected void btnCerrar_Click(object sender, EventArgs e)
+        {
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
+        }
+        protected void btnEditar_Click(object sender, EventArgs e)
+        {
+            ViewState["Accion"] = "Actualizar";
+            DesbloquearCampos();
+            btnCerrar.Visible = false;
+            btnCancelar.Visible = true;
+            btnGuardar.Visible = true;
+            btnEditar.Visible = false;
+
+            btnGuardar.Text = "<i class=" + "material-icons>" + "refresh </i> Actualizar";
+        }
+
+        protected void btnValidarCorreo_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(txtCorreo.Text))
+            {
+                if (validacionesServices.ExisteCorreo(txtCorreo.Text))
+                {
+                    lblExiste.Text = "Correo existente";
+                    lblNoExiste.Text = string.Empty;
+                }
+                else
+                {
+                    lblNoExiste.Text = "Correo valido";
+                    lblExiste.Text = string.Empty;
+                }
+            }
+            else
+            {
+                lblNoExiste.Text = string.Empty;
+                lblExiste.Text = string.Empty;
+            }
+        }
+
         protected void btnFiltros_Click(object sender, EventArgs e)
         {
+            FiltroEstatus.SelectedIndex = FiltroEstatus.Items.IndexOf(FiltroEstatus.Items.FindByValue("65e46bc9-1864-4145-ad1a-70f5b5f69739"));
+
             ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalBusqueda()", true);
         }
         protected void btnBuscar_Click(object sender, EventArgs e)
         {
-            //usuariosCompletosServices.BuscarUsuariosFinales(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse("E39FF705-8A01-4302-829A-7CFB9615CC8F"), FiltroNombre.Text, FiltroApePaterno.Text, FiltroApeMaterno.Text, FiltroCorreo.Text, Guid.Parse(FiltroEstatus.SelectedValue));
-            //gvAlumnos.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
-            //gvAlumnos.DataBind();
+            ViewState["NewPageIndex"] = null;
+
+            alumnosServices.BuscarAlumnos(FiltroIdentificador.Text, FiltroMatricula.Text, FiltroCorreo.Text, FiltroNombre.Text, FiltroApePaterno.Text, FiltroApeMaterno.Text, FiltroCelular.Text, FiltroAsociado.SelectedValue, FiltroBeca.Text, Guid.Parse(FiltroEstatus.SelectedValue), FiltroColegiatura.SelectedValue, Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+            gvAlumnos.DataSource = alumnosServices.lsAlumnosGridViewModel;
+            gvAlumnos.DataBind();
 
             ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModalBusqueda()", true);
         }
         protected void btnLimpiar_Click(object sender, EventArgs e)
         {
-
+            FiltroIdentificador.Text = string.Empty;
+            FiltroMatricula.Text = string.Empty;
+            FiltroCorreo.Text = string.Empty;
+            FiltroNombre.Text = string.Empty;
+            FiltroApePaterno.Text = string.Empty;
+            FiltroApeMaterno.Text = string.Empty;
+            FiltroCelular.Text = string.Empty;
+            FiltroAsociado.SelectedIndex = 0;
+            FiltroBeca.SelectedIndex = 0;
+            FiltroEstatus.SelectedIndex = 0;
         }
 
         protected void ddlBeca_SelectedIndexChanged(object sender, EventArgs e)
@@ -622,9 +768,10 @@ namespace PagaLaEscuela.Views
                                 alumnosServices.AccionAlumnosExcelToList(alumnosServices.lsExcelInsertar, Guid.Parse(ViewState["UidClienteLocal"].ToString()));
 
                                 pnlAlert.Visible = true;
-                                lblMensajeAlert.Text = "<strong>¡Felicidades! </strong> " + alumnosServices.lsExcelInsertar.Count() + "alumno(s) se ha registrado/actualizado exitosamente.";
+                                lblMensajeAlert.Text = "<strong>¡Felicidades! </strong> " + alumnosServices.lsExcelInsertar.Count() + " alumno(s) se ha registrado/actualizado exitosamente.";
                                 divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
 
+                                ViewState["NewPageIndex"] = null;
                                 alumnosServices.CargarAlumnos(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
                                 gvAlumnos.DataSource = alumnosServices.lsAlumnosGridViewModel;
                                 gvAlumnos.DataBind();
@@ -635,7 +782,7 @@ namespace PagaLaEscuela.Views
                                 btnDescargarError.Visible = true;
                                 btnMasDetalle.Visible = false;
                                 pnlAlertImportarError.Visible = true;
-                                lblMnsjAlertImportarError.Text = "<strong>!Lo sentimos¡</strong> algunos alumnos no se han importado.";
+                                lblMnsjAlertImportarError.Text = "<strong>!Lo sentimos¡</strong>" + alumnosServices.lsExcelErrores.Count() + " alumno(s) no se han importado.";
                                 divAlertImportarError.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                             }
                         }
@@ -664,6 +811,127 @@ namespace PagaLaEscuela.Views
             }
         }
 
+        #endregion
+
+        #region Proceso Desasociar Padres
+        protected void btnDesasociar_Click(object sender, EventArgs e)
+        {
+            bool Seleccionado = false;
+
+            foreach (var item in padresServices.lsPadresAlumnosViewModel)
+            {
+                if (item.blSeleccionado)
+                {
+                    Seleccionado = true;
+                }
+            }
+
+            if (Seleccionado)
+            {
+                lblMnsjDialog.Text = "Esta apunto de desvincular <strong>los(el) siguiente(s) Tutor(es).</strong>";
+
+                rptSelectPadres.DataSource = padresServices.lsPadresAlumnosViewModel.Where(x => x.blSeleccionado == true);
+                rptSelectPadres.DataBind();
+
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalDialog()", true);
+            }
+            else
+            {
+                pnlAlertMnsjModalDesasociar.Visible = true;
+                lblMnsjModalDesasociar.Text = "Por favor seleccione al menos un tutor.";
+                divAlertMnsjModalDesasociar.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+            }
+        }
+        protected void cbSeleccionado_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox checkBox = (CheckBox)sender;
+            GridViewRow gr = (GridViewRow)checkBox.Parent.Parent;
+            Guid dataKey = Guid.Parse(gvPadres.DataKeys[gr.RowIndex].Value.ToString());
+
+            CheckBox cbSeleccionado = (CheckBox)gr.FindControl("cbSeleccionado");
+
+            if (cbSeleccionado.Checked)
+            {
+                padresServices.ActualizarLsDesasociarPadres(padresServices.lsPadresAlumnosViewModel, dataKey, true);
+            }
+            else
+            {
+                padresServices.ActualizarLsDesasociarPadres(padresServices.lsPadresAlumnosViewModel, dataKey, false);
+            }
+
+            //lblCantSeleccionado.Text = alumnosServices.padresServices.lsPadresSelectAlumnosViewModel.Count.ToString();
+            gvPadres.DataSource = padresServices.lsPadresAlumnosViewModel;
+            gvPadres.DataBind();
+        }
+        protected void btnSi_Click(object sender, EventArgs e)
+        {
+            int error = 0;
+
+            foreach (var item in padresServices.lsPadresAlumnosViewModel.Where(x => x.blSeleccionado == true))
+            {
+                if (alumnosServices.DesasociarPadreAlumno(item.UidUsuario, Guid.Parse(ViewState["UidRequerido"].ToString())))
+                {
+                }
+                else
+                {
+                    error++;
+                }
+            }
+
+            if (error != 0)
+            {
+                pnlAlertMnsjModalDesasociar.Visible = true;
+                lblMnsjModalDesasociar.Text = "<strong>¡Lo sentimos! </strong> algunos padres no se han podido desasociado, por favor intente mas tarde.";
+                divAlertMnsjModalDesasociar.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+            }
+            else
+            {
+                pnlAlertMnsjModalDesasociar.Visible = true;
+                lblMnsjModalDesasociar.Text = "<strong>¡Felicidades! </strong> se ha desasociado exitosamente.";
+                divAlertMnsjModalDesasociar.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+            }
+
+            padresServices.ObtenerAlumnoPadres(Guid.Parse(ViewState["UidRequerido"].ToString()));
+            gvPadres.DataSource = padresServices.lsPadresAlumnosViewModel;
+            gvPadres.DataBind();
+
+            if (padresServices.lsPadresAlumnosViewModel.Count >= 1)
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModalDialog()", true);
+            }
+            else
+            {
+                pnlAlert.Visible = true;
+                lblMensajeAlert.Text = "<strong>¡Felicidades! </strong> se ha desasociado exitosamente.";
+                divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+
+                ViewState["NewPageIndex"] = null;
+                alumnosServices.CargarAlumnos(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+                gvAlumnos.DataSource = alumnosServices.lsAlumnosGridViewModel;
+                gvAlumnos.DataBind();
+
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideDialogDesasociar()", true);
+            }
+        }
+        #endregion
+
+        #region Pestañas(Menu)
+        protected void btnActivarGeneral_Click(object sender, EventArgs e)
+        {
+            btnActivarGeneral.CssClass = "nav-link active show";
+            pnlActivarGeneral.Visible = true;
+
+            btnActivarDatosPadre.CssClass = "nav-link";
+            pnlActivarDatosPadre.Visible = false;
+        }
+        protected void btnActivarDatosPadre_Click(object sender, EventArgs e)
+        {
+            btnActivarGeneral.CssClass = "nav-link";
+            pnlActivarGeneral.Visible = false;
+
+            btnActivarDatosPadre.CssClass = "nav-link active show";
+            pnlActivarDatosPadre.Visible = true;
+        }
         #endregion
     }
 }

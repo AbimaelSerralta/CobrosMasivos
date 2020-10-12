@@ -25,19 +25,6 @@ namespace Franquicia.DataAccess.Repository
         public void CargarParametrosTwi()
         {
             parametrosTwi = new ParametrosTwi();
-
-            //Twi
-            //parametrosTwi.UidParametroTwi = Guid.Empty;
-            //parametrosTwi.AccountSid = "ACcf4d1380ccb0be6d47e78a73036a29ab";
-            //parametrosTwi.AuthToken = "915ce4d30dc09473b5ed753490436281";
-            //parametrosTwi.NumberFrom = "+14582243212";
-
-            //Prueba
-            parametrosTwi.UidParametroTwi = Guid.Empty;
-            parametrosTwi.AccountSid = "ACc7561cb09df3180ee1368e40055eedf5";
-            parametrosTwi.AuthToken = "3f914e588826df9a93ed849cee73eae2";
-            //parametrosTwi.NumberFrom = "+14158739087"; //SMS
-            parametrosTwi.NumberFrom = "+14155238886"; //Whats
         }
 
         public void ObtenerParametrosTwi()
@@ -47,7 +34,7 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select pe.* from Franquiciatarios fr, ParametrosEntrada pe where fr.UidFranquiciatarios = pe.UidPropietario";
+            query.CommandText = "select * from ParametrosTwilio";
 
             DataTable dt = this.Busquedas(query);
 
@@ -56,6 +43,7 @@ namespace Franquicia.DataAccess.Repository
                 parametrosTwi.UidParametroTwi = Guid.Parse(item["UidParametroTwi"].ToString());
                 parametrosTwi.AccountSid = item["AccountSid"].ToString();
                 parametrosTwi.AuthToken = item["AuthToken"].ToString();
+                parametrosTwi.NumberFrom = item["NumberFrom"].ToString();
             }
         }
 

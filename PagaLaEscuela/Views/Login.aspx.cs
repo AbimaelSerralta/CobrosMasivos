@@ -60,6 +60,10 @@ namespace PagaLaEscuela.Views
                     else
                     {
                         SetFocus(txtUsuario);
+                        divAlert.Visible = false;
+                        pnlAlertRecovery.Visible = false;
+                        lblMensajeAlertRecovery.Text = "";
+                        divAlertRecovery.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
                     }
                 }
                 else
@@ -81,12 +85,12 @@ namespace PagaLaEscuela.Views
             {
                 if (!string.IsNullOrEmpty(txtUsuario.Text))
                 {
-                    
+
                     lblValiUser.Text = string.Empty;
 
                     if (!string.IsNullOrEmpty(txtPassword.Text))
                     {
-                        
+
                         lblValiUser.Text = "";
                         lblValiPassword.Text = "";
 
@@ -119,7 +123,7 @@ namespace PagaLaEscuela.Views
                             else
                             {
                                 Session["manejoSesionServices"] = null;
-                                
+                                divAlert.Visible = true;
                                 lblValiUser.Text = "Lo sentimos su cuenta no esta activada.";
                             }
 
@@ -128,27 +132,97 @@ namespace PagaLaEscuela.Views
                         else
                         {
                             Session["manejoSesionServices"] = null;
-                            
+                            divAlert.Visible = true;
                             lblValiUser.Text = "Usuario y/o contraseña invalida, por favor verifíquelo.";
                         }
                     }
                     else
                     {
-                        
+                        divAlert.Visible = true;
                         lblValiPassword.Text = "* La contraseña es obligatoria.";
                     }
                 }
                 else
                 {
-                    
+                    divAlert.Visible = true;
                     lblValiUser.Text = "* El nombre de usuario es obligatorio.";
                 }
             }
             else
             {
-                
+                divAlert.Visible = true;
                 lblValiUser.Text = "* El nombre de usuario es obligatorio.";
                 lblValiPassword.Text = "* La contraseña es obligatoria.";
+            }
+        }
+
+        protected void btnRecovery_Click(object sender, EventArgs e)
+        {
+            pnlAlertRecovery.Visible = false;
+            lblMensajeAlertRecovery.Text = "";
+            divAlertRecovery.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
+            
+            txtDatos.Text = string.Empty;
+            btnEnviar.Visible = true;
+            btnCancelar.CssClass = "btn btn-danger";
+            btnCancelar.Text = "Cancelar";
+
+            SetFocus(txtDatos);
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormModalsScript", "showModal()", true);
+        }
+
+        protected void btnEnviar_Click(object sender, EventArgs e)
+        {
+            ValidacionesServices validacionesServices = new ValidacionesServices();
+            CorreosEscuelaServices correosEscuelaServices = new CorreosEscuelaServices();
+
+            string dato = string.Empty;
+            string parametro = string.Empty;
+            string LigaUrl = URLBase + "Views/Login.aspx";
+
+            if (!string.IsNullOrEmpty(txtDatos.Text))
+            {
+                if (validacionesServices.isEmail(txtDatos.Text))
+                {
+                    dato = "correo";
+                    parametro = "us.VchCorreo";
+                }
+                else
+                {
+                    dato = "usuario";
+                    parametro = "su.VchUsuario";
+                }
+
+                manejoSesionServices.RecoveryPasswordEscuela(parametro, txtDatos.Text);
+
+                if (manejoSesionServices.lsRecoveryPassword != null && manejoSesionServices.lsRecoveryPassword.Count != 0)
+                {
+                    foreach (var item in manejoSesionServices.lsRecoveryPassword)
+                    {
+                        correosEscuelaServices.CorreoRecoveryPassword(item.NombreCompleto, "Recuperar contraseña", item.StrCorreo, item.VchContrasenia, LigaUrl, item.StrCorreo);
+                    }
+
+                    txtDatos.Text = string.Empty;
+                    btnEnviar.Visible = false;
+                    btnCancelar.CssClass = "btn btn-info";
+                    btnCancelar.Text = "Aceptar";
+
+                    pnlAlertRecovery.Visible = true;
+                    lblMensajeAlertRecovery.Text = "<strong>Felicidades,</strong> le hemos enviado sus credenciales a su correo.";
+                    divAlertRecovery.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                }
+                else
+                {
+                    pnlAlertRecovery.Visible = true;
+                    lblMensajeAlertRecovery.Text = "<strong>Lo sentimos,</strong> no hemos encontrado una cuenta con este " + dato + ".";
+                    divAlertRecovery.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                }
+            }
+            else
+            {
+                pnlAlertRecovery.Visible = true;
+                lblMensajeAlertRecovery.Text = "Por favor ingrese su correo o usuario.";
+                divAlertRecovery.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
             }
         }
     }

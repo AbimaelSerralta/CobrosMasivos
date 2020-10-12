@@ -37,7 +37,7 @@ namespace Franquicia.Bussiness
             eventosRepository.eventosGridViewModel = new EventosGridViewModel();
             eventosRepository.eventosGridViewModel = lsEventosGridViewModel.Find(x => x.UidEvento == UidEvento);
         }
-        public bool RegistrarEvento(Guid UidEvento, string VchNombreEvento, string VchDescripcion, DateTime DtRegistro, DateTime DtFHInicio, DateTime DtFHFin, bool BitTipoImporte, decimal DcmImporte, string VchConcepto, bool BitDatosUsuario, string VchUrlEvento, bool BitFHFin, Guid UidTipoEvento, Guid UidPropietario)
+        public bool RegistrarEvento(Guid UidEvento, string VchNombreEvento, string VchDescripcion, DateTime DtRegistro, DateTime DtFHInicio, DateTime DtFHFin, bool BitTipoImporte, decimal DcmImporte, string VchConcepto, bool BitDatosBeneficiario, bool BitDatosUsuario, string VchUrlEvento, bool BitFHFin, Guid UidTipoEvento, Guid UidPropietario)
         {
             bool result = false;
             if (eventosRepository.RegistrarEvento(
@@ -52,6 +52,7 @@ namespace Franquicia.Bussiness
                     BitTipoImporte = BitTipoImporte,
                     DcmImporte = DcmImporte,
                     VchConcepto = VchConcepto,
+                    BitDatosBeneficiario = BitDatosBeneficiario,
                     BitDatosUsuario = BitDatosUsuario,
                     VchUrlEvento = VchUrlEvento,
                     BitFHFin = BitFHFin,
@@ -65,7 +66,7 @@ namespace Franquicia.Bussiness
             return result;
         }
 
-        public bool ActualizarEvento(Guid UidEvento, string VchNombreEvento, string VchDescripcion, DateTime DtFHInicio, DateTime DtFHFin, bool BitTipoImporte, decimal DcmImporte, string VchConcepto, bool BitDatosUsuario, bool BitFHFin, Guid UidTipoEvento, Guid UidEstatus)
+        public bool ActualizarEvento(Guid UidEvento, string VchNombreEvento, string VchDescripcion, DateTime DtFHInicio, DateTime DtFHFin, bool BitTipoImporte, decimal DcmImporte, string VchConcepto, bool BitDatosBeneficiario, bool BitDatosUsuario, bool BitFHFin, Guid UidTipoEvento, Guid UidEstatus)
         {
             bool result = false;
             if (eventosRepository.ActualizarEvento(
@@ -79,6 +80,7 @@ namespace Franquicia.Bussiness
                     BitTipoImporte = BitTipoImporte,
                     DcmImporte = DcmImporte,
                     VchConcepto = VchConcepto,
+                    BitDatosBeneficiario = BitDatosBeneficiario,
                     BitDatosUsuario = BitDatosUsuario,
                     BitFHFin = BitFHFin,
                     UidTipoEvento = UidTipoEvento,

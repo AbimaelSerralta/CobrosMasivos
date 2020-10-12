@@ -899,9 +899,9 @@ namespace Franquicia.Bussiness
             //lsgvUsuariosSeleccionados.RemoveAt(lsgvUsuariosSeleccionados.FindIndex(x => x.IdUsuario == IdUsuario));
             lsgvUsuariosSeleccionados.RemoveAt(Index);
         }
-        public void ExcelToList(List<LigasUsuariosGridViewModel> lsLigasUsuariosGridView, List<LigasUsuariosGridViewModel> lsLigasInsertar, Guid UidCliente)
+        public void ExcelToList(List<LigasUsuariosGridViewModel> lsLigasUsuariosGridView, List<LigasUsuariosGridViewModel> lsLigasInsertar, Guid UidCliente, string URLBase)
         {
-            lsgvUsuariosSeleccionados = usuariosCompletosRepository.ExcelToList(lsLigasUsuariosGridView, lsLigasInsertar, UidCliente);
+            lsgvUsuariosSeleccionados = usuariosCompletosRepository.ExcelToList(lsLigasUsuariosGridView, lsLigasInsertar, UidCliente, URLBase);
         }
         public void ValidarExcelToList(DataTable dataTable)
         {
@@ -1029,9 +1029,9 @@ namespace Franquicia.Bussiness
         {
             lsLigasMultiplesUsuariosGridViewModel = usuariosCompletosRepository.BuscarUsuarios(lsLigasUsuarios, UidCliente, UidTipoPerfil, Nombre, ApePaterno, ApeMaterno, Correo, Telefono);
         }
-        public void ExcelToListMultiple(List<LigasMultiplesUsuariosGridViewModel> lsLigasMultiplesUsuariosGridView, List<LigasMultiplesUsuariosGridViewModel> lsLigasInsertarMultiple, Guid UidCliente)
+        public void ExcelToListMultiple(List<LigasMultiplesUsuariosGridViewModel> lsLigasMultiplesUsuariosGridView, List<LigasMultiplesUsuariosGridViewModel> lsLigasInsertarMultiple, Guid UidCliente, string URLBase)
         {
-            lsLigasMultiplesUsuariosGridViewModel = usuariosCompletosRepository.ExcelToListMultiple(lsLigasMultiplesUsuariosGridView, lsLigasInsertarMultiple, UidCliente);
+            lsLigasMultiplesUsuariosGridViewModel = usuariosCompletosRepository.ExcelToListMultiple(lsLigasMultiplesUsuariosGridView, lsLigasInsertarMultiple, UidCliente, URLBase);
         }
         public void ActualizarListaUsuariosMultiple(List<LigasMultiplesUsuariosGridViewModel> lsLigasUsuarios, int IdUsuario, bool accion)
         {
@@ -1715,13 +1715,13 @@ namespace Franquicia.Bussiness
         {
             lsPagoColegiaturaLiga = usuariosCompletosRepository.SelectUsuCliColegiatura(UidCliente, UidUsuario);
         }
-        public bool GenerarLigasPagosColegiatura(string VchUrl, string VchConcepto, decimal DcmImporte, string IdReferencia, Guid UidUsuario, string VchIdentificador, DateTime DtRegistro, DateTime DtVencimiento, string VchAsunto, Guid UidLigaAsociado, Guid UidPromocion, Guid UidFechaColegiatura, Guid UidPropietario)
+        public bool GenerarLigasPagosColegiatura(string VchUrl, string VchConcepto, decimal DcmImporte, string IdReferencia, Guid UidUsuario, string VchIdentificador, DateTime DtRegistro, DateTime DtVencimiento, string VchAsunto, Guid UidLigaAsociado, Guid UidPromocion, Guid UidFechaColegiatura, Guid UidPagoColegiatura, Guid UidPropietario)
         {
             Guid UidLigaUrl = Guid.NewGuid();
 
             bool result = false;
             if (usuariosCompletosRepository.GenerarLigasPagosColegiatura(
-               UidLigaUrl, VchUrl, VchConcepto, DcmImporte, IdReferencia, UidUsuario, VchIdentificador, DtRegistro, DtVencimiento, VchAsunto, UidLigaAsociado, UidPromocion, UidFechaColegiatura, UidPropietario
+               UidLigaUrl, VchUrl, VchConcepto, DcmImporte, IdReferencia, UidUsuario, VchIdentificador, DtRegistro, DtVencimiento, VchAsunto, UidLigaAsociado, UidPromocion, UidFechaColegiatura, UidPagoColegiatura, UidPropietario
                 ))
             {
                 result = true;
@@ -1730,8 +1730,39 @@ namespace Franquicia.Bussiness
         }
         #endregion
 
-        #endregion 
-        
+        #endregion
+
+        #endregion
+
+        #region Metodos MasterPage
+        public List<UsuarioActivarCuentaViewModel> ObtenerDatossUsuario(Guid UidUsuario)
+        {
+            return usuariosCompletosRepository.ObtenerDatossUsuario(UidUsuario);
+        }
+        public bool ActivarCuentaUsuario(Guid UidUsuario, string Nombre, string ApePaterno, string ApeMaterno, string Password, string Telefono, Guid UidPrefijo)
+        {
+
+            bool result = false;
+            if (usuariosCompletosRepository.ActivarCuentaUsuario(
+                new UsuariosCompletos
+                {
+                    UidUsuario = UidUsuario,
+                    StrNombre = Nombre,
+                    StrApePaterno = ApePaterno,
+                    StrApeMaterno = ApeMaterno,
+                    VchContrasenia = Password
+                },
+                new TelefonosUsuarios
+                {
+                    VchTelefono = Telefono,
+                    UidPrefijo = UidPrefijo
+                }
+                ))
+            {
+                result = true;
+            }
+            return result;
+        }
         #endregion
     }
 }

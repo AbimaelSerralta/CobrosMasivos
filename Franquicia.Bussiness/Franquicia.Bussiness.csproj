@@ -31,8 +31,19 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="SendGrid, Version=9.21.0.0, Culture=neutral, PublicKeyToken=4f047e93159395ca, processorArchitecture=MSIL">
+      <HintPath>..\packages\SendGrid.9.21.0\lib\net452\SendGrid.dll</HintPath>
+    </Reference>
+    <Reference Include="StarkbankEcdsa, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\starkbank-ecdsa.1.2.0\lib\net452\StarkbankEcdsa.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -43,9 +54,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AESCrypto.cs" />
+    <Compile Include="DetallesPagosColegiaturasServices.cs" />
+    <Compile Include="PagosColegiaturasServices.cs" />
+    <Compile Include="ComisionesTarjetasServices.cs" />
+    <Compile Include="DateTimeSpanServices.cs" />
     <Compile Include="ColegiaturasServices.cs" />
+    <Compile Include="CorreosEscuelaServices.cs" />
     <Compile Include="PeriodicidadesServices.cs" />
     <Compile Include="NivelesEnsenianzasServices.cs" />
+    <Compile Include="SuperPromocionesServices.cs" />
+    <Compile Include="ComisionesTarjetasClientesServices.cs" />
     <Compile Include="TelefonosAlumnosServices.cs" />
     <Compile Include="PagosPadresServices.cs" />
     <Compile Include="TiposEnsenianzasServices.cs" />
@@ -93,7 +111,6 @@
     <Compile Include="UsuariosServices.cs" />
     <Compile Include="ValidacionesServices.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Franquicia.DataAccess\Franquicia.DataAccess.csproj">
       <Project>{AA43771C-3628-45C2-9286-9F5A201B23D6}</Project>
@@ -103,6 +120,9 @@
       <Project>{E6903C44-3250-4F24-8145-3A23979A7CBF}</Project>
       <Name>Franquicia.Domain</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

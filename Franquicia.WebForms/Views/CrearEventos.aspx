@@ -82,6 +82,17 @@
                                                             </table>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
+                                                    <asp:TemplateField SortExpression="VchTipoEvento" HeaderText="TIPO">
+                                                        <ItemTemplate>
+                                                            <div class="col-md-6">
+                                                                <asp:Label ToolTip='<%#Eval("VchTipoEvento")%>' runat="server">
+                                                                <i class="large material-icons">
+                                                                    <%#Eval("VchIconoEvento")%>
+                                                                </i>
+                                                                </asp:Label>
+                                                            </div>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
                                                     <asp:TemplateField SortExpression="UidEstatus" HeaderText="ESTATUS">
                                                         <ItemTemplate>
                                                             <div class="col-md-6">
@@ -247,25 +258,32 @@
                                                                         <asp:TextBox ID="txtConcepto" CssClass="form-control" Style="margin-top: 11px;" runat="server" />
                                                                     </div>
                                                                     <div class="form-group col-md-4">
-                                                                        <label for="ListBoxMultipleMod" style="color: black; padding-left: 0px;">Promoción(es)</label>
-                                                                        <br />
-                                                                        <asp:ListBox ID="ListBoxMultipleMod" runat="server" SelectionMode="Multiple"></asp:ListBox>
-                                                                    </div>
-                                                                    <div class="form-group col-md-3">
                                                                         <label for="ddlPedirDatos" style="color: black; padding-left: 0px; text-overflow: ellipsis;">¿Pedir datos? *</label>
                                                                         <asp:DropDownList ID="ddlPedirDatos" CssClass="form-control" runat="server">
                                                                             <asp:ListItem Text="SI" Value="true" />
                                                                             <asp:ListItem Text="NO" Value="false" />
                                                                         </asp:DropDownList>
                                                                     </div>
-                                                                    <div class="form-group col-md-3">
+                                                                    <div class="form-group col-md-4">
                                                                         <label for="ddlTipoEvento" style="color: black; padding-left: 0px; text-overflow: ellipsis;">Tipo evento *</label>
                                                                         <asp:DropDownList ID="ddlTipoEvento" OnSelectedIndexChanged="ddlTipoEvento_SelectedIndexChanged" AutoPostBack="true" CssClass="form-control" runat="server">
                                                                             <asp:ListItem Text="PÚBLICO" Value="publico" />
                                                                             <asp:ListItem Text="PRIVADO" Value="privado" />
                                                                         </asp:DropDownList>
                                                                     </div>
-                                                                    <div class="form-group col-md-2">
+                                                                    <div id="pnlDatosBeneficiario" class="form-group col-md-4" runat="server">
+                                                                        <label for="ddlPedirDatos" style="color: black; padding-left: 0px; text-overflow: ellipsis;">Datos beneficiario *</label>
+                                                                        <asp:DropDownList ID="ddlDatosBeneficiario" CssClass="form-control" runat="server">
+                                                                            <asp:ListItem Text="SI" Value="true" />
+                                                                            <asp:ListItem Text="NO" Value="false" />
+                                                                        </asp:DropDownList>
+                                                                    </div>
+                                                                    <div class="form-group col-md-4">
+                                                                        <label for="ListBoxMultipleMod" style="color: black; padding-left: 0px;">Promoción(es)</label>
+                                                                        <br />
+                                                                        <asp:ListBox ID="ListBoxMultipleMod" runat="server" SelectionMode="Multiple"></asp:ListBox>
+                                                                    </div>
+                                                                    <div class="form-group col-md-4">
                                                                         <label for="ddlEstatus" style="color: black; padding-left: 0px;">Estatus</label>
                                                                         <asp:DropDownList ID="ddlEstatus" CssClass="form-control" runat="server">
                                                                         </asp:DropDownList>

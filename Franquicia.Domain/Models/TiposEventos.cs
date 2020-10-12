@@ -11,5 +11,6 @@ namespace Franquicia.Domain.Models
         public Guid UidTipoEvento { get; set; }
         public string VchDescripcion { get; set; }
         public int IntGerarquia { get; set; }
+        public string VchIcono { get; set; }
     }
 }

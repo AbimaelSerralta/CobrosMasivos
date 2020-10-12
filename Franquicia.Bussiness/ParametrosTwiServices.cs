@@ -25,12 +25,12 @@ namespace Franquicia.Bussiness
             parametrosTwiRepository.CargarParametrosTwi();
         }
 
-        public void ObtenerParametrosEntradaFraquicia()
+        public void ObtenerParametrosTwi()
         {
             parametrosTwiRepository.ObtenerParametrosTwi();
         }
 
-        public bool RegistrarParametrosEntradaFraquicia(string IdCompany, string IdBranch, string VchModena, string VchUsuario, string VchPassword, string VchCanal, string VchData0, string VchUrl, string VchSemillaAES, Guid UidPropietario)
+        public bool RegistrarParametrosTwi(string IdCompany, string IdBranch, string VchModena, string VchUsuario, string VchPassword, string VchCanal, string VchData0, string VchUrl, string VchSemillaAES, Guid UidPropietario)
         {
             bool result = false;
             if (parametrosTwiRepository.RegistrarParametrosTwi(
@@ -54,7 +54,7 @@ namespace Franquicia.Bussiness
             return result;
         }
 
-        public bool ActualizarParametrosEntradaFraquicia(string IdCompany, string IdBranch, string VchModena, string VchUsuario, string VchPassword, string VchCanal, string VchData0, string VchUrl, string VchSemillaAES, Guid UidPropietario)
+        public bool ActualizarParametrosTwi(string IdCompany, string IdBranch, string VchModena, string VchUsuario, string VchPassword, string VchCanal, string VchData0, string VchUrl, string VchSemillaAES, Guid UidPropietario)
         {
             bool result = false;
             if (parametrosTwiRepository.ActualizarParametrosTwi(

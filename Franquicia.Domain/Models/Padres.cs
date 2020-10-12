@@ -10,5 +10,7 @@ namespace Franquicia.Domain.Models
     {
         public string VchMatricula { get; set; }
         public string StrTelefono { get; set; }
+        public int IntCantAlumnos { get; set; }
+        public string ColorNotification { get; set; }
     }
 }

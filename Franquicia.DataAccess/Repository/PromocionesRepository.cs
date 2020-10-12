@@ -249,7 +249,8 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select pr.*, cp.* from Eventos ev, EventosPromociones ep, Promociones pr, Clientes cl, ClientesPromociones cp where ev.UidEvento = ep.UidEvento and ep.UidPromocion = pr.UidPromocion and cl.UidCliente = cp.UidCliente and cp.UidPromocion = pr.UidPromocion and cl.UidCliente = '" + UidCliente + "' and ev.UidEvento = '" + UidEvento + "'";
+            //=>Sin validacion de SuperPromociones query.CommandText = "select pr.*, cp.* from Eventos ev, EventosPromociones ep, Promociones pr, Clientes cl, ClientesPromociones cp where ev.UidEvento = ep.UidEvento and ep.UidPromocion = pr.UidPromocion and cl.UidCliente = cp.UidCliente and cp.UidPromocion = pr.UidPromocion and cl.UidCliente = '" + UidCliente + "' and ev.UidEvento = '" + UidEvento + "'";
+            query.CommandText = "select pr.*, cp.* from Eventos ev, EventosPromociones ep, Promociones pr, Clientes cl, ClientesPromociones cp, SuperPromociones sp where sp.UidPromocion = pr.UidPromocion and ev.UidEvento = ep.UidEvento and ep.UidPromocion = pr.UidPromocion and cl.UidCliente = cp.UidCliente and cp.UidPromocion = pr.UidPromocion and cl.UidCliente = '" + UidCliente + "' and ev.UidEvento = '" + UidEvento + "'";
 
             DataTable dt = this.Busquedas(query);
 
@@ -484,7 +485,8 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select pr.*, cp.* from Colegiaturas co, ColegiaturasPromociones cop, Promociones pr, Clientes cl, ClientesPromociones cp where co.UidColegiatura = cop.UidColegiatura and cop.UidPromocion = pr.UidPromocion and cl.UidCliente = cp.UidCliente and cp.UidPromocion = pr.UidPromocion and cl.UidCliente = '" + UidCliente + "' and co.UidColegiatura = '" + UidColegiatura + "'";
+            //=>Sin validacion de SuperPromociones query.CommandText = "select pr.*, cp.* from Colegiaturas co, ColegiaturasPromociones cop, Promociones pr, Clientes cl, ClientesPromociones cp where co.UidColegiatura = cop.UidColegiatura and cop.UidPromocion = pr.UidPromocion and cl.UidCliente = cp.UidCliente and cp.UidPromocion = pr.UidPromocion and cl.UidCliente = '" + UidCliente + "' and co.UidColegiatura = '" + UidColegiatura + "'";
+            query.CommandText = "select pr.*, cp.* from Colegiaturas co, ColegiaturasPromociones cop, Promociones pr, Clientes cl, ClientesPromociones cp, SuperPromociones sp where sp.UidPromocion = pr.UidPromocion and co.UidColegiatura = cop.UidColegiatura and cop.UidPromocion = pr.UidPromocion and cl.UidCliente = cp.UidCliente and cp.UidPromocion = pr.UidPromocion and cl.UidCliente = '" + UidCliente + "' and co.UidColegiatura = '" + UidColegiatura + "'";
 
             DataTable dt = this.Busquedas(query);
 

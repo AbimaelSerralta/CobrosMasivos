@@ -46,7 +46,7 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select ev.*, es.VchDescripcion as Estatus, es.VchIcono from Eventos ev, Estatus es where ev.UidEstatus = es.UidEstatus and UidPropietario = '" + UidCliente + "'";
+            query.CommandText = "select ev.*, es.VchDescripcion as Estatus, es.VchIcono, te.VchDescripcion as TipoEvento, te.VchIcono as IconoEvento from Eventos ev, Estatus es, TiposEventos te where te.UidTipoEvento = ev.UidTipoEvento and ev.UidEstatus = es.UidEstatus and UidPropietario = '" + UidCliente + "'";
 
             DataTable dt = this.Busquedas(query);
 
@@ -70,13 +70,16 @@ namespace Franquicia.DataAccess.Repository
                     BitTipoImporte = bool.Parse(item["BitTipoImporte"].ToString()),
                     DcmImporte = decimal.Parse(item["DcmImporte"].ToString()),
                     VchConcepto = item["VchConcepto"].ToString(),
+                    BitDatosBeneficiario= bool.Parse(item["BitDatosBeneficiario"].ToString()),
                     BitDatosUsuario = bool.Parse(item["BitDatosUsuario"].ToString()),
                     VchUrlEvento = item["VchUrlEvento"].ToString(),
                     UidEstatus = Guid.Parse(item["UidEstatus"].ToString()),
                     VchEstatus = item["Estatus"].ToString(),
                     VchIcono = item["VchIcono"].ToString(),
                     BitFHFin = bool.Parse(item["BitFHFin"].ToString()),
-                    UidTipoEvento = Guid.Parse(item["UidTipoEvento"].ToString())
+                    UidTipoEvento = Guid.Parse(item["UidTipoEvento"].ToString()),
+                    VchTipoEvento = item["TipoEvento"].ToString(),
+                    VchIconoEvento = item["IconoEvento"].ToString()
                 });
             }
 
@@ -122,6 +125,9 @@ namespace Franquicia.DataAccess.Repository
                 comando.Parameters.Add("@VchConcepto", SqlDbType.VarChar);
                 comando.Parameters["@VchConcepto"].Value = eventos.VchConcepto;
 
+                comando.Parameters.Add("@BitDatosBeneficiario", SqlDbType.Bit);
+                comando.Parameters["@BitDatosBeneficiario"].Value = eventos.BitDatosBeneficiario;
+                
                 comando.Parameters.Add("@BitDatosUsuario", SqlDbType.Bit);
                 comando.Parameters["@BitDatosUsuario"].Value = eventos.BitDatosUsuario;
 
@@ -183,6 +189,9 @@ namespace Franquicia.DataAccess.Repository
                 comando.Parameters.Add("@VchConcepto", SqlDbType.VarChar);
                 comando.Parameters["@VchConcepto"].Value = eventos.VchConcepto;
 
+                comando.Parameters.Add("@BitDatosBeneficiario", SqlDbType.Bit);
+                comando.Parameters["@BitDatosBeneficiario"].Value = eventos.BitDatosBeneficiario;
+                
                 comando.Parameters.Add("@BitDatosUsuario", SqlDbType.Bit);
                 comando.Parameters["@BitDatosUsuario"].Value = eventos.BitDatosUsuario;
 
@@ -256,6 +265,7 @@ namespace Franquicia.DataAccess.Repository
                     BitTipoImporte = bool.Parse(item["BitTipoImporte"].ToString()),
                     DcmImporte = decimal.Parse(item["DcmImporte"].ToString()),
                     VchConcepto = item["VchConcepto"].ToString(),
+                    BitDatosBeneficiario = bool.Parse(item["BitDatosBeneficiario"].ToString()),
                     BitDatosUsuario = bool.Parse(item["BitDatosUsuario"].ToString()),
                     VchUrlEvento = item["VchUrlEvento"].ToString(),
                     UidEstatus = Guid.Parse(item["UidEstatus"].ToString()),
@@ -491,6 +501,7 @@ namespace Franquicia.DataAccess.Repository
                         BitTipoImporte = bool.Parse(item["BitTipoImporte"].ToString()),
                         DcmImporte = decimal.Parse(item["DcmImporte"].ToString()),
                         VchConcepto = item["VchConcepto"].ToString(),
+                        BitDatosBeneficiario = bool.Parse(item["BitDatosBeneficiario"].ToString()),
                         BitDatosUsuario = bool.Parse(item["BitDatosUsuario"].ToString()),
                         VchUrlEvento = item["VchUrlEvento"].ToString(),
                         UidEstatus = Guid.Parse(item["UidEstatus"].ToString()),

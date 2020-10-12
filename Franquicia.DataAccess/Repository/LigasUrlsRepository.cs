@@ -775,7 +775,8 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
             // ==>MUESTRA LOS PENDIENTES<==  query.CommandText = "select lu.*, cl.VchNombreComercial, us.UidUsuario, us.VchNombre, us.VchApePaterno, us.VchApeMaterno, pt.VchEstatus, lu.DcmImporte as DcmImportePromocion, pr.VchDescripcion as VchPromocion, (select DcmImporte from LigasUrls where UidLigaAsociado = lu.UidLigaAsociado and UidPromocion IS NULL) as ImporteReal from LigasUrls lu left join PagosTarjeta pt  on pt.IdReferencia = lu.IdReferencia left join Usuarios us on us.UidUsuario = lu.UidUsuario left join ClientesUsuarios cu on cu.UidUsuario = us.UidUsuario left join Clientes cl on cl.UidCliente = cu.UidCliente left join Promociones pr on pr.UidPromocion = lu.UidPromocion left join AuxiliarPago ap on ap.IdReferencia = lu.IdReferencia where ap.IdReferencia IS NULL and pt.VchEstatus IS NULL and lu.UidPromocion IS NULL and lu.UidEvento IS NULL and lu.UidPropietario = cl.UidCliente and us.UidUsuario = '" + UidUsuario + "' UNION select lu.*, cl.VchNombreComercial, us.UidUsuario, us.VchNombre, us.VchApePaterno, us.VchApeMaterno, pt.VchEstatus, lu.DcmImporte as DcmImportePromocion, pr.VchDescripcion as VchPromocion, (select DcmImporte from LigasUrls where UidLigaAsociado = lu.UidLigaAsociado and UidPromocion IS NULL) as ImporteReal from LigasUrls lu left join PagosTarjeta pt  on pt.IdReferencia = lu.IdReferencia left join Usuarios us on us.UidUsuario = lu.UidUsuario left join ClientesUsuarios cu on cu.UidUsuario = us.UidUsuario left join Clientes cl on cl.UidCliente = cu.UidCliente left join Promociones pr on pr.UidPromocion = lu.UidPromocion left join AuxiliarPago ap on ap.IdReferencia = lu.IdReferencia where ap.IdReferencia IS NULL and lu.UidPropietario = cl.UidCliente and lu.UidLigaAsociado IS NULL AND pt.DtmFechaDeRegistro = (select MAX(DtmFechaDeRegistro) from PagosTarjeta where IdReferencia = lu.IdReferencia) and us.UidUsuario = '" + UidUsuario + "' UNION select lu.*, cl.VchNombreComercial, us.UidUsuario, us.VchNombre, us.VchApePaterno, us.VchApeMaterno, pt.VchEstatus, lu.DcmImporte as DcmImportePromocion, pr.VchDescripcion as VchPromocion, (select DcmImporte from LigasUrls where UidLigaAsociado = lu.UidLigaAsociado and UidPromocion IS NULL) as ImporteReal from LigasUrls lu left join PagosTarjeta pt  on pt.IdReferencia = lu.IdReferencia left join Usuarios us on us.UidUsuario = lu.UidUsuario left join ClientesUsuarios cu on cu.UidUsuario = us.UidUsuario left join Clientes cl on cl.UidCliente = cu.UidCliente left join Promociones pr on pr.UidPromocion = lu.UidPromocion where lu.UidPropietario = cl.UidCliente and lu.UidLigaAsociado IS NOT NULL AND pt.DtmFechaDeRegistro = (select MAX(pata.DtmFechaDeRegistro) from PagosTarjeta pata, LigasUrls ls where pata.IdReferencia = ls.IdReferencia and ls.UidLigaAsociado = lu.UidLigaAsociado) and us.UidUsuario = '" + UidUsuario + "'";
-            query.CommandText = "select lu.*, cl.VchNombreComercial, us.UidUsuario, us.VchNombre, us.VchApePaterno, us.VchApeMaterno, pt.VchEstatus, lu.DcmImporte as DcmImportePromocion, pr.VchDescripcion as VchPromocion, (select DcmImporte from LigasUrls where UidLigaAsociado = lu.UidLigaAsociado and UidPromocion IS NULL) as ImporteReal from LigasUrls lu left join PagosTarjeta pt  on pt.IdReferencia = lu.IdReferencia left join Usuarios us on us.UidUsuario = lu.UidUsuario left join ClientesUsuarios cu on cu.UidUsuario = us.UidUsuario left join Clientes cl on cl.UidCliente = cu.UidCliente left join Promociones pr on pr.UidPromocion = lu.UidPromocion left join AuxiliarPago ap on ap.IdReferencia = lu.IdReferencia where ap.IdReferencia IS NULL and lu.UidPropietario = cl.UidCliente and lu.UidLigaAsociado IS NULL AND pt.DtmFechaDeRegistro = (select MAX(DtmFechaDeRegistro) from PagosTarjeta where IdReferencia = lu.IdReferencia) and us.UidUsuario = '" + UidUsuario + "' UNION select lu.*, cl.VchNombreComercial, us.UidUsuario, us.VchNombre, us.VchApePaterno, us.VchApeMaterno, pt.VchEstatus, lu.DcmImporte as DcmImportePromocion, pr.VchDescripcion as VchPromocion, (select DcmImporte from LigasUrls where UidLigaAsociado = lu.UidLigaAsociado and UidPromocion IS NULL) as ImporteReal from LigasUrls lu left join PagosTarjeta pt  on pt.IdReferencia = lu.IdReferencia left join Usuarios us on us.UidUsuario = lu.UidUsuario left join ClientesUsuarios cu on cu.UidUsuario = us.UidUsuario left join Clientes cl on cl.UidCliente = cu.UidCliente left join Promociones pr on pr.UidPromocion = lu.UidPromocion where lu.UidPropietario = cl.UidCliente and lu.UidLigaAsociado IS NOT NULL AND pt.DtmFechaDeRegistro = (select MAX(pata.DtmFechaDeRegistro) from PagosTarjeta pata, LigasUrls ls where pata.IdReferencia = ls.IdReferencia and ls.UidLigaAsociado = lu.UidLigaAsociado) and us.UidUsuario = '" + UidUsuario + "'";
+            // ==>MUESTRA LIGAS DE COBROSMASIVOS<== query.CommandText = "select lu.*, cl.VchNombreComercial, us.UidUsuario, us.VchNombre, us.VchApePaterno, us.VchApeMaterno, pt.VchEstatus, lu.DcmImporte as DcmImportePromocion, pr.VchDescripcion as VchPromocion, (select DcmImporte from LigasUrls where UidLigaAsociado = lu.UidLigaAsociado and UidPromocion IS NULL) as ImporteReal from LigasUrls lu left join PagosTarjeta pt  on pt.IdReferencia = lu.IdReferencia left join Usuarios us on us.UidUsuario = lu.UidUsuario left join ClientesUsuarios cu on cu.UidUsuario = us.UidUsuario left join Clientes cl on cl.UidCliente = cu.UidCliente left join Promociones pr on pr.UidPromocion = lu.UidPromocion left join AuxiliarPago ap on ap.IdReferencia = lu.IdReferencia where ap.IdReferencia IS NULL and lu.UidPropietario = cl.UidCliente and lu.UidLigaAsociado IS NULL AND pt.DtmFechaDeRegistro = (select MAX(DtmFechaDeRegistro) from PagosTarjeta where IdReferencia = lu.IdReferencia) and us.UidUsuario = '" + UidUsuario + "' UNION select lu.*, cl.VchNombreComercial, us.UidUsuario, us.VchNombre, us.VchApePaterno, us.VchApeMaterno, pt.VchEstatus, lu.DcmImporte as DcmImportePromocion, pr.VchDescripcion as VchPromocion, (select DcmImporte from LigasUrls where UidLigaAsociado = lu.UidLigaAsociado and UidPromocion IS NULL) as ImporteReal from LigasUrls lu left join PagosTarjeta pt  on pt.IdReferencia = lu.IdReferencia left join Usuarios us on us.UidUsuario = lu.UidUsuario left join ClientesUsuarios cu on cu.UidUsuario = us.UidUsuario left join Clientes cl on cl.UidCliente = cu.UidCliente left join Promociones pr on pr.UidPromocion = lu.UidPromocion where lu.UidPropietario = cl.UidCliente and lu.UidLigaAsociado IS NOT NULL AND pt.DtmFechaDeRegistro = (select MAX(pata.DtmFechaDeRegistro) from PagosTarjeta pata, LigasUrls ls where pata.IdReferencia = ls.IdReferencia and ls.UidLigaAsociado = lu.UidLigaAsociado) and us.UidUsuario = '" + UidUsuario + "'";
+            query.CommandText = "select lu.*, cl.VchNombreComercial, us.UidUsuario, us.VchNombre, us.VchApePaterno, us.VchApeMaterno, pt.VchEstatus, lu.DcmImporte as DcmImportePromocion, pr.VchDescripcion as VchPromocion, (select DcmImporte from LigasUrls where UidLigaAsociado = lu.UidLigaAsociado and UidPromocion IS NULL) as ImporteReal from LigasUrls lu left join PagosTarjeta pt  on pt.IdReferencia = lu.IdReferencia left join Usuarios us on us.UidUsuario = lu.UidUsuario left join ClientesUsuarios cu on cu.UidUsuario = us.UidUsuario left join Clientes cl on cl.UidCliente = cu.UidCliente left join Promociones pr on pr.UidPromocion = lu.UidPromocion left join AuxiliarPago ap on ap.IdReferencia = lu.IdReferencia left join UsuariosAlumnos ua on ua.UidUsuario = us.UidUsuario left join Alumnos al on al.UidAlumno = ua.UidAlumno left join ColegiaturasAlumnos ca on ca.UidAlumno = al.UidAlumno left join Colegiaturas co on co.UidColegiatura = ca.UidColegiatura left join FechasColegiaturas fc on fc.UidColegiatura = co.UidColegiatura where ap.IdReferencia IS NULL and lu.UidPropietario = cl.UidCliente and lu.UidLigaAsociado IS NULL AND pt.DtmFechaDeRegistro = (select MAX(DtmFechaDeRegistro) from PagosTarjeta where IdReferencia = lu.IdReferencia) and fc.UidFechaColegiatura = lu.UidFechaColegiatura and lu.UidFechaColegiatura IS NOT NULL and us.UidUsuario = '" + UidUsuario + "' UNION select lu.*, cl.VchNombreComercial, us.UidUsuario, us.VchNombre, us.VchApePaterno, us.VchApeMaterno, pt.VchEstatus, lu.DcmImporte as DcmImportePromocion, pr.VchDescripcion as VchPromocion, (select DcmImporte from LigasUrls where UidLigaAsociado = lu.UidLigaAsociado and UidPromocion IS NULL) as ImporteReal from LigasUrls lu left join PagosTarjeta pt  on pt.IdReferencia = lu.IdReferencia left join Usuarios us on us.UidUsuario = lu.UidUsuario left join ClientesUsuarios cu on cu.UidUsuario = us.UidUsuario left join Clientes cl on cl.UidCliente = cu.UidCliente left join Promociones pr on pr.UidPromocion = lu.UidPromocion left join UsuariosAlumnos ua on ua.UidUsuario = us.UidUsuario left join Alumnos al on al.UidAlumno = ua.UidAlumno left join ColegiaturasAlumnos ca on ca.UidAlumno = al.UidAlumno left join Colegiaturas co on co.UidColegiatura = ca.UidColegiatura left join FechasColegiaturas fc on fc.UidColegiatura = co.UidColegiatura where lu.UidPropietario = cl.UidCliente and lu.UidLigaAsociado IS NOT NULL AND pt.DtmFechaDeRegistro = (select MAX(pata.DtmFechaDeRegistro) from PagosTarjeta pata, LigasUrls ls where pata.IdReferencia = ls.IdReferencia and ls.UidLigaAsociado = lu.UidLigaAsociado) and fc.UidFechaColegiatura = lu.UidFechaColegiatura and lu.UidFechaColegiatura IS NOT NULL and us.UidUsuario = '" + UidUsuario + "'";
 
             DataTable dt = this.Busquedas(query);
 
@@ -963,7 +964,7 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
             // ==>MUESTRA LOS PENDIENTES<==  query.CommandText = "select lu.*, al.VchNombres as NombresAlumno, al.VchApePaterno as ApePaternoAlumno, al.VchApeMaterno as ApeMaternoAlumno, us.UidUsuario, us.VchNombre, us.VchApePaterno, us.VchApeMaterno, pt.VchEstatus, lu.DcmImporte as DcmImportePromocion, pr.VchDescripcion as VchPromocion, (select DcmImporte from LigasUrls where UidLigaAsociado = lu.UidLigaAsociado and UidPromocion IS NULL) as ImporteReal from LigasUrls lu left join PagosTarjeta pt  on pt.IdReferencia = lu.IdReferencia left join Usuarios us on us.UidUsuario = lu.UidUsuario left join ClientesUsuarios cu on cu.UidUsuario = us.UidUsuario left join Clientes cl on cl.UidCliente = cu.UidCliente left join Promociones pr on pr.UidPromocion = lu.UidPromocion left join AuxiliarPago ap on ap.IdReferencia = lu.IdReferencia left join UsuariosAlumnos ua on ua.UidUsuario = us.UidUsuario left join Alumnos al on al.UidAlumno = ua.UidAlumno where ap.IdReferencia IS NULL and pt.VchEstatus IS NULL and lu.UidPromocion IS NULL and lu.UidEvento IS NULL and lu.UidFechaColegiatura IS NOT NULL and lu.UidPropietario = cl.UidCliente and cl.UidCliente = '" + UidCliente + "' UNION select lu.*, al.VchNombres as NombresAlumno, al.VchApePaterno as ApePaternoAlumno, al.VchApeMaterno as ApeMaternoAlumno, us.UidUsuario, us.VchNombre, us.VchApePaterno, us.VchApeMaterno, pt.VchEstatus, lu.DcmImporte as DcmImportePromocion, pr.VchDescripcion as VchPromocion, (select DcmImporte from LigasUrls where UidLigaAsociado = lu.UidLigaAsociado and UidPromocion IS NULL) as ImporteReal from LigasUrls lu left join PagosTarjeta pt  on pt.IdReferencia = lu.IdReferencia left join Usuarios us on us.UidUsuario = lu.UidUsuario left join ClientesUsuarios cu on cu.UidUsuario = us.UidUsuario left join Clientes cl on cl.UidCliente = cu.UidCliente left join Promociones pr on pr.UidPromocion = lu.UidPromocion left join AuxiliarPago ap on ap.IdReferencia = lu.IdReferencia left join UsuariosAlumnos ua on ua.UidUsuario = us.UidUsuario left join Alumnos al on al.UidAlumno = ua.UidAlumno where ap.IdReferencia IS NULL and lu.UidPropietario = cl.UidCliente and lu.UidLigaAsociado IS NULL AND pt.DtmFechaDeRegistro = (select MAX(DtmFechaDeRegistro) from PagosTarjeta where IdReferencia = lu.IdReferencia) AND lu.UidFechaColegiatura IS NOT NULL and cl.UidCliente = '" + UidCliente + "' UNION select lu.*, al.VchNombres as NombresAlumno, al.VchApePaterno as ApePaternoAlumno, al.VchApeMaterno as ApeMaternoAlumno, us.UidUsuario, us.VchNombre, us.VchApePaterno, us.VchApeMaterno, pt.VchEstatus, lu.DcmImporte as DcmImportePromocion, pr.VchDescripcion as VchPromocion, (select DcmImporte from LigasUrls where UidLigaAsociado = lu.UidLigaAsociado and UidPromocion IS NULL) as ImporteReal from LigasUrls lu left join PagosTarjeta pt  on pt.IdReferencia = lu.IdReferencia left join Usuarios us on us.UidUsuario = lu.UidUsuario left join ClientesUsuarios cu on cu.UidUsuario = us.UidUsuario left join Clientes cl on cl.UidCliente = cu.UidCliente left join Promociones pr on pr.UidPromocion = lu.UidPromocion left join UsuariosAlumnos ua on ua.UidUsuario = us.UidUsuario left join Alumnos al on al.UidAlumno = ua.UidAlumno where lu.UidPropietario = cl.UidCliente and lu.UidLigaAsociado IS NOT NULL AND pt.DtmFechaDeRegistro = (select MAX(pata.DtmFechaDeRegistro) from PagosTarjeta pata, LigasUrls ls where pata.IdReferencia = ls.IdReferencia and ls.UidLigaAsociado = lu.UidLigaAsociado) and lu.UidFechaColegiatura IS NOT NULL and cl.UidCliente = '" + UidCliente + "'";
-            query.CommandText = "select lu.*, al.VchNombres as NombresAlumno, al.VchApePaterno as ApePaternoAlumno, al.VchApeMaterno as ApeMaternoAlumno, us.UidUsuario, us.VchNombre, us.VchApePaterno, us.VchApeMaterno, pt.VchEstatus, lu.DcmImporte as DcmImportePromocion, pr.VchDescripcion as VchPromocion, (select DcmImporte from LigasUrls where UidLigaAsociado = lu.UidLigaAsociado and UidPromocion IS NULL) as ImporteReal from LigasUrls lu left join PagosTarjeta pt  on pt.IdReferencia = lu.IdReferencia left join Usuarios us on us.UidUsuario = lu.UidUsuario left join ClientesUsuarios cu on cu.UidUsuario = us.UidUsuario left join Clientes cl on cl.UidCliente = cu.UidCliente left join Promociones pr on pr.UidPromocion = lu.UidPromocion left join AuxiliarPago ap on ap.IdReferencia = lu.IdReferencia left join UsuariosAlumnos ua on ua.UidUsuario = us.UidUsuario left join Alumnos al on al.UidAlumno = ua.UidAlumno where ap.IdReferencia IS NULL and lu.UidPropietario = cl.UidCliente and lu.UidLigaAsociado IS NULL AND pt.DtmFechaDeRegistro = (select MAX(DtmFechaDeRegistro) from PagosTarjeta where IdReferencia = lu.IdReferencia) AND lu.UidFechaColegiatura IS NOT NULL and cl.UidCliente = '" + UidCliente + "' UNION select lu.*, al.VchNombres as NombresAlumno, al.VchApePaterno as ApePaternoAlumno, al.VchApeMaterno as ApeMaternoAlumno, us.UidUsuario, us.VchNombre, us.VchApePaterno, us.VchApeMaterno, pt.VchEstatus, lu.DcmImporte as DcmImportePromocion, pr.VchDescripcion as VchPromocion, (select DcmImporte from LigasUrls where UidLigaAsociado = lu.UidLigaAsociado and UidPromocion IS NULL) as ImporteReal from LigasUrls lu left join PagosTarjeta pt  on pt.IdReferencia = lu.IdReferencia left join Usuarios us on us.UidUsuario = lu.UidUsuario left join ClientesUsuarios cu on cu.UidUsuario = us.UidUsuario left join Clientes cl on cl.UidCliente = cu.UidCliente left join Promociones pr on pr.UidPromocion = lu.UidPromocion left join UsuariosAlumnos ua on ua.UidUsuario = us.UidUsuario left join Alumnos al on al.UidAlumno = ua.UidAlumno where lu.UidPropietario = cl.UidCliente and lu.UidLigaAsociado IS NOT NULL AND pt.DtmFechaDeRegistro = (select MAX(pata.DtmFechaDeRegistro) from PagosTarjeta pata, LigasUrls ls where pata.IdReferencia = ls.IdReferencia and ls.UidLigaAsociado = lu.UidLigaAsociado) and lu.UidFechaColegiatura IS NOT NULL and cl.UidCliente = '" + UidCliente + "'";
+            query.CommandText = "select lu.*, al.VchNombres as NombresAlumno, al.VchApePaterno as ApePaternoAlumno, al.VchApeMaterno as ApeMaternoAlumno, us.UidUsuario, us.VchNombre, us.VchApePaterno, us.VchApeMaterno, pt.VchEstatus, lu.DcmImporte as DcmImportePromocion, pr.VchDescripcion as VchPromocion, (select DcmImporte from LigasUrls where UidLigaAsociado = lu.UidLigaAsociado and UidPromocion IS NULL) as ImporteReal from LigasUrls lu left join PagosTarjeta pt  on pt.IdReferencia = lu.IdReferencia left join Usuarios us on us.UidUsuario = lu.UidUsuario left join ClientesUsuarios cu on cu.UidUsuario = us.UidUsuario left join Clientes cl on cl.UidCliente = cu.UidCliente left join Promociones pr on pr.UidPromocion = lu.UidPromocion left join AuxiliarPago ap on ap.IdReferencia = lu.IdReferencia left join UsuariosAlumnos ua on ua.UidUsuario = us.UidUsuario left join Alumnos al on al.UidAlumno = ua.UidAlumno left join ColegiaturasAlumnos ca on ca.UidAlumno = al.UidAlumno left join Colegiaturas co on co.UidColegiatura = ca.UidColegiatura left join FechasColegiaturas fc on fc.UidColegiatura = co.UidColegiatura where ap.IdReferencia IS NULL and lu.UidPropietario = cl.UidCliente and lu.UidLigaAsociado IS NULL AND pt.DtmFechaDeRegistro = (select MAX(DtmFechaDeRegistro) from PagosTarjeta where IdReferencia = lu.IdReferencia) AND fc.UidFechaColegiatura = lu.UidFechaColegiatura and lu.UidFechaColegiatura IS NOT NULL and cl.UidCliente = '" + UidCliente + "' UNION select lu.*, al.VchNombres as NombresAlumno, al.VchApePaterno as ApePaternoAlumno, al.VchApeMaterno as ApeMaternoAlumno, us.UidUsuario, us.VchNombre, us.VchApePaterno, us.VchApeMaterno, pt.VchEstatus, lu.DcmImporte as DcmImportePromocion, pr.VchDescripcion as VchPromocion, (select DcmImporte from LigasUrls where UidLigaAsociado = lu.UidLigaAsociado and UidPromocion IS NULL) as ImporteReal from LigasUrls lu left join PagosTarjeta pt  on pt.IdReferencia = lu.IdReferencia left join Usuarios us on us.UidUsuario = lu.UidUsuario left join ClientesUsuarios cu on cu.UidUsuario = us.UidUsuario left join Clientes cl on cl.UidCliente = cu.UidCliente left join Promociones pr on pr.UidPromocion = lu.UidPromocion left join UsuariosAlumnos ua on ua.UidUsuario = us.UidUsuario left join Alumnos al on al.UidAlumno = ua.UidAlumno left join ColegiaturasAlumnos ca on ca.UidAlumno = al.UidAlumno left join Colegiaturas co on co.UidColegiatura = ca.UidColegiatura left join FechasColegiaturas fc on fc.UidColegiatura = co.UidColegiatura where lu.UidPropietario = cl.UidCliente and lu.UidLigaAsociado IS NOT NULL AND pt.DtmFechaDeRegistro = (select MAX(pata.DtmFechaDeRegistro) from PagosTarjeta pata, LigasUrls ls where pata.IdReferencia = ls.IdReferencia and ls.UidLigaAsociado = lu.UidLigaAsociado) and fc.UidFechaColegiatura = lu.UidFechaColegiatura and lu.UidFechaColegiatura IS NOT NULL and cl.UidCliente = '" + UidCliente + "'";
 
             DataTable dt = this.Busquedas(query);
 
@@ -1018,6 +1019,123 @@ namespace Franquicia.DataAccess.Repository
             }
 
             return lsLigasUrlsGridViewModel.OrderByDescending(x => x.DtRegistro).ToList();
+        }
+        public List<LigasUrlsGridViewModel> BuscarLigaEscuela(Guid UidCliente, string Identificador, string Nombre, string ApePaterno, string ApeMaterno, string Concepto, decimal ImporteMayor, decimal ImporteMenor, string RegistroDesde, string RegistroHasta)
+        {
+            List<LigasUrlsGridViewModel> lsLigasUrlsGridViewModel = new List<LigasUrlsGridViewModel>();
+
+            SqlCommand comando = new SqlCommand();
+            comando.CommandType = CommandType.StoredProcedure;
+            comando.CommandText = "sp_LigasEscuelaBuscar";
+            try
+            {
+                if (UidCliente != Guid.Empty)
+                {
+                    comando.Parameters.Add("@UidCliente", SqlDbType.UniqueIdentifier);
+                    comando.Parameters["@UidCliente"].Value = UidCliente;
+                }
+                if (Identificador != string.Empty)
+                {
+                    comando.Parameters.Add("@Identificador", SqlDbType.VarChar, 50);
+                    comando.Parameters["@Identificador"].Value = Identificador;
+                }
+                if (Nombre != string.Empty)
+                {
+                    comando.Parameters.Add("@Nombre", SqlDbType.VarChar, 50);
+                    comando.Parameters["@Nombre"].Value = Nombre;
+                }
+                if (ApePaterno != string.Empty)
+                {
+                    comando.Parameters.Add("@ApePaterno", SqlDbType.VarChar, 50);
+                    comando.Parameters["@ApePaterno"].Value = ApePaterno;
+                }
+                if (ApeMaterno != string.Empty)
+                {
+                    comando.Parameters.Add("@ApeMaterno", SqlDbType.VarChar, 50);
+                    comando.Parameters["@ApeMaterno"].Value = ApeMaterno;
+                }
+                if (Concepto != string.Empty)
+                {
+                    comando.Parameters.Add("@Concepto", SqlDbType.VarChar, 50);
+                    comando.Parameters["@Concepto"].Value = Concepto;
+                }
+                if (RegistroDesde != string.Empty)
+                {
+                    comando.Parameters.Add("@RegistroDesde", SqlDbType.DateTime);
+                    comando.Parameters["@RegistroDesde"].Value = RegistroDesde;
+                }
+                if (RegistroHasta != string.Empty)
+                {
+                    comando.Parameters.Add("@RegistroHasta", SqlDbType.Date);
+                    comando.Parameters["@RegistroHasta"].Value = RegistroHasta;
+                }
+                if (ImporteMayor != 0)
+                {
+                    comando.Parameters.Add("@ImporteMayor", SqlDbType.Decimal);
+                    comando.Parameters["@ImporteMayor"].Value = ImporteMayor;
+                }
+                if (ImporteMenor != 0)
+                {
+                    comando.Parameters.Add("@ImporteMenor", SqlDbType.Decimal);
+                    comando.Parameters["@ImporteMenor"].Value = ImporteMenor;
+                }
+                
+                foreach (DataRow item in this.Busquedas(comando).Rows)
+                {
+                    string VchColor = "#007bff";
+                    decimal ImporteReal = 0;
+
+                    if (!string.IsNullOrEmpty(item["VchEstatus"].ToString()))
+                    {
+                        switch (item["VchEstatus"].ToString())
+                        {
+                            case "approved":
+                                VchColor = "#4caf50 ";
+                                break;
+                            case "denied":
+                                VchColor = "#ff9800 ";
+                                break;
+                            case "error":
+                                VchColor = "#f55145 ";
+                                break;
+                        }
+                    }
+
+                    ImporteReal = decimal.Parse(item.IsNull("DcmImporte") ? "0.00" : item["DcmImporte"].ToString());
+
+                    ligasUrlsGridViewModel = new LigasUrlsGridViewModel()
+                    {
+                        IdReferencia = item["IdReferencia"].ToString(),
+                        VchUrl = item["VchUrl"].ToString(),
+                        VchIdentificador = item["VchIdentificador"].ToString(),
+                        VchConcepto = item["VchConcepto"].ToString(),
+                        DcmImporte = ImporteReal,
+                        DtVencimiento = DateTime.Parse(item.IsNull("DtVencimiento") ? "2020-02-18 16:57:39.113" : item["DtVencimiento"].ToString()),
+                        VchEstatus = item.IsNull("VchEstatus") ? "Pendiente" : item["VchEstatus"].ToString(),
+                        VchAsunto = item["VchAsunto"].ToString(),
+                        VchColor = VchColor,
+                        DtRegistro = DateTime.Parse(item["DtRegistro"].ToString()),
+                        DcmImportePromocion = decimal.Parse(item.IsNull("DcmImportePromocion") ? "0.00" : item["DcmImportePromocion"].ToString()),
+                        VchPromocion = item.IsNull("VchPromocion") ? "CONTADO" : item["VchPromocion"].ToString(),
+                        UidLigaAsociado = item.IsNull("UidLigaAsociado") ? Guid.Empty : Guid.Parse(item["UidLigaAsociado"].ToString()),
+                        VchNombre = item["VchNombre"].ToString(),
+                        VchApePaterno = item["VchApePaterno"].ToString(),
+                        VchApeMaterno = item["VchApeMaterno"].ToString(),
+
+                        VchNombreAlumno = item["NombresAlumno"].ToString(),
+                        VchApePaternoAlumno = item["ApePaternoAlumno"].ToString(),
+                        VchApeMaternoAlumno = item["ApeMaternoAlumno"].ToString()
+                    };
+
+                    lsLigasUrlsGridViewModel.Add(ligasUrlsGridViewModel);
+                }
+
+                return lsLigasUrlsGridViewModel.OrderByDescending(x => x.DtRegistro).ToList();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
         #endregion  
 

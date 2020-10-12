@@ -75,6 +75,13 @@
                                         <asp:Label ID="lblUrl" Visible="false" Text='<%# Eval("VchUrl") %>' runat="server" />
                                     </ItemTemplate>
                                 </asp:DataList>
+                                <li class="nav-item d-block d-sm-block d-md-block d-lg-none" runat="server">
+                                    <asp:LinkButton CssClass="nav-link" OnClick="btnSalir_Click" runat="server">
+                                        <i class="material-icons">login</i>
+                                        <p>Salir</p>
+                                    </asp:LinkButton>
+                                </li>
+
                                 <li class="nav-item active-pro ">
                                     <a class="nav" style="cursor: text;">
                                         <asp:Label CssClass="navbar-text pull-right" ID="lblFecha" Style="color: black;" runat="server" />
@@ -192,8 +199,8 @@
                                                 </p>
                                             </a>
                                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownProfile">
-                                                <a class="dropdown-item" href="#">Profile</a>
-                                                <a class="dropdown-item" href="#">Settings</a>
+                                                <asp:LinkButton ID="btnMiPerfil" Text="Mi perfil" OnClick="btnMiPerfil_Click" CssClass="dropdown-item" runat="server" />
+                                                <%--<a class="dropdown-item" href="#">Settings</a>--%>
                                                 <div class="dropdown-divider"></div>
                                                 <asp:LinkButton ID="btnComprar" Visible="false" CssClass="dropdown-item" OnClick="btnComprar_Click" Text="Comprar Whats/Sms" runat="server" />
                                                 <asp:LinkButton ID="btnSalir" CssClass="dropdown-item" OnClick="btnSalir_Click" Text="Salir" runat="server" />
@@ -413,6 +420,160 @@
                 </div>
             </div>
         </div>
+
+        <%--ModalPopupExtender--%>
+        <asp:ModalPopupExtender ID="mpeActivarUsuario" TargetControlID="btnMpeActivarUsuario" BackgroundCssClass="ModalPopupBG" PopupControlID="pnlContenidoActivarUsuario" runat="server" />
+        <asp:Button ID="btnMpeActivarUsuario" runat="server" />
+
+        <asp:Panel ID="pnlContenidoActivarUsuario" Style="width: 80%; height: auto;" runat="server">
+            <div style="max-height: 700px; overflow: auto;">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-body pt-0" style="padding-bottom: 0px;">
+                            <div class="tab-content" style="padding-top: 10px;">
+                                <asp:UpdatePanel runat="server">
+                                    <ContentTemplate>
+                                        <asp:Panel ID="pnlEnProceso" runat="server">
+                                            <div class="alert alert-info" role="alert">
+                                                <h4 class="alert-heading">Bienvenido!</h4>
+                                                <p>Hemos detectado que su cuenta es nueva, por favor actualice su contraseña y confirme sus datos.</p>
+                                                <hr>
+                                                <p class="mb-0"><%--Ya que haya revisado su información bastará con hacer clic en el boton aceptar para finalizar el proceso de activación.--%></p>
+                                                <p class="mb-0"><%--=> Si la información esta mal, puede corregir sus datos.--%></p>
+                                            </div>
+
+                                            <asp:Label CssClass="text-danger" runat="server" ID="lblValidar" />
+
+                                            <div class="card" style="padding-bottom: 10px;">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label for="txtPassword" style="color: black;">Nueva Contraseña</label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text" style="padding-left: 0px;">
+                                                                    <i class="material-icons">lock</i>
+                                                                </span>
+                                                            </div>
+                                                            <asp:TextBox ID="txtPassword" TextMode="Password" Placeholder="Ingrese su contraseña" CssClass="form-control" runat="server" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="txtRepetir" style="color: black;">Repetir Contraseña</label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text" style="padding-left: 0px;">
+                                                                    <i class="material-icons">lock</i>
+                                                                </span>
+                                                            </div>
+                                                            <asp:TextBox ID="txtRepetir" TextMode="Password" Placeholder="Repita su contraseña" CssClass="form-control" runat="server" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="card">
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <label for="txtNombres" style="color: black;">Nombre(s)</label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text" style="padding-left: 0px;">
+                                                                    <i class="material-icons">face</i>
+                                                                </span>
+                                                            </div>
+                                                            <asp:TextBox ID="txtNombres" CssClass="form-control" runat="server" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="txtApePaterno" style="color: black;">Ape Paterno</label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text" style="padding-left: 0px;">
+                                                                    <i class="material-icons">accessibility</i>
+                                                                </span>
+                                                            </div>
+                                                            <asp:TextBox ID="txtApePaterno" CssClass="form-control" runat="server" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="txtApeMaterno" style="color: black;">Ape Materno</label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text" style="padding-left: 0px;">
+                                                                    <i class="material-icons">accessibility</i>
+                                                                </span>
+                                                            </div>
+                                                            <asp:TextBox ID="txtApeMaterno" CssClass="form-control" runat="server" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="ddlPrefijo" style="color: black;">Código pais *</label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text" style="padding-left: 0px;">
+                                                                    <i class="material-icons">format_list_numbered</i>
+                                                                </span>
+                                                            </div>
+                                                            <asp:DropDownList ID="ddlPrefijo" CssClass="form-control" runat="server">
+                                                        </asp:DropDownList>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="txtTelefono" style="color: black;">Celular</label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text" style="padding-left: 0px;">
+                                                                    <i class="material-icons">call</i>
+                                                                </span>
+                                                            </div>
+                                                            <asp:TextBox ID="txtTelefono" MaxLength="10" CssClass="form-control" runat="server" />
+                                                            <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtTelefono" runat="server" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                            <asp:UpdatePanel runat="server">
+                                                <ContentTemplate>
+                                                    <div class="modal-footer justify-content-center">
+                                                        <asp:LinkButton ID="btnActivarCuenta" OnClick="btnActivarCuenta_Click" CssClass="btn btn-success btn-round" runat="server">
+                                                    <i class="material-icons">check</i> Aceptar
+                                                        </asp:LinkButton>
+                                                        <asp:LinkButton ID="btnCerrarSesion" OnClick="btnCerrarSesion_Click" CssClass="btn btn-danger btn-round" runat="server">
+                                                    <i class="material-icons">close</i> Cerrar sesión
+                                                        </asp:LinkButton>
+                                                    </div>
+                                                </ContentTemplate>
+                                            </asp:UpdatePanel>
+                                        </asp:Panel>
+
+                                        <asp:Panel ID="pnlActivado" Visible="false" runat="server">
+                                            <div class="alert alert-success" role="alert">
+                                                <h4 class="alert-heading">Felicidades!</h4>
+                                                <p>Su cuenta se ha activado exitosamente.</p>
+                                                <hr>
+                                            </div>
+                                            <asp:UpdatePanel runat="server">
+                                                <ContentTemplate>
+                                                    <div class="modal-footer justify-content-center">
+                                                        <asp:LinkButton ID="btnAceptarActivacion" OnClick="btnAceptarActivacion_Click" CssClass="btn btn-success btn-round" runat="server">
+                                                <i class="material-icons">check</i> Aceptar
+                                                        </asp:LinkButton>
+                                                    </div>
+                                                </ContentTemplate>
+                                            </asp:UpdatePanel>
+                                        </asp:Panel>
+                                    </ContentTemplate>
+                                </asp:UpdatePanel>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </asp:Panel>
+        <%--End ModalPopupExtender--%>
+    </form>
     </form>
 
 

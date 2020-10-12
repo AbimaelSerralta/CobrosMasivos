@@ -30,7 +30,7 @@
                                                 <asp:LinkButton ID="btnFiltros" OnClick="btnFiltros_Click" ToolTip="Filtros de busqueda." BackColor="#4db6ac" class="btn btn-lg btn-fab btn-fab-mini btn-round" runat="server">
                                                         <i class="material-icons">search</i>
                                                 </asp:LinkButton>
-                                                <asp:Label Text="Listado de ligas" runat="server" />
+                                                <asp:Label Text="Listado de pagos" runat="server" />
 
                                                 <asp:LinkButton ID="btnActualizarLista" OnClick="btnActualizarLista_Click" ToolTip="Actualizar tabla." class="btn btn-lg btn-success btn-fab btn-fab-mini btn-round pull-right" runat="server">
                                                         <i class="material-icons">sync</i>
@@ -47,7 +47,7 @@
                                         <div class="table-responsive">
                                             <asp:GridView ID="gvLigasGeneradas" OnSorting="gvLigasGeneradas_Sorting" OnRowCommand="gvLigasGeneradas_RowCommand" OnRowDataBound="gvLigasGeneradas_RowDataBound" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidLigaUrl" GridLines="None" border="0" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvLigasGeneradas_PageIndexChanging" runat="server">
                                                 <EmptyDataTemplate>
-                                                    <div class="alert alert-info">No hay ligas registradas</div>
+                                                    <div class="alert alert-info">No hay pagos registrados</div>
                                                 </EmptyDataTemplate>
                                                 <Columns>
                                                     <asp:BoundField SortExpression="VchNombreComercial" DataField="VchNombreComercial" HeaderStyle-CssClass="text-center" HeaderText="ESCUELA" />

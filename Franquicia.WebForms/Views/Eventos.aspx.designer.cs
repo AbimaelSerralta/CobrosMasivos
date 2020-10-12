@@ -96,6 +96,15 @@ namespace Franquicia.WebForms.Views
         protected global::System.Web.UI.WebControls.TextBox txtNombreComercial;
 
         /// <summary>
+        /// Control pnlDatosBeneficiario.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlDatosBeneficiario;
+
+        /// <summary>
         /// Control txtComeCelular.
         /// </summary>
         /// <remarks>

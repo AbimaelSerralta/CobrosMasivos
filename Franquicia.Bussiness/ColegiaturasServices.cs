@@ -22,6 +22,8 @@ namespace Franquicia.Bussiness
 
         public List<PagosColegiaturasViewModel> lsPagosColegiaturasViewModel = new List<PagosColegiaturasViewModel>();
 
+        public List<DesglosePagosGridViewModel> lsDesglosePagosGridViewModel = new List<DesglosePagosGridViewModel>();
+
         #region Metodos Cliente
         public List<ColegiaturasGridViewModel> CargarColegiaturas(Guid UidCliente)
         {
@@ -38,7 +40,7 @@ namespace Franquicia.Bussiness
         //    eventosRepository.eventosGridViewModel = new EventosGridViewModel();
         //    eventosRepository.eventosGridViewModel = lsEventosGridViewModel.Find(x => x.UidEvento == UidEvento);
         //}
-        public bool RegistrarColegiatura(Guid UidColegiatura, string VchIdentificador, decimal DcmImporte, int IntCantPagos, Guid UidPeriodicidad, DateTime DtFHInicio, bool BitFHLimite, DateTime DtFHLimite, bool BitFHVencimiento, DateTime DtFHVencimiento, bool BitRecargo, string VchTipoRecargo, decimal DcmRecargo, Guid UidCliente)
+        public bool RegistrarColegiatura(Guid UidColegiatura, string VchIdentificador, decimal DcmImporte, int IntCantPagos, Guid UidPeriodicidad, DateTime DtFHInicio, bool BitFHLimite, DateTime DtFHLimite, bool BitFHVencimiento, DateTime DtFHVencimiento, bool BitRecargo, string VchTipoRecargo, decimal DcmRecargo, bool BitRecargoPeriodo, string VchTipoRecargoPeriodo, decimal DcmRecargoPeriodo, Guid UidCliente)
         {
             bool result = false;
             if (colegiaturasRepository.RegistrarColegiatura(new ColegiaturasGridViewModel
@@ -56,6 +58,9 @@ namespace Franquicia.Bussiness
                 BitRecargo = BitRecargo,
                 VchTipoRecargo = VchTipoRecargo,
                 DcmRecargo = DcmRecargo,
+                BitRecargoPeriodo = BitRecargoPeriodo,
+                VchTipoRecargoPeriodo = VchTipoRecargoPeriodo,
+                DcmRecargoPeriodo = DcmRecargoPeriodo,
                 UidCliente = UidCliente
             }))
             {
@@ -63,7 +68,7 @@ namespace Franquicia.Bussiness
             }
             return result;
         }
-        public bool ActualizarColegiatura(Guid UidColegiatura, string VchIdentificador, decimal DcmImporte, int IntCantPagos, Guid UidPeriodicidad, DateTime DtFHInicio, bool BitFHLimite, DateTime DtFHLimite, bool BitFHVencimiento, DateTime DtFHVencimiento, bool BitRecargo, string VchTipoRecargo, decimal DcmRecargo)
+        public bool ActualizarColegiatura(Guid UidColegiatura, string VchIdentificador, decimal DcmImporte, int IntCantPagos, Guid UidPeriodicidad, DateTime DtFHInicio, bool BitFHLimite, DateTime DtFHLimite, bool BitFHVencimiento, DateTime DtFHVencimiento, bool BitRecargo, string VchTipoRecargo, decimal DcmRecargo, bool BitRecargoPeriodo, string VchTipoRecargoPeriodo, decimal DcmRecargoPeriodo)
         {
             bool result = false;
             if (colegiaturasRepository.ActualizarColegiatura(new ColegiaturasGridViewModel
@@ -80,19 +85,30 @@ namespace Franquicia.Bussiness
                 DtFHVencimiento = DtFHVencimiento,
                 BitRecargo = BitRecargo,
                 VchTipoRecargo = VchTipoRecargo,
-                DcmRecargo = DcmRecargo
+                DcmRecargo = DcmRecargo,
+                BitRecargoPeriodo = BitRecargoPeriodo,
+                VchTipoRecargoPeriodo = VchTipoRecargoPeriodo,
+                DcmRecargoPeriodo = DcmRecargoPeriodo
             }))
             {
                 result = true;
             }
             return result;
         }
+        public bool ActualizarEstatusColegiatura(Guid UidColegiatura, Guid UidEstatus)
+        {
+            return colegiaturasRepository.ActualizarEstatusColegiatura(UidColegiatura, UidEstatus);
+        }
+        public void BuscarColegiatura(string Identificador, decimal ImporteMayor, decimal ImporteMenor, string CantPagos, Guid UidPeriodicidad, string FHInicioDesde, string FHInicioHasta, string FechaLimite, string FechaVencimineto, string RecargoLimite, string RecargoPeriodo, Guid UidEstatus, Guid UidCliente)
+        {
+            lsColegiaturasGridViewModel = colegiaturasRepository.BuscarColegiatura(Identificador, ImporteMayor, ImporteMenor, CantPagos, UidPeriodicidad, FHInicioDesde, FHInicioHasta, FechaLimite, FechaVencimineto, RecargoLimite, RecargoPeriodo, UidEstatus, UidCliente);
+        }
 
-        public bool RegistrarColegiaturaFechas(Guid UidColegiatura, int IntNumero, DateTime DtFHInicio, DateTime DtFHLimite, DateTime DtFHVencimiento)
+        public bool RegistrarColegiaturaFechas(Guid UidColegiatura, int IntNumero, DateTime DtFHInicio, DateTime DtFHLimite, DateTime DtFHVencimiento, DateTime DtFHFinPeriodo)
         {
             bool result = false;
 
-            if (colegiaturasRepository.RegistrarColegiaturaFechas(UidColegiatura, IntNumero, DtFHInicio, DtFHLimite, DtFHVencimiento))
+            if (colegiaturasRepository.RegistrarColegiaturaFechas(UidColegiatura, IntNumero, DtFHInicio, DtFHLimite, DtFHVencimiento, DtFHFinPeriodo))
             {
                 result = true;
             }
@@ -194,7 +210,15 @@ namespace Franquicia.Bussiness
             lsPagosColegiaturasViewModel = new List<PagosColegiaturasViewModel>();
             return lsPagosColegiaturasViewModel = colegiaturasRepository.CargarPagosColegiaturas(UidCliente, UidUsuario, FechaInicio);
         }
-
+        public void ObtenerPagosColegiaturas(Guid UidCliente, Guid UidUsuario, Guid UidFechaColegiatura, string VchMatricula)
+        {
+            colegiaturasRepository.ObtenerPagoColegiatura(UidCliente, UidUsuario, UidFechaColegiatura, VchMatricula);
+        }
+        //public void ObtenerPagosColegiaturas(Guid UidFechaColegiatura)
+        //{
+        //    colegiaturasRepository.pagosColegiaturasViewModel = new PagosColegiaturasViewModel();
+        //    colegiaturasRepository.pagosColegiaturasViewModel = lsPagosColegiaturasViewModel.Find(x => x.UidFechaColegiatura == UidFechaColegiatura);
+        //}
         public bool EliminarLigaColegiatura(string IdReferencia)
         {
             bool result = false;
@@ -203,6 +227,19 @@ namespace Franquicia.Bussiness
                 result = true;
             }
             return result;
+        }
+
+        public List<DesglosePagosGridViewModel> FormarDesgloseCole(int IntNum, string VchConcepto, decimal DcmImporte, string VchCoResta = "")
+        {
+            lsDesglosePagosGridViewModel.Add(new DesglosePagosGridViewModel
+            {
+                IntNum = IntNum,
+                VchConcepto = VchConcepto,
+                DcmImporte = DcmImporte,
+                VchCoResta = VchCoResta
+            });
+
+            return lsDesglosePagosGridViewModel;
         }
         #endregion
 

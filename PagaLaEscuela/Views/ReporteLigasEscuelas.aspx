@@ -22,14 +22,14 @@
                     <div class="row">
                         <div class="col-lg-12 col-md-12">
                             <div class="card">
-                                <div class="card-header card-header-tabs card-header-primary" style="background:#326497;padding-top: 0px; padding-bottom: 0px;">
+                                <div class="card-header card-header-tabs card-header-primary" style="background: #326497; padding-top: 0px; padding-bottom: 0px;">
                                     <div class="nav-tabs-navigation">
                                         <div class="nav-tabs-wrapper">
                                             <div class="form-group" style="margin-top: 0px; padding-bottom: 0px;">
                                                 <asp:LinkButton ID="btnFiltros" OnClick="btnFiltros_Click" ToolTip="Filtros de busqueda." BackColor="#4db6ac" class="btn btn-lg btn-fab btn-fab-mini btn-round" runat="server">
                                                         <i class="material-icons">search</i>
                                                 </asp:LinkButton>
-                                                <asp:Label Text="Listado de ligas" runat="server" />
+                                                <asp:Label Text="Listado de pagos" runat="server" />
 
                                                 <asp:LinkButton ID="btnActualizarLista" OnClick="btnActualizarLista_Click" ToolTip="Actualizar tabla." class="btn btn-lg btn-success btn-fab btn-fab-mini btn-round pull-right" runat="server">
                                                         <i class="material-icons">sync</i>
@@ -44,9 +44,9 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="table-responsive">
-                                            <asp:GridView ID="gvLigasGeneradas" OnSorting="gvLigasGeneradas_Sorting" OnRowCommand="gvLigasGeneradas_RowCommand" OnRowDataBound="gvLigasGeneradas_RowDataBound" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="IdReferencia" GridLines="None" border="0" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvLigasGeneradas_PageIndexChanging" runat="server">
+                                            <asp:GridView ID="gvLigasGeneradas" OnSorting="gvLigasGeneradas_Sorting" OnRowCommand="gvLigasGeneradas_RowCommand" OnRowDataBound="gvLigasGeneradas_RowDataBound" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="IdReferencia" GridLines="None" border="0" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvLigasGeneradas_PageIndexChanging" ShowFooter="true" runat="server">
                                                 <EmptyDataTemplate>
-                                                    <div class="alert alert-info">No hay ligas registradas</div>
+                                                    <div class="alert alert-info">No hay pagos registrados</div>
                                                 </EmptyDataTemplate>
                                                 <Columns>
                                                     <asp:BoundField SortExpression="VchIdentificador" DataField="VchIdentificador" HeaderText="IDENTIFICADOR" />
@@ -63,7 +63,7 @@
                                                             <asp:Label Text='<%#Eval("VchEstatus")%>' ForeColor='<%# System.Drawing.ColorTranslator.FromHtml(Eval("VchColor").ToString()) %>' Font-Size="Larger" Font-Names="Comic Sans MS" Font-Bold="true" runat="server"></asp:Label>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
-                                                    <asp:TemplateField>
+                                                    <asp:TemplateField ItemStyle-Width="160">
                                                         <ItemTemplate>
                                                             <table>
                                                                 <tbody>
@@ -79,6 +79,9 @@
                                                                 </tbody>
                                                             </table>
                                                         </ItemTemplate>
+                                                        <FooterTemplate>
+                                                            <asp:Label ID="lblPaginado" Font-Bold="true" runat="server" />
+                                                        </FooterTemplate>
                                                     </asp:TemplateField>
                                                 </Columns>
                                                 <PagerStyle HorizontalAlign="Center" CssClass="pagination-ys" />
@@ -182,28 +185,19 @@
                         <div class="modal-header">
                             <h5 class="modal-title" runat="server">
                                 <asp:Label ID="lblTittleLigas" Text="Filtro de busqueda" runat="server" /></h5>
-                            <%--<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
-                            </button>--%>
+                            </button>
                         </div>
                     </ContentTemplate>
                 </asp:UpdatePanel>
-                <div class="col-12 pt-3">
-                    <asp:UpdateProgress runat="server" AssociatedUpdatePanelID="upBusqueda">
-                        <ProgressTemplate>
-                            <div class="progress">
-                                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
-                            </div>
-                        </ProgressTemplate>
-                    </asp:UpdateProgress>
-                </div>
                 <div class="modal-body pt-0" style="padding-bottom: 0px;">
                     <div class="tab-content">
                         <asp:UpdatePanel runat="server">
                             <ContentTemplate>
                                 <asp:Panel ID="pnlFiltrosBusqueda" runat="server">
                                     <div class="card" style="margin-top: 0px;">
-                                        <div class="card-header card-header-tabs card-header" style="padding-top: 0px; padding-bottom: 0px;">
+                                        <div class="card-header card-header-tabs card-header" style="padding-top: 0px; padding-bottom: 0px; margin-top: 0px;">
                                             <div class="nav-tabs-navigation">
                                                 <div class="nav-tabs-wrapper">
                                                     <div class="form-group">
@@ -225,13 +219,21 @@
                                                                 <label for="txtApeMaterno" style="color: black;">Ape Materno</label>
                                                                 <asp:TextBox ID="txtApeMaterno" CssClass="form-control" aria-label="Search" runat="server" />
                                                             </div>
-                                                            <div class="form-group col-md-4">
+                                                            <%--<div class="form-group col-md-4">
                                                                 <label for="txtAsunto" style="color: black;">Asunto</label>
                                                                 <asp:TextBox ID="txtAsunto" CssClass="form-control" aria-label="Search" runat="server" />
-                                                            </div>
+                                                            </div>--%>
                                                             <div class="form-group col-md-4">
                                                                 <label for="txtConcepto" style="color: black;">Concepto</label>
                                                                 <asp:TextBox ID="txtConcepto" CssClass="form-control" aria-label="Search" runat="server" />
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label for="txtRegistroDesde" style="color: black;">Fecha Pago</label>
+                                                                <asp:TextBox ID="txtRegistroDesde" CssClass="form-control" TextMode="Date" aria-label="Search" runat="server" />
+                                                            </div>
+                                                            <div class="form-group col-md-6">
+                                                                <label for="txtRegistroHasta" style="color: black;"></label>
+                                                                <asp:TextBox ID="txtRegistroHasta" CssClass="form-control" TextMode="Date" aria-label="Search" runat="server" />
                                                             </div>
                                                             <div class="form-group col-md-3">
                                                                 <label for="ddlImporteMayor" style="color: black;">Importe</label>
@@ -257,23 +259,15 @@
                                                                 <asp:TextBox ID="txtImporteMenor" CssClass="form-control" placeholder="Menor" aria-label="Search" Style="margin-top: 12px;" runat="server" />
                                                                 <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtImporteMenor" runat="server" />
                                                             </div>
-                                                            <div class="form-group col-md-6">
-                                                                <label for="txtRegistroDesde" style="color: black;">Fecha Registro</label>
-                                                                <asp:TextBox ID="txtRegistroDesde" CssClass="form-control" TextMode="Date" aria-label="Search" runat="server" />
-                                                            </div>
-                                                            <div class="form-group col-md-6">
-                                                                <label for="txtRegistroHasta" style="color: black;"></label>
-                                                                <asp:TextBox ID="txtRegistroHasta" CssClass="form-control" TextMode="Date" aria-label="Search" runat="server" />
-                                                            </div>
-                                                            <div class="form-group col-md-6">
+                                                            <%--<div class="form-group col-md-6">
                                                                 <label for="txtVencimientoDesde" style="color: black;">Fecha Vencimiento</label>
                                                                 <asp:TextBox ID="txtVencimientoDesde" CssClass="form-control" TextMode="Date" aria-label="Search" runat="server" />
                                                             </div>
                                                             <div class="form-group col-md-6">
                                                                 <label for="txtVencimientoHasta" style="color: black;"></label>
                                                                 <asp:TextBox ID="txtVencimientoHasta" CssClass="form-control" TextMode="Date" aria-label="Search" runat="server" />
-                                                            </div>
-                                                            <div class="form-group col-md-3">
+                                                            </div>--%>
+                                                            <%--<div class="form-group col-md-3">
                                                                 <label for="ddlEstatus" style="color: black;">Estatus</label>
                                                                 <asp:DropDownList ID="ddlEstatus" CssClass="form-control" Style="margin-top: 6px;" runat="server">
                                                                     <asp:ListItem Text="Todos" Value="" />
@@ -282,7 +276,7 @@
                                                                     <asp:ListItem Text="error" Value="error" />
                                                                     <asp:ListItem Text="Pendiente" Value="Pendiente" />
                                                                 </asp:DropDownList>
-                                                            </div>
+                                                            </div>--%>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -294,7 +288,7 @@
                         </asp:UpdatePanel>
                     </div>
                 </div>
-                <asp:UpdatePanel runat="server" ID="upBusqueda">
+                <asp:UpdatePanel runat="server">
                     <ContentTemplate>
                         <div class="modal-footer justify-content-center">
                             <asp:LinkButton ID="btnBuscar" OnClick="btnBuscar_Click" CssClass="btn btn-primary btn-round" runat="server">

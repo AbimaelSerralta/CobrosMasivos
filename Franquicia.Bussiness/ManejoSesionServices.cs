@@ -65,6 +65,8 @@ namespace Franquicia.Bussiness
         public List<PermisosMenuModel> lsmodulos = new List<PermisosMenuModel>();
         public List<PermisosMenuModel> lsAccesosPermitidos = new List<PermisosMenuModel>();
 
+        public List<UsuariosCompletos> lsRecoveryPassword = new List<UsuariosCompletos>();
+
         #region Metodos
         public void IniciarSesion(string Usuario, string Password)
         {
@@ -243,6 +245,11 @@ namespace Franquicia.Bussiness
         {
             clienteCuentaRepository.ObtenerDineroCuentaCliente(UidCliente);
         }
+
+        public List<UsuariosCompletos> RecoveryPassword(string Parametro, string Dato)
+        {
+            return lsRecoveryPassword = usuarioCompletoRepository.RecoveryPassword(Parametro, Dato);
+        }
         #endregion
 
         #region MetodosEscuela
@@ -297,7 +304,11 @@ namespace Franquicia.Bussiness
                 }
             }
         }
-        #endregion
+
+        public List<UsuariosCompletos> RecoveryPasswordEscuela(string Parametro, string Dato)
+        {            
+            return lsRecoveryPassword = usuarioCompletoRepository.RecoveryPasswordEscuela(Parametro, Dato);
+        }
 
         #region Metodos Cliente
         public bool RegistrarLogo(Guid UidCliente, byte[] Imagen)
@@ -308,6 +319,7 @@ namespace Franquicia.Bussiness
         {
             return clientesRepository.ActualizarLogo(UidCliente, Imagen);
         }
+        #endregion
         #endregion
     }
 }

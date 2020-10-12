@@ -81,7 +81,6 @@ namespace Franquicia.Bussiness
             }
             return result;
         }
-
         public bool ActualizarAlumno(Guid UidAlumno, string Identificador, string Nombre, string ApePaterno, string ApeMaterno, string Matricula, string Correo, bool BitBeca, string TipoBeca, decimal Beca, Guid UidEstatus, string Telefono, Guid UidPrefijo)
         {
             bool result = false;
@@ -111,10 +110,20 @@ namespace Franquicia.Bussiness
             }
             return result;
         }
-        //public void BuscarUsuariosFinales(Guid UidCliente, Guid UidTipoPerfil, string Nombre, string ApePaterno, string ApeMaterno, string Correo, Guid UidEstatus)
-        //{
-        //    lsUsuariosCompletos = usuariosCompletosRepository.BuscarUsuariosFinales(UidCliente, UidTipoPerfil, Nombre, ApePaterno, ApeMaterno, Correo, UidEstatus);
-        //}
+        public void BuscarAlumnos(string Identificador, string Matricula, string Correo, string Nombre, string ApePaterno, string ApeMaterno, string Celular, string Asociado, string Beca, Guid UidEstatus, string Colegiatura, Guid UidCliente)
+        {
+            lsAlumnosGridViewModel = alumnosRepository.BuscarAlumnos(Identificador, Matricula, Correo, Nombre, ApePaterno, ApeMaterno, Celular, Asociado, Beca, UidEstatus, Colegiatura, UidCliente);
+        }
+
+        public bool DesasociarPadreAlumno(Guid UidUsuario, Guid UidAlumno)
+        {
+            bool result = false;
+            if (alumnosRepository.DesasociarPadreAlumno(UidUsuario, UidAlumno))
+            {
+                result = true;
+            }
+            return result;
+        }
         #endregion
 
         #region Metodos Clientes
@@ -127,24 +136,24 @@ namespace Franquicia.Bussiness
             }
             return result;
         }
-        public bool EliminarClienteAlumnos(Guid UidUsuario)
+        public bool EliminarClienteAlumnos(Guid UidCliente, Guid UidUsuario)
         {
             bool result = false;
-            if (alumnosRepository.EliminarClienteAlumnos(UidUsuario))
+            if (alumnosRepository.EliminarClienteAlumnos(UidCliente, UidUsuario))
             {
                 result = true;
             }
             return result;
         }
-        public void ObtenerClienteAlumnos(Guid UidUsuario)
+        public void ObtenerClienteAlumnos(Guid UidUidCliente, Guid UidUsuario)
         {
-            lsAlumnosGridViewModel = alumnosRepository.ObtenerClienteAlumnos(UidUsuario);
-            lsSelectAlumnosGridViewModel = alumnosRepository.ObtenerClienteAlumnos(UidUsuario);
+            lsAlumnosGridViewModel = alumnosRepository.ObtenerClienteAlumnos(UidUidCliente, UidUsuario);
+            lsSelectAlumnosGridViewModel = alumnosRepository.ObtenerClienteAlumnos(UidUidCliente, UidUsuario);
         }
 
-        public void AsignarAlumnos(List<AlumnosGridViewModel> lsSelectAlumnosGridViewModel, Guid UidCliente, Guid UidUsuario, string Nombre, string ApePaterno, string ApeMaterno, string Matricula)
+        public void AsignarAlumnos(List<AlumnosGridViewModel> lsSelectAlumnosGridViewModel, Guid UidCliente, Guid UidUsuario, string Identificador, string Nombre, string ApePaterno, string ApeMaterno, string Matricula)
         {
-            lsAlumnosGridViewModel = alumnosRepository.AsignarAlumnos(lsSelectAlumnosGridViewModel, UidCliente, UidUsuario, Nombre, ApePaterno, ApeMaterno, Matricula);
+            lsAlumnosGridViewModel = alumnosRepository.AsignarAlumnos(lsSelectAlumnosGridViewModel, UidCliente, UidUsuario, Identificador, Nombre, ApePaterno, ApeMaterno, Matricula);
         }
         public List<AlumnosGridViewModel> ActualizarLsAsignarAlumnos(List<AlumnosGridViewModel> lsAlumnos, Guid UidAlumno, bool accion)
         {
@@ -203,6 +212,54 @@ namespace Franquicia.Bussiness
 
             return lsAlumnosGridViewModel = lsNuevoAlumnosGridViewModel;
         }
+        public List<AlumnosGridViewModel> ActualizarLsAsignarAlumnosTodo(List<AlumnosGridViewModel> lsAlumnos, bool accion)
+        {
+            List<AlumnosGridViewModel> lsNuevoAlumnosGridViewModel = new List<AlumnosGridViewModel>();
+
+            foreach (var item in lsAlumnos)
+            {
+                lsNuevoAlumnosGridViewModel.Add(new AlumnosGridViewModel()
+                {
+                    UidAlumno = item.UidAlumno,
+                    VchNombres = item.VchNombres,
+                    VchApePaterno = item.VchApePaterno,
+                    VchApeMaterno = item.VchApeMaterno,
+                    VchIdentificador = item.VchIdentificador,
+                    VchMatricula = item.VchMatricula,
+                    UidEstatus = item.UidEstatus,
+                    blSeleccionado = accion
+                });
+
+                if (accion)
+                {
+                    if (!item.blSeleccionado)
+                    {
+                        lsSelectAlumnosGridViewModel.Add(new AlumnosGridViewModel()
+                        {
+                            UidAlumno = item.UidAlumno,
+                            VchNombres = item.VchNombres,
+                            VchApePaterno = item.VchApePaterno,
+                            VchApeMaterno = item.VchApeMaterno,
+                            VchIdentificador = item.VchIdentificador,
+                            VchMatricula = item.VchMatricula,
+                            UidEstatus = item.UidEstatus,
+                            blSeleccionado = accion
+                        });
+                    }
+                }
+                else
+                {
+                    List<AlumnosGridViewModel> predicate = lsSelectAlumnosGridViewModel.FindAll(x => x.UidAlumno == item.UidAlumno);
+
+                    for (int i = 0; i < predicate.Count; i++)
+                    {
+                        lsSelectAlumnosGridViewModel.Remove(predicate[i]);
+                    }
+                }
+            }
+
+            return lsAlumnosGridViewModel = lsNuevoAlumnosGridViewModel;
+        }
         #endregion
 
         #region Metodos Colegiaturas
@@ -230,9 +287,9 @@ namespace Franquicia.Bussiness
             lsAlumnosGridViewModel = alumnosRepository.ObtenerColeAlumnos(UidColegiatura);
             lsSelectAlumnosGridViewModel = alumnosRepository.ObtenerColeAlumnos(UidColegiatura);
         }
-        public void AsignarColeAlumnos(List<AlumnosGridViewModel> lsExcelSelect, List<AlumnosGridViewModel> lsSelectAlumnosGridViewModel, Guid UidCliente, string Nombre, string ApePaterno, string ApeMaterno, string Matricula)
+        public void AsignarColeAlumnos(List<AlumnosGridViewModel> lsExcelSelect, List<AlumnosGridViewModel> lsSelectAlumnosGridViewModel, Guid UidCliente, string Identificador, string Nombre, string ApePaterno, string ApeMaterno, string Matricula)
         {
-            lsAlumnosGridViewModel = alumnosRepository.AsignarColeAlumnos(lsExcelSelect, lsSelectAlumnosGridViewModel, UidCliente, Nombre, ApePaterno, ApeMaterno, Matricula);
+            lsAlumnosGridViewModel = alumnosRepository.AsignarColeAlumnos(lsExcelSelect, lsSelectAlumnosGridViewModel, UidCliente, Identificador, Nombre, ApePaterno, ApeMaterno, Matricula);
         }
         public List<AlumnosGridViewModel> ActualizarLsAsignarColeAlumnos(List<AlumnosGridViewModel> lsAlumnos, Guid UidAlumno, bool accion)
         {
@@ -308,6 +365,9 @@ namespace Franquicia.Bussiness
                     bool BitBeca = false;
                     decimal Cantidad = 0;
 
+                    string Telefono = string.Empty;
+                    Guid UidPrefijo = Guid.Parse("ABB854C4-E7ED-420F-8561-AA4B61BF5B0F");
+
                     string regexCorreo = @"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}" + @"\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\" + @".)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$";
                     Regex reCorreo = new Regex(regexCorreo);
 
@@ -333,7 +393,8 @@ namespace Franquicia.Bussiness
                             {
                                 if (prefijosTelefonicosRepository.prefijosTelefonicos.UidPrefijo != null && prefijosTelefonicosRepository.prefijosTelefonicos.UidPrefijo != Guid.Empty)
                                 {
-
+                                    Telefono = item["CELULAR"].ToString().Split('(', ')')[2];
+                                    UidPrefijo = prefijosTelefonicosRepository.prefijosTelefonicos.UidPrefijo;
                                 }
                                 else
                                 {
@@ -422,7 +483,7 @@ namespace Franquicia.Bussiness
                             VchApeMaterno = item["APEMATERNO"].ToString(),
                             VchCorreo = item["CORREO"].ToString(),
 
-                            VchTelefono = item["CELULAR"].ToString().Split('(', ')')[2],
+                            VchTelefono = item["CELULAR"].ToString(),
                             UidPrefijo = prefijosTelefonicosRepository.prefijosTelefonicos.UidPrefijo,
                             BitBeca = BitBeca,
                             VchTipoBeca = item["TIPO BECA"].ToString(),
@@ -442,8 +503,8 @@ namespace Franquicia.Bussiness
                             VchApeMaterno = item["APEMATERNO"].ToString().ToUpper(),
                             VchCorreo = item["CORREO"].ToString().ToUpper(),
 
-                            VchTelefono = item["CELULAR"].ToString().Split('(', ')')[2],
-                            UidPrefijo = prefijosTelefonicosRepository.prefijosTelefonicos.UidPrefijo,
+                            VchTelefono = Telefono,
+                            UidPrefijo = UidPrefijo,
                             BitBeca = BitBeca,
                             VchTipoBeca = item["TIPO BECA"].ToString().ToUpper(),
                             DcmBeca = Cantidad,
@@ -477,7 +538,7 @@ namespace Franquicia.Bussiness
                             VchApeMaterno = item["APEMATERNO"].ToString(),
                             VchCorreo = item["CORREO"].ToString(),
 
-                            VchTelefono = item["CELULAR"].ToString().Split('(', ')')[2],
+                            VchTelefono = item["CELULAR"].ToString(),
                             UidPrefijo = prefijosTelefonicosRepository.prefijosTelefonicos.UidPrefijo,
                             BitBeca = BitBeca,
                             VchTipoBeca = item["TIPO BECA"].ToString(),

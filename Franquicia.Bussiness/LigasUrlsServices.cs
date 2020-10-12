@@ -119,6 +119,12 @@ namespace Franquicia.Bussiness
 
             return lsLigasUrlsGridViewModel = ligasUrlsRepository.ConsultarEstatusLigaEscuela(UidCliente);
         }
+        public List<LigasUrlsGridViewModel> BuscarLigaEscuela(Guid UidCliente, string Identificador, string Nombre, string ApePaterno, string ApeMaterno, string Concepto, decimal ImporteMayor, decimal ImporteMenor, string RegistroDesde, string RegistroHasta)
+        {
+            lsLigasUrlsGridViewModel = new List<LigasUrlsGridViewModel>();
+
+            return lsLigasUrlsGridViewModel = ligasUrlsRepository.BuscarLigaEscuela(UidCliente, Identificador, Nombre, ApePaterno, ApeMaterno, Concepto, ImporteMayor, ImporteMenor, RegistroDesde, RegistroHasta);
+        }
         #endregion
 
         #endregion

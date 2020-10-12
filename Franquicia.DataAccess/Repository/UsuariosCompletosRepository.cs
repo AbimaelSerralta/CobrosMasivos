@@ -35,6 +35,20 @@ namespace Franquicia.DataAccess.Repository
             set { _clientes = value; }
         }
 
+        ValidacionesRepository _validacionesRepository = new ValidacionesRepository();
+        public ValidacionesRepository validacionesRepository
+        {
+            get { return _validacionesRepository; }
+            set { _validacionesRepository = value; }
+        }
+
+        CorreosRepository _correosRepository = new CorreosRepository();
+        public CorreosRepository correosRepository
+        {
+            get { return _correosRepository; }
+            set { _correosRepository = value; }
+        }
+
         private LigasUsuariosGridViewModel _ligasUsuariosGridViewModel = new LigasUsuariosGridViewModel();
         public LigasUsuariosGridViewModel ligasUsuariosGridViewModel
         {
@@ -53,8 +67,16 @@ namespace Franquicia.DataAccess.Repository
                 comando.CommandType = CommandType.StoredProcedure;
                 comando.CommandText = "sp_ManejoDeSessionLogearUsuarios";
 
-                comando.Parameters.Add("@Usuario", SqlDbType.VarChar, 20);
-                comando.Parameters["@Usuario"].Value = Usuario;
+                if (Usuario.Contains("@"))
+                {
+                    comando.Parameters.Add("@Correo", SqlDbType.VarChar, 50);
+                    comando.Parameters["@Correo"].Value = Usuario;
+                }
+                else
+                {
+                    comando.Parameters.Add("@Usuario", SqlDbType.VarChar, 30);
+                    comando.Parameters["@Usuario"].Value = Usuario;
+                }
 
                 comando.Parameters.Add("@Password", SqlDbType.VarChar, 32);
                 comando.Parameters["@Password"].Value = Password;
@@ -636,6 +658,32 @@ namespace Franquicia.DataAccess.Repository
                 throw;
             }
             return Resultado;
+        }
+
+        public List<UsuariosCompletos> RecoveryPassword(string Parametro, string Dato)
+        {
+            List<UsuariosCompletos> lsRecoveryPassword = new List<UsuariosCompletos>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select us.VchNombre, us.VchApePaterno, us.VchApeMaterno, us.VchCorreo, su.VchContrasenia from Usuarios us, SegUsuarios su where us.UidUsuario = su.UidUsuario and " + Parametro + "= '" + Dato + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                lsRecoveryPassword.Add(new UsuariosCompletos()
+                {
+                    StrNombre = item["VchNombre"].ToString(),
+                    StrApePaterno = item["VchApePaterno"].ToString(),
+                    StrApeMaterno = item["VchApeMaterno"].ToString(),
+                    VchContrasenia = item["VchContrasenia"].ToString(),
+                    StrCorreo = item["VchCorreo"].ToString()
+                });
+            }
+
+            return lsRecoveryPassword;
         }
 
         #region Metodos Franquicias
@@ -1827,7 +1875,7 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select us.*, su.VchUsuario, su.VchContrasenia, sp.VchNombre as Perfil, es.VchDescripcion, es.VchIcono, sp.UidTipoPerfilFranquicia from SegUsuarios su, SegPerfiles sp, Estatus es, ClientesUsuarios cu, Clientes cl, Usuarios us where sp.UidSegPerfil = su.UidSegPerfil and su.UidUsuario = us.UidUsuario and es.UidEstatus = us.UidEstatus and cu.UidCliente = cl.UidCliente and cu.UidUsuario = us.UidUsuario and cl.UidCliente = '" + UidCliente + "' and sp.UidTipoPerfil = '" + UidTipoPerfil + "'";
+            query.CommandText = "select us.*, su.UidEstatusCuenta, su.VchUsuario, su.VchContrasenia, sp.VchNombre as Perfil, es.VchDescripcion, es.VchIcono, sp.UidTipoPerfilFranquicia, cl.VchIdWAySMS, cu.VchAccion from SegUsuarios su, SegPerfiles sp, Estatus es, ClientesUsuarios cu, Clientes cl, Usuarios us where sp.UidSegPerfil = su.UidSegPerfil and su.UidUsuario = us.UidUsuario and es.UidEstatus = us.UidEstatus and cu.UidCliente = cl.UidCliente and cu.UidUsuario = us.UidUsuario and cl.UidCliente = '" + UidCliente + "' and sp.UidTipoPerfil = '" + UidTipoPerfil + "'";
 
             DataTable dt = this.Busquedas(query);
 
@@ -1845,7 +1893,10 @@ namespace Franquicia.DataAccess.Repository
                     VchContrasenia = item["VchContrasenia"].ToString(),
                     VchNombrePerfil = item["Perfil"].ToString(),
                     VchDescripcion = item["VchDescripcion"].ToString(),
-                    VchIcono = item["VchIcono"].ToString()
+                    VchIcono = item["VchIcono"].ToString(),
+                    VchNombreComercial = item["VchIdWAySMS"].ToString(),
+                    UidEstatusCuenta = Guid.Parse(item["UidEstatusCuenta"].ToString()),
+                    VchAccion = item["VchAccion"].ToString()
                 });
             }
 
@@ -2362,7 +2413,7 @@ namespace Franquicia.DataAccess.Repository
 
             return lsLigasUsuariosGridViewModel;
         }
-        public List<LigasUsuariosGridViewModel> ExcelToList(List<LigasUsuariosGridViewModel> lsLigasUsuariosGridView, List<LigasUsuariosGridViewModel> lsLigasInsertar, Guid UidCliente)
+        public List<LigasUsuariosGridViewModel> ExcelToList(List<LigasUsuariosGridViewModel> lsLigasUsuariosGridView, List<LigasUsuariosGridViewModel> lsLigasInsertar, Guid UidCliente, string URLBase)
         {
             bool accion = true;
             List<LigasUsuariosGridViewModel> lsLigasUsuariosGridViewModel = new List<LigasUsuariosGridViewModel>();
@@ -2445,10 +2496,13 @@ namespace Franquicia.DataAccess.Repository
 
                     if (!string.IsNullOrEmpty(item.StrCorreo))
                     {
-                        RegistrarUsuariosExcel(
+                        bool enviarCorreo = false;
+                        Guid UidUsuario = Guid.NewGuid();
+
+                        enviarCorreo = RegistrarUsuariosExcel(
                             new UsuariosCompletos
                             {
-                                UidUsuario = Guid.NewGuid(),
+                                UidUsuario = UidUsuario,
                                 StrNombre = item.StrNombre.Trim().ToUpper(),
                                 StrApePaterno = item.StrApePaterno.Trim().ToUpper(),
                                 StrApeMaterno = item.StrApeMaterno.Trim().ToUpper(),
@@ -2463,6 +2517,15 @@ namespace Franquicia.DataAccess.Repository
                                 UidPrefijo = item.UidPrefijo
                             },
                             UidCliente);
+
+                        if (enviarCorreo)
+                        {
+                            string Asunto = "Acceso al sistema Cobros Masivos";
+                            string LigaUrl = URLBase + "Views/Login.aspx";
+
+                            var Crden = validacionesRepository.Creden(UidUsuario, UidCliente);
+                            string mnsj = correosRepository.CorreoEnvioCredenciales(item.NombreCompleto, Asunto, Crden.Item1, Crden.Item2, LigaUrl, item.StrCorreo, Crden.Item3);
+                        }
                     }
                 }
             }
@@ -2827,7 +2890,7 @@ namespace Franquicia.DataAccess.Repository
             //}
             return lsLigasMultiplesUsuariosGridViewModel;
         }
-        public List<LigasMultiplesUsuariosGridViewModel> ExcelToListMultiple(List<LigasMultiplesUsuariosGridViewModel> lsLigasMultiplesUsuariosGridView, List<LigasMultiplesUsuariosGridViewModel> lsLigasInsertarMultiple, Guid UidCliente)
+        public List<LigasMultiplesUsuariosGridViewModel> ExcelToListMultiple(List<LigasMultiplesUsuariosGridViewModel> lsLigasMultiplesUsuariosGridView, List<LigasMultiplesUsuariosGridViewModel> lsLigasInsertarMultiple, Guid UidCliente, string URLBase)
         {
             bool accion = true;
             List<LigasMultiplesUsuariosGridViewModel> LsLigasMultiplesUsuariosGridViewModel = new List<LigasMultiplesUsuariosGridViewModel>();
@@ -2909,10 +2972,13 @@ namespace Franquicia.DataAccess.Repository
 
                     if (!string.IsNullOrEmpty(item.StrCorreo))
                     {
-                        RegistrarUsuariosExcel(
+                        bool enviarCorreo = false;
+                        Guid UidUsuario = Guid.NewGuid();
+
+                        enviarCorreo = RegistrarUsuariosExcel(
                             new UsuariosCompletos
                             {
-                                UidUsuario = Guid.NewGuid(),
+                                UidUsuario = UidUsuario,
                                 StrNombre = item.StrNombre.Trim().ToUpper(),
                                 StrApePaterno = item.StrApePaterno.Trim().ToUpper(),
                                 StrApeMaterno = item.StrApeMaterno.Trim().ToUpper(),
@@ -2927,6 +2993,15 @@ namespace Franquicia.DataAccess.Repository
                                 UidPrefijo = item.UidPrefijo
                             },
                             UidCliente);
+
+                        if (enviarCorreo)
+                        {
+                            string Asunto = "Acceso al sistema Cobros Masivos";
+                            string LigaUrl = URLBase + "Views/Login.aspx";
+
+                            var Crden = validacionesRepository.Creden(UidUsuario, UidCliente);
+                            string mnsj = correosRepository.CorreoEnvioCredenciales(item.NombreCompleto, Asunto, Crden.Item1, Crden.Item2, LigaUrl, item.StrCorreo, Crden.Item3);
+                        }
                     }
                 }
             }
@@ -3905,8 +3980,16 @@ namespace Franquicia.DataAccess.Repository
                 comando.CommandType = CommandType.StoredProcedure;
                 comando.CommandText = "sp_ManejoDeSessionLogearUsuariosEscuela";
 
-                comando.Parameters.Add("@Usuario", SqlDbType.VarChar, 20);
-                comando.Parameters["@Usuario"].Value = Usuario;
+                if (Usuario.Contains("@"))
+                {
+                    comando.Parameters.Add("@Correo", SqlDbType.VarChar, 50);
+                    comando.Parameters["@Correo"].Value = Usuario;
+                }
+                else
+                {
+                    comando.Parameters.Add("@Usuario", SqlDbType.VarChar, 30);
+                    comando.Parameters["@Usuario"].Value = Usuario;
+                }
 
                 comando.Parameters.Add("@Password", SqlDbType.VarChar, 32);
                 comando.Parameters["@Password"].Value = Password;
@@ -4036,6 +4119,32 @@ namespace Franquicia.DataAccess.Repository
 
         }
 
+        public List<UsuariosCompletos> RecoveryPasswordEscuela(string Parametro, string Dato)
+        {
+            List<UsuariosCompletos> lsRecoveryPassword = new List<UsuariosCompletos>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select us.VchNombre, us.VchApePaterno, us.VchApeMaterno, us.VchCorreo, su.VchContrasenia from Usuarios us, SegUsuarios su where us.UidUsuario = su.UidUsuario and " + Parametro + "= '" + Dato + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                lsRecoveryPassword.Add(new UsuariosCompletos()
+                {
+                    StrNombre = item["VchNombre"].ToString(),
+                    StrApePaterno = item["VchApePaterno"].ToString(),
+                    StrApeMaterno = item["VchApeMaterno"].ToString(),
+                    VchContrasenia = item["VchContrasenia"].ToString(),
+                    StrCorreo = item["VchCorreo"].ToString()
+                });
+            }
+
+            return lsRecoveryPassword;
+        }
+
         #region Pagos padres
         public List<LigasUsuariosGridViewModel> SelectUsuCliColegiatura(Guid UidCliente, Guid UidUsuario)
         {
@@ -4067,7 +4176,7 @@ namespace Franquicia.DataAccess.Repository
 
             return lsLigasUsuariosGridViewModel;
         }
-        public bool GenerarLigasPagosColegiatura(Guid UidLigaUrl, string VchUrl, string VchConcepto, decimal DcmImporte, string IdReferencia, Guid UidUsuario, string VchIdentificador, DateTime DtRegistro, DateTime DtVencimiento, string VchAsunto, Guid UidLigaAsociado, Guid UidPromocion, Guid UidFechaColegiatura, Guid UidPropietario)
+        public bool GenerarLigasPagosColegiatura(Guid UidLigaUrl, string VchUrl, string VchConcepto, decimal DcmImporte, string IdReferencia, Guid UidUsuario, string VchIdentificador, DateTime DtRegistro, DateTime DtVencimiento, string VchAsunto, Guid UidLigaAsociado, Guid UidPromocion, Guid UidFechaColegiatura, Guid UidPagoColegiatura, Guid UidPropietario)
         {
             bool Resultado = false;
 
@@ -4121,6 +4230,9 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@UidFechaColegiatura", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidFechaColegiatura"].Value = UidFechaColegiatura;
+                
+                comando.Parameters.Add("@UidPagoColegiatura", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidPagoColegiatura"].Value = UidPagoColegiatura;
 
                 comando.Parameters.Add("@UidPropietario", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidPropietario"].Value = UidPropietario;
@@ -4134,6 +4246,81 @@ namespace Franquicia.DataAccess.Repository
             return Resultado;
         }
         #endregion
+        #endregion
+
+        #region Metodos MasterPage
+        public List<UsuarioActivarCuentaViewModel> ObtenerDatossUsuario(Guid UidUsuario)
+        {
+            List<UsuarioActivarCuentaViewModel> lsUsuarioActivarCuentaViewModel = new List<UsuarioActivarCuentaViewModel>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select us.*, UidEstatusCuenta, pt.UidPrefijo, pt.Prefijo, tu.VchTelefono from SegUsuarios su, Usuarios us, TelefonosUsuarios tu, PrefijosTelefonicos pt where tu.UidUsuario = us.UidUsuario and tu.UidPrefijo = pt.UidPrefijo and su.UidUsuario = us.UidUsuario and su.UidSegPerfil = '18E9669B-C238-4BCC-9213-AF995644A5A4' and us.UidUsuario = '" + UidUsuario + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                lsUsuarioActivarCuentaViewModel.Add(new UsuarioActivarCuentaViewModel()
+                {
+                    UidUsuario = Guid.Parse(item["UidUsuario"].ToString()),
+                    StrNombre = item["VchNombre"].ToString(),
+                    StrApePaterno = item["VchApePaterno"].ToString(),
+                    StrApeMaterno = item["VchApeMaterno"].ToString(),
+                    StrCorreo = item["VchCorreo"].ToString(),
+                    StrTelefono = item["VchTelefono"].ToString(),
+                    UidPrefijo = Guid.Parse(item["UidPrefijo"].ToString()),
+                    UidEstatusCuenta = Guid.Parse(item["UidEstatusCuenta"].ToString())
+                });
+            }
+            return lsUsuarioActivarCuentaViewModel;
+        }
+        public bool ActivarCuentaUsuario(UsuariosCompletos usuariosCompletos, TelefonosUsuarios telefonosUsuarios)
+        {
+            bool Resultado = false;
+
+            SqlCommand comando = new SqlCommand();
+            try
+            {
+                comando.CommandType = System.Data.CommandType.StoredProcedure;
+                comando.CommandText = "sp_UsuarioActivarCuenta";
+
+                comando.Parameters.Add("@UidUsuario", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidUsuario"].Value = usuariosCompletos.UidUsuario;
+
+                comando.Parameters.Add("@StrNombre", SqlDbType.VarChar, 50);
+                comando.Parameters["@StrNombre"].Value = usuariosCompletos.StrNombre;
+
+                comando.Parameters.Add("@StrApePaterno", SqlDbType.VarChar, 50);
+                comando.Parameters["@StrApePaterno"].Value = usuariosCompletos.StrApePaterno;
+
+                comando.Parameters.Add("@StrApeMaterno", SqlDbType.VarChar, 50);
+                comando.Parameters["@StrApeMaterno"].Value = usuariosCompletos.StrApeMaterno;
+
+                comando.Parameters.Add("@VchContrasenia", SqlDbType.VarChar, 50);
+                comando.Parameters["@VchContrasenia"].Value = usuariosCompletos.VchContrasenia;
+
+                //===========================TELEFONO==================================================
+
+                comando.Parameters.Add("@VchTelefono", SqlDbType.VarChar, 50);
+                comando.Parameters["@VchTelefono"].Value = telefonosUsuarios.VchTelefono;
+
+                comando.Parameters.Add("@UidTipoTelefono", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidTipoTelefono"].Value = Guid.Parse("B1055882-BCBA-4AB7-94FA-90E57647E607");
+
+                comando.Parameters.Add("@UidPrefijo", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidPrefijo"].Value = telefonosUsuarios.UidPrefijo;
+
+                Resultado = this.ManipulacionDeDatos(comando);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return Resultado;
+        }
         #endregion
     }
 }

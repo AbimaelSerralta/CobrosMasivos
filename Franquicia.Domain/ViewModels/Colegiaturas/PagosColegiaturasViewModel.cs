@@ -15,7 +15,7 @@ namespace Franquicia.Domain.ViewModels
         public string VchNombres { get; set; }
         public string VchApePaterno { get; set; }
         public string VchApeMaterno { get; set; }
-        public string NombreCompleto { get { return VchNombres + " " + VchApePaterno + " " + VchApePaterno; } }
+        public string NombreCompleto { get { return VchNombres + " " + VchApePaterno + " " + VchApeMaterno; } }
         public bool BitBeca { get; set; }
         public string VchTipoBeca { get; set; }
         public decimal DcmBeca { get; set; }
@@ -25,6 +25,7 @@ namespace Franquicia.Domain.ViewModels
         public string VchNum { get; set; }
         public string VchFHLimite { get; set; }
         public string VchFHVencimiento { get; set; }
+        public DateTime DtFHFinPeriodo { get; set; }
         public string VchDescripcion { get; set; }
         public Guid UidEstatusFechaColegiatura { get; set; }
         
@@ -33,5 +34,6 @@ namespace Franquicia.Domain.ViewModels
         public string VchColor { get; set; }
         
         public bool blPagar { get; set; }
+        public string VchPeriodicidad { get; set; }
     }
 }

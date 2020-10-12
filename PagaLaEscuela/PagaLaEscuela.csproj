@@ -16,7 +16,7 @@
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
-    <IISExpressSSLPort>44320</IISExpressSSLPort>
+    <IISExpressSSLPort>44392</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
@@ -158,14 +158,18 @@
     <Content Include="bootstrap4.0.0\js\bootstrap.bundle.min.js" />
     <Content Include="bootstrap4.0.0\js\bootstrap.js" />
     <Content Include="bootstrap4.0.0\js\bootstrap.min.js" />
+    <Content Include="CSSPropio\BadgeNotification.css" />
     <Content Include="CSSPropio\BasicEventos.css" />
     <Content Include="CSSPropio\BtnPaginacion.css" />
     <Content Include="CSSPropio\Loader.css" />
     <Content Include="CSSPropio\loader.gif" />
+    <Content Include="CSSPropio\Login2.css" />
     <Content Include="CSSPropio\Login.css" />
+    <Content Include="CSSPropio\Login3.css" />
     <Content Include="CSSPropio\style2.css" />
     <Content Include="CSSPropio\StyleLoadingEvento.css" />
     <Content Include="CSSPropio\StyleVentanaModal.css" />
+    <Content Include="CSSPropio\TootipSe.css" />
     <Content Include="Default.aspx" />
     <Content Include="Images\BannerEvent.png" />
     <Content Include="Images\BannerEvent2.png" />
@@ -174,27 +178,38 @@
     <Content Include="Images\icoSms.jpg" />
     <Content Include="Images\icoWhats.png" />
     <Content Include="Images\LigaSimple.PNG" />
+    <Content Include="Images\llave.png" />
     <Content Include="Images\loaderEscuela.gif" />
     <Content Include="Images\logo-cobroscontarjetas.png" />
     <Content Include="Images\logo-compuandsoft.png" />
     <Content Include="Images\logo-mit.png" />
     <Content Include="Images\logoCobroscontarjetas.png" />
     <Content Include="Images\logoCobroscontarjetasLetras.png" />
+    <Content Include="Images\logoCompetoPagaLaEscuela.png" />
     <Content Include="Images\logoPagaLaEscuela.png" />
+    <Content Include="Images\MnsjDialog.jpeg" />
     <Content Include="Images\mountain.png" />
     <Content Include="Images\Multiple.PNG" />
+    <Content Include="Images\porcientoEscuela.png" />
     <Content Include="Images\SinLogo.png" />
     <Content Include="Images\SinLogo2.png" />
+    <Content Include="Images\SinPagos.png" />
     <Content Include="Images\think.png" />
+    <Content Include="Images\webpayplusmujer.png" />
     <Content Include="Multiselect\css\bootstrap-multiselect.css" />
     <Content Include="Multiselect\js\bootstrap-multiselect.min.js" />
     <Content Include="Multiselect\js\jquery-3.3.1.min.js" />
+    <Content Include="PlantillasHtml\CorreoEnvioPagoColegiatura.html" />
+    <Content Include="PlantillasHtml\CorreoRecoveryPassword.html" />
+    <Content Include="PlantillasHtml\CorreoEnvioCredenciales.html" />
     <Content Include="Views\Alumnos.aspx" />
     <Content Include="Views\CicloEscolar.aspx" />
     <Content Include="Views\Colegiatura.aspx" />
+    <Content Include="Views\EscuelasTarifas.aspx" />
     <Content Include="Views\Excel\ExportarExcelPadres.aspx" />
     <Content Include="Views\Excel\ExportarExcelAlumnos.aspx" />
     <Content Include="Views\File.aspx" />
+    <Content Include="Views\Login2.aspx" />
     <Content Include="Views\Movimientos.aspx" />
     <Content Include="Views\Padres.aspx" />
     <Content Include="Views\Configuracion.aspx" />
@@ -238,6 +253,13 @@
     <Compile Include="Views\Colegiatura.aspx.designer.cs">
       <DependentUpon>Colegiatura.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Views\EscuelasTarifas.aspx.cs">
+      <DependentUpon>EscuelasTarifas.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\EscuelasTarifas.aspx.designer.cs">
+      <DependentUpon>EscuelasTarifas.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Views\Excel\ExportarExcelPadres.aspx.cs">
       <DependentUpon>ExportarExcelPadres.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -258,6 +280,13 @@
     </Compile>
     <Compile Include="Views\File.aspx.designer.cs">
       <DependentUpon>File.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Login2.aspx.cs">
+      <DependentUpon>Login2.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\Login2.aspx.designer.cs">
+      <DependentUpon>Login2.aspx</DependentUpon>
     </Compile>
     <Compile Include="Views\Movimientos.aspx.cs">
       <DependentUpon>Movimientos.aspx</DependentUpon>
@@ -577,7 +606,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>52544</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>https://localhost:44320/</IISUrl>
+          <IISUrl>https://localhost:44392/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

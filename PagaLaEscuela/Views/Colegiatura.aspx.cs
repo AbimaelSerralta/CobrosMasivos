@@ -36,6 +36,7 @@ namespace PagaLaEscuela.Views
             }
 
             txtFHInicio.Attributes.Add("onchange", "button_click(this,'" + btnCalcular.ClientID + "')");
+            txtFHLimite.Attributes.Add("onchange", "button_click(this,'" + btnCalcularFHV.ClientID + "')");
 
             if (!IsPostBack)
             {
@@ -62,8 +63,14 @@ namespace PagaLaEscuela.Views
                 ListBoxPromociones.DataValueField = "UidPromocion";
                 ListBoxPromociones.DataBind();
 
+                estatusService.CargarEstatus();
+                ddlEstatus.DataSource = estatusService.lsEstatus;
+                ddlEstatus.DataTextField = "VchDescripcion";
+                ddlEstatus.DataValueField = "UidEstatus";
+                ddlEstatus.DataBind();
+
                 FiltroEstatus.DataSource = estatusService.lsEstatus;
-                FiltroEstatus.Items.Insert(0, new ListItem("Seleccione", "00000000-0000-0000-0000-000000000000"));
+                FiltroEstatus.Items.Insert(0, new ListItem("TODOS", "00000000-0000-0000-0000-000000000000"));
                 FiltroEstatus.DataTextField = "VchDescripcion";
                 FiltroEstatus.DataValueField = "UidEstatus";
                 FiltroEstatus.DataBind();
@@ -73,6 +80,12 @@ namespace PagaLaEscuela.Views
                 ddlPeriodicidad.DataTextField = "VchDescripcion";
                 ddlPeriodicidad.DataValueField = "UidPeriodicidad";
                 ddlPeriodicidad.DataBind();
+
+                FiltroPeriodicidad.DataSource = periodicidadesServices.lsPeriodicidades;
+                FiltroPeriodicidad.Items.Insert(0, new ListItem("TODOS", "00000000-0000-0000-0000-000000000000"));
+                FiltroPeriodicidad.DataTextField = "VchDescripcion";
+                FiltroPeriodicidad.DataValueField = "UidPeriodicidad";
+                FiltroPeriodicidad.DataBind();
             }
             else
             {
@@ -90,6 +103,10 @@ namespace PagaLaEscuela.Views
                 pnlAlert.Visible = false;
                 lblMensajeAlert.Text = "";
                 divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
+
+                pnlAlertMnsjEstatus.Visible = false;
+                lblMnsjEstatus.Text = "";
+                divAlertMnsjEstatus.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
             }
         }
         protected void btnGuardar_Click(object sender, EventArgs e)
@@ -118,7 +135,7 @@ namespace PagaLaEscuela.Views
                 lblValidar.Text = "El importe mínimo es de $50.00 y el máximo es de $15,000.00.";
                 return;
             }
-            if (bool.Parse(ddlRecargo.SelectedValue))
+            if (cbActivarRL.Checked)
             {
                 if (txtRecargo.EmptyTextBox())
                 {
@@ -140,6 +157,28 @@ namespace PagaLaEscuela.Views
             {
                 txtRecargo.Text = "0";
             }
+            if (cbActivarRP.Checked)
+            {
+                if (txtRecargoP.EmptyTextBox())
+                {
+                    lblValidar.Text = "El campo Recargo es obligatorio";
+                    return;
+                }
+
+                if (ddlTipoRecargoP.SelectedValue == "PORCENTAJE")
+                {
+                    if (decimal.Parse(txtRecargoP.Text) > 100)
+                    {
+                        lblValidar.Text = "Cuando la selección es PORCENTAJE, Solo se admite hasta 100";
+                        txtRecargoP.BackColor = System.Drawing.Color.FromName("#f2dede");
+                        return;
+                    }
+                }
+            }
+            else
+            {
+                txtRecargoP.Text = "0";
+            }
             if (txtFHInicio.EmptyTextBox())
             {
                 lblValidar.Text = "El campo Fecha Inicio es obligatorio";
@@ -153,9 +192,9 @@ namespace PagaLaEscuela.Views
                     return;
                 }
 
-                if (DateTime.Parse(txtFHLimite.Text) >= DateTime.Parse(ViewState["FHMin"].ToString()) &&  DateTime.Parse(txtFHLimite.Text) <= DateTime.Parse(ViewState["FHMax"].ToString()))
+                if (DateTime.Parse(txtFHLimite.Text) >= DateTime.Parse(ViewState["FHMin"].ToString()) && DateTime.Parse(txtFHLimite.Text) <= DateTime.Parse(ViewState["FHMax"].ToString()))
                 {
-                    
+
                 }
                 else
                 {
@@ -176,7 +215,7 @@ namespace PagaLaEscuela.Views
                 }
                 if (DateTime.Parse(txtFHVencimiento.Text) >= DateTime.Parse(ViewState["FHMin"].ToString()) && DateTime.Parse(txtFHVencimiento.Text) <= DateTime.Parse(ViewState["FHMax"].ToString()))
                 {
-                    
+
                 }
                 else
                 {
@@ -214,7 +253,7 @@ namespace PagaLaEscuela.Views
                     {
                         Guid UidColegiatura = Guid.NewGuid();
 
-                        if (colegiaturasServices.RegistrarColegiatura(UidColegiatura, txtIdentificador.Text.Trim().ToUpper(), decimal.Parse(txtImporte.Text), int.Parse(txtCantPagos.Text), Guid.Parse(ddlPeriodicidad.SelectedValue), DateTime.Parse(txtFHInicio.Text), cbActivarFHL.Checked, DateTime.Parse(txtFHLimite.Text), cbActivarFHV.Checked, DateTime.Parse(txtFHVencimiento.Text), bool.Parse(ddlRecargo.SelectedValue), ddlTipoRecargo.SelectedValue, decimal.Parse(txtRecargo.Text), Guid.Parse(ViewState["UidClienteLocal"].ToString())))
+                        if (colegiaturasServices.RegistrarColegiatura(UidColegiatura, txtIdentificador.Text.Trim().ToUpper(), decimal.Parse(txtImporte.Text), int.Parse(txtCantPagos.Text), Guid.Parse(ddlPeriodicidad.SelectedValue), DateTime.Parse(txtFHInicio.Text), cbActivarFHL.Checked, DateTime.Parse(txtFHLimite.Text), cbActivarFHV.Checked, DateTime.Parse(txtFHVencimiento.Text), cbActivarRL.Checked, ddlTipoRecargo.SelectedValue, decimal.Parse(txtRecargo.Text), cbActivarRP.Checked, ddlTipoRecargoP.SelectedValue, decimal.Parse(txtRecargoP.Text), Guid.Parse(ViewState["UidClienteLocal"].ToString())))
                         {
                             RegistrarFechas(UidColegiatura);
 
@@ -231,6 +270,7 @@ namespace PagaLaEscuela.Views
                                 alumnosServices.RegistrarColeAlumnos(UidColegiatura, itAlum.UidAlumno);
                             }
 
+                            ViewState["NewPageIndex"] = null;
                             colegiaturasServices.CargarColegiaturas(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
                             gvColegiaturas.DataSource = colegiaturasServices.lsColegiaturasGridViewModel;
                             gvColegiaturas.DataBind();
@@ -253,7 +293,7 @@ namespace PagaLaEscuela.Views
                 {
                     if (item.Actualizar)
                     {
-                        if (colegiaturasServices.ActualizarColegiatura(Guid.Parse(ViewState["UidRequerido"].ToString()), txtIdentificador.Text.Trim().ToUpper(), decimal.Parse(txtImporte.Text), int.Parse(txtCantPagos.Text), Guid.Parse(ddlPeriodicidad.SelectedValue), DateTime.Parse(txtFHInicio.Text), cbActivarFHL.Checked, DateTime.Parse(txtFHLimite.Text), cbActivarFHV.Checked, DateTime.Parse(txtFHVencimiento.Text), bool.Parse(ddlRecargo.SelectedValue), ddlTipoRecargo.SelectedValue, decimal.Parse(txtRecargo.Text)))
+                        if (colegiaturasServices.ActualizarColegiatura(Guid.Parse(ViewState["UidRequerido"].ToString()), txtIdentificador.Text.Trim().ToUpper(), decimal.Parse(txtImporte.Text), int.Parse(txtCantPagos.Text), Guid.Parse(ddlPeriodicidad.SelectedValue), DateTime.Parse(txtFHInicio.Text), cbActivarFHL.Checked, DateTime.Parse(txtFHLimite.Text), cbActivarFHV.Checked, DateTime.Parse(txtFHVencimiento.Text), cbActivarRL.Checked, ddlTipoRecargo.SelectedValue, decimal.Parse(txtRecargo.Text), cbActivarRP.Checked, ddlTipoRecargoP.SelectedValue, decimal.Parse(txtRecargoP.Text)))
                         {
                             colegiaturasServices.EliminarColegiaturaFechas(Guid.Parse(ViewState["UidRequerido"].ToString()));
                             RegistrarFechas(Guid.Parse(ViewState["UidRequerido"].ToString()));
@@ -273,6 +313,7 @@ namespace PagaLaEscuela.Views
                                 alumnosServices.RegistrarColeAlumnos(Guid.Parse(ViewState["UidRequerido"].ToString()), itAlum.UidAlumno);
                             }
 
+                            ViewState["NewPageIndex"] = null;
                             colegiaturasServices.CargarColegiaturas(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
                             gvColegiaturas.DataSource = colegiaturasServices.lsColegiaturasGridViewModel;
                             gvColegiaturas.DataBind();
@@ -291,11 +332,35 @@ namespace PagaLaEscuela.Views
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
                     }
                 }
+                else if (ViewState["Accion"].ToString() == "ActualizarEstatus")
+                {
+                    if (colegiaturasServices.ActualizarEstatusColegiatura(Guid.Parse(ViewState["UidRequerido"].ToString()), Guid.Parse(ddlEstatus.SelectedValue)))
+                    {
+                        pnlAlert.Visible = true;
+                        lblMensajeAlert.Text = "<strong>¡Felicidades! </strong> se ha actualizado exitosamente.";
+                        divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                    }
+                    else
+                    {
+                        lblMensajeAlert.Text = "<strong>Lo sentimos</strong> no se ha podido actualizar.";
+                        divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
+                    }
+
+                    ViewState["NewPageIndex"] = null;
+                    colegiaturasServices.CargarColegiaturas(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+                    gvColegiaturas.DataSource = colegiaturasServices.lsColegiaturasGridViewModel;
+                    gvColegiaturas.DataBind();
+
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
+                }
             }
         }
         private void RegistrarFechas(Guid UidColegiatura)
         {
-            colegiaturasServices.RegistrarColegiaturaFechas(UidColegiatura, 1, DateTime.Parse(txtFHInicio.Text), DateTime.Parse(txtFHLimite.Text), DateTime.Parse(txtFHVencimiento.Text));
+            DateTime FHFinPerido = DateTime.Parse(ViewState["FHFinPerido"].ToString());
+
+            colegiaturasServices.RegistrarColegiaturaFechas(UidColegiatura, 1, DateTime.Parse(txtFHInicio.Text), DateTime.Parse(txtFHLimite.Text), DateTime.Parse(txtFHVencimiento.Text), FHFinPerido);
 
             int num = 2;
 
@@ -317,7 +382,9 @@ namespace PagaLaEscuela.Views
                         FHVencimiento = DateTime.Parse(txtFHVencimiento.Text).AddDays(7 * i);
                     }
 
-                    colegiaturasServices.RegistrarColegiaturaFechas(UidColegiatura, num++, FHInicio, FHLimite, FHVencimiento);
+                    FHFinPerido = DateTime.Parse(ViewState["FHFinPerido"].ToString()).AddDays(7 * i);
+
+                    colegiaturasServices.RegistrarColegiaturaFechas(UidColegiatura, num++, FHInicio, FHLimite, FHVencimiento, FHFinPerido);
                 }
                 else if (ddlPeriodicidad.SelectedItem.Text == "MENSUAL")
                 {
@@ -335,7 +402,9 @@ namespace PagaLaEscuela.Views
                         FHVencimiento = DateTime.Parse(txtFHVencimiento.Text).AddMonths(1 * i);
                     }
 
-                    colegiaturasServices.RegistrarColegiaturaFechas(UidColegiatura, num++, FHInicio, FHLimite, FHVencimiento);
+                    FHFinPerido = DateTime.Parse(ViewState["FHFinPerido"].ToString()).AddMonths(1 * i);
+
+                    colegiaturasServices.RegistrarColegiaturaFechas(UidColegiatura, num++, FHInicio, FHLimite, FHVencimiento, FHFinPerido);
                 }
             }
         }
@@ -347,6 +416,13 @@ namespace PagaLaEscuela.Views
             ViewState["Accion"] = "Guardar";
             LimpiarCampos();
             DesbloquearCampos();
+
+            btnFiltroLimpiar_Click(null, null);
+            alumnosServices.lsAlumnosGridViewModel.Clear();
+            gvAlumnos.DataBind();
+            alumnosServices.lsSelectAlumnosGridViewModel.Clear();
+            lblCantSeleccionado.Text = alumnosServices.lsSelectAlumnosGridViewModel.Count().ToString();
+
             btnCerrar.Visible = false;
             btnCancelar.Visible = true;
             btnGuardar.Visible = true;
@@ -359,6 +435,7 @@ namespace PagaLaEscuela.Views
             txtFHInicio.Text = hoy.ToString("yyyy-MM-dd");
             btnCalcular_Click(null, null);
 
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "Tabs", "showTab()", true);
             ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
 
         }
@@ -367,8 +444,8 @@ namespace PagaLaEscuela.Views
         {
             txtIdentificador.Enabled = false;
             txtImporte.Enabled = false;
-            ddlRecargo.Enabled = false;
-            ddlRecargo_SelectedIndexChanged(null, null);
+            cbActivarRL.Enabled = false;
+            cbActivarRP.Enabled = false;
             pnlRecargo.Enabled = false;
             txtCantPagos.Enabled = false;
             txtFHInicio.Enabled = false;
@@ -377,13 +454,14 @@ namespace PagaLaEscuela.Views
             cbActivarFHV.Enabled = false;
             txtFHVencimiento.Enabled = false;
             ddlPeriodicidad.Enabled = false;
+            ListBoxPromociones.Enabled = false;
         }
         private void DesbloquearCampos()
         {
             txtIdentificador.Enabled = true;
             txtImporte.Enabled = true;
-            ddlRecargo.Enabled = true;
-            ddlRecargo_SelectedIndexChanged(null, null);
+            cbActivarRL.Enabled = true;
+            cbActivarRP.Enabled = true;
             pnlRecargo.Enabled = true;
             txtCantPagos.Enabled = true;
             txtFHInicio.Enabled = true;
@@ -392,13 +470,14 @@ namespace PagaLaEscuela.Views
             cbActivarFHV.Enabled = true;
             txtFHVencimiento.Enabled = true;
             ddlPeriodicidad.Enabled = true;
+            ListBoxPromociones.Enabled = true;
         }
         private void LimpiarCampos()
         {
             txtIdentificador.Text = string.Empty;
             txtImporte.Text = string.Empty;
-            ddlRecargo.SelectedIndex = -1;
-            ddlRecargo_SelectedIndexChanged(null, null);
+            cbActivarRL.Checked = false;
+            cbActivarRP.Checked = false;
             ddlTipoRecargo.SelectedIndex = -1;
             txtRecargo.Text = string.Empty;
             txtCantPagos.Text = string.Empty;
@@ -411,6 +490,10 @@ namespace PagaLaEscuela.Views
 
             cbActivarFHV_CheckedChanged(null, null);
             cbActivarFHL_CheckedChanged(null, null);
+            cbActivarRL_CheckedChanged(null, null);
+            cbActivarRP_CheckedChanged(null, null);
+
+            ListBoxPromociones.SelectedIndex = -1;
         }
 
         protected void gvColegiaturas_RowDataBound(object sender, GridViewRowEventArgs e)
@@ -423,13 +506,57 @@ namespace PagaLaEscuela.Views
 
                 btnCargarExcel.Attributes.Add("onclick", "document.getElementById('" + fuSelecionarExcel.ClientID + "').click(); return false;");
             }
-        }
 
+            if (e.Row.RowType == DataControlRowType.Footer)
+            {
+                Label lblPaginado = (Label)e.Row.FindControl("lblPaginado");
+
+                int PageSize = gvColegiaturas.PageSize;
+                int antNum = 0;
+
+                int numTotal = colegiaturasServices.lsColegiaturasGridViewModel.Count;
+
+                if (numTotal >= 1)
+                {
+                    if (ViewState["NewPageIndex"] != null)
+                    {
+                        int gh = int.Parse(ViewState["NewPageIndex"].ToString());
+                        ViewState["NewPageIndex"] = gh + 1;
+
+                        int r1 = int.Parse(ViewState["NewPageIndex"].ToString()) * PageSize;
+                        antNum = r1 - (PageSize - 1);
+                    }
+                    else
+                    {
+                        ViewState["NewPageIndex"] = 1;
+                        antNum = 1;
+                    }
+
+                    int NewPageIndex = int.Parse(ViewState["NewPageIndex"].ToString());
+
+                    int newNum = NewPageIndex * PageSize;
+
+                    if (numTotal >= newNum)
+                    {
+                        lblPaginado.Text = "Del " + antNum + " al " + newNum + " de " + numTotal;
+                    }
+                    else
+                    {
+                        lblPaginado.Text = "Del " + antNum + " al " + numTotal + " de " + numTotal;
+                    }
+
+                    ViewState["lblPaginado"] = lblPaginado.Text;
+                }
+                else
+                {
+                    lblPaginado.Text = ViewState["lblPaginado"].ToString();
+                }
+            }
+        }
         protected void gvColegiaturas_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandName == "Editar")
             {
-                ViewState["Accion"] = "Actualizar";
                 btnCerrar.Visible = false;
                 btnCancelar.Visible = true;
                 btnGuardar.Visible = true;
@@ -444,12 +571,26 @@ namespace PagaLaEscuela.Views
                 ViewState["UidRequerido"] = dataKeys;
 
                 ManejoDatos(dataKeys);
-                DesbloquearCampos();
 
                 alumnosServices.ObtenerColeAlumnos(dataKeys);
                 lblCantSeleccionado.Text = alumnosServices.lsSelectAlumnosGridViewModel.Count.ToString();
                 gvAlumnos.DataSource = alumnosServices.lsAlumnosGridViewModel;
                 gvAlumnos.DataBind();
+
+                if (colegiaturasServices.lsColegiaturasGridViewModel[index].blEditar)
+                {
+                    ViewState["Accion"] = "Actualizar";
+                    DesbloquearCampos();
+                }
+                else
+                {
+                    pnlAlertMnsjEstatus.Visible = true;
+                    lblMnsjEstatus.Text = "Solo podra modificar el estatus, debido a que hay pagos asociado a las fechas de la colegiatura.";
+                    divAlertMnsjEstatus.Attributes.Add("class", "alert alert-info alert-dismissible fade show");
+
+                    ViewState["Accion"] = "ActualizarEstatus";
+                    BloquearCampos();
+                }
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
             }
@@ -523,6 +664,142 @@ namespace PagaLaEscuela.Views
                 btnCancelarExcel.Visible = false;
             }
         }
+        protected void gvColegiaturas_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvColegiaturas.PageIndex = e.NewPageIndex;
+            ViewState["NewPageIndex"] = e.NewPageIndex;
+            gvColegiaturas.DataSource = colegiaturasServices.lsColegiaturasGridViewModel;
+            gvColegiaturas.DataBind();
+        }
+        protected void gvColegiaturas_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            string SortExpression = e.SortExpression;
+            SortDirection direccion;
+            string Orden = string.Empty;
+
+            if (ViewState["gvColegiaturas"] != null)
+            {
+                direccion = (SortDirection)ViewState["gvColegiaturas"];
+                if (direccion == SortDirection.Ascending)
+                {
+                    ViewState["gvColegiaturas"] = SortDirection.Descending;
+                    Orden = "ASC";
+                }
+                else
+                {
+                    ViewState["gvColegiaturas"] = SortDirection.Ascending;
+                    Orden = "DESC";
+                }
+
+                switch (SortExpression)
+                {
+                    case "VchIdentificador":
+                        if (Orden == "ASC")
+                        {
+                            colegiaturasServices.lsColegiaturasGridViewModel = colegiaturasServices.lsColegiaturasGridViewModel.OrderBy(x => x.VchIdentificador).ToList();
+                        }
+                        else
+                        {
+                            colegiaturasServices.lsColegiaturasGridViewModel = colegiaturasServices.lsColegiaturasGridViewModel.OrderByDescending(x => x.VchIdentificador).ToList();
+                        }
+                        break;
+                    case "DcmImporte":
+                        if (Orden == "ASC")
+                        {
+                            colegiaturasServices.lsColegiaturasGridViewModel = colegiaturasServices.lsColegiaturasGridViewModel.OrderBy(x => x.DcmImporte).ToList();
+                        }
+                        else
+                        {
+                            colegiaturasServices.lsColegiaturasGridViewModel = colegiaturasServices.lsColegiaturasGridViewModel.OrderByDescending(x => x.DcmImporte).ToList();
+                        }
+                        break;
+                    case "IntCantPagos":
+                        if (Orden == "ASC")
+                        {
+                            colegiaturasServices.lsColegiaturasGridViewModel = colegiaturasServices.lsColegiaturasGridViewModel.OrderBy(x => x.IntCantPagos).ToList();
+                        }
+                        else
+                        {
+                            colegiaturasServices.lsColegiaturasGridViewModel = colegiaturasServices.lsColegiaturasGridViewModel.OrderByDescending(x => x.IntCantPagos).ToList();
+                        }
+                        break;
+                    case "VchDescripcion":
+                        if (Orden == "ASC")
+                        {
+                            colegiaturasServices.lsColegiaturasGridViewModel = colegiaturasServices.lsColegiaturasGridViewModel.OrderBy(x => x.VchDescripcion).ToList();
+                        }
+                        else
+                        {
+                            colegiaturasServices.lsColegiaturasGridViewModel = colegiaturasServices.lsColegiaturasGridViewModel.OrderByDescending(x => x.VchDescripcion).ToList();
+                        }
+                        break;
+                    case "DtFHInicio":
+                        if (Orden == "ASC")
+                        {
+                            colegiaturasServices.lsColegiaturasGridViewModel = colegiaturasServices.lsColegiaturasGridViewModel.OrderBy(x => x.DtFHInicio).ToList();
+                        }
+                        else
+                        {
+                            colegiaturasServices.lsColegiaturasGridViewModel = colegiaturasServices.lsColegiaturasGridViewModel.OrderByDescending(x => x.DtFHInicio).ToList();
+                        }
+                        break;
+                    case "VchFHLimite":
+                        if (Orden == "ASC")
+                        {
+                            colegiaturasServices.lsColegiaturasGridViewModel = colegiaturasServices.lsColegiaturasGridViewModel.OrderBy(x => x.VchFHLimite).ToList();
+                        }
+                        else
+                        {
+                            colegiaturasServices.lsColegiaturasGridViewModel = colegiaturasServices.lsColegiaturasGridViewModel.OrderByDescending(x => x.VchFHLimite).ToList();
+                        }
+                        break;
+                    case "VchFHVencimiento":
+                        if (Orden == "ASC")
+                        {
+                            colegiaturasServices.lsColegiaturasGridViewModel = colegiaturasServices.lsColegiaturasGridViewModel.OrderBy(x => x.VchFHVencimiento).ToList();
+                        }
+                        else
+                        {
+                            colegiaturasServices.lsColegiaturasGridViewModel = colegiaturasServices.lsColegiaturasGridViewModel.OrderByDescending(x => x.VchFHVencimiento).ToList();
+                        }
+                        break;
+                    case "DcmRecargo":
+                        if (Orden == "ASC")
+                        {
+                            colegiaturasServices.lsColegiaturasGridViewModel = colegiaturasServices.lsColegiaturasGridViewModel.OrderBy(x => x.DcmRecargo).ToList();
+                        }
+                        else
+                        {
+                            colegiaturasServices.lsColegiaturasGridViewModel = colegiaturasServices.lsColegiaturasGridViewModel.OrderByDescending(x => x.DcmRecargo).ToList();
+                        }
+                        break;
+                    case "DcmRecargoPeriodo":
+                        if (Orden == "ASC")
+                        {
+                            colegiaturasServices.lsColegiaturasGridViewModel = colegiaturasServices.lsColegiaturasGridViewModel.OrderBy(x => x.DcmRecargoPeriodo).ToList();
+                        }
+                        else
+                        {
+                            colegiaturasServices.lsColegiaturasGridViewModel = colegiaturasServices.lsColegiaturasGridViewModel.OrderByDescending(x => x.DcmRecargoPeriodo).ToList();
+                        }
+                        break;
+                    case "UidEstatus":
+                        if (Orden == "ASC")
+                        {
+                            colegiaturasServices.lsColegiaturasGridViewModel = colegiaturasServices.lsColegiaturasGridViewModel.OrderBy(x => x.UidEstatus).ToList();
+                        }
+                        else
+                        {
+                            colegiaturasServices.lsColegiaturasGridViewModel = colegiaturasServices.lsColegiaturasGridViewModel.OrderByDescending(x => x.UidEstatus).ToList();
+                        }
+                        break;
+                }
+
+                ViewState["NewPageIndex"] = int.Parse(ViewState["NewPageIndex"].ToString()) - 1;
+                gvColegiaturas.DataSource = colegiaturasServices.lsColegiaturasGridViewModel;
+                gvColegiaturas.DataBind();
+            }
+        }
 
         private void ManejoDatos(Guid dataKeys)
         {
@@ -531,14 +808,29 @@ namespace PagaLaEscuela.Views
             txtImporte.Text = colegiaturasServices.colegiaturasRepository.colegiaturasGridViewModel.DcmImporte.ToString("N2");
             if (colegiaturasServices.colegiaturasRepository.colegiaturasGridViewModel.BitRecargo)
             {
-                ddlRecargo.SelectedIndex = 1;
                 ddlTipoRecargo.SelectedValue = colegiaturasServices.colegiaturasRepository.colegiaturasGridViewModel.VchTipoRecargo;
                 txtRecargo.Text = colegiaturasServices.colegiaturasRepository.colegiaturasGridViewModel.DcmRecargo.ToString();
+                cbActivarRL.Checked = true;
+                cbActivarRL_CheckedChanged(null, null);
             }
             else
             {
-                ddlRecargo.SelectedIndex = 0;
                 txtRecargo.Text = string.Empty;
+                cbActivarRL.Checked = false;
+                cbActivarRL_CheckedChanged(null, null);
+            }
+            if (colegiaturasServices.colegiaturasRepository.colegiaturasGridViewModel.BitRecargoPeriodo)
+            {
+                ddlTipoRecargoP.SelectedValue = colegiaturasServices.colegiaturasRepository.colegiaturasGridViewModel.VchTipoRecargoPeriodo;
+                txtRecargoP.Text = colegiaturasServices.colegiaturasRepository.colegiaturasGridViewModel.DcmRecargoPeriodo.ToString();
+                cbActivarRP.Checked = true;
+                cbActivarRP_CheckedChanged(null, null);
+            }
+            else
+            {
+                txtRecargoP.Text = string.Empty;
+                cbActivarRP.Checked = false;
+                cbActivarRP_CheckedChanged(null, null);
             }
             txtCantPagos.Text = colegiaturasServices.colegiaturasRepository.colegiaturasGridViewModel.IntCantPagos.ToString();
             ddlPeriodicidad.SelectedIndex = ddlPeriodicidad.Items.IndexOf(ddlPeriodicidad.Items.FindByValue(colegiaturasServices.colegiaturasRepository.colegiaturasGridViewModel.UidPeriodicidad.ToString()));
@@ -550,12 +842,22 @@ namespace PagaLaEscuela.Views
                 cbActivarFHL.Checked = true;
                 cbActivarFHL_CheckedChanged(null, null);
             }
+            else
+            {
+                cbActivarFHL.Checked = false;
+            }
             if (colegiaturasServices.colegiaturasRepository.colegiaturasGridViewModel.VchFHVencimiento != string.Empty && colegiaturasServices.colegiaturasRepository.colegiaturasGridViewModel.VchFHVencimiento != "NO TIENE")
             {
                 txtFHVencimiento.Text = DateTime.Parse(colegiaturasServices.colegiaturasRepository.colegiaturasGridViewModel.VchFHVencimiento).ToString("yyyy-MM-dd");
                 cbActivarFHV.Checked = true;
                 cbActivarFHV_CheckedChanged(null, null);
             }
+            else
+            {
+                cbActivarFHV.Checked = false;
+            }
+
+            ddlEstatus.SelectedIndex = ddlEstatus.Items.IndexOf(ddlEstatus.Items.FindByValue(colegiaturasServices.colegiaturasRepository.colegiaturasGridViewModel.UidEstatus.ToString()));
 
             promocionesServices.ObtenerPromocionesColegiatura(dataKeys);
             if (promocionesServices.lsPromocionesColegiaturaModel.Count >= 1)
@@ -600,106 +902,63 @@ namespace PagaLaEscuela.Views
             btnGuardar.Text = "<i class=" + "material-icons>" + "refresh </i> Actualizar";
         }
 
-        protected void gvColegiaturas_PageIndexChanging(object sender, GridViewPageEventArgs e)
-        {
-            gvColegiaturas.PageIndex = e.NewPageIndex;
-            gvColegiaturas.DataSource = padresServices.lsPadres;
-            gvColegiaturas.DataBind();
-        }
-        protected void gvColegiaturas_Sorting(object sender, GridViewSortEventArgs e)
-        {
-            string SortExpression = e.SortExpression;
-            SortDirection direccion;
-            string Orden = string.Empty;
-
-            if (ViewState["gvColegiaturas"] != null)
-            {
-                direccion = (SortDirection)ViewState["gvColegiaturas"];
-                if (direccion == SortDirection.Ascending)
-                {
-                    ViewState["gvColegiaturas"] = SortDirection.Descending;
-                    Orden = "ASC";
-                }
-                else
-                {
-                    ViewState["gvColegiaturas"] = SortDirection.Ascending;
-                    Orden = "DESC";
-                }
-
-                switch (SortExpression)
-                {
-                    case "NombreCompleto":
-                        if (Orden == "ASC")
-                        {
-                            padresServices.lsPadres = padresServices.lsPadres.OrderBy(x => x.NombreCompleto).ToList();
-                        }
-                        else
-                        {
-                            padresServices.lsPadres = padresServices.lsPadres.OrderByDescending(x => x.NombreCompleto).ToList();
-                        }
-                        break;
-                    case "StrCorreo":
-                        if (Orden == "ASC")
-                        {
-                            padresServices.lsPadres = padresServices.lsPadres.OrderBy(x => x.StrCorreo).ToList();
-                        }
-                        else
-                        {
-                            padresServices.lsPadres = padresServices.lsPadres.OrderByDescending(x => x.StrCorreo).ToList();
-                        }
-                        break;
-                    case "VchUsuario":
-                        if (Orden == "ASC")
-                        {
-                            padresServices.lsPadres = padresServices.lsPadres.OrderBy(x => x.VchUsuario).ToList();
-                        }
-                        else
-                        {
-                            padresServices.lsPadres = padresServices.lsPadres.OrderByDescending(x => x.VchUsuario).ToList();
-                        }
-                        break;
-                    case "VchNombrePerfil":
-                        if (Orden == "ASC")
-                        {
-                            padresServices.lsPadres = padresServices.lsPadres.OrderBy(x => x.VchNombrePerfil).ToList();
-                        }
-                        else
-                        {
-                            padresServices.lsPadres = padresServices.lsPadres.OrderByDescending(x => x.VchNombrePerfil).ToList();
-                        }
-                        break;
-                    case "UidEstatus":
-                        if (Orden == "ASC")
-                        {
-                            padresServices.lsPadres = padresServices.lsPadres.OrderBy(x => x.UidEstatus).ToList();
-                        }
-                        else
-                        {
-                            padresServices.lsPadres = padresServices.lsPadres.OrderByDescending(x => x.UidEstatus).ToList();
-                        }
-                        break;
-                }
-
-                gvColegiaturas.DataSource = padresServices.lsPadres;
-                gvColegiaturas.DataBind();
-            }
-        }
-
         protected void btnFiltros_Click(object sender, EventArgs e)
         {
             ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalBusqueda()", true);
         }
         protected void btnBuscar_Click(object sender, EventArgs e)
         {
-            padresServices.BuscarUsuariosFinales(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse("E39FF705-8A01-4302-829A-7CFB9615CC8F"), FiltroNombre.Text, FiltroApePaterno.Text, FiltroApeMaterno.Text, FiltroCorreo.Text, Guid.Parse(FiltroEstatus.SelectedValue));
-            gvColegiaturas.DataSource = padresServices.lsPadres;
+            decimal ImporteMayor = 0;
+            decimal ImporteMenor = 0;
+
+            if (FiltroImporteMayor.Text != string.Empty)
+            {
+                switch (ddlImporteMayor.SelectedValue)
+                {
+                    case ">":
+                        ImporteMayor = Convert.ToDecimal(FiltroImporteMayor.Text) + 1;
+                        break;
+                    case ">=":
+                        ImporteMayor = Convert.ToDecimal(FiltroImporteMayor.Text);
+                        break;
+                }
+            }
+            if (FiltroImporteMenor.Text != string.Empty)
+            {
+                switch (ddlImporteMenor.SelectedValue)
+                {
+                    case "<":
+                        ImporteMenor = Convert.ToDecimal(FiltroImporteMenor.Text) - 1;
+                        break;
+                    case "<=":
+                        ImporteMenor = Convert.ToDecimal(FiltroImporteMenor.Text);
+                        break;
+                }
+            }
+
+            ViewState["NewPageIndex"] = null;
+            colegiaturasServices.BuscarColegiatura(FiltroIdentificador.Text, ImporteMayor, ImporteMenor, FiltroCantPagos.Text, Guid.Parse(FiltroPeriodicidad.SelectedValue), FiltroInicioDesde.Text, FiltroInicioHasta.Text, FiltroFechaLimite.Text, FiltroFechaVencimiento.Text, FiltroRecargoLimite.Text, FiltroRecargoPeriodo.Text, Guid.Parse(FiltroEstatus.SelectedValue), Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+            gvColegiaturas.DataSource = colegiaturasServices.lsColegiaturasGridViewModel;
             gvColegiaturas.DataBind();
 
             ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModalBusqueda()", true);
         }
         protected void btnLimpiar_Click(object sender, EventArgs e)
         {
-
+            FiltroIdentificador.Text = string.Empty;
+            FiltroImporteMenor.Text = string.Empty;
+            FiltroImporteMayor.Text = string.Empty;
+            ddlImporteMayor.SelectedIndex = -1;
+            ddlImporteMenor.SelectedIndex = -1;
+            FiltroCantPagos.Text = string.Empty;
+            FiltroPeriodicidad.SelectedIndex = -1;
+            FiltroInicioDesde.Text = string.Empty;
+            FiltroInicioHasta.Text = string.Empty;
+            FiltroFechaLimite.SelectedIndex = -1;
+            FiltroFechaVencimiento.SelectedIndex = -1;
+            FiltroRecargoLimite.SelectedIndex = -1;
+            FiltroRecargoPeriodo.SelectedIndex = -1;
+            FiltroEstatus.SelectedIndex = -1;
         }
 
         protected void btnImportarExcel_Click(object sender, EventArgs e)
@@ -756,7 +1015,7 @@ namespace PagaLaEscuela.Views
 
                             if (alumnosServices.lsExcelSeleccionar.Count >= 1)
                             {
-                                alumnosServices.AsignarColeAlumnos(alumnosServices.lsExcelSeleccionar, alumnosServices.lsSelectAlumnosGridViewModel, Guid.Parse(ViewState["UidClienteLocal"].ToString()), txtFiltroAlumNombre.Text.Trim(), txtFiltroAlumPaterno.Text.Trim(), txtFiltroAlumMaterno.Text.Trim(), txtFiltroAlumMatricula.Text.Trim());
+                                alumnosServices.AsignarColeAlumnos(alumnosServices.lsExcelSeleccionar, alumnosServices.lsSelectAlumnosGridViewModel, Guid.Parse(ViewState["UidClienteLocal"].ToString()), txtFiltroAlumIdentificador.Text, txtFiltroAlumNombre.Text.Trim(), txtFiltroAlumPaterno.Text.Trim(), txtFiltroAlumMaterno.Text.Trim(), txtFiltroAlumMatricula.Text.Trim());
                                 //gvAlumnos.DataSource = alumnosServices.lsAlumnosGridViewModel.Where(x => x.blSeleccionado == true);
                                 //gvAlumnos.DataBind();
 
@@ -766,6 +1025,7 @@ namespace PagaLaEscuela.Views
                                     alumnosServices.RegistrarColeAlumnos(Guid.Parse(ViewState["UidRequerido"].ToString()), itAlum.UidAlumno);
                                 }
 
+                                ViewState["NewPageIndex"] = null;
                                 colegiaturasServices.CargarColegiaturas(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
                                 gvColegiaturas.DataSource = colegiaturasServices.lsColegiaturasGridViewModel;
                                 gvColegiaturas.DataBind();
@@ -840,12 +1100,13 @@ namespace PagaLaEscuela.Views
 
         protected void btnFiltroBuscar_Click(object sender, EventArgs e)
         {
-            alumnosServices.AsignarColeAlumnos(alumnosServices.lsExcelSeleccionar, alumnosServices.lsSelectAlumnosGridViewModel, Guid.Parse(ViewState["UidClienteLocal"].ToString()), txtFiltroAlumNombre.Text.Trim(), txtFiltroAlumPaterno.Text.Trim(), txtFiltroAlumMaterno.Text.Trim(), txtFiltroAlumMatricula.Text.Trim());
+            alumnosServices.AsignarColeAlumnos(alumnosServices.lsExcelSeleccionar, alumnosServices.lsSelectAlumnosGridViewModel, Guid.Parse(ViewState["UidClienteLocal"].ToString()), txtFiltroAlumIdentificador.Text, txtFiltroAlumNombre.Text.Trim(), txtFiltroAlumPaterno.Text.Trim(), txtFiltroAlumMaterno.Text.Trim(), txtFiltroAlumMatricula.Text.Trim());
             gvAlumnos.DataSource = alumnosServices.lsAlumnosGridViewModel;
             gvAlumnos.DataBind();
         }
         protected void btnFiltroLimpiar_Click(object sender, EventArgs e)
         {
+            txtFiltroAlumIdentificador.Text = string.Empty;
             txtFiltroAlumNombre.Text = string.Empty;
             txtFiltroAlumPaterno.Text = string.Empty;
             txtFiltroAlumMaterno.Text = string.Empty;
@@ -915,6 +1176,41 @@ namespace PagaLaEscuela.Views
             gvAlumnos.DataSource = alumnosServices.lsAlumnosGridViewModel;
             gvAlumnos.DataBind();
         }
+        protected void gvAlumnos_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.Header)
+            {
+                CheckBox cbTodo = (CheckBox)e.Row.FindControl("cbTodo");
+
+                int count = alumnosServices.lsAlumnosGridViewModel.Count(x => x.blSeleccionado == false);
+
+                if (count >= 1)
+                {
+                    cbTodo.Checked = false;
+                }
+                else
+                {
+                    cbTodo.Checked = true;
+                }
+            }
+        }
+        protected void cbTodo_CheckedChanged(object sender, EventArgs e)
+        {
+            bool cbTodo = ((CheckBox)gvAlumnos.HeaderRow.FindControl("cbTodo")).Checked;
+
+            if (cbTodo)
+            {
+                alumnosServices.ActualizarLsAsignarAlumnosTodo(alumnosServices.lsAlumnosGridViewModel, true);
+            }
+            else
+            {
+                alumnosServices.ActualizarLsAsignarAlumnosTodo(alumnosServices.lsAlumnosGridViewModel, false);
+            }
+
+            lblCantSeleccionado.Text = alumnosServices.lsSelectAlumnosGridViewModel.Count.ToString();
+            gvAlumnos.DataSource = alumnosServices.lsAlumnosGridViewModel;
+            gvAlumnos.DataBind();
+        }
         protected void cbSeleccionado_CheckedChanged(object sender, EventArgs e)
         {
             CheckBox checkBox = (CheckBox)sender;
@@ -939,13 +1235,40 @@ namespace PagaLaEscuela.Views
 
         protected void cbActivarFHL_CheckedChanged(object sender, EventArgs e)
         {
+            DateTime HoraDelServidor = DateTime.Now;
+            DateTime hoy = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(HoraDelServidor, TimeZoneInfo.Local.Id, "Eastern Standard Time (Mexico)");
+            string FHI = txtFHInicio.Text;
+            if (string.IsNullOrEmpty(FHI))
+            {
+                FHI = hoy.ToString("yyyy-MM-dd");
+            }
+
+            if (string.IsNullOrEmpty(txtFHLimite.Text))
+            {
+                txtFHLimite.Text = hoy.ToString("yyyy-MM-dd");
+            }
+
             if (cbActivarFHL.Checked)
             {
+
                 pnlActivarFHL.Enabled = true;
+
+                if (ddlPeriodicidad.SelectedItem.Text == "SEMANAL")
+                {
+                    txtFHVencimiento.Attributes.Add("min", DateTime.Parse(txtFHLimite.Text).ToString("yyyy-MM-dd"));
+                    txtFHVencimiento.Text = DateTime.Parse(FHI).AddDays(6).ToString("yyyy-MM-dd");
+                }
+                else if (ddlPeriodicidad.SelectedItem.Text == "MENSUAL")
+                {
+                    txtFHVencimiento.Attributes.Add("min", DateTime.Parse(txtFHLimite.Text).ToString("yyyy-MM-dd"));
+                    txtFHVencimiento.Text = DateTime.Parse(FHI).AddMonths(1).ToString("yyyy-MM-dd");
+                }
+
             }
             else
             {
                 pnlActivarFHL.Enabled = false;
+                txtFHVencimiento.Attributes.Add("min", DateTime.Parse(FHI).ToString("yyyy-MM-dd"));
             }
         }
         protected void cbActivarFHV_CheckedChanged(object sender, EventArgs e)
@@ -969,9 +1292,9 @@ namespace PagaLaEscuela.Views
 
         }
 
-        protected void ddlRecargo_SelectedIndexChanged(object sender, EventArgs e)
+        protected void cbActivarRL_CheckedChanged(object sender, EventArgs e)
         {
-            if (bool.Parse(ddlRecargo.SelectedValue))
+            if (cbActivarRL.Checked)
             {
                 pnlRecargo.Visible = true;
             }
@@ -980,6 +1303,19 @@ namespace PagaLaEscuela.Views
                 pnlRecargo.Visible = false;
                 ddlTipoRecargo.SelectedIndex = -1;
                 txtRecargo.Text = string.Empty;
+            }
+        }
+        protected void cbActivarRP_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbActivarRP.Checked)
+            {
+                pnlRecargoP.Visible = true;
+            }
+            else
+            {
+                pnlRecargoP.Visible = false;
+                ddlTipoRecargoP.SelectedIndex = -1;
+                txtRecargoP.Text = string.Empty;
             }
         }
 
@@ -997,23 +1333,102 @@ namespace PagaLaEscuela.Views
 
             if (ddlPeriodicidad.SelectedItem.Text == "SEMANAL")
             {
-                ViewState["FHMin"] = FHI.AddDays(1).ToString("yyyy-MM-dd");
-                txtFHLimite.Attributes.Add("min", FHI.AddDays(1).ToString("yyyy-MM-dd"));
-                txtFHVencimiento.Attributes.Add("min", FHI.AddDays(2).ToString("yyyy-MM-dd"));
+                ViewState["FHMin"] = FHI.ToString("yyyy-MM-dd");
+                txtFHLimite.Attributes.Add("min", FHI.ToString("yyyy-MM-dd"));
+                //txtFHVencimiento.Attributes.Add("min", FHI.AddDays(2).ToString("yyyy-MM-dd"));
 
-                txtFHLimite.Attributes.Add("max", FHI.AddDays(7).ToString("yyyy-MM-dd"));
-                txtFHVencimiento.Attributes.Add("max", FHI.AddDays(7).ToString("yyyy-MM-dd"));
-                ViewState["FHMax"] = FHI.AddDays(7).ToString("yyyy-MM-dd");
+                txtFHLimite.Attributes.Add("max", FHI.AddDays(6).ToString("yyyy-MM-dd"));
+                txtFHVencimiento.Attributes.Add("max", FHI.AddDays(6).ToString("yyyy-MM-dd"));
+                ViewState["FHMax"] = FHI.AddDays(6).ToString("yyyy-MM-dd");
+
+                ViewState["FHFinPerido"] = FHI.AddDays(6).ToString("yyyy-MM-dd");
+
+                //Asigna el mismo valor que FHInicio
+                txtFHLimite.Text = FHI.ToString("yyyy-MM-dd");
+                //Asigna el valor de fin de periodo a vencimiento
+                txtFHVencimiento.Text = FHI.AddDays(6).ToString("yyyy-MM-dd");
+
+                //Sacar rango para FHVencimiento entre FHLimite y fin de periodo
+                if (cbActivarFHL.Checked)
+                {
+                    txtFHVencimiento.Attributes.Add("min", DateTime.Parse(txtFHLimite.Text).ToString("yyyy-MM-dd"));
+                }
+                else
+                {
+                    txtFHVencimiento.Attributes.Add("min", FHI.ToString("yyyy-MM-dd"));
+                }
             }
             else if (ddlPeriodicidad.SelectedItem.Text == "MENSUAL")
             {
                 ViewState["FHMin"] = FHI.AddDays(1).ToString("yyyy-MM-dd");
-                txtFHLimite.Attributes.Add("min", FHI.AddDays(1).ToString("yyyy-MM-dd"));
-                txtFHVencimiento.Attributes.Add("min", FHI.AddDays(2).ToString("yyyy-MM-dd"));
+                txtFHLimite.Attributes.Add("min", FHI.ToString("yyyy-MM-dd"));
+                //txtFHVencimiento.Attributes.Add("min", FHI.AddDays(2).ToString("yyyy-MM-dd"));
 
                 txtFHLimite.Attributes.Add("max", FHI.AddMonths(1).ToString("yyyy-MM-dd"));
                 txtFHVencimiento.Attributes.Add("max", FHI.AddMonths(1).ToString("yyyy-MM-dd"));
                 ViewState["FHMax"] = FHI.AddMonths(1).ToString("yyyy-MM-dd");
+
+                ViewState["FHFinPerido"] = FHI.AddMonths(1).ToString("yyyy-MM-dd");
+
+                //Asigna el mismo valor que FHInicio
+                txtFHLimite.Text = FHI.ToString("yyyy-MM-dd");
+                //Asigna el valor de fin de periodo a vencimiento
+                txtFHVencimiento.Text = FHI.AddMonths(1).ToString("yyyy-MM-dd");
+
+                //Sacar rango para FHVencimiento entre FHLimite y fin de periodo
+                if (cbActivarFHL.Checked)
+                {
+                    txtFHVencimiento.Attributes.Add("min", DateTime.Parse(txtFHLimite.Text).ToString("yyyy-MM-dd"));
+                }
+                else
+                {
+                    txtFHVencimiento.Attributes.Add("min", FHI.ToString("yyyy-MM-dd"));
+                }
+            }
+        }
+
+        protected void ddlEstatus_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //DDL DENTRO DE UN GRIDVIEW
+
+            DropDownList DropDownList = (DropDownList)sender;
+            GridViewRow gr = (GridViewRow)DropDownList.Parent.Parent;
+            Guid dataKey = Guid.Parse(gvColegiaturas.DataKeys[gr.RowIndex].Value.ToString());
+
+            DropDownList ddlEstatus = (DropDownList)gr.FindControl("ddlEstatus");
+
+            if (colegiaturasServices.ActualizarEstatusColegiatura(dataKey, Guid.Parse(ddlEstatus.SelectedValue)))
+            {
+                pnlAlert.Visible = true;
+                lblMensajeAlert.Text = "<strong>¡Felicidades! </strong> se ha actualizado exitosamente.";
+                divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+            }
+            else
+            {
+                lblMensajeAlert.Text = "<strong>Lo sentimos</strong> no se ha podido actualizar.";
+                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
+            }
+        }
+
+        protected void btnCalcularFHV_Click(object sender, EventArgs e)
+        {
+            DateTime FHI = DateTime.Parse(txtFHInicio.Text);
+
+            //Sacar rango para FHVencimiento entre FHLimite y fin de periodo
+
+            if (cbActivarFHL.Checked)
+            {
+                if (ddlPeriodicidad.SelectedItem.Text == "SEMANAL")
+                {
+                    txtFHVencimiento.Attributes.Add("min", DateTime.Parse(txtFHLimite.Text).ToString("yyyy-MM-dd"));
+                    txtFHVencimiento.Text = FHI.AddDays(6).ToString("yyyy-MM-dd");
+                }
+                else if (ddlPeriodicidad.SelectedItem.Text == "MENSUAL")
+                {
+                    txtFHVencimiento.Attributes.Add("min", DateTime.Parse(txtFHLimite.Text).ToString("yyyy-MM-dd"));
+                    txtFHVencimiento.Text = FHI.AddMonths(1).ToString("yyyy-MM-dd");
+                }
             }
         }
     }

@@ -26,6 +26,11 @@ namespace Franquicia.WebForms.Views
         ColoniasServices coloniasServices = new ColoniasServices();
         UsuariosCompletosServices usuariosCompletosServices = new UsuariosCompletosServices();
 
+        SuperPromocionesServices superPromocionesServices = new SuperPromocionesServices();
+        PromocionesServices promocionesServices = new PromocionesServices();
+        ComisionesTarjetasClientesServices comisionesTarjetasClServices = new ComisionesTarjetasClientesServices();
+        ComisionesTarjetasServices comisionesTarjetasServices = new ComisionesTarjetasServices();
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -266,12 +271,42 @@ namespace Franquicia.WebForms.Views
                 {
                     if (item.Agregar)
                     {
-                        if (clientesServices.RegistrarClientes(
-                txtRFC.Text.Trim(), txtRazonSocial.Text.Trim(), txtNombreComercial.Text.Trim(), DateTime.Parse(thisDay.ToString("dd/MM/yyyy HH:mm:ss")), txtCorreo.Text.Trim(), txtIdentificadorWASMS.Text.Trim(), ddlZonaHoraria.SelectedValue, bool.Parse(ddlEscuela.SelectedValue),
-                txtIdentificador.Text.Trim(), Guid.Parse(ddlPais.SelectedValue), Guid.Parse(ddlEstado.SelectedValue), Guid.Parse(ddlMunicipio.SelectedValue), Guid.Parse(ddlCiudad.SelectedValue), Guid.Parse(ddlColonia.SelectedValue), txtCalle.Text.Trim(), txtEntreCalle.Text.Trim(), txtYCalle.Text.Trim(), txtNumeroExterior.Text.Trim(), txtNumeroInterior.Text.Trim(), txtCodigoPostal.Text.Trim(), txtReferencia.Text.Trim(),
-                txtNumero.Text.Trim(), Guid.Parse(ddlTipoTelefono.SelectedValue), Guid.Parse(ViewState["UidFranquiciaLocal"].ToString())
-                ))
+                        Guid UidCliente = Guid.NewGuid();
+
+                        if (clientesServices.RegistrarClientes(UidCliente,
+                            txtRFC.Text.Trim(), txtRazonSocial.Text.Trim(), txtNombreComercial.Text.Trim(), DateTime.Parse(thisDay.ToString("dd/MM/yyyy HH:mm:ss")), txtCorreo.Text.Trim(), txtIdentificadorWASMS.Text.Trim(), ddlZonaHoraria.SelectedValue, bool.Parse(ddlEscuela.SelectedValue),
+                            txtIdentificador.Text.Trim(), Guid.Parse(ddlPais.SelectedValue), Guid.Parse(ddlEstado.SelectedValue), Guid.Parse(ddlMunicipio.SelectedValue), Guid.Parse(ddlCiudad.SelectedValue), Guid.Parse(ddlColonia.SelectedValue), txtCalle.Text.Trim(), txtEntreCalle.Text.Trim(), txtYCalle.Text.Trim(), txtNumeroExterior.Text.Trim(), txtNumeroInterior.Text.Trim(), txtCodigoPostal.Text.Trim(), txtReferencia.Text.Trim(),
+                            txtNumero.Text.Trim(), Guid.Parse(ddlTipoTelefono.SelectedValue), Guid.Parse(ViewState["UidFranquiciaLocal"].ToString())
+                            ))
                         {
+
+                            superPromocionesServices.CargarSuperPromociones();
+                            foreach (var itPromo in superPromocionesServices.lsCBLSuperPromociones)
+                            {
+                                try
+                                {
+                                    promocionesServices.RegistrarPromociones(UidCliente, itPromo.UidPromocion, itPromo.DcmComicion, itPromo.DcmApartirDe);
+                                }
+                                catch (Exception ex)
+                                {
+                                    var s = ex.Message;
+                                }
+                            }
+
+                            comisionesTarjetasServices.CargarComisionesTarjeta();
+                            foreach (var itComi in comisionesTarjetasServices.lsComisionesTarjetas)
+                            {
+                                try
+                                {
+                                    comisionesTarjetasClServices.RegistrarComisionesTarjeta(itComi.BitComision, itComi.DcmComision, UidCliente);
+                                }
+                                catch (Exception ex)
+                                {
+                                    var s = ex.Message;                                    
+                                }
+                            }
+
+
                             clientesServices.CargarClientes(Guid.Parse(ViewState["UidFranquiciaLocal"].ToString()));
                             gvClientes.DataSource = clientesServices.lsClientesGridViewModel;
                             gvClientes.DataBind();

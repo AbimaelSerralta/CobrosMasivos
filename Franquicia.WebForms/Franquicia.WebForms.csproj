@@ -16,8 +16,7 @@
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
-    <IISExpressSSLPort>
-    </IISExpressSSLPort>
+    <IISExpressSSLPort>44374</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
@@ -79,6 +78,9 @@
     <Reference Include="RestSharp, Version=106.0.0.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.106.10.1\lib\net452\RestSharp.dll</HintPath>
     </Reference>
+    <Reference Include="StarkbankEcdsa, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\starkbank-ecdsa.1.2.0\lib\net452\StarkbankEcdsa.dll</HintPath>
+    </Reference>
     <Reference Include="System.IdentityModel.Tokens.Jwt, Version=5.1.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.5.1.2\lib\net451\System.IdentityModel.Tokens.Jwt.dll</HintPath>
     </Reference>
@@ -87,6 +89,7 @@
     <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -230,6 +233,7 @@
     <Content Include="Images\icoSms.jpg" />
     <Content Include="Images\icoWhats.png" />
     <Content Include="Images\LigaSimple.PNG" />
+    <Content Include="Images\llave.png" />
     <Content Include="Images\logo-cobroscontarjetas.png" />
     <Content Include="Images\logo-compuandsoft.png" />
     <Content Include="Images\logo-mit.png" />
@@ -242,9 +246,16 @@
     <Content Include="Multiselect\js\bootstrap-multiselect.min.js" />
     <Content Include="Multiselect\js\jquery-3.3.1.min.js" />
     <Content Include="Pago.aspx" />
+    <Content Include="PlantillasHtml\CorreoCadena.html" />
+    <Content Include="PlantillasHtml\CorreoEnvioCredenciales.html" />
+    <Content Include="PlantillasHtml\CorreoEnvioPagoColegiatura.html" />
+    <Content Include="PlantillasHtml\CorreoLiga.html" />
+    <Content Include="PlantillasHtml\CorreoLigaMultiple.html" />
+    <Content Include="PlantillasHtml\CorreoRecoveryPassword.html" />
     <Content Include="Views\AccesosUsuarios.aspx" />
     <Content Include="Views\AdministradoresFranquicias.aspx" />
     <Content Include="Views\AdministradoresClientes.aspx" />
+    <Content Include="Views\ComercioTarifas.aspx" />
     <Content Include="Views\CrearEventos.aspx" />
     <Content Include="Views\Eventos.aspx" />
     <Content Include="Views\EventosUsuario.aspx" />
@@ -292,7 +303,6 @@
     <Compile Include="Controllers\HookPayCardController.cs" />
     <Compile Include="Controllers\PayCardController.cs" />
     <Compile Include="Controllers\PayCardHookController.cs" />
-    <Compile Include="Controllers\PruebaController.cs" />
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -340,6 +350,13 @@
     </Compile>
     <Compile Include="Views\AdministradoresClientes.aspx.designer.cs">
       <DependentUpon>AdministradoresClientes.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ComercioTarifas.aspx.cs">
+      <DependentUpon>ComercioTarifas.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\ComercioTarifas.aspx.designer.cs">
+      <DependentUpon>ComercioTarifas.aspx</DependentUpon>
     </Compile>
     <Compile Include="Views\CrearEventos.aspx.cs">
       <DependentUpon>CrearEventos.aspx</DependentUpon>
@@ -851,7 +868,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>53340</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:53340/</IISUrl>
+          <IISUrl>https://localhost:44374/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

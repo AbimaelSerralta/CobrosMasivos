@@ -279,7 +279,7 @@ namespace PagaLaEscuela.Views
 
         protected void btnActualizarLista_Click(object sender, EventArgs e)
         {
-            ligasUrlsServices.ConsultarLigaUsuarioFinal(Guid.Parse(ViewState["UidUsuarioLocal"].ToString()));
+            ligasUrlsServices.ConsultarLigaPadres(Guid.Parse(ViewState["UidUsuarioLocal"].ToString()));
             gvLigasGeneradas.DataSource = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel;
             gvLigasGeneradas.DataBind();
 

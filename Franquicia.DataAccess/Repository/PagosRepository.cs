@@ -1,4 +1,5 @@
 ﻿using Franquicia.DataAccess.Common;
+using Franquicia.Domain.Models;
 using Franquicia.Domain.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -178,7 +179,7 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select * from AuxiliarCorreos where IdReferencia = = '" + IdReferencia + "'";
+            query.CommandText = "select * from AuxiliarCorreos where IdReferencia = '" + IdReferencia + "'";
 
             DataTable dt = this.Busquedas(query);
 
@@ -189,5 +190,83 @@ namespace Franquicia.DataAccess.Repository
 
             return Resultado;
         }
+
+        #region Metodos Escuela
+        #region Pagos
+        public Tuple<string, string, string> ConsultarPagoColegiatura(string IdReferencia)
+        {
+            string Resultado = string.Empty;
+            string Resultado2 = string.Empty;
+            string Resultado3 = string.Empty;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select lu.UidPropietario, lu.UidPagoColegiatura, us.VchCorreo from LigasUrls lu, PagosTarjeta pt, Usuarios us where us.UidUsuario = lu.UidUsuario and lu.IdReferencia = pt.IdReferencia and lu.IdReferencia = '" + IdReferencia + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                Resultado = item["UidPagoColegiatura"].ToString();
+                Resultado2 = item["VchCorreo"].ToString();
+                Resultado3 = item["UidPropietario"].ToString();
+            }
+
+            return Tuple.Create(Resultado, Resultado2, Resultado3);
+        }
+        public Tuple<List<PagosColegiaturas>, List<DetallesPagosColegiaturas>> ObtenerPagoColegiatura(Guid UidPagoColegiatura)
+        {
+            List<PagosColegiaturas> lsPagosColegiaturas = new List<PagosColegiaturas>();
+            List<DetallesPagosColegiaturas> lsDetallesPagosColegiaturas = new List<DetallesPagosColegiaturas>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select * from PagosColegiaturas where UidPagoColegiatura = '" + UidPagoColegiatura + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                lsPagosColegiaturas.Add(new PagosColegiaturas
+                {
+                    VchAlumno = item["VchAlumno"].ToString(),
+                    VchMatricula = item["VchMatricula"].ToString(),
+                    DtFHPago = DateTime.Parse(item["DtFHPago"].ToString()),
+                    VchPromocionDePago = item["VchPromocionDePago"].ToString(),
+                    VchComisionBancaria = item["VchComisionBancaria"].ToString(),
+                    BitSubtotal = bool.Parse(item["BitSubtotal"].ToString()),
+                    DcmSubtotal = decimal.Parse(item["DcmSubtotal"].ToString()),
+                    BitComisionBancaria = bool.Parse(item["BitComisionBancaria"].ToString()),
+                    DcmComisionBancaria = decimal.Parse(item["DcmComisionBancaria"].ToString()),
+                    BitPromocionDePago = bool.Parse(item["BitPromocionDePago"].ToString()),
+                    DcmPromocionDePago = decimal.Parse(item["DcmPromocionDePago"].ToString()),
+                    DcmTotal = decimal.Parse(item["DcmTotal"].ToString())
+                });
+            }
+
+            //===============================================================================================
+            SqlCommand query2 = new SqlCommand();
+            query2.CommandType = CommandType.Text;
+
+            query2.CommandText = "select * from DetallesPagosColegiaturas where UidPagoColegiatura = '" + UidPagoColegiatura + "'";
+
+            DataTable dt2 = this.Busquedas(query2);
+
+            foreach (DataRow item in dt2.Rows)
+            {
+                lsDetallesPagosColegiaturas.Add(new DetallesPagosColegiaturas
+                {
+                    IntNum = int.Parse(item["IntNum"].ToString()),
+                    VchDescripcion = item["VchDescripcion"].ToString(),
+                    DcmImporte = decimal.Parse(item["DcmImporte"].ToString())
+                });
+            }
+
+            return Tuple.Create(lsPagosColegiaturas, lsDetallesPagosColegiaturas);
+        }
+        #endregion
+        #endregion
     }
 }

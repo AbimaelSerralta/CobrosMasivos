@@ -159,6 +159,33 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.Label lblValidar;
 
         /// <summary>
+        /// Control pnlAlertMnsjEstatus.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlAlertMnsjEstatus;
+
+        /// <summary>
+        /// Control divAlertMnsjEstatus.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divAlertMnsjEstatus;
+
+        /// <summary>
+        /// Control lblMnsjEstatus.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblMnsjEstatus;
+
+        /// <summary>
         /// Control txtIdentificador.
         /// </summary>
         /// <remarks>
@@ -177,13 +204,13 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.TextBox txtImporte;
 
         /// <summary>
-        /// Control ddlRecargo.
+        /// Control cbActivarRL.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlRecargo;
+        protected global::System.Web.UI.WebControls.CheckBox cbActivarRL;
 
         /// <summary>
         /// Control pnlRecargo.
@@ -211,6 +238,42 @@ namespace PagaLaEscuela.Views
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtRecargo;
+
+        /// <summary>
+        /// Control cbActivarRP.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox cbActivarRP;
+
+        /// <summary>
+        /// Control pnlRecargoP.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlRecargoP;
+
+        /// <summary>
+        /// Control ddlTipoRecargoP.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlTipoRecargoP;
+
+        /// <summary>
+        /// Control txtRecargoP.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtRecargoP;
 
         /// <summary>
         /// Control ddlPeriodicidad.
@@ -267,6 +330,15 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.TextBox txtFHLimite;
 
         /// <summary>
+        /// Control btnCalcularFHV.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnCalcularFHV;
+
+        /// <summary>
         /// Control cbActivarFHV.
         /// </summary>
         /// <remarks>
@@ -312,6 +384,15 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.ListBox ListBoxPromociones;
 
         /// <summary>
+        /// Control ddlEstatus.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlEstatus;
+
+        /// <summary>
         /// Control btnFiltroLimpiar.
         /// </summary>
         /// <remarks>
@@ -328,6 +409,15 @@ namespace PagaLaEscuela.Views
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton btnFiltroBuscar;
+
+        /// <summary>
+        /// Control txtFiltroAlumIdentificador.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtFiltroAlumIdentificador;
 
         /// <summary>
         /// Control txtFiltroAlumMatricula.
@@ -447,40 +537,121 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.Panel pnlFiltrosBusqueda;
 
         /// <summary>
-        /// Control FiltroNombre.
+        /// Control FiltroIdentificador.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox FiltroNombre;
+        protected global::System.Web.UI.WebControls.TextBox FiltroIdentificador;
 
         /// <summary>
-        /// Control FiltroApePaterno.
+        /// Control FiltroCantPagos.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox FiltroApePaterno;
+        protected global::System.Web.UI.WebControls.TextBox FiltroCantPagos;
 
         /// <summary>
-        /// Control FiltroApeMaterno.
+        /// Control FiltroPeriodicidad.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox FiltroApeMaterno;
+        protected global::System.Web.UI.WebControls.DropDownList FiltroPeriodicidad;
 
         /// <summary>
-        /// Control FiltroCorreo.
+        /// Control ddlImporteMayor.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox FiltroCorreo;
+        protected global::System.Web.UI.WebControls.DropDownList ddlImporteMayor;
+
+        /// <summary>
+        /// Control FiltroImporteMayor.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox FiltroImporteMayor;
+
+        /// <summary>
+        /// Control ddlImporteMenor.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlImporteMenor;
+
+        /// <summary>
+        /// Control FiltroImporteMenor.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox FiltroImporteMenor;
+
+        /// <summary>
+        /// Control FiltroInicioDesde.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox FiltroInicioDesde;
+
+        /// <summary>
+        /// Control FiltroInicioHasta.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox FiltroInicioHasta;
+
+        /// <summary>
+        /// Control FiltroFechaLimite.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList FiltroFechaLimite;
+
+        /// <summary>
+        /// Control FiltroFechaVencimiento.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList FiltroFechaVencimiento;
+
+        /// <summary>
+        /// Control FiltroRecargoLimite.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList FiltroRecargoLimite;
+
+        /// <summary>
+        /// Control FiltroRecargoPeriodo.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList FiltroRecargoPeriodo;
 
         /// <summary>
         /// Control FiltroEstatus.
@@ -490,15 +661,6 @@ namespace PagaLaEscuela.Views
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList FiltroEstatus;
-
-        /// <summary>
-        /// Control upBusqueda.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upBusqueda;
 
         /// <summary>
         /// Control btnBuscar.

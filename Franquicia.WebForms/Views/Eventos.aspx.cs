@@ -262,6 +262,15 @@ namespace Franquicia.WebForms.Views
             }
             txtImporte.Text = eventosServices.eventosRepository.eventosGridViewModel.DcmImporte.ToString("N2");
 
+            if (eventosServices.eventosRepository.eventosGridViewModel.BitDatosBeneficiario)
+            {
+                pnlDatosBeneficiario.Visible = true;
+            }
+            else
+            {
+                pnlDatosBeneficiario.Visible = false;
+            }
+
             if (eventosServices.eventosRepository.eventosGridViewModel.BitDatosUsuario)
             {
                 prefijosTelefonicosServices.CargarPrefijosTelefonicos();

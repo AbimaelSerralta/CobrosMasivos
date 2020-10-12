@@ -23,5 +23,6 @@ namespace Franquicia.Domain.Models
         public Guid UidEstatus { get; set; }
         public bool BitFHFin { get; set; }
         public Guid UidTipoEvento { get; set; }
+        public bool BitDatosBeneficiario { get; set; }
     }
 }

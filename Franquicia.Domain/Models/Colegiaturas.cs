@@ -21,6 +21,12 @@ namespace Franquicia.Domain.Models
         public bool BitRecargo { get; set; }
         public string VchTipoRecargo { get; set; }
         public decimal DcmRecargo { get; set; }
+        public string VchDcmRecargo { get; set; }
+        public bool BitRecargoPeriodo { get; set; }
+        public string VchTipoRecargoPeriodo { get; set; }
+        public decimal DcmRecargoPeriodo { get; set; }
+        public string VchDcmRecargoPeriodo { get; set; }
+        public Guid UidEstatus { get; set; }
         public Guid UidCliente { get; set; }
     }
 }

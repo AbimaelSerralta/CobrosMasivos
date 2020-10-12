@@ -221,6 +221,19 @@ namespace Franquicia.Bussiness
 
             lsPromocionesColegiaturaModel = promocionesRepository.CargarPromocionesPagosImporte(UidCliente, UidColegiatura, Importe);
         }
+        //public void PromocionesPagosDisponible(List<SuperPromociones> lsSuperPromociones, List<PromocionesColegiaturaModel> lsPromocionesColegiaturaModels)
+        //{
+        //    List<PromocionesColegiaturaModel> lsTemp = new List<PromocionesColegiaturaModel>();
+        //    lsTemp = lsPromocionesColegiaturaModels;
+
+        //    foreach (var item in lsSuperPromociones)
+        //    {
+        //        foreach (var it in lsTemp)
+        //        {
+        //            lsPromocionesColegiaturaModels.RemoveAt(lsPromocionesColegiaturaModels.FindIndex(x=>x.UidPromocion = ));
+        //        }
+        //    }
+        //}
         #endregion
 
         #endregion

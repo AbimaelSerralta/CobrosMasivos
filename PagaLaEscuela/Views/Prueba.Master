@@ -24,13 +24,13 @@
 
     <style>
         .sidebar .logo a.logo-mini {
-    opacity: 1;
-    float: left;
-    width: 30px;
-    text-align: center;
-    margin-left: 23px;
-    margin-right: 15px;
-}
+            opacity: 1;
+            float: left;
+            width: 30px;
+            text-align: center;
+            margin-left: 23px;
+            margin-right: 15px;
+        }
     </style>
 
 </head>
@@ -56,8 +56,7 @@
         <div class="wrapper ">
             <div class="sidebar" data-color="purple" data-background-color="white" data-image="../../assets/img/sidebar-1.jpg">
                 <div class="logo">
-                    <a href="#" class="simple-text logo-mini">
-                        CT
+                    <a href="#" class="simple-text logo-mini">CT
                     </a>
                     <a href="#" class="simple-text logo-normal">
                         <asp:Label ID="lblTitleMenu" runat="server" />
@@ -239,6 +238,89 @@
 
         <asp:ContentPlaceHolder ID="cBodyBottom" runat="server">
         </asp:ContentPlaceHolder>
+
+        <div id="ModalBusqueda" class="modal fade bd-example-modal-lg show" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" style="padding-right: 17px; display: block;">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div id="cBodyBottom_ctl04">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <span id="cBodyBottom_lblTittleLigas">Filtro de busqueda</span></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-12 pt-3">
+                        <div id="cBodyBottom_ctl05" style="display: none;" role="status" aria-hidden="true">
+
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="modal-body pt-0" style="padding-bottom: 0px;">
+                        <div class="tab-content">
+                            <div id="cBodyBottom_ctl06">
+                                <div id="cBodyBottom_pnlFiltrosBusqueda">
+
+                                    <div class="card" style="margin-top: 0px;">
+                                        <div class="card-header card-header-tabs card-header" style="padding-top: 0px; padding-bottom: 0px;">
+                                            <div class="nav-tabs-navigation">
+                                                <div class="nav-tabs-wrapper">
+                                                    <div class="form-group">
+                                                        <span>Busqueda</span>
+                                                        <div class="row">
+                                                            <div class="form-group col-md-4">
+                                                                <label for="FiltroNombre" style="color: black;">Nombre</label>
+                                                                <input name="ctl00$cBodyBottom$FiltroNombre" type="text" id="cBodyBottom_FiltroNombre" class="form-control" aria-label="Search">
+                                                            </div>
+                                                            <div class="form-group col-md-4">
+                                                                <label for="FiltroApePaterno" style="color: black;">ApePaterno</label>
+                                                                <input name="ctl00$cBodyBottom$FiltroApePaterno" type="text" id="cBodyBottom_FiltroApePaterno" class="form-control" aria-label="Search">
+                                                            </div>
+                                                            <div class="form-group col-md-4">
+                                                                <label for="FiltroApeMaterno" style="color: black;">ApeMaterno</label>
+                                                                <input name="ctl00$cBodyBottom$FiltroApeMaterno" type="text" id="cBodyBottom_FiltroApeMaterno" class="form-control" aria-label="Search">
+                                                            </div>
+                                                            <div class="form-group col-md-8">
+                                                                <label for="FiltroCorreo" style="color: black;">Correo</label>
+                                                                <input name="ctl00$cBodyBottom$FiltroCorreo" type="text" id="cBodyBottom_FiltroCorreo" class="form-control" aria-label="Search">
+                                                            </div>
+                                                            <div class="form-group col-md-4">
+                                                                <label for="FiltroEstatus" style="color: black;">Estatus</label>
+                                                                <select name="ctl00$cBodyBottom$FiltroEstatus" id="cBodyBottom_FiltroEstatus" class="form-control">
+                                                                    <option selected="selected" value="00000000-0000-0000-0000-000000000000">Seleccione</option>
+                                                                    <option value="65e46bc9-1864-4145-ad1a-70f5b5f69739">ACTIVO</option>
+                                                                    <option value="3b0db4df-5687-4d80-8d32-3a2ac76af453">INACTIVO</option>
+
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="cBodyBottom_upBusqueda">
+                        <div class="modal-footer justify-content-center">
+                            <a id="cBodyBottom_btnBuscar" class="btn btn-primary btn-round" href="javascript:__doPostBack('ctl00$cBodyBottom$btnBuscar','')">
+                                <i class="material-icons">search</i> Buscar
+                            </a>
+                            <a id="cBodyBottom_btnLimpiar" class="btn btn-warning btn-round" href="javascript:__doPostBack('ctl00$cBodyBottom$btnLimpiar','')">
+                                <i class="material-icons">clear_all</i> Limpiar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </form>
 
 

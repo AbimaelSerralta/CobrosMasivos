@@ -1,4 +1,6 @@
-﻿<%@ Page Title="Padres" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="Padres.aspx.cs" Inherits="PagaLaEscuela.Views.Padres" %>
+﻿<%@ Page Title="Tutores" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="Padres.aspx.cs" Inherits="PagaLaEscuela.Views.Padres" %>
+
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
@@ -63,7 +65,7 @@
                                                 <asp:LinkButton ID="btnFiltros" OnClick="btnFiltros_Click" ToolTip="Filtros de busqueda." BackColor="#4db6ac" class="btn btn-lg btn-fab btn-fab-mini btn-round" runat="server">
                                                         <i class="material-icons">search</i>
                                                 </asp:LinkButton>
-                                                <asp:Label Text="Listado de clientes" runat="server" />
+                                                <asp:Label Text="Listado de tutores" runat="server" />
 
                                                 <div class="pull-right">
                                                     <asp:LinkButton ID="btnCargarExcel" ToolTip="Importar padres." class="btn btn-lg btn-ligh btn-fab btn-fab-mini btn-round" runat="server">
@@ -85,14 +87,23 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="table-responsive">
-                                            <asp:GridView ID="gvPadres" OnSorting="gvPadres_Sorting" OnRowCommand="gvPadres_RowCommand" OnRowDataBound="gvPadres_RowDataBound" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidUsuario" GridLines="None" border="0" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvPadres_PageIndexChanging" runat="server">
+                                            <asp:GridView ID="gvPadres" OnSorting="gvPadres_Sorting" OnRowCommand="gvPadres_RowCommand" OnRowDataBound="gvPadres_RowDataBound" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidUsuario" GridLines="None" border="0" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvPadres_PageIndexChanging" ShowFooter="true" runat="server">
                                                 <EmptyDataTemplate>
-                                                    <div class="alert alert-info">No hay usuarios registrados</div>
+                                                    <div class="alert alert-info">No hay tutores registrados</div>
                                                 </EmptyDataTemplate>
                                                 <Columns>
                                                     <asp:BoundField SortExpression="NombreCompleto" DataField="NombreCompleto" HeaderText="NOMBRE COMPLETO" />
                                                     <asp:BoundField SortExpression="StrCorreo" DataField="StrCorreo" HeaderText="CORREO" />
-                                                    <asp:BoundField SortExpression="VchUsuario" DataField="VchUsuario" HeaderText="USUARIO" />
+                                                    <asp:BoundField SortExpression="StrTelefono" DataField="StrTelefono" HeaderText="CELULAR" />
+                                                    <asp:TemplateField SortExpression="IntCantAlumnos" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" HeaderText="# ALUMNO(S)">
+                                                        <ItemTemplate>
+                                                            <asp:Label CssClass="notification" runat="server">
+                                                                <span><i class="material-icons">wc</i></span>
+                                                                <span class="badge" style="background-color:<%#Eval("ColorNotification")%>;"><%#Eval("IntCantAlumnos")%></span>
+                                                            </asp:Label>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
+                                                    <%--<asp:BoundField SortExpression="VchUsuario" DataField="VchUsuario" HeaderText="USUARIO" />--%>
                                                     <asp:TemplateField SortExpression="UidEstatus" HeaderText="ESTATUS">
                                                         <ItemTemplate>
                                                             <div class="col-md-6">
@@ -104,7 +115,7 @@
                                                             </div>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
-                                                    <asp:TemplateField>
+                                                    <asp:TemplateField ItemStyle-Width="160">
                                                         <ItemTemplate>
                                                             <table>
                                                                 <tbody>
@@ -135,6 +146,9 @@
                                                                 </tbody>
                                                             </table>
                                                         </ItemTemplate>
+                                                        <FooterTemplate>
+                                                            <asp:Label ID="lblPaginado" Font-Bold="true" runat="server" />
+                                                        </FooterTemplate>
                                                     </asp:TemplateField>
                                                 </Columns>
                                                 <PagerStyle HorizontalAlign="Center" CssClass="pagination-ys" />
@@ -187,7 +201,7 @@
                                 <!-- colors: "header-primary", "header-info", "header-success", "header-warning", "header-danger" -->
                                 <div class="nav-tabs-navigation">
                                     <div class="nav-tabs-wrapper">
-                                        <ul class="nav nav-tabs" data-tabs="tabs">
+                                        <ul id="ulTabPadres" class="nav nav-tabs" data-tabs="tabs">
                                             <li class="nav-item">
                                                 <a class="nav-link active show" href="#general" data-toggle="tab">
                                                     <i class="material-icons">business</i>General<div class="ripple-container"></div>
@@ -250,18 +264,18 @@
                                                         <label for="txtApeMaterno" style="color: black;">Apellido Materno *</label>
                                                         <asp:TextBox ID="txtApeMaterno" CssClass="form-control" runat="server" />
                                                     </div>
-                                                    <div class="form-group col-md-4">
+                                                    <div style="display: none" class="form-group col-md-4">
                                                         <label for="txtUsuario" style="color: black;">Usuario</label>
                                                         <asp:TextBox ID="txtUsuario" autocomplete="nope" CssClass="form-control" runat="server" />
                                                         <asp:Label CssClass="text-danger" runat="server" ID="lblExisteUsuario" />
                                                         <asp:Label CssClass="text-success" runat="server" ID="lblNoExisteUsuario" />
                                                         <asp:LinkButton ID="btnValidarUsuario" CssClass="pull-right" Text="Validar" OnClick="btnValidarUsuario_Click" runat="server" />
                                                     </div>
-                                                    <div class="form-group col-md-4">
+                                                    <div style="display: none" class="form-group col-md-4">
                                                         <label for="txtPassword" style="color: black;">Contraseña</label>
                                                         <asp:TextBox ID="txtPassword" autocomplete="new-password" TextMode="Password" CssClass="form-control" runat="server" />
                                                     </div>
-                                                    <div class="form-group col-md-4">
+                                                    <div style="display: none" class="form-group col-md-4">
                                                         <label for="txtRepetirPassword" style="color: black;">Repetir Contraseña</label>
                                                         <asp:TextBox ID="txtRepetirPassword" TextMode="Password" CssClass="form-control" runat="server" />
                                                     </div>
@@ -277,14 +291,12 @@
                                                         <asp:DropDownList ID="ddlPrefijo" CssClass="form-control" runat="server">
                                                         </asp:DropDownList>
                                                     </div>
-                                                    <div class="col-md-4">
-                                                        <div class="form-group">
-                                                            <label for="txtNumero" style="color: black;">Celular *</label>
-                                                            <asp:TextBox ID="txtNumero" TextMode="Phone" MaxLength="10" CssClass="form-control" runat="server" />
-                                                            <asp:RegularExpressionValidator ID="REVNumero" runat="server" ControlToValidate="txtNumero" ErrorMessage="* Valores númericos" ForeColor="Red" ValidationExpression="^[0-9]*"></asp:RegularExpressionValidator>
-                                                        </div>
+                                                    <div class="form-group col-md-2">
+                                                        <label for="txtNumero" style="color: black; margin-bottom: 12px;">Celular *</label>
+                                                        <asp:TextBox ID="txtNumero" TextMode="Phone" MaxLength="10" CssClass="form-control" runat="server" />
+                                                        <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtNumero" runat="server" />
                                                     </div>
-                                                    <div class="form-group col-md-4">
+                                                    <div class="form-group col-md-2">
                                                         <label for="ddlEstatus" style="color: black;">Estatus *</label>
                                                         <asp:DropDownList ID="ddlEstatus" CssClass="form-control" runat="server">
                                                         </asp:DropDownList>
@@ -404,18 +416,22 @@
                                                                 <div class="form-group" style="margin-top: 0px;">
                                                                     <div class="row">
                                                                         <div class="form-group col-sm-6 col-md-6 col-lg-3">
+                                                                            <label for="txtFiltroAlumIdentificador" style="color: black; padding-left: 0px;">Identificador</label>
+                                                                            <asp:TextBox ID="txtFiltroAlumIdentificador" CssClass="form-control" aria-label="Search" runat="server" />
+                                                                        </div>
+                                                                        <div class="form-group col-sm-6 col-md-6 col-lg-3">
                                                                             <label for="txtFiltroAlumMatricula" style="color: black; padding-left: 0px;">Matricula</label>
                                                                             <asp:TextBox ID="txtFiltroAlumMatricula" CssClass="form-control" aria-label="Search" runat="server" />
                                                                         </div>
-                                                                        <div class="form-group col-sm-6 col-md-6 col-lg-3">
+                                                                        <div class="form-group col-sm-6 col-md-6 col-lg-2">
                                                                             <label for="txtFiltroAlumNombre" style="color: black; padding-left: 0px;">Nombre(s)</label>
                                                                             <asp:TextBox ID="txtFiltroAlumNombre" CssClass="form-control" aria-label="Search" runat="server" />
                                                                         </div>
-                                                                        <div class="form-group col-sm-6 col-md-6 col-lg-3">
+                                                                        <div class="form-group col-sm-6 col-md-6 col-lg-2">
                                                                             <label for="txtFiltroAlumPaterno" style="color: black; padding-left: 0px;">ApePaterno</label>
                                                                             <asp:TextBox ID="txtFiltroAlumPaterno" CssClass="form-control" aria-label="Search" runat="server" />
                                                                         </div>
-                                                                        <div class="form-group col-sm-6 col-md-6 col-lg-3">
+                                                                        <div class="form-group col-sm-6 col-md-6 col-lg-2">
                                                                             <label for="txtFiltroAlumMaterno" style="color: black; padding-left: 0px;">ApeMaterno</label>
                                                                             <asp:TextBox ID="txtFiltroAlumMaterno" CssClass="form-control" aria-label="Search" runat="server" />
                                                                         </div>
@@ -432,14 +448,14 @@
                                                     </div>
 
                                                     <div class="table-responsive">
-                                                        <asp:GridView ID="gvAlumnos" OnPageIndexChanging="gvAlumnos_PageIndexChanging" OnSorting="gvAlumnos_Sorting" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidAlumno" GridLines="None" border="0" AllowPaging="true" PageSize="5" runat="server">
+                                                        <asp:GridView ID="gvAlumnos" OnRowDataBound="gvAlumnos_RowDataBound" OnPageIndexChanging="gvAlumnos_PageIndexChanging" OnSorting="gvAlumnos_Sorting" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidAlumno" GridLines="None" border="0" AllowPaging="true" PageSize="5" runat="server">
                                                             <EmptyDataTemplate>
                                                                 <div class="alert alert-info">No hay alumnos asignados</div>
                                                             </EmptyDataTemplate>
                                                             <Columns>
                                                                 <asp:TemplateField>
                                                                     <HeaderTemplate>
-                                                                        <%--<asp:CheckBox ID="cbTodo" AutoPostBack="true" OnCheckedChanged="cbTodo_CheckedChanged" runat="server" />--%>
+                                                                        <asp:CheckBox ID="cbTodo" AutoPostBack="true" OnCheckedChanged="cbTodo_CheckedChanged" runat="server" />
                                                                     </HeaderTemplate>
                                                                     <ItemTemplate>
                                                                         <table>
@@ -453,6 +469,8 @@
                                                                         </table>
                                                                     </ItemTemplate>
                                                                 </asp:TemplateField>
+
+                                                                <asp:BoundField SortExpression="VchIdentificador" DataField="VchIdentificador" HeaderText="IDENTIFICADOR" />
                                                                 <asp:BoundField SortExpression="VchMatricula" DataField="VchMatricula" HeaderText="MATRICULA" />
                                                                 <asp:BoundField SortExpression="NombreCompleto" DataField="NombreCompleto" HeaderText="NOMBRE" />
                                                             </Columns>
@@ -513,26 +531,16 @@
                         </div>
                     </ContentTemplate>
                 </asp:UpdatePanel>
-                <div class="col-12 pt-3">
-                    <asp:UpdateProgress runat="server" AssociatedUpdatePanelID="upBusqueda">
-                        <ProgressTemplate>
-                            <div class="progress">
-                                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
-                            </div>
-                        </ProgressTemplate>
-                    </asp:UpdateProgress>
-                </div>
                 <div class="modal-body pt-0" style="padding-bottom: 0px;">
                     <div class="tab-content">
                         <asp:UpdatePanel runat="server">
                             <ContentTemplate>
                                 <asp:Panel ID="pnlFiltrosBusqueda" runat="server">
                                     <div class="card" style="margin-top: 0px;">
-                                        <div class="card-header card-header-tabs card-header" style="padding-top: 0px; padding-bottom: 0px;">
+                                        <div class="card-header card-header-tabs card-header" style="padding-top: 0px; padding-bottom: 0px; margin-top: 0px;">
                                             <div class="nav-tabs-navigation">
                                                 <div class="nav-tabs-wrapper">
                                                     <div class="form-group">
-                                                        <asp:Label Text="Busqueda" runat="server" />
                                                         <div class="row">
                                                             <div class="form-group col-md-4">
                                                                 <label for="FiltroNombre" style="color: black;">Nombre</label>
@@ -546,9 +554,27 @@
                                                                 <label for="FiltroApeMaterno" style="color: black;">ApeMaterno</label>
                                                                 <asp:TextBox ID="FiltroApeMaterno" CssClass="form-control" aria-label="Search" runat="server" />
                                                             </div>
-                                                            <div class="form-group col-md-8">
+                                                            <div class="form-group col-md-4">
                                                                 <label for="FiltroCorreo" style="color: black;">Correo</label>
                                                                 <asp:TextBox ID="FiltroCorreo" CssClass="form-control" aria-label="Search" runat="server" />
+                                                            </div>
+                                                            <div class="form-group col-md-4">
+                                                                <label for="FiltroCorreo" style="color: black;">Celular</label>
+                                                                <asp:TextBox ID="FiltroCelular" TextMode="Phone" CssClass="form-control" aria-label="Search" runat="server" />
+                                                                <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" TargetControlID="FiltroCelular" runat="server" />
+                                                            </div>
+                                                            <div class="form-group col-md-4">
+                                                                <label for="FiltroCorreo" style="color: black;">Cant. de Alumnos</label>
+                                                                <asp:TextBox ID="FiltroAlumnos" TextMode="Phone" CssClass="form-control" aria-label="Search" runat="server" />
+                                                                <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" TargetControlID="FiltroAlumnos" runat="server" />
+                                                            </div>
+                                                            <div class="form-group col-md-4">
+                                                                <label for="FiltroColegiatura" style="color: black;">Colegiatura pendiente</label>
+                                                                <asp:DropDownList ID="FiltroColegiatura" AppendDataBoundItems="true" CssClass="form-control" runat="server">
+                                                                    <asp:ListItem Text="NO IMPORTA" />
+                                                                    <asp:ListItem Text="SI" />
+                                                                    <asp:ListItem Text="NO" />
+                                                                </asp:DropDownList>
                                                             </div>
                                                             <div class="form-group col-md-4">
                                                                 <label for="FiltroEstatus" style="color: black;">Estatus</label>
@@ -565,9 +591,9 @@
                         </asp:UpdatePanel>
                     </div>
                 </div>
-                <asp:UpdatePanel runat="server" ID="upBusqueda">
+                <asp:UpdatePanel runat="server">
                     <ContentTemplate>
-                        <div class="modal-footer justify-content-center">
+                        <div class="modal-footer justify-content-center" style="padding-top: 0px; padding-bottom: 10px;">
                             <asp:LinkButton ID="btnBuscar" OnClick="btnBuscar_Click" CssClass="btn btn-primary btn-round" runat="server">
                             <i class="material-icons">search</i> Buscar
                             </asp:LinkButton>
@@ -661,6 +687,11 @@
 
         function hideModalMasDetalle() {
             $('#ModalMasDetalle').modal('hide');
+        }
+    </script>
+    <script>
+        function showTab(tab) {
+            $('#ulTabPadres a[href="#general"]').tab('show')
         }
     </script>
 </asp:Content>

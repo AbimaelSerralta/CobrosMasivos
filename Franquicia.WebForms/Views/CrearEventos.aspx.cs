@@ -279,7 +279,7 @@ namespace Franquicia.WebForms.Views
                         Guid UidEvento = Guid.NewGuid();
                         string URL = "https://cobrosmasivos.com/Evento.aspx?Id=" + UidEvento;
 
-                        if (eventosServices.RegistrarEvento(UidEvento, txtNombreEvento.Text.Trim().ToUpper(), txtDescripcion.Text.Trim().ToUpper(), hoy, DateTime.Parse(txtFHInicio.Text), DateTime.Parse(txtFHFinalizacion.Text), bool.Parse(ddlTipoImporte.SelectedValue), decimal.Parse(txtImporte.Text), txtConcepto.Text.Trim().ToUpper(), bool.Parse(ddlPedirDatos.SelectedValue), URL, cbxActivarFF.Checked, Guid.Parse(ddlTipoEvento.SelectedValue), Guid.Parse(ViewState["UidClienteLocal"].ToString())))
+                        if (eventosServices.RegistrarEvento(UidEvento, txtNombreEvento.Text.Trim().ToUpper(), txtDescripcion.Text.Trim().ToUpper(), hoy, DateTime.Parse(txtFHInicio.Text), DateTime.Parse(txtFHFinalizacion.Text), bool.Parse(ddlTipoImporte.SelectedValue), decimal.Parse(txtImporte.Text), txtConcepto.Text.Trim().ToUpper(), bool.Parse(ddlDatosBeneficiario.SelectedValue), bool.Parse(ddlPedirDatos.SelectedValue), URL, cbxActivarFF.Checked, Guid.Parse(ddlTipoEvento.SelectedValue), Guid.Parse(ViewState["UidClienteLocal"].ToString())))
                         {
                             foreach (ListItem promo in ListBoxMultipleMod.Items)
                             {
@@ -320,7 +320,7 @@ namespace Franquicia.WebForms.Views
                 {
                     if (item.Actualizar)
                     {
-                        if (eventosServices.ActualizarEvento(Guid.Parse(ViewState["UidRequerido"].ToString()), txtNombreEvento.Text.Trim().ToUpper(), txtDescripcion.Text.Trim().ToUpper(), DateTime.Parse(txtFHInicio.Text), DateTime.Parse(txtFHFinalizacion.Text), bool.Parse(ddlTipoImporte.SelectedValue), decimal.Parse(txtImporte.Text), txtConcepto.Text.Trim().ToUpper(), bool.Parse(ddlPedirDatos.SelectedValue), cbxActivarFF.Checked, Guid.Parse(ddlTipoEvento.SelectedValue), Guid.Parse(ddlEstatus.SelectedValue)))
+                        if (eventosServices.ActualizarEvento(Guid.Parse(ViewState["UidRequerido"].ToString()), txtNombreEvento.Text.Trim().ToUpper(), txtDescripcion.Text.Trim().ToUpper(), DateTime.Parse(txtFHInicio.Text), DateTime.Parse(txtFHFinalizacion.Text), bool.Parse(ddlTipoImporte.SelectedValue), decimal.Parse(txtImporte.Text), txtConcepto.Text.Trim().ToUpper(), bool.Parse(ddlDatosBeneficiario.SelectedValue), bool.Parse(ddlPedirDatos.SelectedValue), cbxActivarFF.Checked, Guid.Parse(ddlTipoEvento.SelectedValue), Guid.Parse(ddlEstatus.SelectedValue)))
                         {
                             eventosServices.EliminarPromocionesEvento(Guid.Parse(ViewState["UidRequerido"].ToString()));
 
@@ -432,6 +432,7 @@ namespace Franquicia.WebForms.Views
         {
             int ddlTipoImporte = 1;
             int ddlPedirDatos = 1;
+            int ddlDatosBeneficiario = 1;
 
             eventosServices.CargarEventos(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
 
@@ -488,6 +489,11 @@ namespace Franquicia.WebForms.Views
             {
                 ddlPedirDatos = 0;
             }
+            if (eventosServices.eventosRepository.eventosGridViewModel.BitDatosBeneficiario)
+            {
+                ddlDatosBeneficiario = 0;
+            }
+            this.ddlDatosBeneficiario.SelectedIndex = ddlDatosBeneficiario;
             this.ddlPedirDatos.SelectedIndex = ddlPedirDatos;
             ddlEstatus.SelectedIndex = ddlEstatus.Items.IndexOf(ddlEstatus.Items.FindByValue(eventosServices.eventosRepository.eventosGridViewModel.UidEstatus.ToString()));
             ddlTipoEvento.SelectedIndex = ddlTipoEvento.Items.IndexOf(ddlTipoEvento.Items.FindByValue(eventosServices.eventosRepository.eventosGridViewModel.UidTipoEvento.ToString()));
@@ -542,6 +548,8 @@ namespace Franquicia.WebForms.Views
             txtConcepto.Text = string.Empty;
             ddlPedirDatos.SelectedIndex = 0;
             ddlTipoEvento.SelectedIndex = 0;
+
+            ddlTipoEvento_SelectedIndexChanged(null, null);
         }
 
         protected void btnCerrar_Click(object sender, EventArgs e)
@@ -599,6 +607,16 @@ namespace Franquicia.WebForms.Views
                         else
                         {
                             eventosServices.lsEventosGridViewModel = eventosServices.lsEventosGridViewModel.OrderByDescending(x => x.VchFHFin).ToList();
+                        }
+                        break;
+                    case "VchTipoEvento":
+                        if (Orden == "ASC")
+                        {
+                            eventosServices.lsEventosGridViewModel = eventosServices.lsEventosGridViewModel.OrderBy(x => x.VchTipoEvento).ToList();
+                        }
+                        else
+                        {
+                            eventosServices.lsEventosGridViewModel = eventosServices.lsEventosGridViewModel.OrderByDescending(x => x.VchTipoEvento).ToList();
                         }
                         break;
                     case "UidEstatus":
@@ -810,12 +828,15 @@ namespace Franquicia.WebForms.Views
             {
                 liActivarUsuarios.Visible = false;
                 ddlPedirDatos.Enabled = true;
+                pnlDatosBeneficiario.Visible = true;
             }
             else if (ddlTipoEvento.SelectedItem.Text == "PRIVADO")
             {
                 liActivarUsuarios.Visible = true;
                 ddlPedirDatos.Enabled = false;
                 ddlPedirDatos.SelectedIndex = 1;
+                pnlDatosBeneficiario.Visible = false;
+                ddlDatosBeneficiario.SelectedIndex = 1;
             }
         }
 

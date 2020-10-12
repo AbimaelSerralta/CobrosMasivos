@@ -41,12 +41,11 @@ namespace Franquicia.Bussiness
             clientes = lsClientesGridViewModel.Find(x => x.UidCliente == UidCliente);
         }
 
-        public bool RegistrarClientes(
+        public bool RegistrarClientes(Guid UidCliente,
             string Rfc, string RazonSocial, string NombreComercial, DateTime FechaAlta, string Correo, string IdWAySMS, string ZonaHoraria, bool BitEscuela,
             string Identificador, Guid UidPais, Guid UidEstado, Guid Municipio, Guid UidCiudad, Guid UidColonia, string Calle, string EntreCalle, string YCalle, string NumeroExterior, string NumeroInterior, string CodigoPostal, string Referencia,
             string Telefono, Guid UidTipoTelefono, Guid UidFranquiciatario)
         {
-            Guid UidCliente = Guid.NewGuid();
 
             bool result = false;
             if (clientesRepository.RegistrarClientes(

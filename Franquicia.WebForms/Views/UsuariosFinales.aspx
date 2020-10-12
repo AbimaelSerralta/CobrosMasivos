@@ -1,6 +1,7 @@
 ﻿<%@ Page Title="UsuariosFinales" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="UsuariosFinales.aspx.cs" Inherits="Franquicia.WebForms.Views.Usuarios" %>
 
 <%@ MasterType VirtualPath="~/Views/MasterPage.Master" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
@@ -74,10 +75,17 @@
                                                                             </asp:LinkButton>
 
                                                                         </td>
-                                                                        <td style="border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
+                                                                        <td style="display: none;border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
                                                                             <asp:LinkButton ID="btnCancelarCambio" ToolTip="Visualizar" CommandArgument="<%# ((GridViewRow)Container).RowIndex %>" CommandName="Ver" Style="margin-left: 5px;" runat="server">
                                                                                 <asp:Label ID="lblCancelarCambio" class="btn btn-sm btn-warning btn-fab btn-fab-mini btn-round" runat="server">
                                                                                         <i class="material-icons">remove_red_eye</i>
+                                                                                </asp:Label>
+                                                                            </asp:LinkButton>
+                                                                        </td>
+                                                                        <td style="border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
+                                                                            <asp:LinkButton ToolTip="Enviar credenciales" CommandArgument="<%# ((GridViewRow)Container).RowIndex %>" CommandName="Enviar" Style="margin-left: 5px;" runat="server">
+                                                                                <asp:Label class="btn btn-sm btn-warning btn-fab btn-fab-mini btn-round" runat="server">
+                                                                                        <i class="material-icons">send</i>
                                                                                 </asp:Label>
                                                                             </asp:LinkButton>
                                                                         </td>
@@ -195,18 +203,18 @@
                                                         <label for="txtApeMaterno" style="color: black;">Apellido Materno *</label>
                                                         <asp:TextBox ID="txtApeMaterno" CssClass="form-control" runat="server" />
                                                     </div>
-                                                    <div class="form-group col-md-4">
+                                                    <div style="display:none" class="form-group col-md-4">
                                                         <label for="txtUsuario" style="color: black;">Usuario</label>
                                                         <asp:TextBox ID="txtUsuario" autocomplete="nope" CssClass="form-control" runat="server" />
                                                         <asp:Label CssClass="text-danger" runat="server" ID="lblExisteUsuario" />
                                                         <asp:Label CssClass="text-success" runat="server" ID="lblNoExisteUsuario" />
                                                         <asp:LinkButton ID="btnValidarUsuario" CssClass="pull-right" Text="Validar" OnClick="btnValidarUsuario_Click" runat="server" />
                                                     </div>
-                                                    <div class="form-group col-md-4">
+                                                    <div style="display:none" class="form-group col-md-4">
                                                         <label for="txtPassword" style="color: black;">Contraseña</label>
                                                         <asp:TextBox ID="txtPassword" autocomplete="new-password" TextMode="Password" CssClass="form-control" runat="server" />
                                                     </div>
-                                                    <div class="form-group col-md-4">
+                                                    <div style="display:none" class="form-group col-md-4">
                                                         <label for="txtRepetirPassword" style="color: black;">Repetir Contraseña</label>
                                                         <asp:TextBox ID="txtRepetirPassword" TextMode="Password" CssClass="form-control" runat="server" />
                                                     </div>
@@ -225,8 +233,8 @@
                                                     <div class="col-md-4">
                                                         <div class="form-group">
                                                             <label for="txtNumero" style="color: black;">Celular *</label>
-                                                            <asp:TextBox ID="txtNumero" TextMode="Phone" CssClass="form-control" runat="server" />
-                                                            <asp:RegularExpressionValidator ID="REVNumero" runat="server" ControlToValidate="txtNumero" ErrorMessage="* Valores númericos" ForeColor="Red" ValidationExpression="^[0-9]*"></asp:RegularExpressionValidator>
+                                                            <asp:TextBox ID="txtNumero" TextMode="Phone" MaxLength="10" CssClass="form-control" runat="server" />
+                                                            <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtNumero" runat="server" />
                                                         </div>
                                                     </div>
                                                     <div class="form-group col-md-4">

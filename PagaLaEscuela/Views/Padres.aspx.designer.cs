@@ -348,15 +348,6 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.TextBox txtNumero;
 
         /// <summary>
-        /// Control REVNumero.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RegularExpressionValidator REVNumero;
-
-        /// <summary>
         /// Control ddlEstatus.
         /// </summary>
         /// <remarks>
@@ -528,6 +519,15 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.LinkButton btnFiltroLimpiar;
 
         /// <summary>
+        /// Control txtFiltroAlumIdentificador.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtFiltroAlumIdentificador;
+
+        /// <summary>
         /// Control txtFiltroAlumMatricula.
         /// </summary>
         /// <remarks>
@@ -681,6 +681,33 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.TextBox FiltroCorreo;
 
         /// <summary>
+        /// Control FiltroCelular.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox FiltroCelular;
+
+        /// <summary>
+        /// Control FiltroAlumnos.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox FiltroAlumnos;
+
+        /// <summary>
+        /// Control FiltroColegiatura.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList FiltroColegiatura;
+
+        /// <summary>
         /// Control FiltroEstatus.
         /// </summary>
         /// <remarks>
@@ -688,15 +715,6 @@ namespace PagaLaEscuela.Views
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList FiltroEstatus;
-
-        /// <summary>
-        /// Control upBusqueda.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upBusqueda;
 
         /// <summary>
         /// Control btnBuscar.

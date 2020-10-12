@@ -57,7 +57,7 @@ namespace PagaLaEscuela.Views
         PerfilesServices perfilesServices = new PerfilesServices();
         PrefijosTelefonicosServices prefijosTelefonicosServices = new PrefijosTelefonicosServices();
         AlumnosServices alumnosServices = new AlumnosServices();
-        CorreosServices correosServices = new CorreosServices();
+        CorreosEscuelaServices correosEscuelaServices = new CorreosEscuelaServices();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -429,27 +429,27 @@ namespace PagaLaEscuela.Views
                                     txtNumero.Text.Trim(), Guid.Parse(ddlPrefijo.SelectedValue), Guid.Parse(ViewState["UidClienteLocal"].ToString())))
                                     {
                                         string NombreComercial = validacionesServices.ObtenerNombreClienteCompleto(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
-                                        CorreoEnvioCredenciales(txtNombre.Text.Trim().ToUpper() + " " + txtApePaterno.Text.Trim().ToUpper() + " " + txtApeMaterno.Text.Trim().ToUpper(), ViewState["txtUsuario.Text"].ToString().Trim(), ViewState["txtPassword.Text"].ToString().Trim(), txtCorreo.Text.Trim(), NombreComercial);
+                                        CorreoEnvioCredenciales(txtNombre.Text.Trim().ToUpper() + " " + txtApePaterno.Text.Trim().ToUpper() + " " + txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), ViewState["txtPassword.Text"].ToString().Trim(), txtCorreo.Text.Trim(), NombreComercial);
 
                                         if (ddlIncluirDir.SelectedValue == "SI")
                                         {
                                             if (padresServices.RegistrarDireccionUsuarios(UidUsuario, Identificador, Pais, Estado, Municipio, Ciudad, Colonia, Calle, EntreCalle, YCalle, NumeroExterior, NumeroInterior, CodigoPostal, Referencia))
                                             {
                                                 pnlAlert.Visible = true;
-                                                lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
+                                                lblMensajeAlert.Text = "<strong>¡Felicidades! </strong> se ha registrado exitosamente.";
                                                 divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
                                             }
                                             else
                                             {
                                                 pnlAlert.Visible = true;
-                                                lblMensajeAlert.Text = "<b>Lo sentimos, </b> el usuario se ha registrado exitosamente, sin embargo la dirección no se pudo registrar.";
+                                                lblMensajeAlert.Text = "<strong>Lo sentimos, </strong> el usuario se ha registrado exitosamente, sin embargo la dirección no se pudo registrar.";
                                                 divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                                             }
                                         }
                                         else
                                         {
                                             pnlAlert.Visible = true;
-                                            lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
+                                            lblMensajeAlert.Text = "<strong>¡Felicidades! </strong> se ha registrado exitosamente.";
                                             divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
                                         }
 
@@ -458,6 +458,7 @@ namespace PagaLaEscuela.Views
                                             alumnosServices.RegistrarClienteAlumnos(UidUsuario, itAlum.UidAlumno);
                                         }
 
+                                        ViewState["NewPageIndex"] = null;
                                         padresServices.CargarPadres(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse("E39FF705-8A01-4302-829A-7CFB9615CC8F"));
                                         gvPadres.DataSource = padresServices.lsPadres;
                                         gvPadres.DataBind();
@@ -482,7 +483,7 @@ namespace PagaLaEscuela.Views
                     }
                     else
                     {
-                        lblMensajeAlert.Text = "<b>Lo sentimos,</b> no tiene permisos para esta acción.";
+                        lblMensajeAlert.Text = "<strong>Lo sentimos,</strong> no tiene permisos para esta acción.";
                         divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
                     }
@@ -525,13 +526,13 @@ namespace PagaLaEscuela.Views
                                             if (padresServices.ActualizarDireccionUsuarios(Guid.Parse(ViewState["UidRequerido"].ToString()), Identificador, Pais, Estado, Municipio, Ciudad, Colonia, Calle, EntreCalle, YCalle, NumeroExterior, NumeroInterior, CodigoPostal, Referencia))
                                             {
                                                 pnlAlert.Visible = true;
-                                                lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha actualizado exitosamente.";
+                                                lblMensajeAlert.Text = "<strong>¡Felicidades! </strong> se ha actualizado exitosamente.";
                                                 divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
                                             }
                                             else
                                             {
                                                 pnlAlert.Visible = true;
-                                                lblMensajeAlert.Text = "<b>Lo sentimos, </b> los datos del usuario se ha actualizado exitosamente, sin embargo la dirección no se pudo registrar.";
+                                                lblMensajeAlert.Text = "<strong>Lo sentimos, </strong> los datos del usuario se ha actualizado exitosamente, sin embargo la dirección no se pudo registrar.";
                                                 divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                                             }
                                         }
@@ -540,13 +541,13 @@ namespace PagaLaEscuela.Views
                                             if (padresServices.RegistrarDireccionUsuarios(Guid.Parse(ViewState["UidRequerido"].ToString()), Identificador, Pais, Estado, Municipio, Ciudad, Colonia, Calle, EntreCalle, YCalle, NumeroExterior, NumeroInterior, CodigoPostal, Referencia))
                                             {
                                                 pnlAlert.Visible = true;
-                                                lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
+                                                lblMensajeAlert.Text = "<strong>¡Felicidades! </strong> se ha registrado exitosamente.";
                                                 divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
                                             }
                                             else
                                             {
                                                 pnlAlert.Visible = true;
-                                                lblMensajeAlert.Text = "<b>Lo sentimos, </b> el usuario se ha registrado exitosamente, sin embargo la dirección no se pudo registrar.";
+                                                lblMensajeAlert.Text = "<strong>Lo sentimos, </strong> el usuario se ha registrado exitosamente, sin embargo la dirección no se pudo registrar.";
                                                 divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                                             }
                                         }
@@ -554,16 +555,17 @@ namespace PagaLaEscuela.Views
                                     else
                                     {
                                         pnlAlert.Visible = true;
-                                        lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha actualizado exitosamente.";
+                                        lblMensajeAlert.Text = "<strong>¡Felicidades! </strong> se ha actualizado exitosamente.";
                                         divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
                                     }
 
-                                    alumnosServices.EliminarClienteAlumnos(Guid.Parse(ViewState["UidRequerido"].ToString()));
+                                    alumnosServices.EliminarClienteAlumnos(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse(ViewState["UidRequerido"].ToString()));
                                     foreach (var itAlum in alumnosServices.lsSelectAlumnosGridViewModel)
                                     {
                                         alumnosServices.RegistrarClienteAlumnos(Guid.Parse(ViewState["UidRequerido"].ToString()), itAlum.UidAlumno);
                                     }
 
+                                    ViewState["NewPageIndex"] = null;
                                     padresServices.CargarPadres(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse("E39FF705-8A01-4302-829A-7CFB9615CC8F"));
                                     gvPadres.DataSource = padresServices.lsPadres;
                                     gvPadres.DataBind();
@@ -579,27 +581,64 @@ namespace PagaLaEscuela.Views
                     }
                     else
                     {
-                        lblMensajeAlert.Text = "<b>Lo sentimos,</b> no tiene permisos para esta acción.";
+                        lblMensajeAlert.Text = "<strong>Lo sentimos,</strong> no tiene permisos para esta acción.";
                         divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
                     }
                 }
                 else if (ViewState["Accion"].ToString() == "AsosiarUsuario")
                 {
+                    string MnsjCuenta = string.Empty;
+
+                    if (validacionesServices.EstatusCuentaPadre(Guid.Parse(ViewState["usuarioCompleto.UidUsuario"].ToString())).ToUpper() != "2C859517-9507-4B5B-BB3E-C7341F6630DD")
+                    {
+                        MnsjCuenta = "<strong>La cuenta del padre esta en proceso de activación</strong>, sin embargo ";
+                    }
+
                     if (validacionesServices.ExisteUsuarioCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse(ViewState["usuarioCompleto.UidUsuario"].ToString())))
                     {
                         lblValidar.Text = "Lo sentimos, el usuario ya esta asociado.";
-                    }
-                    else
-                    {
-                        if (padresServices.AsociarClienteUsuario(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse(ViewState["usuarioCompleto.UidUsuario"].ToString())))
+
+                        if (padresServices.ActualizarAsociarClienteUsuario(Guid.Parse(ViewState["usuarioCompleto.UidSegUsuario"].ToString())))
                         {
+                            alumnosServices.EliminarClienteAlumnos(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse(ViewState["usuarioCompleto.UidUsuario"].ToString()));
+                            foreach (var itAlum in alumnosServices.lsSelectAlumnosGridViewModel)
+                            {
+                                alumnosServices.RegistrarClienteAlumnos(Guid.Parse(ViewState["usuarioCompleto.UidUsuario"].ToString()), itAlum.UidAlumno);
+                            }
+
+                            ViewState["NewPageIndex"] = null;
                             padresServices.CargarPadres(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse("E39FF705-8A01-4302-829A-7CFB9615CC8F"));
                             gvPadres.DataSource = padresServices.lsPadres;
                             gvPadres.DataBind();
 
                             pnlAlert.Visible = true;
-                            lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
+                            lblMensajeAlert.Text = "<strong>¡Felicidades! </strong>" + MnsjCuenta +  "se ha asociado exitosamente.";
+                            divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+
+                            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
+                        }
+                    }
+                    else
+                    {
+                        if (padresServices.AsociarClienteUsuario(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse(ViewState["usuarioCompleto.UidUsuario"].ToString())))
+                        {
+                            if (padresServices.ActualizarAsociarClienteUsuario(Guid.Parse(ViewState["usuarioCompleto.UidSegUsuario"].ToString())))
+                            {
+                                alumnosServices.EliminarClienteAlumnos(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse(ViewState["usuarioCompleto.UidUsuario"].ToString()));
+                                foreach (var itAlum in alumnosServices.lsSelectAlumnosGridViewModel)
+                                {
+                                    alumnosServices.RegistrarClienteAlumnos(Guid.Parse(ViewState["usuarioCompleto.UidUsuario"].ToString()), itAlum.UidAlumno);
+                                }
+                            }
+
+                            ViewState["NewPageIndex"] = null;
+                            padresServices.CargarPadres(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse("E39FF705-8A01-4302-829A-7CFB9615CC8F"));
+                            gvPadres.DataSource = padresServices.lsPadres;
+                            gvPadres.DataBind();
+
+                            pnlAlert.Visible = true;
+                            lblMensajeAlert.Text = "<strong>¡Felicidades! </strong>" + MnsjCuenta + "se ha asociado exitosamente.";
                             divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
 
                             ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
@@ -620,14 +659,22 @@ namespace PagaLaEscuela.Views
             ViewState["Accion"] = "Guardar";
             LimpiarCampos();
             DesbloquearCampos();
+
+            btnFiltroLimpiar_Click(null, null);
+            alumnosServices.lsAlumnosGridViewModel.Clear();
+            gvAlumnos.DataBind();
+            alumnosServices.lsSelectAlumnosGridViewModel.Clear();
+            lblCantSeleccionado.Text = alumnosServices.lsSelectAlumnosGridViewModel.Count().ToString();
+
             btnCerrar.Visible = false;
             btnCancelar.Visible = true;
             btnGuardar.Visible = true;
             btnEditar.Visible = false;
             pnlAsosiarUsuario.Visible = true;
-            lblTituloModal.Text = "Registro del Padre";
+            lblTituloModal.Text = "Registro del Tutor";
             btnGuardar.Text = "<i class=" + "material-icons>" + "check </i> Guardar";
 
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "Tabs", "showTab()", true);
             ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
 
         }
@@ -744,8 +791,53 @@ namespace PagaLaEscuela.Views
             {
                 e.Row.Attributes["onclick"] = Page.ClientScript.GetPostBackClientHyperlink(gvPadres, "Select$" + e.Row.RowIndex);
             }
-        }
 
+            if (e.Row.RowType == DataControlRowType.Footer)
+            {
+                Label lblPaginado = (Label)e.Row.FindControl("lblPaginado");
+
+                int PageSize = gvPadres.PageSize;
+                int antNum = 0;
+
+                int numTotal = padresServices.lsPadres.Count;
+
+                if (numTotal >= 1)
+                {
+                    if (ViewState["NewPageIndex"] != null)
+                    {
+                        int gh = int.Parse(ViewState["NewPageIndex"].ToString());
+                        ViewState["NewPageIndex"] = gh + 1;
+
+                        int r1 = int.Parse(ViewState["NewPageIndex"].ToString()) * PageSize;
+                        antNum = r1 - (PageSize - 1);
+                    }
+                    else
+                    {
+                        ViewState["NewPageIndex"] = 1;
+                        antNum = 1;
+                    }
+
+                    int NewPageIndex = int.Parse(ViewState["NewPageIndex"].ToString());
+
+                    int newNum = NewPageIndex * PageSize;
+
+                    if (numTotal >= newNum)
+                    {
+                        lblPaginado.Text = "Del " + antNum + " al " + newNum + " de " + numTotal;
+                    }
+                    else
+                    {
+                        lblPaginado.Text = "Del " + antNum + " al " + numTotal + " de " + numTotal;
+                    }
+
+                    ViewState["lblPaginado"] = lblPaginado.Text;
+                }
+                else
+                {
+                    lblPaginado.Text = ViewState["lblPaginado"].ToString();
+                }
+            }
+        }
         protected void gvPadres_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandName == "Editar")
@@ -757,7 +849,7 @@ namespace PagaLaEscuela.Views
                 btnGuardar.Visible = true;
                 btnEditar.Visible = false;
                 pnlAsosiarUsuario.Visible = false;
-                lblTituloModal.Text = "Actualizar Padre";
+                lblTituloModal.Text = "Actualizar Tutor";
                 btnGuardar.Text = "<i class=" + "material-icons>" + "refresh </i> Actualizar";
 
                 int index = Convert.ToInt32(e.CommandArgument.ToString());
@@ -781,7 +873,7 @@ namespace PagaLaEscuela.Views
                     pnlIncluirDir.Visible = false;
                 }
 
-                alumnosServices.ObtenerClienteAlumnos(dataKeys);
+                alumnosServices.ObtenerClienteAlumnos(Guid.Parse(ViewState["UidClienteLocal"].ToString()), dataKeys);
                 lblCantSeleccionado.Text = alumnosServices.lsSelectAlumnosGridViewModel.Count.ToString();
                 gvAlumnos.DataSource = alumnosServices.lsAlumnosGridViewModel;
                 gvAlumnos.DataBind();
@@ -818,7 +910,7 @@ namespace PagaLaEscuela.Views
                     pnlIncluirDir.Visible = false;
                 }
 
-                lblTituloModal.Text = "Visualización del Padre";
+                lblTituloModal.Text = "Visualización del Tutor";
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
             }
@@ -831,13 +923,100 @@ namespace PagaLaEscuela.Views
                 Guid dataKeys = Guid.Parse(valor.DataKeys[Seleccionado.RowIndex].Value.ToString());
                 ViewState["UidRequerido"] = dataKeys;
 
-                string Nombre = padresServices.lsPadres[index].NombreCompleto;
-                string Usuario = padresServices.lsPadres[index].VchUsuario;
-                string Contrasenia = padresServices.lsPadres[index].VchContrasenia;
-                string Correo = padresServices.lsPadres[index].StrCorreo;
-                string NombreComercial = padresServices.lsPadres[index].VchNombreComercial;
+                padresServices.ObtenerPadre(dataKeys);
+                string Nombre = padresServices.padresRepository.padres.NombreCompleto;
+                string Usuario = padresServices.padresRepository.padres.VchUsuario;
+                string Contrasenia = padresServices.padresRepository.padres.VchContrasenia;
+                string Correo = padresServices.padresRepository.padres.StrCorreo;
+                string NombreComercial = padresServices.padresRepository.padres.VchNombreComercial;
 
-                CorreoEnvioCredenciales(Nombre, Usuario, Contrasenia, Correo, NombreComercial);
+                CorreoEnvioCredenciales(Nombre, Correo, Contrasenia, Correo, NombreComercial);
+            }
+        }
+        protected void gvPadres_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvPadres.PageIndex = e.NewPageIndex;
+            ViewState["NewPageIndex"] = e.NewPageIndex;
+            gvPadres.DataSource = padresServices.lsPadres;
+            gvPadres.DataBind();
+        }
+        protected void gvPadres_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            string SortExpression = e.SortExpression;
+            SortDirection direccion;
+            string Orden = string.Empty;
+
+            if (ViewState["gvPadres"] != null)
+            {
+                direccion = (SortDirection)ViewState["gvPadres"];
+                if (direccion == SortDirection.Ascending)
+                {
+                    ViewState["gvPadres"] = SortDirection.Descending;
+                    Orden = "ASC";
+                }
+                else
+                {
+                    ViewState["gvPadres"] = SortDirection.Ascending;
+                    Orden = "DESC";
+                }
+
+                switch (SortExpression)
+                {
+                    case "NombreCompleto":
+                        if (Orden == "ASC")
+                        {
+                            padresServices.lsPadres = padresServices.lsPadres.OrderBy(x => x.NombreCompleto).ToList();
+                        }
+                        else
+                        {
+                            padresServices.lsPadres = padresServices.lsPadres.OrderByDescending(x => x.NombreCompleto).ToList();
+                        }
+                        break;
+                    case "StrCorreo":
+                        if (Orden == "ASC")
+                        {
+                            padresServices.lsPadres = padresServices.lsPadres.OrderBy(x => x.StrCorreo).ToList();
+                        }
+                        else
+                        {
+                            padresServices.lsPadres = padresServices.lsPadres.OrderByDescending(x => x.StrCorreo).ToList();
+                        }
+                        break;
+                    case "StrTelefono":
+                        if (Orden == "ASC")
+                        {
+                            padresServices.lsPadres = padresServices.lsPadres.OrderBy(x => x.StrTelefono).ToList();
+                        }
+                        else
+                        {
+                            padresServices.lsPadres = padresServices.lsPadres.OrderByDescending(x => x.StrTelefono).ToList();
+                        }
+                        break;
+                    case "IntCantAlumnos":
+                        if (Orden == "ASC")
+                        {
+                            padresServices.lsPadres = padresServices.lsPadres.OrderBy(x => x.IntCantAlumnos).ToList();
+                        }
+                        else
+                        {
+                            padresServices.lsPadres = padresServices.lsPadres.OrderByDescending(x => x.IntCantAlumnos).ToList();
+                        }
+                        break;
+                    case "UidEstatus":
+                        if (Orden == "ASC")
+                        {
+                            padresServices.lsPadres = padresServices.lsPadres.OrderBy(x => x.UidEstatus).ToList();
+                        }
+                        else
+                        {
+                            padresServices.lsPadres = padresServices.lsPadres.OrderByDescending(x => x.UidEstatus).ToList();
+                        }
+                        break;
+                }
+
+                ViewState["NewPageIndex"] = int.Parse(ViewState["NewPageIndex"].ToString()) - 1;
+                gvPadres.DataSource = padresServices.lsPadres;
+                gvPadres.DataBind();
             }
         }
 
@@ -846,18 +1025,18 @@ namespace PagaLaEscuela.Views
             string Asunto = "Acceso al sistema PagaLaEscuela";
             string LigaUrl = URLBase + "Views/Login.aspx";
 
-            string mnsj = correosServices.CorreoEnvioCredenciales(Nombre, Asunto, Usuario, Contrasenia, LigaUrl, Correo, NombreComercial);
+            string mnsj = correosEscuelaServices.CorreoEnvioCredenciales(Nombre, Asunto, Usuario, Contrasenia, LigaUrl, Correo, NombreComercial);
 
             if (mnsj == string.Empty)
             {
                 pnlAlert.Visible = true;
-                lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha enviado las credenciales de acceso exitosamente.";
+                lblMensajeAlert.Text = "<strong>¡Felicidades! </strong> se ha enviado las credenciales de acceso exitosamente.";
                 divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
             }
             else
             {
                 pnlAlert.Visible = true;
-                lblMensajeAlert.Text = "<b>Lo sentimos, </b> no se ha podido enviar las credenciales de acceso, por favor intentelo más tarde. Si el error persiste comuniquese con los administradores.";
+                lblMensajeAlert.Text = "<strong>Lo sentimos, </strong> no se ha podido enviar las credenciales de acceso, por favor intentelo más tarde. Si el error persiste comuniquese con los administradores.";
                 divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
             }
         }
@@ -866,6 +1045,19 @@ namespace PagaLaEscuela.Views
         {
             //==================FRANQUICIATARIO============================
             padresServices.ObtenerPadre(dataKeys);
+            if (padresServices.padresRepository.padres.UidEstatusCuenta == Guid.Parse("2C859517-9507-4B5B-BB3E-C7341F6630DD"))
+            {
+                BloquearCampos();
+            }
+            else if (padresServices.padresRepository.padres.VchAccion == "CREADO")
+            {
+                DesbloquearCampos();
+            }
+            else if (padresServices.padresRepository.padres.VchAccion == "ASOCIADO")
+            {
+                BloquearCampos();
+            }
+
             txtNombre.Text = padresServices.padresRepository.padres.StrNombre;
             txtApePaterno.Text = padresServices.padresRepository.padres.StrApePaterno;
             txtApeMaterno.Text = padresServices.padresRepository.padres.StrApeMaterno;
@@ -1022,100 +1214,24 @@ namespace PagaLaEscuela.Views
             }
         }
 
-        protected void gvPadres_PageIndexChanging(object sender, GridViewPageEventArgs e)
-        {
-            gvPadres.PageIndex = e.NewPageIndex;
-            gvPadres.DataSource = padresServices.lsPadres;
-            gvPadres.DataBind();
-        }
-
-        protected void gvPadres_Sorting(object sender, GridViewSortEventArgs e)
-        {
-            string SortExpression = e.SortExpression;
-            SortDirection direccion;
-            string Orden = string.Empty;
-
-            if (ViewState["gvPadres"] != null)
-            {
-                direccion = (SortDirection)ViewState["gvPadres"];
-                if (direccion == SortDirection.Ascending)
-                {
-                    ViewState["gvPadres"] = SortDirection.Descending;
-                    Orden = "ASC";
-                }
-                else
-                {
-                    ViewState["gvPadres"] = SortDirection.Ascending;
-                    Orden = "DESC";
-                }
-
-                switch (SortExpression)
-                {
-                    case "NombreCompleto":
-                        if (Orden == "ASC")
-                        {
-                            padresServices.lsPadres = padresServices.lsPadres.OrderBy(x => x.NombreCompleto).ToList();
-                        }
-                        else
-                        {
-                            padresServices.lsPadres = padresServices.lsPadres.OrderByDescending(x => x.NombreCompleto).ToList();
-                        }
-                        break;
-                    case "StrCorreo":
-                        if (Orden == "ASC")
-                        {
-                            padresServices.lsPadres = padresServices.lsPadres.OrderBy(x => x.StrCorreo).ToList();
-                        }
-                        else
-                        {
-                            padresServices.lsPadres = padresServices.lsPadres.OrderByDescending(x => x.StrCorreo).ToList();
-                        }
-                        break;
-                    case "VchUsuario":
-                        if (Orden == "ASC")
-                        {
-                            padresServices.lsPadres = padresServices.lsPadres.OrderBy(x => x.VchUsuario).ToList();
-                        }
-                        else
-                        {
-                            padresServices.lsPadres = padresServices.lsPadres.OrderByDescending(x => x.VchUsuario).ToList();
-                        }
-                        break;
-                    case "VchNombrePerfil":
-                        if (Orden == "ASC")
-                        {
-                            padresServices.lsPadres = padresServices.lsPadres.OrderBy(x => x.VchNombrePerfil).ToList();
-                        }
-                        else
-                        {
-                            padresServices.lsPadres = padresServices.lsPadres.OrderByDescending(x => x.VchNombrePerfil).ToList();
-                        }
-                        break;
-                    case "UidEstatus":
-                        if (Orden == "ASC")
-                        {
-                            padresServices.lsPadres = padresServices.lsPadres.OrderBy(x => x.UidEstatus).ToList();
-                        }
-                        else
-                        {
-                            padresServices.lsPadres = padresServices.lsPadres.OrderByDescending(x => x.UidEstatus).ToList();
-                        }
-                        break;
-                }
-
-                gvPadres.DataSource = padresServices.lsPadres;
-                gvPadres.DataBind();
-            }
-        }
-
         protected void btnFiltros_Click(object sender, EventArgs e)
         {
+            FiltroEstatus.SelectedIndex = FiltroEstatus.Items.IndexOf(FiltroEstatus.Items.FindByValue("65e46bc9-1864-4145-ad1a-70f5b5f69739"));
             ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalBusqueda()", true);
         }
 
         protected void btnBuscar_Click(object sender, EventArgs e)
         {
-            padresServices.BuscarUsuariosFinales(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse("E39FF705-8A01-4302-829A-7CFB9615CC8F"), FiltroNombre.Text, FiltroApePaterno.Text, FiltroApeMaterno.Text, FiltroCorreo.Text, Guid.Parse(FiltroEstatus.SelectedValue));
+            ViewState["NewPageIndex"] = null;
+
+            string FiltroAlumno = FiltroAlumnos.Text;
+
+            if (string.IsNullOrEmpty(FiltroAlumno))
+            {
+                FiltroAlumno = "todos";
+            }
+
+            padresServices.BuscarPadres(FiltroNombre.Text, FiltroApePaterno.Text, FiltroApeMaterno.Text, FiltroCorreo.Text, FiltroCelular.Text, FiltroAlumno, Guid.Parse(FiltroEstatus.SelectedValue), FiltroColegiatura.SelectedValue, Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse("E39FF705-8A01-4302-829A-7CFB9615CC8F"));
             gvPadres.DataSource = padresServices.lsPadres;
             gvPadres.DataBind();
 
@@ -1124,7 +1240,13 @@ namespace PagaLaEscuela.Views
 
         protected void btnLimpiar_Click(object sender, EventArgs e)
         {
-
+            FiltroNombre.Text = string.Empty;
+            FiltroApePaterno.Text = string.Empty;
+            FiltroApeMaterno.Text = string.Empty;
+            FiltroCorreo.Text = string.Empty;
+            FiltroCelular.Text = string.Empty;
+            FiltroAlumnos.Text = string.Empty;
+            FiltroEstatus.SelectedIndex = -1;
         }
 
         protected void btnBuscarUsuario_Click(object sender, EventArgs e)
@@ -1186,6 +1308,7 @@ namespace PagaLaEscuela.Views
                     pnlIncluirDir.Visible = false;
                 }
 
+                ViewState["usuarioCompleto.UidSegUsuario"] = padresServices.padresRepository.padres.UidSegUsuario;
                 ViewState["usuarioCompleto.UidUsuario"] = padresServices.padresRepository.padres.UidUsuario;
                 ViewState["Accion"] = "AsosiarUsuario";
                 btnGuardar.Text = "<i class=" + "material-icons>" + "check </i> Asociar";
@@ -1219,12 +1342,13 @@ namespace PagaLaEscuela.Views
 
         protected void btnFiltroBuscar_Click(object sender, EventArgs e)
         {
-            alumnosServices.AsignarAlumnos(alumnosServices.lsSelectAlumnosGridViewModel, Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse(ViewState["UidRequerido"].ToString()), txtFiltroAlumNombre.Text.Trim(), txtFiltroAlumPaterno.Text.Trim(), txtFiltroAlumMaterno.Text.Trim(), txtFiltroAlumMatricula.Text.Trim());
+            alumnosServices.AsignarAlumnos(alumnosServices.lsSelectAlumnosGridViewModel, Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse(ViewState["UidRequerido"].ToString()), txtFiltroAlumIdentificador.Text, txtFiltroAlumNombre.Text.Trim(), txtFiltroAlumPaterno.Text.Trim(), txtFiltroAlumMaterno.Text.Trim(), txtFiltroAlumMatricula.Text.Trim());
             gvAlumnos.DataSource = alumnosServices.lsAlumnosGridViewModel;
             gvAlumnos.DataBind();
         }
         protected void btnFiltroLimpiar_Click(object sender, EventArgs e)
         {
+            txtFiltroAlumIdentificador.Text = string.Empty;
             txtFiltroAlumNombre.Text = string.Empty;
             txtFiltroAlumPaterno.Text = string.Empty;
             txtFiltroAlumMaterno.Text = string.Empty;
@@ -1252,6 +1376,16 @@ namespace PagaLaEscuela.Views
 
                 switch (SortExpression)
                 {
+                    case "VchIdentificador":
+                        if (Orden == "ASC")
+                        {
+                            alumnosServices.lsAlumnosGridViewModel = alumnosServices.lsAlumnosGridViewModel.OrderBy(x => x.VchIdentificador).ToList();
+                        }
+                        else
+                        {
+                            alumnosServices.lsAlumnosGridViewModel = alumnosServices.lsAlumnosGridViewModel.OrderByDescending(x => x.VchIdentificador).ToList();
+                        }
+                        break;
                     case "VchMatricula":
                         if (Orden == "ASC")
                         {
@@ -1281,6 +1415,41 @@ namespace PagaLaEscuela.Views
         protected void gvAlumnos_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             gvAlumnos.PageIndex = e.NewPageIndex;
+            gvAlumnos.DataSource = alumnosServices.lsAlumnosGridViewModel;
+            gvAlumnos.DataBind();
+        }
+        protected void gvAlumnos_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.Header)
+            {
+                CheckBox cbTodo = (CheckBox)e.Row.FindControl("cbTodo");
+
+                int count = alumnosServices.lsAlumnosGridViewModel.Count(x => x.blSeleccionado == false);
+
+                if (count >= 1)
+                {
+                    cbTodo.Checked = false;
+                }
+                else
+                {
+                    cbTodo.Checked = true;
+                }
+            }
+        }
+        protected void cbTodo_CheckedChanged(object sender, EventArgs e)
+        {
+            bool cbTodo = ((CheckBox)gvAlumnos.HeaderRow.FindControl("cbTodo")).Checked;
+
+            if (cbTodo)
+            {
+                alumnosServices.ActualizarLsAsignarAlumnosTodo(alumnosServices.lsAlumnosGridViewModel, true);
+            }
+            else
+            {
+                alumnosServices.ActualizarLsAsignarAlumnosTodo(alumnosServices.lsAlumnosGridViewModel, false);
+            }
+
+            lblCantSeleccionado.Text = alumnosServices.lsSelectAlumnosGridViewModel.Count.ToString();
             gvAlumnos.DataSource = alumnosServices.lsAlumnosGridViewModel;
             gvAlumnos.DataBind();
         }
@@ -1388,12 +1557,14 @@ namespace PagaLaEscuela.Views
 
                             if (padresServices.lsExcelInsertar.Count >= 1)
                             {
-                                padresServices.AccionPadresExcelToList(padresServices.lsExcelInsertarAlumnos, padresServices.lsExcelInsertar, Guid.Parse("18E9669B-C238-4BCC-9213-AF995644A5A4"), Guid.Parse("A4B4F919-FDD2-4076-BD4A-59E4011E71C8"), Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+                                if (padresServices.lsExcelErrores.Count == 0)
+                                {
+                                    pnlAlert.Visible = true;
+                                    lblMensajeAlert.Text = "<strong>¡Felicidades! </strong> " + padresServices.lsExcelInsertar.Count() + " padre(s) se ha registrado/actualizado exitosamente.";
+                                    divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                                }
 
-                                pnlAlert.Visible = true;
-                                lblMensajeAlert.Text = "<strong>¡Felicidades! </strong> " + padresServices.lsExcelInsertar.Count() + "padre(s) se ha registrado/actualizado exitosamente.";
-                                divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
-
+                                ViewState["NewPageIndex"] = null;
                                 padresServices.CargarPadres(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse("E39FF705-8A01-4302-829A-7CFB9615CC8F"));
                                 gvPadres.DataSource = padresServices.lsPadres;
                                 gvPadres.DataBind();
@@ -1404,7 +1575,7 @@ namespace PagaLaEscuela.Views
                                 btnDescargarError.Visible = true;
                                 btnMasDetalle.Visible = false;
                                 pnlAlertImportarError.Visible = true;
-                                lblMnsjAlertImportarError.Text = "<strong>!Lo sentimos¡</strong> algunos padres no se han importado.";
+                                lblMnsjAlertImportarError.Text = "<strong>!Lo sentimos¡</strong> " + padresServices.lsExcelErrores.Count() + " padre(s) no se han importado.";
                                 divAlertImportarError.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                             }
                         }

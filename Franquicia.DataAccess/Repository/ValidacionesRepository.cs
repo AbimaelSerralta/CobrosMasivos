@@ -310,14 +310,99 @@ namespace Franquicia.DataAccess.Repository
 
             return Tuple.Create(result, UidAlumno);
         }
-        public bool ExisteAlumnoAsociado(Guid UidAlumno)
+        public bool EsMiAlumno(Guid UidAlumno, string VchCorreo, Guid UidCliente)
         {
             bool result = false;
 
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select UidUsuarioAlumno from UsuariosAlumnos where UidAlumno = '" + UidAlumno + "'";
+            query.CommandText = "select * from Usuarios us, UsuariosAlumnos ua, Alumnos al, Clientes cl where us.UidUsuario = ua.UidUsuario and al.UidAlumno = ua.UidAlumno and al.UidCliente = cl.UidCliente and al.UidAlumno = '" + UidAlumno + "' and us.VchCorreo = '" + VchCorreo + "' and cl.UidCliente = '" + UidCliente + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            if (dt.Rows.Count >= 1)
+            {
+                result = true;
+            }
+
+            return result;
+        }
+        public Tuple<bool, string> ExisteAlumnoAsociado(Guid UidAlumno, Guid UidCliente)
+        {
+            bool result = false;
+            string correo = string.Empty;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            //query.CommandText = "select UidUsuarioAlumno from UsuariosAlumnos where UidAlumno = '" + UidAlumno + "'";
+            query.CommandText = "select us.VchCorreo from Usuarios us, UsuariosAlumnos ua, Alumnos al, Clientes cl where us.UidUsuario = ua.UidUsuario and al.UidAlumno = ua.UidAlumno and al.UidCliente = cl.UidCliente and al.UidAlumno = '" + UidAlumno + "' and cl.UidCliente = '" + UidCliente + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                result = true;
+                correo = item["VchCorreo"].ToString();
+            }
+
+            return Tuple.Create(result, correo);
+        }
+
+        public string EstatusCuentaPadre(Guid UidUsuario)
+        {
+            string result = "";
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select UidEstatusCuenta from SegUsuarios where UidUsuario = '" + UidUsuario + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                result = item["UidEstatusCuenta"].ToString();
+            };
+
+            return result;
+        }
+
+        public Tuple<string, string, string> Creden(Guid UidUsuario, Guid UidCliente)
+        {
+            string Email = string.Empty;
+            string Pass = string.Empty;
+            string Comercio = string.Empty;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select us.VchCorreo, su.VchContrasenia, cl.VchIdWAySMS from SegUsuarios su, Usuarios us, Clientes cl, ClientesUsuarios cu where cl.UidCliente = cu.UidCliente and cu.UidUsuario = us.UidUsuario and us.UidUsuario = su.UidUsuario and us.UidUsuario = '"+ UidUsuario + "' and cl.UidCliente = '"+ UidCliente + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            if (dt.Rows.Count >= 1)
+            {
+                foreach (DataRow item in dt.Rows)
+                {
+                    Email = item["VchCorreo"].ToString();
+                    Pass = item["VchContrasenia"].ToString();
+                    Comercio = item["VchIdWAySMS"].ToString();
+                }
+            }
+
+            return Tuple.Create(Email, Pass, Comercio);
+        }
+
+        public bool ExisteMatricula(string Matricula)
+        {
+            bool result = false;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select VchMatricula from Alumnos where VchMatricula = '" + Matricula + "'";
 
             DataTable dt = this.Busquedas(query);
 

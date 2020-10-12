@@ -1,5 +1,6 @@
 ﻿using AjaxControlToolkit;
 using Franquicia.Bussiness;
+using Franquicia.WebForms.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,6 +43,7 @@ namespace Franquicia.WebForms.Views
         }
 
         ManejoSesionServices manejoSesionServices { get; set; }
+        UsuariosCompletosServices usuariosCompletosServices = new UsuariosCompletosServices();
 
         #endregion
         protected void Page_Load(object sender, EventArgs e)
@@ -192,6 +194,35 @@ namespace Franquicia.WebForms.Views
 
                             manejoSesionServices.ObtenerFranquiciaClienteUsuario();
                             Session["UidUsuarioMaster"] = manejoSesionServices.usuarioCompletoRepository.usuarioCompleto.UidUsuario;
+
+                            PrefijosTelefonicosServices prefijosTelefonicosServices = new PrefijosTelefonicosServices();
+
+                            prefijosTelefonicosServices.CargarPrefijosTelefonicos();
+                            ddlPrefijo.DataSource = prefijosTelefonicosServices.lsPrefijosTelefonicos;
+                            ddlPrefijo.DataTextField = "VchCompleto";
+                            ddlPrefijo.DataValueField = "UidPrefijo";
+                            ddlPrefijo.DataBind();
+
+                            bool nuevo = false;
+
+                            foreach (var item in usuariosCompletosServices.ObtenerDatossUsuario(manejoSesionServices.usuarioCompletoRepository.usuarioCompleto.UidUsuario))
+                            {
+                                txtNombres.Text = item.StrNombre;
+                                txtApePaterno.Text = item.StrApePaterno;
+                                txtApeMaterno.Text = item.StrApeMaterno;
+                                ddlPrefijo.SelectedIndex = ddlPrefijo.Items.IndexOf(ddlPrefijo.Items.FindByValue(item.UidPrefijo.ToString()));
+                                txtTelefono.Text = item.StrTelefono;
+
+                                if (item.UidEstatusCuenta.ToString().ToUpper() == "5E64EF92-5A3E-4C9A-91A4-AC5523D3587C")
+                                {
+                                    nuevo = true;
+                                }
+                            }
+
+                            if (nuevo)
+                            {
+                                mpeActivarUsuario.Show();
+                            }
                         }
                     }
                     else
@@ -350,7 +381,6 @@ namespace Franquicia.WebForms.Views
             ScriptManager.RegisterStartupScript(Page, Page.GetType(), "ModalMasDeta", "$('#ModalMasDeta').modal();", true);
             
         }
-
         public void Calcular()
         {
             decimal totalWhats = decimal.Parse(txtCantWhats.Text) * decimal.Parse(lblPrecioWhats.Text);
@@ -365,12 +395,10 @@ namespace Franquicia.WebForms.Views
 
             lblSumTotal.Text = sum.ToString("N2");
         }
-
         protected void btnCalcular_Click(object sender, EventArgs e)
         {
             Calcular();
         }
-
         protected void btnSiguiente_Click(object sender, EventArgs e)
         {
             if (pnlSeleccion.Visible == true)
@@ -406,7 +434,6 @@ namespace Franquicia.WebForms.Views
 
             }
         }
-
         protected void btnAnterior_Click(object sender, EventArgs e)
         {
             if (pnlResumen.Visible == true)
@@ -426,7 +453,6 @@ namespace Franquicia.WebForms.Views
                 pnlIframe.Visible = false;
             }
         }
-
         protected void Unnamed_Click(object sender, EventArgs e)
         {
             if (myDIV.Attributes.CssStyle.Value == "sidebar-mini")
@@ -437,6 +463,82 @@ namespace Franquicia.WebForms.Views
             {
                 myDIV.Attributes.Add("class", "sidebar-mini");
             }
+        }
+
+        protected void btnActivarCuenta_Click(object sender, EventArgs e)
+        {
+            if (txtPassword.EmptyTextBox())
+            {
+                lblValidar.Text = "El campo Contraseña es obligatorio";
+                return;
+            }
+            if (txtRepetir.EmptyTextBox())
+            {
+                lblValidar.Text = "El campo Repetir Contraseña es obligatorio";
+                return;
+            }
+
+            if (txtPassword.Text != txtRepetir.Text)
+            {
+                lblValidar.Text = "Las contraseñas ingresadas no coinciden.";
+                return;
+            }
+            if (txtNombres.EmptyTextBox())
+            {
+                lblValidar.Text = "El campo Nombre es obligatorio";
+                return;
+            }
+
+            if (txtApePaterno.EmptyTextBox())
+            {
+                lblValidar.Text = "El campo Apellido Paterno es obligatorio";
+                return;
+            }
+
+            if (txtApeMaterno.EmptyTextBox())
+            {
+                lblValidar.Text = "El campo Apellido Materno es obligatorio";
+                return;
+            }
+
+            if (txtTelefono.EmptyTextBox())
+            {
+                lblValidar.Text = "El campo Celular es obligatorio";
+                return;
+            }
+            if (!string.IsNullOrEmpty(lblValidar.Text))
+            {
+                lblValidar.Text = string.Empty;
+            }
+
+            Guid UidUsuario = manejoSesionServices.usuarioCompletoRepository.usuarioCompleto.UidUsuario;
+
+            if (usuariosCompletosServices.ActivarCuentaUsuario(UidUsuario, txtNombres.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtPassword.Text, txtTelefono.Text, Guid.Parse(ddlPrefijo.SelectedValue)))
+            {
+                pnlEnProceso.Visible = false;
+                pnlActivado.Visible = true;
+            }
+            else
+            {
+                pnlEnProceso.Visible = true;
+                pnlActivado.Visible = false;
+                lblValidar.Text = "Ocurrio un problema inesperado, por favor intentelo más tarde, si el problema persiste comuniquese con los administradores.";
+            }
+        }
+        protected void btnCerrarSesion_Click(object sender, EventArgs e)
+        {
+            mpeActivarUsuario.Hide();
+            Session.Abandon();
+            Response.Redirect("Login.aspx");
+        }
+        protected void btnAceptarActivacion_Click(object sender, EventArgs e)
+        {
+            mpeActivarUsuario.Hide();
+        }
+
+        protected void btnMiPerfil_Click(object sender, EventArgs e)
+        {
+            //mpeActivarUsuario.Show();
         }
     }
 }

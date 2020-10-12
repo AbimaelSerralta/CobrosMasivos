@@ -17,12 +17,14 @@ namespace Franquicia.WebForms.Controller
         public ResponseHelpers PostPagosTarjeta([FromBody] RespuestaPago strResponse)
         {
             CorreosServices correosServices = new CorreosServices();
+            CorreosEscuelaServices correosEscuelaServices = new CorreosEscuelaServices();
             ValidacionesServices validacionesServices = new ValidacionesServices();
             ClienteCuentaServices clienteCuentaServices = new ClienteCuentaServices();
             LigasUrlsServices ligasUrlsServices = new LigasUrlsServices();
             WhatsAppPendientesServices whatsAppPendientesServices = new WhatsAppPendientesServices();
             TicketsServices ticketsServices = new TicketsServices();
             TarifasServices tarifasServices = new TarifasServices();
+            ParametrosTwiServices parametrosTwiServices = new ParametrosTwiServices();
 
             strResponse.StrResponse = HttpUtility.HtmlEncode(strResponse.StrResponse);
             var respuesta = new ResponseHelpers();
@@ -30,7 +32,17 @@ namespace Franquicia.WebForms.Controller
             // key con produccion
             string cadena = finalString;
 
-            correosServices.CorreoCadena(DateTime.Now + " finalString " + cadena, "serralta2008@gmail.com");
+            DateTime HoraDelServidor = DateTime.Now;
+            DateTime thisDay = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(HoraDelServidor, TimeZoneInfo.Local.Id, "Eastern Standard Time (Mexico)");
+
+            try
+            {
+                correosServices.CorreoCadena(thisDay + " finalString " + cadena, "serralta2008@gmail.com");
+            }
+            catch (Exception ex)
+            {
+                string mnsj = ex.Message;
+            }
 
             //string key = "5DCC67393750523CD165F17E1EFADD21"; //Credenciales sanbox 
             string key = "7AACFE849FABD796F6DCB947FD4D5268";
@@ -58,7 +70,7 @@ namespace Franquicia.WebForms.Controller
                 string cd_error = string.Empty;
                 string nb_error = string.Empty;
                 string cc_mask = string.Empty;
-                DateTime DtFechaOperacion = DateTime.Now;
+                DateTime DtFechaOperacion = thisDay;
 
                 for (int i = 0; i < RespuestaWebPayPlus[0].ChildNodes.Count; i++)
                 {
@@ -120,24 +132,25 @@ namespace Franquicia.WebForms.Controller
                 PagosServices pagosServices = new PagosServices();
 
                 DateTime fechaRegistro = DateTime.MinValue;
+
                 switch (response)
                 {
                     case "denied":
-                        fechaRegistro = DateTime.Now;
-                        DtFechaOperacion = DateTime.Now;
+                        fechaRegistro = thisDay;
+                        DtFechaOperacion = thisDay;
                         cc_type = "denied";
                         auth = "denied";
                         tp_operation = "denied";
                         amount = "0";
                         break;
                     case "approved":
-                        fechaRegistro = DateTime.Now;
+                        fechaRegistro = thisDay;
                         string fecha1 = DateTime.Parse(fecha + " " + Hora).ToString("dd/MM/yyyy HH:mm:ss");
                         DtFechaOperacion = DateTime.Parse(fecha1);
                         break;
                     case "error":
-                        fechaRegistro = DateTime.Now;
-                        DtFechaOperacion = DateTime.Now;
+                        fechaRegistro = thisDay;
+                        DtFechaOperacion = thisDay;
                         cc_type = "error";
                         auth = "error";
                         tp_operation = "error";
@@ -157,6 +170,17 @@ namespace Franquicia.WebForms.Controller
                         //{
                         //    pagosServices.ObtenerCorreoAuxiliar(reference);
                         //}
+
+
+                        // ==> ENVIO DE CORREO DE PAGO COLEGIATURA
+                        var para = pagosServices.ConsultarPagoColegiatura(reference);
+
+                        if (!string.IsNullOrEmpty(para.Item1))
+                        {
+                            var list = pagosServices.ObtenerPagoColegiatura(Guid.Parse(para.Item1));
+
+                            correosEscuelaServices.CorreoEnvioPagoColegiatura(list.Item1, list.Item2, "Comprobante de pago de colegiatura", reference, fechaRegistro, "************" + cc_number, foliocpagos, para.Item2, Guid.Parse(para.Item3));
+                        }
 
                         pagosServices.ConsultarPromocionLiga(reference);
 
@@ -188,19 +212,17 @@ namespace Franquicia.WebForms.Controller
 
                                 whatsAppPendientesServices.ObtenerWhatsPntHistPago(ligasUrlsServices.ligasUrlsRepository.ligasUrlsGridViewModel.UidPropietario);
 
-                                DateTime HoraDelServidor = DateTime.Now;
-                                DateTime hoy = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(HoraDelServidor, TimeZoneInfo.Local.Id, "Eastern Standard Time (Mexico)");
+                                DateTime HoraDelServidor2 = DateTime.Now;
+                                DateTime hoy = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(HoraDelServidor2, TimeZoneInfo.Local.Id, "Eastern Standard Time (Mexico)");
                                 DateTime horParse = DateTime.Parse(hoy.ToString("dd/MM/yyyy"));
 
                                 if (whatsAppPendientesServices.lsWhatsAppPendientes.Count >= 1)
                                 {
                                     ////******Configuracion de Twilio******
-                                    const string accountSid = "ACcf4d1380ccb0be6d47e78a73036a29ab";
-                                    ////string authToken = "30401e7bf2b7b3a2ab24c0a22203acc1";
-                                    const string authToken = "915ce4d30dc09473b5ed753490436281";
-                                    //var accountSid = Environment.GetEnvironmentVariable("ACcf4d1380ccb0be6d47e78a73036a29ab");
-                                    //var authToken = Environment.GetEnvironmentVariable("f6b99afa9cdf4da4e685ff4837b2f911");
-                                    string NumberFrom = "+14582243212";
+                                    parametrosTwiServices.ObtenerParametrosTwi();
+                                    string accountSid = parametrosTwiServices.parametrosTwiRepository.parametrosTwi.AccountSid;
+                                    string authToken = parametrosTwiServices.parametrosTwiRepository.parametrosTwi.AuthToken;
+                                    string NumberFrom = parametrosTwiServices.parametrosTwiRepository.parametrosTwi.NumberFrom;
 
                                     //string accountSid = "ACc7561cb09df3180ee1368e40055eedf5";
                                     ////string authToken = "0f47ce2d28c9211ac6a9ae42f630d1d6";
@@ -256,7 +278,7 @@ namespace Franquicia.WebForms.Controller
                                                         IdUsuario = DatosUsuario[1];
                                                     }
 
-                                                    string Folio = IdCliente + IdUsuario + DateTime.Now.ToString("ddMMyyyyHHmmssfff");
+                                                    string Folio = IdCliente + IdUsuario + thisDay.ToString("ddMMyyyyHHmmssfff");
 
                                                     if (ticketsServices.RegistrarTicketPago(Folio, DcmWhatsapp, 0, DcmWhatsapp, item.VchDescripcion, item.UidPropietario, hoy, 1, 0, 0, DcmCuenta, DcmWhatsapp, NuevoSaldo))
                                                     {

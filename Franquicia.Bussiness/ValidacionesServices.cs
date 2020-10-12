@@ -137,6 +137,21 @@ namespace Franquicia.Bussiness
         {
             return validacionesRepository.ObtenerDatosUsuario(UidUsuario, UidCliente);
         }
+
+        public string EstatusCuentaPadre(Guid UidUsuario)
+        {
+            return validacionesRepository.EstatusCuentaPadre(UidUsuario);
+        }
+        
+        public Tuple<string, string, string> Creden(Guid UidUsuario, Guid UidCliente)
+        {
+            return validacionesRepository.Creden(UidUsuario, UidCliente);
+        }
+
+        public bool ExisteMatricula(string Matricula)
+        {
+            return validacionesRepository.ExisteMatricula(Matricula);
+        }
         #endregion
     }
 }

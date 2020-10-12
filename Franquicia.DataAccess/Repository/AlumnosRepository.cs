@@ -29,7 +29,8 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select al.*, es.VchDescripcion, es.VchIcono, pt.Prefijo, tu.VchTelefono from Alumnos al, Estatus es, Clientes cl, TelefonosAlumnos tu, PrefijosTelefonicos pt where tu.UidAlumno = al.UidAlumno and pt.UidPrefijo = tu.UidPrefijo and al.UidEstatus = es.UidEstatus and cl.UidCliente = al.UidCliente and al.UidCliente = '" + UidCliente + "' order by al.VchMatricula asc";
+            //=>Sin contabilizar Colegiatura  query.CommandText = "select al.*, es.VchDescripcion, es.VchIcono, pt.Prefijo, tu.VchTelefono, (select COUNT(*) from Usuarios usu, UsuariosAlumnos usa, Alumnos alu where usu.UidUsuario = usa.UidUsuario and usa.UidAlumno = alu.UidAlumno and alu.UidAlumno = al.UidAlumno) as CantPadres from Alumnos al, Estatus es, Clientes cl, TelefonosAlumnos tu, PrefijosTelefonicos pt where tu.UidAlumno = al.UidAlumno and pt.UidPrefijo = tu.UidPrefijo and al.UidEstatus = es.UidEstatus and cl.UidCliente = al.UidCliente and al.UidCliente = '" + UidCliente + "' order by al.VchMatricula asc";
+            query.CommandText = "select al.*, es.VchDescripcion, es.VchIcono, pt.Prefijo, tu.VchTelefono, (select COUNT(*) from Usuarios usu, UsuariosAlumnos usa, Alumnos alu where usu.UidUsuario = usa.UidUsuario and usa.UidAlumno = alu.UidAlumno and alu.UidAlumno = al.UidAlumno) as CantPadres, (select COUNT(*) from clientes cli, Colegiaturas co, FechasColegiaturas fc, ColegiaturasAlumnos ca, Alumnos alu, Usuarios usua, UsuariosAlumnos ua, EstatusFechasColegiaturas efc, Periodicidades pe where pe.UidPeriodicidad = co.UidPeriodicidad and not exists (select * from LigasUrls lu, PagosTarjeta pt where pt.IdReferencia = lu.IdReferencia and pt.VchEstatus = 'approved' and lu.UidFechaColegiatura = fc.UidFechaColegiatura) and co.UidEstatus = '65E46BC9-1864-4145-AD1A-70F5B5F69739' and efc.UidEstatusFechaColegiatura = fc.UidEstatusFechaColegiatura and cli.UidCliente = co.UidCliente and co.UidColegiatura = fc.UidColegiatura and ca.UidColegiatura = co.UidColegiatura and ca.UidAlumno = alu.UidAlumno and ua.UidUsuario = usua.UidUsuario and ua.UidAlumno = alu.UidAlumno and cli.UidCliente = cl.UidCliente and alu.UidAlumno = al.UidAlumno) as CantColegiaturas from Alumnos al, Estatus es, Clientes cl, TelefonosAlumnos tu, PrefijosTelefonicos pt where tu.UidAlumno = al.UidAlumno and pt.UidPrefijo = tu.UidPrefijo and al.UidEstatus = es.UidEstatus and cl.UidCliente = al.UidCliente and al.UidCliente = '" + UidCliente + "' order by al.VchMatricula asc";
 
             DataTable dt = this.Busquedas(query);
 
@@ -37,6 +38,34 @@ namespace Franquicia.DataAccess.Repository
             {
                 string BitBeca = "NO";
                 string Telefono = string.Empty;
+                string DescripcionAsociado = string.Empty;
+                string IconoAsociado = string.Empty;
+                bool blVisibleDesasociar = false;
+
+                SqlCommand queryAsociado = new SqlCommand();
+                queryAsociado.CommandType = CommandType.Text;
+
+                queryAsociado.CommandText = "select * from UsuariosAlumnos where UidAlumno = '" + item["UidAlumno"].ToString() + "'";
+
+                DataTable dtAsociado = this.Busquedas(queryAsociado);
+
+                string ColorNotification = "#f44336";
+                if (int.Parse(item["CantPadres"].ToString()) >= 1)
+                {
+                    ColorNotification = "#4CAF50";
+                }
+
+                if (dtAsociado.Rows.Count >= 1)
+                {
+                    DescripcionAsociado = "ASOCIADO";
+                    IconoAsociado = "check_circle";
+                    blVisibleDesasociar = true;
+                }
+                else
+                {
+                    DescripcionAsociado = "NO ASOCIADO";
+                    IconoAsociado = "cancel";
+                }
 
                 if (bool.Parse(item["BitBeca"].ToString()))
                 {
@@ -64,7 +93,12 @@ namespace Franquicia.DataAccess.Repository
                     DcmBeca = item.IsNull("DcmBeca") ? 0 : decimal.Parse(item["DcmBeca"].ToString()),
                     UidEstatus = new Guid(item["UidEstatus"].ToString()),
                     VchDescripcion = item["VchDescripcion"].ToString(),
-                    VchIcono = item["VchIcono"].ToString()
+                    VchIcono = item["VchIcono"].ToString(),
+                    blVisibleDesasociar = blVisibleDesasociar,
+                    VchDescripcionAsociado = DescripcionAsociado,
+                    VchIconoAsociado = IconoAsociado,
+                    IntCantPadres = int.Parse(item["CantPadres"].ToString()),
+                    ColorNotification = ColorNotification
                 });
             }
 
@@ -206,77 +240,194 @@ namespace Franquicia.DataAccess.Repository
             }
             return Resultado;
         }
-        //public List<Alumnos> BuscarAlumnos(Guid UidCliente, Guid UidTipoPerfil, string Nombre, string ApePaterno, string ApeMaterno, string Correo, Guid UidEstatus)
-        //{
-        //    List<Alumnos> lsAlumnos = new List<Alumnos>();
+        public List<AlumnosGridViewModel> BuscarAlumnos(string Identificador, string Matricula, string Correo, string Nombre, string ApePaterno, string ApeMaterno, string Celular, string Asociado, string Beca, Guid UidEstatus, string Colegiatura, Guid UidCliente)
+        {
+            List<AlumnosGridViewModel> lsAlumnosGridViewModel = new List<AlumnosGridViewModel>();
 
-        //    SqlCommand comando = new SqlCommand();
-        //    comando.CommandType = CommandType.StoredProcedure;
-        //    comando.CommandText = "sp_UsuariosFinalesBuscar";
-        //    try
-        //    {
-        //        if (UidCliente != Guid.Empty)
-        //        {
-        //            comando.Parameters.Add("@UidCliente", SqlDbType.UniqueIdentifier);
-        //            comando.Parameters["@UidCliente"].Value = UidCliente;
-        //        }
-        //        if (UidTipoPerfil != Guid.Empty)
-        //        {
-        //            comando.Parameters.Add("@UidTipoPerfil", SqlDbType.UniqueIdentifier);
-        //            comando.Parameters["@UidTipoPerfil"].Value = UidTipoPerfil;
-        //        }
-        //        if (Nombre != string.Empty)
-        //        {
-        //            comando.Parameters.Add("@Nombre", SqlDbType.VarChar, 50);
-        //            comando.Parameters["@Nombre"].Value = Nombre;
-        //        }
-        //        if (ApePaterno != string.Empty)
-        //        {
-        //            comando.Parameters.Add("@ApePaterno", SqlDbType.VarChar, 50);
-        //            comando.Parameters["@ApePaterno"].Value = ApePaterno;
-        //        }
-        //        if (ApeMaterno != string.Empty)
-        //        {
-        //            comando.Parameters.Add("@ApeMaterno", SqlDbType.VarChar, 50);
-        //            comando.Parameters["@ApeMaterno"].Value = ApeMaterno;
-        //        }
-        //        if (Correo != string.Empty)
-        //        {
-        //            comando.Parameters.Add("@Correo", SqlDbType.VarChar, 50);
-        //            comando.Parameters["@Correo"].Value = Correo;
-        //        }
-        //        if (UidEstatus != Guid.Empty)
-        //        {
-        //            comando.Parameters.Add("@UidEstatus", SqlDbType.UniqueIdentifier);
-        //            comando.Parameters["@UidEstatus"].Value = UidEstatus;
-        //        }
+            SqlCommand comando = new SqlCommand();
+            comando.CommandType = CommandType.StoredProcedure;
+            comando.CommandText = "sp_AlumnosBuscar";
+            try
+            {
+                if (Identificador != string.Empty)
+                {
+                    comando.Parameters.Add("@Identificador", SqlDbType.VarChar);
+                    comando.Parameters["@Identificador"].Value = Identificador;
+                }
+                if (Matricula != string.Empty)
+                {
+                    comando.Parameters.Add("@Matricula", SqlDbType.VarChar, 50);
+                    comando.Parameters["@Matricula"].Value = Matricula;
+                }
+                if (Correo != string.Empty)
+                {
+                    comando.Parameters.Add("@Correo", SqlDbType.VarChar, 50);
+                    comando.Parameters["@Correo"].Value = Correo;
+                }
+                if (Nombre != string.Empty)
+                {
+                    comando.Parameters.Add("@Nombre", SqlDbType.VarChar, 50);
+                    comando.Parameters["@Nombre"].Value = Nombre;
+                }
+                if (ApePaterno != string.Empty)
+                {
+                    comando.Parameters.Add("@ApePaterno", SqlDbType.VarChar, 50);
+                    comando.Parameters["@ApePaterno"].Value = ApePaterno;
+                }
+                if (ApeMaterno != string.Empty)
+                {
+                    comando.Parameters.Add("@ApeMaterno", SqlDbType.VarChar, 50);
+                    comando.Parameters["@ApeMaterno"].Value = ApeMaterno;
+                }
+                if (Celular != string.Empty)
+                {
+                    comando.Parameters.Add("@Celular", SqlDbType.VarChar, 50);
+                    comando.Parameters["@Celular"].Value = Celular;
+                }
+                if (Beca != string.Empty && Beca != "TODOS")
+                {
+                    bool bec = false;
 
-        //        foreach (DataRow item in this.Busquedas(comando).Rows)
-        //        {
-        //            alumnos = new Alumnos()
-        //            {
-        //                UidUsuario = new Guid(item["UidUsuario"].ToString()),
-        //                StrNombre = item["VchNombre"].ToString(),
-        //                StrApePaterno = item["VchApePaterno"].ToString(),
-        //                StrApeMaterno = item["VchApeMaterno"].ToString(),
-        //                StrCorreo = item["VchCorreo"].ToString(),
-        //                UidEstatus = new Guid(item["UidEstatus"].ToString()),
-        //                VchUsuario = item["VchUsuario"].ToString(),
-        //                VchNombrePerfil = item["Perfil"].ToString(),
-        //                VchDescripcion = item["VchDescripcion"].ToString(),
-        //                VchIcono = item["VchIcono"].ToString()
-        //            };
+                    if (Beca == "SI")
+                    {
+                        bec = true;
+                    }
 
-        //            lsAlumnos.Add(alumnos);
-        //        }
+                    comando.Parameters.Add("@Beca", SqlDbType.Bit);
+                    comando.Parameters["@Beca"].Value = bec;
+                }
+                if (UidEstatus != Guid.Empty)
+                {
+                    comando.Parameters.Add("@UidEstatus", SqlDbType.UniqueIdentifier);
+                    comando.Parameters["@UidEstatus"].Value = UidEstatus;
+                }
+                if (Colegiatura != string.Empty && Colegiatura != "NO IMPORTA")
+                {
+                    if (Colegiatura == "SI")
+                    {
+                        comando.Parameters.Add("@Colegiatura", SqlDbType.Int);
+                        comando.Parameters["@Colegiatura"].Value = 1;
+                    }
+                    else
+                    {
+                        comando.Parameters.Add("@SinColegiatura", SqlDbType.Int);
+                        comando.Parameters["@SinColegiatura"].Value = 0;
+                    }
+                }
+                if (UidCliente != Guid.Empty)
+                {
+                    comando.Parameters.Add("@UidCliente", SqlDbType.UniqueIdentifier);
+                    comando.Parameters["@UidCliente"].Value = UidCliente;
+                }
 
-        //        return lsAlumnos;
-        //    }
-        //    catch (Exception)
-        //    {
-        //        throw;
-        //    }
-        //}
+                foreach (DataRow item in this.Busquedas(comando).Rows)
+                {
+                    string BitBeca = "NO";
+                    string Telefono = string.Empty;
+                    string DescripcionAsociado = string.Empty;
+                    string IconoAsociado = string.Empty;
+                    bool blVisibleDesasociar = false;
+
+                    SqlCommand queryAsociado = new SqlCommand();
+                    queryAsociado.CommandType = CommandType.Text;
+
+                    queryAsociado.CommandText = "select * from UsuariosAlumnos where UidAlumno = '" + item["UidAlumno"].ToString() + "'";
+
+                    DataTable dtAsociado = this.Busquedas(queryAsociado);
+
+                    string ColorNotification = "#f44336";
+                    if (int.Parse(item["CantPadres"].ToString()) >= 1)
+                    {
+                        ColorNotification = "#4CAF50";
+                    }
+
+                    if (dtAsociado.Rows.Count >= 1)
+                    {
+                        DescripcionAsociado = "ASOCIADO";
+                        IconoAsociado = "check_circle";
+                        blVisibleDesasociar = true;
+                    }
+                    else
+                    {
+                        DescripcionAsociado = "NO ASOCIADO";
+                        IconoAsociado = "cancel";
+                    }
+
+                    if (bool.Parse(item["BitBeca"].ToString()))
+                    {
+                        BitBeca = "SI";
+                    }
+
+                    if (!string.IsNullOrEmpty(item["VchTelefono"].ToString()))
+                    {
+                        Telefono = "(" + item["Prefijo"].ToString() + ")" + item["VchTelefono"].ToString();
+                    }
+
+                    lsAlumnosGridViewModel.Add(new AlumnosGridViewModel()
+                    {
+                        UidAlumno = new Guid(item["UidAlumno"].ToString()),
+                        VchIdentificador = item["VchIdentificador"].ToString(),
+                        VchNombres = item["VchNombres"].ToString(),
+                        VchApePaterno = item["VchApePaterno"].ToString(),
+                        VchApeMaterno = item["VchApeMaterno"].ToString(),
+                        VchMatricula = item["VchMatricula"].ToString(),
+                        VchCorreo = item["VchCorreo"].ToString(),
+                        VchTelefono = Telefono,
+                        VchBeca = BitBeca,
+                        BitBeca = bool.Parse(item["BitBeca"].ToString()),
+                        VchTipoBeca = item["VchTipoBeca"].ToString(),
+                        DcmBeca = item.IsNull("DcmBeca") ? 0 : decimal.Parse(item["DcmBeca"].ToString()),
+                        UidEstatus = new Guid(item["UidEstatus"].ToString()),
+                        VchDescripcion = item["VchDescripcion"].ToString(),
+                        VchIcono = item["VchIcono"].ToString(),
+                        blVisibleDesasociar = blVisibleDesasociar,
+                        VchDescripcionAsociado = DescripcionAsociado,
+                        VchIconoAsociado = IconoAsociado,
+                        IntCantPadres = int.Parse(item["CantPadres"].ToString()),
+                        ColorNotification = ColorNotification
+                    });
+                }
+
+                if (Asociado != string.Empty && Asociado != "TODOS")
+                {
+                    return lsAlumnosGridViewModel = lsAlumnosGridViewModel.Where(x => x.VchDescripcionAsociado == Asociado).OrderBy(x => x.VchMatricula).ToList();
+                }
+                else
+                {
+                    return lsAlumnosGridViewModel = lsAlumnosGridViewModel.OrderBy(x => x.VchMatricula).ToList();
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public bool DesasociarPadreAlumno(Guid UidUsuario, Guid UidAlumno)
+        {
+            bool Resultado = false;
+
+            SqlCommand comando = new SqlCommand();
+            try
+            {
+                comando.CommandType = System.Data.CommandType.StoredProcedure;
+                comando.CommandText = "sp_AlumnosDesasociarPadres";
+
+                comando.Parameters.Add("@UidUsuario", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidUsuario"].Value = UidUsuario;
+
+                comando.Parameters.Add("@UidAlumno", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidAlumno"].Value = UidAlumno;
+
+                Resultado = this.ManipulacionDeDatos(comando);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return Resultado;
+        }
         #endregion
 
         #region Metodos Clientes
@@ -304,7 +455,7 @@ namespace Franquicia.DataAccess.Repository
             }
             return Resultado;
         }
-        public bool EliminarClienteAlumnos(Guid UidUsuario)
+        public bool EliminarClienteAlumnos(Guid UidCliente, Guid UidUsuario)
         {
             bool Resultado = false;
 
@@ -313,6 +464,9 @@ namespace Franquicia.DataAccess.Repository
             {
                 comando.CommandType = System.Data.CommandType.StoredProcedure;
                 comando.CommandText = "sp_ClientesAlumnosEliminar";
+
+                comando.Parameters.Add("@UidCliente", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidCliente"].Value = UidCliente;
 
                 comando.Parameters.Add("@UidUsuario", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidUsuario"].Value = UidUsuario;
@@ -325,14 +479,15 @@ namespace Franquicia.DataAccess.Repository
             }
             return Resultado;
         }
-        public List<AlumnosGridViewModel> ObtenerClienteAlumnos(Guid UidUsuario)
+        public List<AlumnosGridViewModel> ObtenerClienteAlumnos(Guid UidUidCliente, Guid UidUsuario)
         {
             List<AlumnosGridViewModel> lsAlumnosGridViewModel = new List<AlumnosGridViewModel>();
 
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select al.*, es.VchDescripcion, es.VchIcono from Alumnos al, Estatus es, UsuariosAlumnos ua, Usuarios us where al.UidEstatus = es.UidEstatus and ua.UidUsuario = us.UidUsuario and ua.UidAlumno = al.UidAlumno and ua.UidUsuario = '" + UidUsuario + "'";
+            // TRAE TODOS LOS ALUMNOS SIN IMPORTAR LA ESCUELA query.CommandText = "select al.*, es.VchDescripcion, es.VchIcono from Alumnos al, Estatus es, UsuariosAlumnos ua, Usuarios us where al.UidEstatus = es.UidEstatus and ua.UidUsuario = us.UidUsuario and ua.UidAlumno = al.UidAlumno and ua.UidUsuario = '" + UidUsuario + "'";
+            query.CommandText = "select al.*, es.VchDescripcion, es.VchIcono from Alumnos al, Estatus es, UsuariosAlumnos ua, Usuarios us, Clientes cl where cl.UidCliente = al.UidCliente and al.UidEstatus = es.UidEstatus and ua.UidUsuario = us.UidUsuario and ua.UidAlumno = al.UidAlumno and cl.UidCliente = '" + UidUidCliente + "' and ua.UidUsuario = '" + UidUsuario + "'";
 
             DataTable dt = this.Busquedas(query);
 
@@ -341,6 +496,7 @@ namespace Franquicia.DataAccess.Repository
                 lsAlumnosGridViewModel.Add(new AlumnosGridViewModel()
                 {
                     UidAlumno = new Guid(item["UidAlumno"].ToString()),
+                    VchIdentificador = item["VchIdentificador"].ToString(),
                     VchNombres = item["VchNombres"].ToString(),
                     VchApePaterno = item["VchApePaterno"].ToString(),
                     VchApeMaterno = item["VchApeMaterno"].ToString(),
@@ -351,7 +507,7 @@ namespace Franquicia.DataAccess.Repository
 
             return lsAlumnosGridViewModel;
         }
-        public List<AlumnosGridViewModel> AsignarAlumnos(List<AlumnosGridViewModel> lsSelectAlumnosGridViewModel, Guid UidCliente, Guid UidUsuario, string Nombre, string ApePaterno, string ApeMaterno, string Matricula)
+        public List<AlumnosGridViewModel> AsignarAlumnos(List<AlumnosGridViewModel> lsSelectAlumnosGridViewModel, Guid UidCliente, Guid UidUsuario, string Identificador, string Nombre, string ApePaterno, string ApeMaterno, string Matricula)
         {
             List<AlumnosGridViewModel> lsAlumnosGridViewModel = new List<AlumnosGridViewModel>();
 
@@ -366,6 +522,11 @@ namespace Franquicia.DataAccess.Repository
                 comando.Parameters.Add("@UidUsuario", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidUsuario"].Value = UidUsuario;
 
+                if (Identificador != string.Empty)
+                {
+                    comando.Parameters.Add("@Identificador", SqlDbType.VarChar);
+                    comando.Parameters["@Identificador"].Value = Identificador;
+                }
                 if (Nombre != string.Empty)
                 {
                     comando.Parameters.Add("@Nombres", SqlDbType.VarChar);
@@ -404,6 +565,7 @@ namespace Franquicia.DataAccess.Repository
                     lsAlumnosGridViewModel.Add(new AlumnosGridViewModel()
                     {
                         UidAlumno = new Guid(item["UidAlumno"].ToString()),
+                        VchIdentificador = item["VchIdentificador"].ToString(),
                         VchNombres = item["VchNombres"].ToString(),
                         VchApePaterno = item["VchApePaterno"].ToString(),
                         VchApeMaterno = item["VchApeMaterno"].ToString(),
@@ -495,7 +657,7 @@ namespace Franquicia.DataAccess.Repository
 
             return lsAlumnosGridViewModel;
         }
-        public List<AlumnosGridViewModel> AsignarColeAlumnos(List<AlumnosGridViewModel> lsExcelSelect, List<AlumnosGridViewModel> lsSelectAlumnosGridViewModel, Guid UidCliente, string Nombre, string ApePaterno, string ApeMaterno, string Matricula)
+        public List<AlumnosGridViewModel> AsignarColeAlumnos(List<AlumnosGridViewModel> lsExcelSelect, List<AlumnosGridViewModel> lsSelectAlumnosGridViewModel, Guid UidCliente, string Identificador, string Nombre, string ApePaterno, string ApeMaterno, string Matricula)
         {
             List<AlumnosGridViewModel> lsAlumnosGridViewModel = new List<AlumnosGridViewModel>();
 
@@ -507,6 +669,11 @@ namespace Franquicia.DataAccess.Repository
                 comando.Parameters.Add("@UidCliente", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidCliente"].Value = UidCliente;
 
+                if (Identificador != string.Empty)
+                {
+                    comando.Parameters.Add("@Identificador", SqlDbType.VarChar);
+                    comando.Parameters["@Identificador"].Value = Identificador;
+                }
                 if (Nombre != string.Empty)
                 {
                     comando.Parameters.Add("@Nombres", SqlDbType.VarChar);
@@ -644,6 +811,27 @@ namespace Franquicia.DataAccess.Repository
 
             return result;
         }
+        //public bool EliminarAlumnoCliente(Guid UidAlumno)
+        //{
+        //    bool Resultado = false;
+
+        //    SqlCommand comando = new SqlCommand();
+        //    try
+        //    {
+        //        comando.CommandType = System.Data.CommandType.StoredProcedure;
+        //        comando.CommandText = "sp_ClientesAlumnosDesasociar";
+
+        //        comando.Parameters.Add("@UidAlumno", SqlDbType.UniqueIdentifier);
+        //        comando.Parameters["@UidAlumno"].Value = UidAlumno;
+
+        //        Resultado = this.ManipulacionDeDatos(comando);
+        //    }
+        //    catch (Exception)
+        //    {
+        //        throw;
+        //    }
+        //    return Resultado;
+        //}
         #endregion
 
         #endregion
