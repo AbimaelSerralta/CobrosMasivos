@@ -230,7 +230,7 @@ namespace Franquicia.Bussiness
             string msnj = string.Empty;
             try
             {
-                var apiKey = "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"; //insert your Sendgrid API Key
+                var apiKey = "SA"; //insert your Sendgrid API Key
                 var client = new SendGridClient(apiKey);
                 var from = new EmailAddress("ligas@cobrosmasivos.com", "CobrosMasivos");
                 var subject = Asunto;
