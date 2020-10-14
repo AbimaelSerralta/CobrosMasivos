@@ -64,6 +64,7 @@
     <Compile Include="Repository\ColegiaturasRepository.cs" />
     <Compile Include="Repository\ComisionesTarjetasRepository.cs" />
     <Compile Include="Repository\CorreosRepository.cs" />
+    <Compile Include="Repository\ParametrosSendGridRepository.cs" />
     <Compile Include="Repository\PeriodicidadesRepository.cs" />
     <Compile Include="Repository\ProcesosEnsenianzasRepository.cs" />
     <Compile Include="Repository\SuperPromocionesRepository.cs" />

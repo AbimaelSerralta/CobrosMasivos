@@ -1,4 +1,5 @@
-﻿using Franquicia.Domain;
+﻿using Franquicia.DataAccess.Repository;
+using Franquicia.Domain;
 using Newtonsoft.Json;
 using SendGrid;
 using SendGrid.Helpers.Mail;
@@ -17,6 +18,12 @@ namespace Franquicia.Bussiness
 {
     public class CorreosServices
     {
+        private ParametrosSendGridRepository _parametrosSendGridRepository = new ParametrosSendGridRepository();
+        public ParametrosSendGridRepository parametrosSendGridRepository
+        {
+            get { return _parametrosSendGridRepository; }
+            set { _parametrosSendGridRepository = value; }
+        }
 
         //string Host = "mail.compuandsoft.com";
         //string EmailFrom = "website@compuandsoft.com";
@@ -230,7 +237,9 @@ namespace Franquicia.Bussiness
             string msnj = string.Empty;
             try
             {
-                var apiKey = "SA"; //insert your Sendgrid API Key
+                parametrosSendGridRepository.ObtenerParametrosSendGrid();
+
+                var apiKey = parametrosSendGridRepository.parametrosSendGrid.VchApiKey; //insert your Sendgrid API Key
                 var client = new SendGridClient(apiKey);
                 var from = new EmailAddress("ligas@cobrosmasivos.com", "CobrosMasivos");
                 var subject = Asunto;
