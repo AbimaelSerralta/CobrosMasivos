@@ -60,6 +60,7 @@
     <Compile Include="DateTimeSpanServices.cs" />
     <Compile Include="ColegiaturasServices.cs" />
     <Compile Include="CorreosEscuelaServices.cs" />
+    <Compile Include="ParametrosSendGridServices.cs" />
     <Compile Include="PeriodicidadesServices.cs" />
     <Compile Include="NivelesEnsenianzasServices.cs" />
     <Compile Include="SuperPromocionesServices.cs" />

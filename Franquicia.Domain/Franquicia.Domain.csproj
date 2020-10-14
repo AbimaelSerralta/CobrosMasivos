@@ -46,6 +46,7 @@
     <Compile Include="Models\EmailConfiguration.cs" />
     <Compile Include="Models\Colegiaturas.cs" />
     <Compile Include="Models\ComisionesTarjetas.cs" />
+    <Compile Include="Models\ParametrosSendGrid.cs" />
     <Compile Include="Models\Periodicidades.cs" />
     <Compile Include="Models\NivelesEnsenianzas.cs" />
     <Compile Include="Models\SuperPromociones.cs" />
