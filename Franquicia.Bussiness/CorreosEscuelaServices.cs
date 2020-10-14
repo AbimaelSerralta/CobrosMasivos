@@ -26,6 +26,13 @@ namespace Franquicia.Bussiness
         //    set { _clientesRepository = value; }
         //}
 
+        private ParametrosSendGridRepository _parametrosSendGridRepository = new ParametrosSendGridRepository();
+        public ParametrosSendGridRepository parametrosSendGridRepository
+        {
+            get { return _parametrosSendGridRepository; }
+            set { _parametrosSendGridRepository = value; }
+        }
+
 
         //string Host = "mail.compuandsoft.com";
         //string EmailFrom = "website@compuandsoft.com";
@@ -243,7 +250,9 @@ namespace Franquicia.Bussiness
             string msnj = string.Empty;
             try
             {
-                var apiKey = "SA"; //insert your Sendgrid API Key
+                parametrosSendGridRepository.ObtenerParametrosSendGrid();
+
+                var apiKey = parametrosSendGridRepository.parametrosSendGrid.VchApiKey; //insert your Sendgrid API Key
                 var client = new SendGridClient(apiKey);
                 var from = new EmailAddress("ventas@pagalaescuela.mx", "PagaLaEscuela");
                 var subject = Asunto;
