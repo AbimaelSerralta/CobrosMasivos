@@ -9,8 +9,6 @@ namespace Franquicia.Domain.Models
     public class PagosColegiaturas
     {
         public Guid UidPagoColegiatura { get; set; }
-        public string VchAlumno { get; set; }
-        public string VchMatricula { get; set; }
         public DateTime DtFHPago { get; set; }
         public string VchPromocionDePago { get; set; }
         public string VchComisionBancaria { get; set; }
@@ -21,7 +19,7 @@ namespace Franquicia.Domain.Models
         public bool BitPromocionDePago { get; set; }
         public decimal DcmPromocionDePago { get; set; }
         public decimal DcmTotal { get; set; }
-        public Guid UidFechaColegiatura { get; set; }
+        public Guid UidUsuario { get; set; }
         public Guid UidEstatusPagoColegiatura { get; set; }
     }
 }

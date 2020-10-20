@@ -39,15 +39,14 @@ namespace Franquicia.Bussiness
         //    alumnosRepository.alumnosGridViewModel = new AlumnosGridViewModel();
         //    alumnosRepository.alumnosGridViewModel = lsAlumnosGridViewModel.Find(x => x.UidAlumno == UidAlumno);
         //}
-        public bool RegistrarPagoColegiatura(Guid UidPagoColegiatura, string VchAlumno, string VchMatricula, DateTime DtFHPago, string VchPromocionDePago, string VchComisionBancaria, bool BitSubtotal, decimal DcmSubtotal, bool BitComisionBancaria, decimal DcmComisionBancaria, bool BitPromocionDePago, decimal DcmPromocionDePago, decimal DcmTotal, Guid UidFechaColegiatura)
+        public bool RegistrarPagoColegiatura(Guid UidPagoColegiatura, DateTime DtFHPago, string VchPromocionDePago, string VchComisionBancaria, bool BitSubtotal, decimal DcmSubtotal, bool BitComisionBancaria, decimal DcmComisionBancaria, bool BitPromocionDePago, decimal DcmPromocionDePago, decimal DcmTotal, Guid UidUsuario,
+                                             Guid UidFechaColegiatura, Guid UidAlumno, Guid UidFormaPago, decimal DcmImporteCole, decimal DcmImportePagado, decimal DcmImporteNuevo, Guid EstatusFechaPago)
         {
             bool result = false;
             if (pagosColegiaturasRepository.RegistrarPagoColegiatura(
                 new PagosColegiaturas
                 {
                     UidPagoColegiatura = UidPagoColegiatura,
-                    VchAlumno = VchAlumno,
-                    VchMatricula = VchMatricula,
                     DtFHPago = DtFHPago,
                     VchPromocionDePago = VchPromocionDePago,
                     VchComisionBancaria = VchComisionBancaria,
@@ -58,8 +57,15 @@ namespace Franquicia.Bussiness
                     BitPromocionDePago = BitPromocionDePago,
                     DcmPromocionDePago = DcmPromocionDePago,
                     DcmTotal = DcmTotal,
-                    UidFechaColegiatura = UidFechaColegiatura
-                }
+                    UidUsuario = UidUsuario
+                },
+                UidFechaColegiatura,
+                UidAlumno,
+                UidFormaPago,
+                DcmImporteCole,
+                DcmImportePagado,
+                DcmImporteNuevo,
+                EstatusFechaPago
                 ))
             {
                 result = true;

@@ -1342,12 +1342,13 @@ namespace PagaLaEscuela.Views
 
         protected void btnFiltroBuscar_Click(object sender, EventArgs e)
         {
-            alumnosServices.AsignarAlumnos(alumnosServices.lsSelectAlumnosGridViewModel, Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse(ViewState["UidRequerido"].ToString()), txtFiltroAlumIdentificador.Text, txtFiltroAlumNombre.Text.Trim(), txtFiltroAlumPaterno.Text.Trim(), txtFiltroAlumMaterno.Text.Trim(), txtFiltroAlumMatricula.Text.Trim());
+            alumnosServices.AsignarAlumnos(alumnosServices.lsSelectAlumnosGridViewModel, Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse(ViewState["UidRequerido"].ToString()), ddlFiltroAsociado.SelectedValue, txtFiltroAlumIdentificador.Text, txtFiltroAlumNombre.Text.Trim(), txtFiltroAlumPaterno.Text.Trim(), txtFiltroAlumMaterno.Text.Trim(), txtFiltroAlumMatricula.Text.Trim());
             gvAlumnos.DataSource = alumnosServices.lsAlumnosGridViewModel;
             gvAlumnos.DataBind();
         }
         protected void btnFiltroLimpiar_Click(object sender, EventArgs e)
         {
+            ddlFiltroAsociado.SelectedIndex = -1;
             txtFiltroAlumIdentificador.Text = string.Empty;
             txtFiltroAlumNombre.Text = string.Empty;
             txtFiltroAlumPaterno.Text = string.Empty;

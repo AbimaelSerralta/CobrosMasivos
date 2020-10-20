@@ -9,6 +9,7 @@ namespace Franquicia.Domain.ViewModels
 {
     public class PagosColegiaturasViewModel : Colegiaturas
     {
+        public Guid UidAlumno { get; set; }
         public string VchMatricula { get; set; }
         public string VchNombreComercial { get; set; }
 

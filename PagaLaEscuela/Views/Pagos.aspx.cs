@@ -40,6 +40,8 @@ namespace PagaLaEscuela.Views
 
             if (!IsPostBack)
             {
+                txtTotaltb.Attributes.Add("onchange", "button_click(this,'" + btnCalcular.ClientID + "')");
+
                 tmValidar.Enabled = false;
                 ViewState["gvPagos"] = SortDirection.Descending;
 
@@ -283,6 +285,7 @@ namespace PagaLaEscuela.Views
                 colegiaturasServices.lsDesglosePagosGridViewModel.Clear();
                 colegiaturasServices.ObtenerPagosColegiaturas(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), dataKey, Matri);
 
+                ViewState["RowCommand-UidAlumno"] = colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.UidAlumno;
                 ViewState["RowCommand-UidFechaColegiatura"] = colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.UidFechaColegiatura;
                 ViewState["RowCommand-Identificador"] = colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchIdentificador;
                 lblConcepto.Text = "Pago " + colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchNum + ", " + colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchMatricula + " " + colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.NombreCompleto;
@@ -532,6 +535,7 @@ namespace PagaLaEscuela.Views
                     decimal importe = decimal.Parse(lblImporteTotal.Text) + decimal.Parse(ViewState["ImporteCCT"].ToString());
 
                     lblTotalPagar.Text = importe.ToString("N2");
+                    txtTotaltb.Text = importe.ToString("N2");
                     ViewState["txtImporteTotal.Text"] = importe.ToString("N2");
 
                     trPromociones.Attributes.Add("style", "display:none;");
@@ -560,6 +564,7 @@ namespace PagaLaEscuela.Views
                         lblImpPromotb.Text = "$" + Valor.ToString("N2");
 
                         lblTotalPagar.Text = Importe.ToString("N2");
+                        txtTotaltb.Text = Importe.ToString("N2");
                         lblTotalPago.Text = Importe.ToString("N2");
                         lblTotaltb.Text = "$" + Importe.ToString("N2");
                         ViewState["txtImporteTotal.Text"] = Importe.ToString("N2");
@@ -580,6 +585,8 @@ namespace PagaLaEscuela.Views
                 btnGenerarLiga.Enabled = false;
             }
 
+            btnCalcular_Click(null, null);
+
             if (trComisionTarjeta.Style.Value == "display:none;" && trPromociones.Style.Value == "display:none;")
             {
                 trSubtotal.Attributes.Add("style", "display:none;");
@@ -599,7 +606,7 @@ namespace PagaLaEscuela.Views
             string vencimiento = lblVencimiento.Text;
 
             int intCorreo = 1;
-            decimal importeTotal = decimal.Parse(lblTotalPagar.Text);
+            decimal importeTotal = decimal.Parse(ViewState["txtTotaltb.Text"].ToString());
 
             string url = string.Empty;
             bool resu = false;
@@ -705,8 +712,14 @@ namespace PagaLaEscuela.Views
                         bool trSubtotal = bool.Parse(ViewState["booltrSubtotal"].ToString());
                         bool trComisionTarjeta = bool.Parse(ViewState["booltrComisionTarjeta"].ToString());
                         bool trPromociones = bool.Parse(ViewState["booltrPromociones"].ToString());
+                        Guid estatusFechaPago = Guid.Parse("8720B2B9-5712-4E75-A981-932887AACDC9");
 
-                        if (pagosColegiaturasServices.RegistrarPagoColegiatura(UidPagoColegiatura, headAlumno.Text, headMatricula.Text, DateTime.Parse(headFPago.Text), lblPromotb.Text, lblComisionTarjetatb.Text, trSubtotal, decimal.Parse(lblSubtotaltb.Text.Replace("$", "")), trComisionTarjeta, decimal.Parse(ViewState["ImporteCCT"].ToString()), trPromociones, decimal.Parse(lblImpPromotb.Text.Replace("$", "")), decimal.Parse(lblTotaltb.Text.Replace("$", "")), Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString())))
+                        if (importeTotal < decimal.Parse(ViewState["txtImporteTotal.Text"].ToString()))
+                        {
+                            estatusFechaPago = Guid.Parse("F25E4AAB-6044-46E9-A575-98DCBCCF7604");
+                        }
+
+                        if (pagosColegiaturasServices.RegistrarPagoColegiatura(UidPagoColegiatura, DateTime.Parse(headFPago.Text), lblPromotb.Text, lblComisionTarjetatb.Text, trSubtotal, decimal.Parse(lblSubtotaltb.Text.Replace("$", "")), trComisionTarjeta, decimal.Parse(ViewState["ImporteCCT"].ToString()), trPromociones, decimal.Parse(lblImpPromotb.Text.Replace("$", "")), decimal.Parse(lblTotaltb.Text.Replace("$", "")), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()), Guid.Parse("31BE9A23-73EE-4F44-AF6C-6C0648DCEBF7"), decimal.Parse(lblTotaltb.Text.Replace("$", "")), importeTotal, decimal.Parse(lblRestaTotal.Text.Replace("Resta: $", "")), estatusFechaPago))
                         {
                             foreach (var item in colegiaturasServices.lsDesglosePagosGridViewModel)
                             {
@@ -842,7 +855,7 @@ namespace PagaLaEscuela.Views
                 tmValidar.Enabled = false;
 
                 colegiaturasServices.EliminarLigaColegiatura(ViewState["IdReferencia"].ToString());
-                pagosColegiaturasServices.EliminarPagoColegiatura(Guid.Parse(Session["UidPagoColegiatura"].ToString()));
+                //pagosColegiaturasServices.EliminarPagoColegiatura(Guid.Parse(Session["UidPagoColegiatura"].ToString()));
 
                 pnlPromociones.Visible = true;
                 pnlIframe.Visible = false;
@@ -860,6 +873,94 @@ namespace PagaLaEscuela.Views
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModalPagar()", true);
             }
+        }
+
+        protected void btnCalcular_Click(object sender, EventArgs e)
+        {
+            string MontoMin = "50.00";
+            string MontoMax = "15000.00";
+            decimal Resta = 0;
+
+            lblTotalPagar.Text = string.Empty;
+            lblTotalPago.Text = "Generar pago $0.00";
+            btnGenerarLiga.Enabled = false;
+
+            ViewState["txtTotaltb.Text"] = 0;
+
+            if (string.IsNullOrEmpty(txtTotaltb.Text))
+            {
+                txtTotaltb.Text = "0";
+            }
+
+            decimal Total = decimal.Parse(ViewState["txtImporteTotal.Text"].ToString());
+            decimal Totaltb = decimal.Parse(txtTotaltb.Text);
+
+            if (Totaltb >= decimal.Parse(MontoMin) && Totaltb <= decimal.Parse(MontoMax))
+            {
+                if (Totaltb > Total)
+                {
+                    pnlAlertPago.Visible = true;
+                    txtTotaltb.BackColor = System.Drawing.Color.FromName("#f2dede");
+                    lblMensajeAlertPago.Text = "El monto ingresado no puede ser mayor al  Total.";
+                    divAlertPago.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                }
+                else
+                {
+                    
+                    ViewState["txtTotaltb.Text"] = decimal.Parse(txtTotaltb.Text);
+
+                    lblTotalPago.Text = "Generar pago $" + decimal.Parse(txtTotaltb.Text).ToString("N2");
+                    btnGenerarLiga.Enabled = true;
+
+                    decimal SubTotal = 0;
+                    decimal ImporteCCT = 0;
+                    string CCT = string.Empty;
+                    decimal ImporteCP = 0;
+                    string Promocion = string.Empty;
+
+                    if (ddlFormasPago.SelectedValue != "contado")
+                    {
+                        foreach (var itPromo in promocionesServices.lsPromocionesColegiaturaModel.Where(x => x.UidPromocion == Guid.Parse(ddlFormasPago.SelectedValue)).ToList())
+                        {
+                            ImporteCP = Totaltb * itPromo.DcmComicion / (100 + itPromo.DcmComicion);
+                            Promocion = "Comisión " + itPromo.VchDescripcion + ": $" + ImporteCP.ToString("N2") + "<br />";
+                        }
+                    }
+
+                    SubTotal = Totaltb - ImporteCP;
+
+                    comisionesTarjetasCl.CargarComisionesTarjeta(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()));
+                    if (comisionesTarjetasCl.lsComisionesTarjetasClientes.Count >= 1)
+                    {
+                        foreach (var itComi in comisionesTarjetasCl.lsComisionesTarjetasClientes)
+                        {
+                            if (itComi.BitComision)
+                            {
+                                ImporteCCT = SubTotal * itComi.DcmComision / (100 + itComi.DcmComision);
+                                SubTotal = SubTotal - ImporteCCT;
+                                CCT = "Comisión Bancaria: $" + ImporteCCT.ToString("N2") + "<br />";
+                            }
+                        }
+                    }
+
+                    Resta = decimal.Parse(lblImporteTotal.Text) - SubTotal;
+
+                    lblToolApagar.Text = "Subtotal: $" + SubTotal.ToString("N2") + "<br />" 
+                                       + CCT
+                                       + Promocion
+                                       + "Total: $" + Totaltb.ToString("N2");
+                }
+            }
+            else
+            {
+                pnlAlertPago.Visible = true;
+                txtTotaltb.BackColor = System.Drawing.Color.FromName("#f2dede");
+                lblMensajeAlertPago.Text = "El importe mínimo es de $50.00 y el máximo es de $15,000.00.";
+                divAlertPago.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+            }
+
+            txtTotaltb.Text = decimal.Parse(txtTotaltb.Text).ToString("N2");
+            lblRestaTotal.Text = "Resta: $" + Resta.ToString("N2");
         }
     }
 }

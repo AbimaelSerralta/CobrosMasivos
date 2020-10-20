@@ -151,9 +151,9 @@ namespace Franquicia.Bussiness
             lsSelectAlumnosGridViewModel = alumnosRepository.ObtenerClienteAlumnos(UidUidCliente, UidUsuario);
         }
 
-        public void AsignarAlumnos(List<AlumnosGridViewModel> lsSelectAlumnosGridViewModel, Guid UidCliente, Guid UidUsuario, string Identificador, string Nombre, string ApePaterno, string ApeMaterno, string Matricula)
+        public void AsignarAlumnos(List<AlumnosGridViewModel> lsSelectAlumnosGridViewModel, Guid UidCliente, Guid UidUsuario, string IntCanAlum, string Identificador, string Nombre, string ApePaterno, string ApeMaterno, string Matricula)
         {
-            lsAlumnosGridViewModel = alumnosRepository.AsignarAlumnos(lsSelectAlumnosGridViewModel, UidCliente, UidUsuario, Identificador, Nombre, ApePaterno, ApeMaterno, Matricula);
+            lsAlumnosGridViewModel = alumnosRepository.AsignarAlumnos(lsSelectAlumnosGridViewModel, UidCliente, UidUsuario, IntCanAlum, Identificador, Nombre, ApePaterno, ApeMaterno, Matricula);
         }
         public List<AlumnosGridViewModel> ActualizarLsAsignarAlumnos(List<AlumnosGridViewModel> lsAlumnos, Guid UidAlumno, bool accion)
         {

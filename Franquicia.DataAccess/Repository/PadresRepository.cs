@@ -62,7 +62,7 @@ namespace Franquicia.DataAccess.Repository
                 SqlCommand queMatri = new SqlCommand();
                 queMatri.CommandType = CommandType.Text;
 
-                queMatri.CommandText = "select al.VchMatricula, ua.* from Alumnos al, UsuariosAlumnos ua, Usuarios us where al.UidAlumno = ua.UidAlumno and us.UidUsuario = ua.UidUsuario and us.UidUsuario = '" + item["UidUsuario"].ToString() + "'";
+                queMatri.CommandText = "select al.VchMatricula, ua.* from Alumnos al, UsuariosAlumnos ua, Usuarios us, Clientes cl where cl.UidCliente = al.UidCliente and al.UidAlumno = ua.UidAlumno and us.UidUsuario = ua.UidUsuario and cl.UidCliente = '"+ UidCliente + "' and us.UidUsuario = '" + item["UidUsuario"].ToString() + "'";
 
                 DataTable dtMatri = this.Busquedas(queMatri);
 
@@ -455,7 +455,7 @@ namespace Franquicia.DataAccess.Repository
                     SqlCommand queMatri = new SqlCommand();
                     queMatri.CommandType = CommandType.Text;
 
-                    queMatri.CommandText = "select al.VchMatricula, ua.* from Alumnos al, UsuariosAlumnos ua, Usuarios us where al.UidAlumno = ua.UidAlumno and us.UidUsuario = ua.UidUsuario and us.UidUsuario = '" + item["UidUsuario"].ToString() + "'";
+                    queMatri.CommandText = "select al.VchMatricula, ua.* from Alumnos al, UsuariosAlumnos ua, Usuarios us, Clientes cl where cl.UidCliente = al.UidCliente and al.UidAlumno = ua.UidAlumno and us.UidUsuario = ua.UidUsuario and cl.UidCliente = '" + UidCliente + "' and us.UidUsuario = '" + item["UidUsuario"].ToString() + "'";
 
                     DataTable dtMatri = this.Busquedas(queMatri);
 

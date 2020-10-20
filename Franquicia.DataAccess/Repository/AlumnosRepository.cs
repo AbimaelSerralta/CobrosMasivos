@@ -507,7 +507,7 @@ namespace Franquicia.DataAccess.Repository
 
             return lsAlumnosGridViewModel;
         }
-        public List<AlumnosGridViewModel> AsignarAlumnos(List<AlumnosGridViewModel> lsSelectAlumnosGridViewModel, Guid UidCliente, Guid UidUsuario, string Identificador, string Nombre, string ApePaterno, string ApeMaterno, string Matricula)
+        public List<AlumnosGridViewModel> AsignarAlumnos(List<AlumnosGridViewModel> lsSelectAlumnosGridViewModel, Guid UidCliente, Guid UidUsuario, string IntCanAlum, string Identificador, string Nombre, string ApePaterno, string ApeMaterno, string Matricula)
         {
             List<AlumnosGridViewModel> lsAlumnosGridViewModel = new List<AlumnosGridViewModel>();
 
@@ -522,6 +522,11 @@ namespace Franquicia.DataAccess.Repository
                 comando.Parameters.Add("@UidUsuario", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidUsuario"].Value = UidUsuario;
 
+                if (IntCanAlum != string.Empty)
+                {
+                    comando.Parameters.Add("@IntCanAlum", SqlDbType.Int);
+                    comando.Parameters["@IntCanAlum"].Value = IntCanAlum;
+                }
                 if (Identificador != string.Empty)
                 {
                     comando.Parameters.Add("@Identificador", SqlDbType.VarChar);

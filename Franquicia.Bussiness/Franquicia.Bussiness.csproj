@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="AESCrypto.cs" />
     <Compile Include="DetallesPagosColegiaturasServices.cs" />
+    <Compile Include="FormasPagosServices.cs" />
     <Compile Include="PagosColegiaturasServices.cs" />
     <Compile Include="ComisionesTarjetasServices.cs" />
     <Compile Include="DateTimeSpanServices.cs" />

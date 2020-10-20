@@ -60,6 +60,7 @@
     <Compile Include="Common\SqlDataRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\DetallesPagosColegiaturasRepository.cs" />
+    <Compile Include="Repository\FormasPagosRepository.cs" />
     <Compile Include="Repository\PagosColegiaturasRepository.cs" />
     <Compile Include="Repository\ColegiaturasRepository.cs" />
     <Compile Include="Repository\ComisionesTarjetasRepository.cs" />

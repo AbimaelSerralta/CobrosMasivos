@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\DetallesPagosColegiaturas.cs" />
+    <Compile Include="Models\FormasPagos.cs" />
     <Compile Include="Models\PagosColegiaturas.cs" />
     <Compile Include="Models\EmailConfiguration.cs" />
     <Compile Include="Models\Colegiaturas.cs" />

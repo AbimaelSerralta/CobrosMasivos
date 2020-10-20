@@ -231,8 +231,8 @@ namespace Franquicia.DataAccess.Repository
             {
                 lsPagosColegiaturas.Add(new PagosColegiaturas
                 {
-                    VchAlumno = item["VchAlumno"].ToString(),
-                    VchMatricula = item["VchMatricula"].ToString(),
+                    //VchAlumno = item["VchAlumno"].ToString(),
+                    //VchMatricula = item["VchMatricula"].ToString(),
                     DtFHPago = DateTime.Parse(item["DtFHPago"].ToString()),
                     VchPromocionDePago = item["VchPromocionDePago"].ToString(),
                     VchComisionBancaria = item["VchComisionBancaria"].ToString(),

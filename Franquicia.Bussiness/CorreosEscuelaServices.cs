@@ -178,8 +178,8 @@ namespace Franquicia.Bussiness
                 foreach (var item in lsPagosColegiaturas)
                 {
                     //Asigancion de parametros
-                    html = html.Replace("{Alumno}", item.VchAlumno);
-                    html = html.Replace("{Matricula}", item.VchMatricula);
+                    //html = html.Replace("{Alumno}", item.VchAlumno);
+                    //html = html.Replace("{Matricula}", item.VchMatricula);
                     html = html.Replace("{FHPago}", item.DtFHPago.ToString("dd/MM/yyyy"));
 
                     if (item.BitSubtotal)

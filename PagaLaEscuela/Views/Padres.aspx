@@ -415,23 +415,31 @@
                                                             <div class="card-body" style="padding-top: 0px; padding-bottom: 0px; padding-right: 10px; padding-left: 10px;">
                                                                 <div class="form-group" style="margin-top: 0px;">
                                                                     <div class="row">
-                                                                        <div class="form-group col-sm-6 col-md-6 col-lg-3">
+                                                                        <div class="form-group col-sm-6 col-md-6 col-lg-4">
+                                                                            <label for="ddlFiltroAsociado" style="color: black; padding-left: 0px;">Alumno Vinculado</label>
+                                                                            <asp:DropDownList ID="ddlFiltroAsociado" CssClass="form-control" runat="server">
+                                                                                <asp:ListItem Text="NO" Value="0" />
+                                                                                <asp:ListItem Text="SI" Value ="1" />
+                                                                                <asp:ListItem Text="AMBOS" Value="" />
+                                                                            </asp:DropDownList>
+                                                                        </div>
+                                                                        <div class="form-group col-sm-6 col-md-6 col-lg-4">
                                                                             <label for="txtFiltroAlumIdentificador" style="color: black; padding-left: 0px;">Identificador</label>
                                                                             <asp:TextBox ID="txtFiltroAlumIdentificador" CssClass="form-control" aria-label="Search" runat="server" />
                                                                         </div>
-                                                                        <div class="form-group col-sm-6 col-md-6 col-lg-3">
+                                                                        <div class="form-group col-sm-6 col-md-6 col-lg-4">
                                                                             <label for="txtFiltroAlumMatricula" style="color: black; padding-left: 0px;">Matricula</label>
                                                                             <asp:TextBox ID="txtFiltroAlumMatricula" CssClass="form-control" aria-label="Search" runat="server" />
                                                                         </div>
-                                                                        <div class="form-group col-sm-6 col-md-6 col-lg-2">
+                                                                        <div class="form-group col-sm-6 col-md-6 col-lg-4">
                                                                             <label for="txtFiltroAlumNombre" style="color: black; padding-left: 0px;">Nombre(s)</label>
                                                                             <asp:TextBox ID="txtFiltroAlumNombre" CssClass="form-control" aria-label="Search" runat="server" />
                                                                         </div>
-                                                                        <div class="form-group col-sm-6 col-md-6 col-lg-2">
+                                                                        <div class="form-group col-sm-6 col-md-6 col-lg-4">
                                                                             <label for="txtFiltroAlumPaterno" style="color: black; padding-left: 0px;">ApePaterno</label>
                                                                             <asp:TextBox ID="txtFiltroAlumPaterno" CssClass="form-control" aria-label="Search" runat="server" />
                                                                         </div>
-                                                                        <div class="form-group col-sm-6 col-md-6 col-lg-2">
+                                                                        <div class="form-group col-sm-6 col-md-6 col-lg-4">
                                                                             <label for="txtFiltroAlumMaterno" style="color: black; padding-left: 0px;">ApeMaterno</label>
                                                                             <asp:TextBox ID="txtFiltroAlumMaterno" CssClass="form-control" aria-label="Search" runat="server" />
                                                                         </div>

@@ -104,7 +104,7 @@ namespace Franquicia.DataAccess.Repository
 
         //    return lsAlumnosGridViewModel;
         //}
-        public bool RegistrarPagoColegiatura(PagosColegiaturas pagosColegiaturas)
+        public bool RegistrarPagoColegiatura(PagosColegiaturas pagosColegiaturas, Guid UidFechaColegiatura, Guid UidAlumno, Guid UidFormaPago, decimal DcmImporteCole, decimal DcmImportePagado, decimal DcmImporteNuevo, Guid EstatusFechaPago)
         {
             bool Resultado = false;
 
@@ -116,45 +116,62 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@UidPagoColegiatura", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidPagoColegiatura"].Value = pagosColegiaturas.UidPagoColegiatura;
-                
-                comando.Parameters.Add("@VchAlumno", SqlDbType.VarChar);
-                comando.Parameters["@VchAlumno"].Value = pagosColegiaturas.VchAlumno;
-                
-                comando.Parameters.Add("@VchMatricula", SqlDbType.VarChar);
-                comando.Parameters["@VchMatricula"].Value = pagosColegiaturas.VchMatricula;
-                
+
                 comando.Parameters.Add("@DtFHPago", SqlDbType.DateTime);
                 comando.Parameters["@DtFHPago"].Value = pagosColegiaturas.DtFHPago;
-                
+
                 comando.Parameters.Add("@VchPromocionDePago", SqlDbType.VarChar);
                 comando.Parameters["@VchPromocionDePago"].Value = pagosColegiaturas.VchPromocionDePago;
-                
+
                 comando.Parameters.Add("@VchComisionBancaria", SqlDbType.VarChar);
                 comando.Parameters["@VchComisionBancaria"].Value = pagosColegiaturas.VchComisionBancaria;
-                
+
                 comando.Parameters.Add("@BitSubtotal", SqlDbType.Bit);
                 comando.Parameters["@BitSubtotal"].Value = pagosColegiaturas.BitSubtotal;
-                
+
                 comando.Parameters.Add("@DcmSubtotal", SqlDbType.Decimal);
                 comando.Parameters["@DcmSubtotal"].Value = pagosColegiaturas.DcmSubtotal;
-                
+
                 comando.Parameters.Add("@BitComisionBancaria", SqlDbType.Decimal);
                 comando.Parameters["@BitComisionBancaria"].Value = pagosColegiaturas.BitComisionBancaria;
-                
+
                 comando.Parameters.Add("@DcmComisionBancaria", SqlDbType.Decimal);
                 comando.Parameters["@DcmComisionBancaria"].Value = pagosColegiaturas.DcmComisionBancaria;
-                
+
                 comando.Parameters.Add("@BitPromocionDePago", SqlDbType.Decimal);
                 comando.Parameters["@BitPromocionDePago"].Value = pagosColegiaturas.BitPromocionDePago;
-                
+
                 comando.Parameters.Add("@DcmPromocionDePago", SqlDbType.Decimal);
                 comando.Parameters["@DcmPromocionDePago"].Value = pagosColegiaturas.DcmPromocionDePago;
-                
+
                 comando.Parameters.Add("@DcmTotal", SqlDbType.Decimal);
                 comando.Parameters["@DcmTotal"].Value = pagosColegiaturas.DcmTotal;
                 
+                comando.Parameters.Add("@UidUsuario", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidUsuario"].Value = pagosColegiaturas.UidUsuario;
+
+                //=============================================================================================
+
                 comando.Parameters.Add("@UidFechaColegiatura", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidFechaColegiatura"].Value = pagosColegiaturas.UidFechaColegiatura;
+                comando.Parameters["@UidFechaColegiatura"].Value = UidFechaColegiatura;
+
+                comando.Parameters.Add("@UidAlumno", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidAlumno"].Value = UidAlumno;
+
+                comando.Parameters.Add("@UidFormaPago", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidFormaPago"].Value = UidFormaPago;
+
+                comando.Parameters.Add("@DcmImporteCole", SqlDbType.Decimal);
+                comando.Parameters["@DcmImporteCole"].Value = DcmImporteCole;
+
+                comando.Parameters.Add("@DcmImportePagado", SqlDbType.Decimal);
+                comando.Parameters["@DcmImportePagado"].Value = DcmImportePagado;
+
+                comando.Parameters.Add("@DcmImporteNuevo", SqlDbType.Decimal);
+                comando.Parameters["@DcmImporteNuevo"].Value = DcmImporteNuevo;
+                
+                comando.Parameters.Add("@EstatusFechaPago", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@EstatusFechaPago"].Value = EstatusFechaPago;
 
                 Resultado = this.ManipulacionDeDatos(comando);
             }

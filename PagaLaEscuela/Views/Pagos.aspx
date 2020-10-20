@@ -30,6 +30,14 @@
             height: 90% !important;
         }
     </style>
+    <script>
+        function button_click(objTextBox, objBtnID) {
+            if (window.event.keyCode != 13) {
+                document.getElementById(objBtnID).focus();
+                document.getElementById(objBtnID).click();
+            }
+        }
+    </script>
 
     <asp:UpdatePanel runat="server">
         <ContentTemplate>
@@ -481,6 +489,37 @@
                                                                         <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" class="text-right">Total:</td>
                                                                         <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" class="text-right">
                                                                             <asp:Label ID="lblTotaltb" runat="server" />
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr runat="server">
+                                                                        <td style="border-color: white; padding-top: 0px; padding-bottom: 0px;" class="text-center"></td>
+                                                                        <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" class="text-right">
+                                                                            <div class="tooltipse bottom">
+                                                                                <i class="material-icons">info</i>
+                                                                                <span class="tiptext" style="width:230px;"><asp:Label ID="lblToolApagar" Text="A pagar" runat="server" /></span>
+                                                                            </div>
+                                                                            Importe a pagar:
+                                                                        </td>
+                                                                        <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" class="text-right">
+                                                                            <div style="float: right;">
+                                                                                <div class="input-group" style="padding-top: 7px;">
+                                                                                    <div class="input-group-prepend">
+                                                                                        <span class="input-group-text" style="padding-left: 0px; padding-right: 0px;">
+                                                                                            <i class="material-icons">attach_money</i>
+                                                                                        </span>
+                                                                                    </div>
+                                                                                    <asp:TextBox ID="txtTotaltb" Width="80" CssClass="form-control text-right" Font-Bold="true" Font-Size="Medium" runat="server" />
+                                                                                    <asp:LinkButton ID="btnCalcular" OnClick="btnCalcular_Click" runat="server" />
+                                                                                    <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtTotaltb" runat="server" />
+                                                                                </div>
+                                                                            </div>                                                                            
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr runat="server">
+                                                                        <td style="border-color: white; padding-top: 0px; padding-bottom: 0px;" class="text-center"></td>
+                                                                        <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" class="text-right"></td>
+                                                                        <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" class="text-right">
+                                                                            <asp:Label ID="lblRestaTotal" runat="server" />                                                                          
                                                                         </td>
                                                                     </tr>
                                                                 </tbody>
