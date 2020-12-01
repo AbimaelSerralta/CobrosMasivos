@@ -840,5 +840,66 @@ namespace Franquicia.DataAccess.Repository
         #endregion
 
         #endregion
+
+        #region Metodos ReporteLigasEscuelas
+        public List<AlumnosRLEGridViewModel> BuscarAlumnosRLE(Guid UidCliente, string Identificador, string Nombre, string ApePaterno, string ApeMaterno, string Matricula)
+        {
+            List<AlumnosRLEGridViewModel> lsAlumnosRLEGridViewModel = new List<AlumnosRLEGridViewModel>();
+
+            SqlCommand comando = new SqlCommand();
+            comando.CommandType = CommandType.StoredProcedure;
+            comando.CommandText = "sp_ReporteLigasEscuelasBuscarAlumnos";
+            try
+            {
+                comando.Parameters.Add("@UidCliente", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidCliente"].Value = UidCliente;
+
+                if (Identificador != string.Empty)
+                {
+                    comando.Parameters.Add("@Identificador", SqlDbType.VarChar);
+                    comando.Parameters["@Identificador"].Value = Identificador;
+                }
+                if (Nombre != string.Empty)
+                {
+                    comando.Parameters.Add("@Nombres", SqlDbType.VarChar);
+                    comando.Parameters["@Nombres"].Value = Nombre;
+                }
+                if (ApePaterno != string.Empty)
+                {
+                    comando.Parameters.Add("@ApePaterno", SqlDbType.VarChar);
+                    comando.Parameters["@ApePaterno"].Value = ApePaterno;
+                }
+                if (ApeMaterno != string.Empty)
+                {
+                    comando.Parameters.Add("@ApeMaterno", SqlDbType.VarChar);
+                    comando.Parameters["@ApeMaterno"].Value = ApeMaterno;
+                }
+                if (Matricula != string.Empty)
+                {
+                    comando.Parameters.Add("@Matricula", SqlDbType.VarChar);
+                    comando.Parameters["@Matricula"].Value = Matricula;
+                }
+
+                foreach (DataRow item in this.Busquedas(comando).Rows)
+                {
+                    lsAlumnosRLEGridViewModel.Add(new AlumnosRLEGridViewModel()
+                    {
+                        UidAlumno = new Guid(item["UidAlumno"].ToString()),
+                        VchIdentificador = item["VchIdentificador"].ToString(),
+                        VchNombres = item["VchNombres"].ToString(),
+                        VchApePaterno = item["VchApePaterno"].ToString(),
+                        VchApeMaterno = item["VchApeMaterno"].ToString(),
+                        VchMatricula = item["VchMatricula"].ToString()
+                    });
+                }
+
+                return lsAlumnosRLEGridViewModel;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        #endregion
     }
 }

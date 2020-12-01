@@ -33,7 +33,7 @@ namespace Franquicia.Bussiness
             get { return _prefijosTelefonicosRepository; }
             set { _prefijosTelefonicosRepository = value; }
         }
-
+        
         public List<AlumnosGridViewModel> lsAlumnosGridViewModel = new List<AlumnosGridViewModel>();
         public List<AlumnosGridViewModel> lsSelectAlumnosGridViewModel = new List<AlumnosGridViewModel>();
 
@@ -41,6 +41,8 @@ namespace Franquicia.Bussiness
         public List<AlumnosGridViewModel> lsExcelInsertar = new List<AlumnosGridViewModel>();
         public List<AlumnosGridViewModel> lsExcelActualizar = new List<AlumnosGridViewModel>();
         public List<AlumnosGridViewModel> lsExcelErrores = new List<AlumnosGridViewModel>();
+
+        public List<AlumnosRLEGridViewModel> lsAlumnosRLEGridViewModel = new List<AlumnosRLEGridViewModel>();
 
         #region Metodos Alumnos
         public void CargarAlumnos(Guid UidCliente)
@@ -658,6 +660,13 @@ namespace Franquicia.Bussiness
 
         #endregion
 
+        #endregion
+
+        #region Metodos ReporteLigasEscuelas
+        public void BuscarAlumnosRLE(Guid UidCliente, string Identificador, string Nombre, string ApePaterno, string ApeMaterno, string Matricula)
+        {
+            lsAlumnosRLEGridViewModel = alumnosRepository.BuscarAlumnosRLE(UidCliente, Identificador, Nombre, ApePaterno, ApeMaterno, Matricula);
+        }
         #endregion
     }
 }

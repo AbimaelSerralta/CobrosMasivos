@@ -14,6 +14,10 @@ namespace PagaLaEscuela.Views
         //SuperPromocionesServices superPromocionesServices = new SuperPromocionesServices();
         PromocionesServices promocionesServices = new PromocionesServices();
         ComisionesTarjetasClientesServices comisionesTarjetasServices = new ComisionesTarjetasClientesServices();
+
+        TiposTarjetasServices tiposTarjetasServices = new TiposTarjetasServices();
+        PromocionesTerminalServices promocionesTerminalServices = new PromocionesTerminalServices();
+        ComisionesTarjetasClientesTerminalServices comisionesTarjetasTerminalServices = new ComisionesTarjetasClientesTerminalServices();
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Session["UidClienteMaster"] != null)
@@ -32,6 +36,8 @@ namespace PagaLaEscuela.Views
 
                 CargarSuperPromociones();
                 CargarComision(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+
+                CargarTipoTarjeta();
             }
             else
             {
@@ -257,6 +263,182 @@ namespace PagaLaEscuela.Views
         protected void cbActivarComision_CheckedChanged(object sender, EventArgs e)
         {
             txtComisionTarjeta.Enabled = cbActivarComision.Checked;
+        }
+        #endregion
+
+        #region TerminalBancaria
+        private void CargarTipoTarjeta()
+        {
+            tiposTarjetasServices.CargarTiposTarjetas();
+            gvTipoTarjeta.DataSource = tiposTarjetasServices.lsTiposTarjetas;
+            gvTipoTarjeta.DataBind();
+        }
+
+        #region GridViewTipoTarjeta
+        protected void gvTipoTarjeta_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                //e.Row.Attributes["onclick"] = Page.ClientScript.GetPostBackClientHyperlink(DGVCajas, "Select$" + e.Row.RowIndex);
+
+                CheckBox cbComisionTerminal = e.Row.FindControl("cbComisionTerminal") as CheckBox;
+                TextBox txtComisionTipoTarjeta = e.Row.FindControl("txtComisionTipoTarjeta") as TextBox;
+                GridView gvPromocionesTerminal = e.Row.FindControl("gvPromocionesTerminal") as GridView;
+
+
+                comisionesTarjetasTerminalServices.CargarComisionesTarjetaTerminal(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+
+                foreach (var item in comisionesTarjetasTerminalServices.lsComisionesTarjetasClientesTerminal)
+                {
+
+                    if (Guid.Parse(e.Row.Cells[0].Text) == item.UidTipoTarjeta)
+                    {
+                        ViewState["item.UidComicionTarjetaCliente"] = item.UidComicionTarjetaClienteTerminal;
+
+                        cbComisionTerminal.Checked = false;
+                        if (item.BitComision)
+                        {
+                            cbComisionTerminal.Checked = true;
+                        }
+
+                        txtComisionTipoTarjeta.Text = item.DcmComision.ToString("N2");
+                    }
+                }
+
+                //if (promocionesTerminalServices.lsCBLPromocionesTerminalViewModel.Count >= 1)
+                //{
+                    ViewState["AccionPromocionesTerminal"] = "ActualizarPromocionesTerminal";
+                    btnGuardarPromocionesTerminal.Text = "<i class=" + "material-icons>" + "refresh </i> Actualizar";
+                //}
+                //else
+                //{
+                //    ViewState["AccionPromocionesTerminal"] = "GuardarPromocionesTerminal";
+                //    btnGuardarPromocionesTerminal.Text = "<i class=" + "material-icons>" + "check </i> Guardar";
+                //}
+
+                foreach (var itemTT in tiposTarjetasServices.lsTiposTarjetas)
+                {
+                    if (itemTT.BitPromociones && Guid.Parse(e.Row.Cells[0].Text) == itemTT.UidTipoTarjeta)
+                    {
+                        promocionesTerminalServices.lsCBLPromocionesTerminalViewModel.Clear();
+                        promocionesTerminalServices.CargarPromocionesTerminalCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()), itemTT.UidTipoTarjeta);
+                        gvPromocionesTerminal.DataSource = promocionesTerminalServices.lsCBLPromocionesTerminalViewModel;
+                        gvPromocionesTerminal.DataBind();
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region GridViewPromocionesTerminal
+        protected void gvPromocionesTerminal_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                //e.Row.Attributes["onclick"] = Page.ClientScript.GetPostBackClientHyperlink(DGVCajas, "Select$" + e.Row.RowIndex);
+
+                //CheckBox cbPromocionTerminal = e.Row.FindControl("cbPromocionTerminal") as CheckBox;
+                //TextBox txtComisionTerminal = e.Row.FindControl("txtComisionTerminal") as TextBox;
+                //TextBox txtApartirDeTerminal = e.Row.FindControl("txtApartirDeTerminal") as TextBox;
+
+
+                //foreach (var item in promocionesTerminalServices.lsCBLPromocionesTerminalViewModel)
+                //{
+                //    if (Guid.Parse(e.Row.Cells[0].Text) == item.UidPromocionTerminal)
+                //    {
+                //        cbPromocionTerminal.Checked = true;
+                //        txtComisionTerminal.Text = item.DcmComicion.ToString();
+                //        txtApartirDeTerminal.Text = item.DcmApartirDe.ToString("N2");
+                //    }
+                //}
+            }
+        }
+
+        protected void cbPromocionTerminal_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+        #endregion
+        protected void btnGuardarPromocionesTerminal_Click(object sender, EventArgs e)
+        {
+            comisionesTarjetasTerminalServices.EliminarComisionesTarjetaTerminal(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+            promocionesTerminalServices.EliminarPromocionesTerminalCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+
+            foreach (GridViewRow row in gvTipoTarjeta.Rows)
+            {
+                Guid UidTipoTarjeta = Guid.Parse(row.Cells[0].Text);
+                CheckBox cbComisionTerminal = row.FindControl("cbComisionTerminal") as CheckBox;
+                TextBox txtComisionTipoTarjeta = row.FindControl("txtComisionTipoTarjeta") as TextBox;
+                GridView gvPromocionesTerminal = row.FindControl("gvPromocionesTerminal") as GridView;
+
+                if (cbComisionTerminal.Checked)
+                {
+                    if (txtComisionTipoTarjeta.EmptyTextBox())
+                    {
+                        pnlAlert.Visible = true;
+                        lblMensajeAlert.Text = "El campo comisión es obligatorio.";
+                        divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                        return;
+                    }
+
+                    ValidacionesServices validacionesServices = new ValidacionesServices();
+                    if (!validacionesServices.IsNumeric(txtComisionTipoTarjeta.Text))
+                    {
+                        pnlAlert.Visible = true;
+                        lblMensajeAlert.Text = "La comisión no es un formato correcto.";
+                        divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                        return;
+                    }
+                }
+                else
+                {
+                    txtComisionTipoTarjeta.Text = "0";
+                }
+                comisionesTarjetasTerminalServices.RegistrarComisionesTarjetaTerminal(cbComisionTerminal.Checked, decimal.Parse(txtComisionTipoTarjeta.Text), UidTipoTarjeta, Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+                
+                foreach (GridViewRow rowPT in gvPromocionesTerminal.Rows)
+                {
+                    Guid UidPromocionTerminal = Guid.Parse(rowPT.Cells[0].Text);
+                    CheckBox cbPromocionTerminal = rowPT.FindControl("cbPromocionTerminal") as CheckBox;
+                    TextBox txtComisionTerminal = rowPT.FindControl("txtComisionTerminal") as TextBox;
+                    TextBox txtApartirDeTerminal = rowPT.FindControl("txtApartirDeTerminal") as TextBox;
+
+                    if (cbPromocionTerminal.Checked)
+                    {
+                        decimal DcmComicion = 0;
+                        decimal DcmApartirDe = 0;
+
+                        if (!string.IsNullOrEmpty(txtComisionTerminal.Text.Trim()))
+                        {
+                            DcmComicion = decimal.Parse(txtComisionTerminal.Text.Trim());
+                        }
+
+                        if (!string.IsNullOrEmpty(txtApartirDeTerminal.Text.Trim()))
+                        {
+                            DcmApartirDe = decimal.Parse(txtApartirDeTerminal.Text.Trim());
+                        }
+
+                        promocionesTerminalServices.RegistrarPromocionesTerminalCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()), UidPromocionTerminal, DcmComicion, DcmApartirDe, UidTipoTarjeta);
+                    }
+                }
+
+                switch (ViewState["AccionPromocionesTerminal"].ToString())
+                {
+                    case "ActualizarPromocionesTerminal":
+                        pnlAlert.Visible = true;
+                        lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha actualizado exitosamente.";
+                        divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                        break;
+
+                    case "GuardarPromocionesTerminal":
+                        pnlAlert.Visible = true;
+                        lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
+                        divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                        break;
+                }
+            }
+
+            CargarTipoTarjeta();
         }
         #endregion
     }

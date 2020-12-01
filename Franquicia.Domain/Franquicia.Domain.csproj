@@ -41,7 +41,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\ComisionesTarjetasClientesTerminal.cs" />
+    <Compile Include="Models\PagosEfectivos.cs" />
+    <Compile Include="Models\TiposTarjetas.cs" />
+    <Compile Include="Models\EstatusFechasPagos.cs" />
+    <Compile Include="Models\PagosManuales.cs" />
     <Compile Include="Models\DetallesPagosColegiaturas.cs" />
+    <Compile Include="Models\Bancos.cs" />
     <Compile Include="Models\FormasPagos.cs" />
     <Compile Include="Models\PagosColegiaturas.cs" />
     <Compile Include="Models\EmailConfiguration.cs" />
@@ -50,6 +56,7 @@
     <Compile Include="Models\ParametrosSendGrid.cs" />
     <Compile Include="Models\Periodicidades.cs" />
     <Compile Include="Models\NivelesEnsenianzas.cs" />
+    <Compile Include="Models\PromocionesTerminal.cs" />
     <Compile Include="Models\SuperPromociones.cs" />
     <Compile Include="Models\ComisionesTarjetasClientes.cs" />
     <Compile Include="Models\TelefonosAlumnos.cs" />
@@ -99,12 +106,14 @@
     <Compile Include="Models\UsuariosCompletos.cs" />
     <Compile Include="Models\Usuarios.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\Alumnos\AlumnosRLEGridViewModel.cs" />
     <Compile Include="ViewModels\Alumnos\AlumnosUsuariosExcelViewModel.cs" />
     <Compile Include="ViewModels\Alumnos\AlumnosGridViewModel.cs" />
     <Compile Include="ViewModels\Colegiaturas\ColegiaturasFechasGridViewModel.cs" />
     <Compile Include="ViewModels\Colegiaturas\DesglosePagosGridViewModel.cs" />
     <Compile Include="ViewModels\Colegiaturas\PagosColegiaturasViewModel.cs" />
     <Compile Include="ViewModels\Colegiaturas\ColegiaturasGridViewModel.cs" />
+    <Compile Include="ViewModels\DetallesPagosColegiaturas\DetallePagosColeGridViewModel.cs" />
     <Compile Include="ViewModels\Eventos\EventosUsuarioFinalGridViewModel.cs" />
     <Compile Include="ViewModels\Eventos\EventosGridViewModel.cs" />
     <Compile Include="ViewModels\HistorialPagos\HistorialPagosGridViewModel.cs" />
@@ -117,7 +126,14 @@
     <Compile Include="ViewModels\Padres\PadresComerciosViewModels.cs" />
     <Compile Include="ViewModels\Padres\PadresActivarCuentaViewModel.cs" />
     <Compile Include="ViewModels\Padres\PadresGridViewModel.cs" />
+    <Compile Include="ViewModels\PagosColegiaturas\PagosReporteLigaEscuelaViewModels.cs" />
+    <Compile Include="ViewModels\PagosColegiaturas\ReportePadresFechasPagosColeViewModel.cs" />
+    <Compile Include="ViewModels\PagosColegiaturas\FechasPagosColegiaturasViewModel.cs" />
+    <Compile Include="ViewModels\PagosColegiaturas\PagosColegiaturasViewModels.cs" />
+    <Compile Include="ViewModels\PagosManuales\PagosManualesReporteEscuelaViewModel.cs" />
+    <Compile Include="ViewModels\PagosTarjeta\PagosTarjetaColeDetalleGridViewModel.cs" />
     <Compile Include="ViewModels\PagosTarjeta\PagTarjDetalUsFinalGridViewModel.cs" />
+    <Compile Include="ViewModels\PromocionesTerminal\CBLPromocionesTerminalViewModel.cs" />
     <Compile Include="ViewModels\Promociones\PromocionesColegiaturaModel.cs" />
     <Compile Include="ViewModels\Promociones\SelectPagoLigaModel.cs" />
     <Compile Include="ViewModels\Promociones\EventosGenerarLigasModel.cs" />

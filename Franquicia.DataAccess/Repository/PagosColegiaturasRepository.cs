@@ -132,23 +132,32 @@ namespace Franquicia.DataAccess.Repository
                 comando.Parameters.Add("@DcmSubtotal", SqlDbType.Decimal);
                 comando.Parameters["@DcmSubtotal"].Value = pagosColegiaturas.DcmSubtotal;
 
-                comando.Parameters.Add("@BitComisionBancaria", SqlDbType.Decimal);
+                comando.Parameters.Add("@BitComisionBancaria", SqlDbType.Bit);
                 comando.Parameters["@BitComisionBancaria"].Value = pagosColegiaturas.BitComisionBancaria;
 
                 comando.Parameters.Add("@DcmComisionBancaria", SqlDbType.Decimal);
                 comando.Parameters["@DcmComisionBancaria"].Value = pagosColegiaturas.DcmComisionBancaria;
 
-                comando.Parameters.Add("@BitPromocionDePago", SqlDbType.Decimal);
+                comando.Parameters.Add("@BitPromocionDePago", SqlDbType.Bit);
                 comando.Parameters["@BitPromocionDePago"].Value = pagosColegiaturas.BitPromocionDePago;
 
                 comando.Parameters.Add("@DcmPromocionDePago", SqlDbType.Decimal);
                 comando.Parameters["@DcmPromocionDePago"].Value = pagosColegiaturas.DcmPromocionDePago;
 
+                comando.Parameters.Add("@BitValidarImporte", SqlDbType.Bit);
+                comando.Parameters["@BitValidarImporte"].Value = pagosColegiaturas.BitValidarImporte;
+
+                comando.Parameters.Add("@DcmValidarImporte", SqlDbType.Decimal);
+                comando.Parameters["@DcmValidarImporte"].Value = pagosColegiaturas.DcmValidarImporte;
+
                 comando.Parameters.Add("@DcmTotal", SqlDbType.Decimal);
                 comando.Parameters["@DcmTotal"].Value = pagosColegiaturas.DcmTotal;
-                
+
                 comando.Parameters.Add("@UidUsuario", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidUsuario"].Value = pagosColegiaturas.UidUsuario;
+
+                comando.Parameters.Add("@UidEstatusPagoColegiatura", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidEstatusPagoColegiatura"].Value = pagosColegiaturas.UidEstatusPagoColegiatura;
 
                 //=============================================================================================
 
@@ -169,7 +178,7 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@DcmImporteNuevo", SqlDbType.Decimal);
                 comando.Parameters["@DcmImporteNuevo"].Value = DcmImporteNuevo;
-                
+
                 comando.Parameters.Add("@EstatusFechaPago", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@EstatusFechaPago"].Value = EstatusFechaPago;
 
@@ -438,11 +447,336 @@ namespace Franquicia.DataAccess.Repository
         #endregion
 
         #region Metodos Clientes
+        #region Pagos
+        public List<FechasPagosColegiaturasViewModel> ObtenerPagosPadres(Guid UidFechaColegiatura, Guid UidAlumno)
+        {
+            List<FechasPagosColegiaturasViewModel> lsFechasPagosColegiaturasViewModel = new List<FechasPagosColegiaturasViewModel>();
 
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            // ==> Revisar consulta query.CommandText = "select paco.DtFHPago, fepa.DcmImportePagado from FechasColegiaturas feco, FechasPagos fepa, PagosColegiaturas paco where feco.UidFechaColegiatura = fepa.UidFechaColegiatura and fepa.UidPagoColegiatura = paco.UidPagoColegiatura and fepa.UidEstatusFechaPago != '8720B2B9-5712-4E75-A981-932887AACDC9' and paco.UidEstatusPagoColegiatura = '51B85D66-866B-4BC2-B08F-FECE1A994053' and fepa.UidFechaColegiatura = '" + UidFechaColegiatura + "' and fepa.UidAlumno = '" + UidAlumno + "'";
+            query.CommandText = "select paco.DtFHPago, fepa.DcmImportePagado, efp.UidEstatusFechaPago, efp.VchDescripcion  as EstatusPago from FechasColegiaturas feco, FechasPagos fepa, PagosColegiaturas paco, EstatusFechasPagos efp where efp.UidEstatusFechaPago = fepa.UidEstatusFechaPago and feco.UidFechaColegiatura = fepa.UidFechaColegiatura and fepa.UidPagoColegiatura = paco.UidPagoColegiatura and fepa.UidEstatusFechaPago = '8720B2B9-5712-4E75-A981-932887AACDC9' and paco.UidEstatusPagoColegiatura = '51B85D66-866B-4BC2-B08F-FECE1A994053' and fepa.UidFechaColegiatura = '" + UidFechaColegiatura + "' and fepa.UidAlumno = '" + UidAlumno + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                lsFechasPagosColegiaturasViewModel.Add(new FechasPagosColegiaturasViewModel()
+                {
+                    UidEstatusFechaPago = Guid.Parse(item["UidEstatusFechaPago"].ToString()),
+                    VchEstatus = item["EstatusPago"].ToString(),
+                    DtFHPago = DateTime.Parse(item["DtFHPago"].ToString()),
+                    DcmImportePagado = decimal.Parse(item["DcmImportePagado"].ToString())
+                });
+
+            }
+            return lsFechasPagosColegiaturasViewModel;
+        }
+
+        public List<FechasPagosColegiaturasViewModel> ObtenerPagosPendientesPadres(Guid UidFechaColegiatura, Guid UidAlumno)
+        {
+            List<FechasPagosColegiaturasViewModel> lsFechasPagosColegiaturasViewModel = new List<FechasPagosColegiaturasViewModel>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select paco.DtFHPago, fepa.DcmImportePagado, efp.UidEstatusFechaPago, efp.VchDescripcion  as EstatusPago from FechasColegiaturas feco, FechasPagos fepa, PagosColegiaturas paco, EstatusFechasPagos efp where efp.UidEstatusFechaPago = fepa.UidEstatusFechaPago and feco.UidFechaColegiatura = fepa.UidFechaColegiatura and fepa.UidPagoColegiatura = paco.UidPagoColegiatura and fepa.UidEstatusFechaPago = 'F25E4AAB-6044-46E9-A575-98DCBCCF7604' and paco.UidEstatusPagoColegiatura = '51B85D66-866B-4BC2-B08F-FECE1A994053' and fepa.UidFechaColegiatura = '" + UidFechaColegiatura + "' and fepa.UidAlumno = '" + UidAlumno + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                lsFechasPagosColegiaturasViewModel.Add(new FechasPagosColegiaturasViewModel()
+                {
+                    UidEstatusFechaPago = Guid.Parse(item["UidEstatusFechaPago"].ToString()),
+                    VchEstatus = item["EstatusPago"].ToString(),
+                    DtFHPago = DateTime.Parse(item["DtFHPago"].ToString()),
+                    DcmImportePagado = decimal.Parse(item["DcmImportePagado"].ToString()),
+                    Comentario = "NO SE HA APROVADO"
+                });
+            }
+            return lsFechasPagosColegiaturasViewModel;
+        }
+        public List<ReportePadresFechasPagosColeViewModel> ObtenerPagosReportePadres(Guid UidFechaColegiatura, string VchMatricula)
+        {
+            List<ReportePadresFechasPagosColeViewModel> lsReportePadresFechasPagosColeViewModel = new List<ReportePadresFechasPagosColeViewModel>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select pc.UidPagoColegiatura, us.VchNombre, us.VchApePaterno, us.VchApeMaterno, pc.DtFHPago, fop.VchDescripcion as VchFormaPago, fp.DcmImportePagado, efp.VchDescripcion as EstatusPago, efp.VchColor from PagosColegiaturas pc, FechasPagos fp, FechasColegiaturas fc, FormasPagos fop, Usuarios us, Alumnos al, EstatusFechasPagos efp where efp.UidEstatusFechaPago = fp.UidEstatusFechaPago and al.UidAlumno = fp.UidAlumno and us.UidUsuario = pc.UidUsuario and fop.UidFormaPago = fp.UidFormaPago and fp.UidPagoColegiatura = pc.UidPagoColegiatura and fp.UidFechaColegiatura = fc.UidFechaColegiatura and pc.UidEstatusPagoColegiatura = '51B85D66-866B-4BC2-B08F-FECE1A994053' and fc.UidFechaColegiatura = '" + UidFechaColegiatura + "' and al.VchMatricula = '" + VchMatricula + "' order by DtFHPago desc";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                lsReportePadresFechasPagosColeViewModel.Add(new ReportePadresFechasPagosColeViewModel()
+                {
+                    UidPagoColegiatura = Guid.Parse(item["UidPagoColegiatura"].ToString()),
+                    VchNombre = item["VchNombre"].ToString(),
+                    VchApePaterno = item["VchApePaterno"].ToString(),
+                    VchApeMaterno = item["VchApeMaterno"].ToString(),
+                    DtFHPago = DateTime.Parse(item["DtFHPago"].ToString()),
+                    VchFormaPago = item["VchFormaPago"].ToString(),
+                    DcmImportePagado = decimal.Parse(item["DcmImportePagado"].ToString()),
+                    VchEstatus = item["EstatusPago"].ToString(),
+                    VchColor = item["VchColor"].ToString()
+                });
+
+            }
+            return lsReportePadresFechasPagosColeViewModel;
+        }
         #endregion
 
-        #region Metodos Colegiaturas
+        #region Metodos ReporteLigasPadres
+        public List<ReportePadresFechasPagosColeViewModel> ObtenerPagosPadresReporte(Guid UidFechaColegiatura, string VchMatricula)
+        {
+            List<ReportePadresFechasPagosColeViewModel> lsReportePadresFechasPagosColeViewModel = new List<ReportePadresFechasPagosColeViewModel>();
 
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select pc.UidPagoColegiatura, us.VchNombre, us.VchApePaterno, us.VchApeMaterno, pc.DtFHPago, fop.UidFormaPago, fop.VchDescripcion as VchFormaPago, fp.DcmImportePagado, efp.VchDescripcion as EstatusPago, efp.VchColor from PagosColegiaturas pc, FechasPagos fp, FechasColegiaturas fc, FormasPagos fop, Usuarios us, Alumnos al, EstatusFechasPagos efp where efp.UidEstatusFechaPago = fp.UidEstatusFechaPago and al.UidAlumno = fp.UidAlumno and us.UidUsuario = pc.UidUsuario and fop.UidFormaPago = fp.UidFormaPago and fp.UidPagoColegiatura = pc.UidPagoColegiatura and fp.UidFechaColegiatura = fc.UidFechaColegiatura and pc.UidEstatusPagoColegiatura = '51B85D66-866B-4BC2-B08F-FECE1A994053' and fc.UidFechaColegiatura = '" + UidFechaColegiatura + "' and al.VchMatricula = '" + VchMatricula + "' order by DtFHPago desc";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                lsReportePadresFechasPagosColeViewModel.Add(new ReportePadresFechasPagosColeViewModel()
+                {
+                    UidPagoColegiatura = Guid.Parse(item["UidPagoColegiatura"].ToString()),
+                    VchNombre = item["VchNombre"].ToString(),
+                    VchApePaterno = item["VchApePaterno"].ToString(),
+                    VchApeMaterno = item["VchApeMaterno"].ToString(),
+                    DtFHPago = DateTime.Parse(item["DtFHPago"].ToString()),
+                    UidFormaPago = Guid.Parse(item["UidFormaPago"].ToString()),
+                    VchFormaPago = item["VchFormaPago"].ToString(),
+                    DcmImportePagado = decimal.Parse(item["DcmImportePagado"].ToString()),
+                    VchEstatus = item["EstatusPago"].ToString(),
+                    VchColor = item["VchColor"].ToString()
+                });
+
+            }
+            return lsReportePadresFechasPagosColeViewModel;
+        }
+        public Tuple<List<PagosColegiaturasViewModels>, List<DetallePagosColeGridViewModel>> ObtenerPagoColegiatura(Guid UidPagoColegiatura)
+        {
+            List<PagosColegiaturasViewModels> lsPagosColegiaturasViewModels = new List<PagosColegiaturasViewModels>();
+            List<DetallePagosColeGridViewModel> lsDetallePagosColeGridViewModel = new List<DetallePagosColeGridViewModel>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            //query.CommandText = "select pc.*, al.VchMatricula, al.VchNombres, al.VchApePaterno, VchApeMaterno from PagosColegiaturas pc, FechasPagos fg, Alumnos al where pc.UidPagoColegiatura = fg.UidPagoColegiatura and fg.UidAlumno = al.UidAlumno and pc.UidPagoColegiatura = '" + UidPagoColegiatura + "'";
+            query.CommandText = "select pc.*, al.VchMatricula, al.VchNombres, al.VchApePaterno, VchApeMaterno, fp.DcmImporteCole from PagosColegiaturas pc, FechasPagos fg, Alumnos al, FechasPagos fp where fp.UidPagoColegiatura = pc.UidPagoColegiatura and pc.UidPagoColegiatura = fg.UidPagoColegiatura and fg.UidAlumno = al.UidAlumno and pc.UidPagoColegiatura = '" + UidPagoColegiatura + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                lsPagosColegiaturasViewModels.Add(new PagosColegiaturasViewModels
+                {
+                    VchMatricula = item["VchMatricula"].ToString(),
+                    VchNombres = item["VchNombres"].ToString(),
+                    VchApePaterno = item["VchApePaterno"].ToString(),
+                    VchApeMaterno = item["VchApeMaterno"].ToString(),
+                    DtFHPago = DateTime.Parse(item["DtFHPago"].ToString()),
+                    VchPromocionDePago = item["VchPromocionDePago"].ToString(),
+                    VchComisionBancaria = item["VchComisionBancaria"].ToString(),
+                    BitSubtotal = bool.Parse(item["BitSubtotal"].ToString()),
+                    DcmSubtotal = decimal.Parse(item["DcmSubtotal"].ToString()),
+                    BitComisionBancaria = bool.Parse(item["BitComisionBancaria"].ToString()),
+                    DcmComisionBancaria = decimal.Parse(item["DcmComisionBancaria"].ToString()),
+                    BitPromocionDePago = bool.Parse(item["BitPromocionDePago"].ToString()),
+                    DcmPromocionDePago = decimal.Parse(item["DcmPromocionDePago"].ToString()),
+                    BitValidarImporte = bool.Parse(item["BitValidarImporte"].ToString()),
+                    DcmValidarImporte = decimal.Parse(item["DcmValidarImporte"].ToString()),
+                    DcmTotal = decimal.Parse(item["DcmTotal"].ToString()),
+
+                    DcmImporteCole = decimal.Parse(item["DcmImporteCole"].ToString())
+                });
+            }
+
+            //===============================================================================================
+            SqlCommand query2 = new SqlCommand();
+            query2.CommandType = CommandType.Text;
+
+            query2.CommandText = "select * from DetallesPagosColegiaturas where UidPagoColegiatura = '" + UidPagoColegiatura + "' order by IntNum asc";
+
+            DataTable dt2 = this.Busquedas(query2);
+
+            foreach (DataRow item in dt2.Rows)
+            {
+                string VchColor = "#222";
+                if (decimal.Parse(item["DcmImporte"].ToString()) < 0)
+                {
+                    VchColor = "#f55145";
+                }
+
+                lsDetallePagosColeGridViewModel.Add(new DetallePagosColeGridViewModel
+                {
+                    IntNum = int.Parse(item["IntNum"].ToString()),
+                    VchDescripcion = item["VchDescripcion"].ToString(),
+                    DcmImporte = decimal.Parse(item["DcmImporte"].ToString()),
+                    VchColor = VchColor
+                });
+            }
+
+            return Tuple.Create(lsPagosColegiaturasViewModels, lsDetallePagosColeGridViewModel);
+        }
+       
+        public decimal ObtenerImporteResta(Guid UidFechaColegiatura, Guid UidAlumno)
+        {
+            decimal ImporteResta = 0;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select * from FechasColegiaturasAlumnos where UidFechaColegiatura = '" + UidFechaColegiatura + "' and UidAlumno = '" + UidAlumno + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                ImporteResta = decimal.Parse(item["DcmImporteResta"].ToString());
+            }
+            return ImporteResta;
+        }
+        public bool ActualizarImporteResta(Guid UidFechaColegiatura, Guid UidAlumno, decimal DcmImporteResta)
+        {
+            bool Resultado = false;
+
+            SqlCommand comando = new SqlCommand();
+            try
+            {
+                comando.CommandType = System.Data.CommandType.StoredProcedure;
+                comando.CommandText = "sp_FechasColegiaturasAlumnosActualizarImporteResta";
+
+                comando.Parameters.Add("@UidFechaColegiatura", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidFechaColegiatura"].Value = UidFechaColegiatura;
+
+                comando.Parameters.Add("@UidAlumno", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidAlumno"].Value = UidAlumno;
+
+                comando.Parameters.Add("@DcmImporteResta", SqlDbType.Decimal);
+                comando.Parameters["@DcmImporteResta"].Value = DcmImporteResta;
+
+                Resultado = this.ManipulacionDeDatos(comando);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return Resultado;
+        }
+
+        #region ReportViewer
+        public List<PagosColegiaturasViewModels> rdlcObtenerPagoColegiatura(Guid UidPagoColegiatura)
+        {
+            List<PagosColegiaturasViewModels> lsPagosColegiaturasViewModels = new List<PagosColegiaturasViewModels>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select pc.*, al.VchMatricula, al.VchNombres, al.VchApePaterno, VchApeMaterno, fp.DcmImporteCole from PagosColegiaturas pc, FechasPagos fg, Alumnos al, FechasPagos fp where fp.UidPagoColegiatura = pc.UidPagoColegiatura and pc.UidPagoColegiatura = fg.UidPagoColegiatura and fg.UidAlumno = al.UidAlumno and pc.UidPagoColegiatura = '" + UidPagoColegiatura + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                lsPagosColegiaturasViewModels.Add(new PagosColegiaturasViewModels
+                {
+                    VchMatricula = item["VchMatricula"].ToString(),
+                    VchNombres = item["VchNombres"].ToString(),
+                    VchApePaterno = item["VchApePaterno"].ToString(),
+                    VchApeMaterno = item["VchApeMaterno"].ToString(),
+                    DtFHPago = DateTime.Parse(item["DtFHPago"].ToString()),
+                    VchPromocionDePago = item["VchPromocionDePago"].ToString(),
+                    VchComisionBancaria = item["VchComisionBancaria"].ToString(),
+                    BitSubtotal = bool.Parse(item["BitSubtotal"].ToString()),
+                    DcmSubtotal = decimal.Parse(item["DcmSubtotal"].ToString()),
+                    BitComisionBancaria = bool.Parse(item["BitComisionBancaria"].ToString()),
+                    DcmComisionBancaria = decimal.Parse(item["DcmComisionBancaria"].ToString()),
+                    BitPromocionDePago = bool.Parse(item["BitPromocionDePago"].ToString()),
+                    DcmPromocionDePago = decimal.Parse(item["DcmPromocionDePago"].ToString()),
+                    BitValidarImporte = bool.Parse(item["BitValidarImporte"].ToString()),
+                    DcmValidarImporte = decimal.Parse(item["DcmValidarImporte"].ToString()),
+                    DcmTotal = decimal.Parse(item["DcmTotal"].ToString()),
+
+                    DcmImporteCole = decimal.Parse(item["DcmImporteCole"].ToString())
+                });
+            }
+
+            return lsPagosColegiaturasViewModels;
+        }
+
+        #endregion
+        #endregion
+        #endregion
+
+        #region Metodos PanelEscuela
+        #region ReporteLigasEscuelas
+        public bool ActualizarEstatusFechaPago(Guid UidPagoColegiatura, Guid UidEstatusFechaPago)
+        {
+            SqlCommand Comando = new SqlCommand();
+            bool resultado = false;
+            try
+            {
+                Comando.CommandType = CommandType.StoredProcedure;
+                Comando.CommandText = "sp_FechasPagosEstatusActualizar";
+
+                Comando.Parameters.Add("@UidPagoColegiatura", SqlDbType.UniqueIdentifier);
+                Comando.Parameters["@UidPagoColegiatura"].Value = UidPagoColegiatura;
+
+                Comando.Parameters.Add("@UidEstatusFechaPago", SqlDbType.UniqueIdentifier);
+                Comando.Parameters["@UidEstatusFechaPago"].Value = UidEstatusFechaPago;
+
+                resultado = this.ManipulacionDeDatos(Comando);
+
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+            }
+            return resultado;
+        }
+        public decimal ObtenerPagosPadresRLE(Guid UidFechaColegiatura, Guid UidAlumno)
+        {
+            decimal DcmImportePagado = 0;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select SUM(fepa.DcmImportePagado) as DcmImportePagado from FechasColegiaturas feco, FechasPagos fepa, PagosColegiaturas paco, EstatusFechasPagos efp where efp.UidEstatusFechaPago = fepa.UidEstatusFechaPago and feco.UidFechaColegiatura = fepa.UidFechaColegiatura and fepa.UidPagoColegiatura = paco.UidPagoColegiatura and fepa.UidEstatusFechaPago = '8720B2B9-5712-4E75-A981-932887AACDC9' and paco.UidEstatusPagoColegiatura = '51B85D66-866B-4BC2-B08F-FECE1A994053' and fepa.UidFechaColegiatura = '" + UidFechaColegiatura + "' and fepa.UidAlumno = '" + UidAlumno + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                DcmImportePagado = decimal.Parse(item["DcmImportePagado"].ToString());
+            }
+            return DcmImportePagado;
+        }
+        public decimal ObtenerPendientesPadresRLE(Guid UidFechaColegiatura, Guid UidAlumno)
+        {
+            decimal DcmImportePendiente = 0;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select SUM(fepa.DcmImportePagado) as DcmImportePendiente from FechasColegiaturas feco, FechasPagos fepa, PagosColegiaturas paco, EstatusFechasPagos efp where efp.UidEstatusFechaPago = fepa.UidEstatusFechaPago and feco.UidFechaColegiatura = fepa.UidFechaColegiatura and fepa.UidPagoColegiatura = paco.UidPagoColegiatura and fepa.UidEstatusFechaPago = 'F25E4AAB-6044-46E9-A575-98DCBCCF7604' and paco.UidEstatusPagoColegiatura = '51B85D66-866B-4BC2-B08F-FECE1A994053' and fepa.UidFechaColegiatura = '" + UidFechaColegiatura + "' and fepa.UidAlumno = '" + UidAlumno + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                DcmImportePendiente = item.IsNull("DcmImportePendiente") ? 0 : decimal.Parse(item["DcmImportePendiente"].ToString());
+            }
+            return DcmImportePendiente;
+        }
+        #endregion
         #endregion
 
     }

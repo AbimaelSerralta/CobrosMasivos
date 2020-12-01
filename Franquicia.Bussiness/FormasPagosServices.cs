@@ -14,11 +14,40 @@ namespace Franquicia.Bussiness
 
         public List<FormasPagos> lsFormasPagos = new List<FormasPagos>();
 
-        public void CargarEstatus()
+        public void CargarFormasPagos()
         {
             lsFormasPagos = new List<FormasPagos>();
 
             lsFormasPagos = formasPagosRepository.CargarFormasPagos();
         }
+
+        #region Metodos PanelTutor
+        #region Pagos
+        public void CargarFormasPagosPadres()
+        {
+            lsFormasPagos = new List<FormasPagos>();
+
+            lsFormasPagos = formasPagosRepository.CargarFormasPagosPadres();
+        }
+        #endregion
+
+        #region ReportePagosPadres
+        public void CargarFormasPagosReporteLigasPadres()
+        {
+            lsFormasPagos = new List<FormasPagos>();
+
+            lsFormasPagos = formasPagosRepository.CargarFormasPagosReporteLigasPadres();
+        }
+        #endregion
+        
+        #region ReporteLigasEscuelas
+        public void CargarFormasPagosReporteLigasEscuelas(Guid UidCliente)
+        {
+            lsFormasPagos = new List<FormasPagos>();
+
+            lsFormasPagos = formasPagosRepository.CargarFormasPagosReporteLigasEscuelas(UidCliente);
+        }
+        #endregion
+        #endregion
     }
 }

@@ -12,6 +12,9 @@
     <link href="../CSSPropio/Loader.css" rel="stylesheet" />
     <link href="../CSSPropio/BadgeNotification.css" rel="stylesheet" />
     <link href="../CSSPropio/TootipSe.css" rel="stylesheet" />
+    <link href="../CSSPropio/EfectosCards.css" rel="stylesheet" />
+    <link href="../CSSPropio/AccordionModoFiltros.css" rel="stylesheet" />
+    <link href="../CSSPropio/AccordionTipoTarjeta.css" rel="stylesheet" />
 
     <!-- Required meta tags -->
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />

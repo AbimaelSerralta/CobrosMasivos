@@ -54,8 +54,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AESCrypto.cs" />
+    <Compile Include="ComisionesTarjetasClientesTerminalServices.cs" />
     <Compile Include="DetallesPagosColegiaturasServices.cs" />
+    <Compile Include="BancosServices.cs" />
+    <Compile Include="EstatusFechasPagosServices.cs" />
+    <Compile Include="PagosEfectivosServices.cs" />
+    <Compile Include="TiposTarjetasServices.cs" />
     <Compile Include="FormasPagosServices.cs" />
+    <Compile Include="PagosManualesServices.cs" />
     <Compile Include="PagosColegiaturasServices.cs" />
     <Compile Include="ComisionesTarjetasServices.cs" />
     <Compile Include="DateTimeSpanServices.cs" />
@@ -64,6 +70,7 @@
     <Compile Include="ParametrosSendGridServices.cs" />
     <Compile Include="PeriodicidadesServices.cs" />
     <Compile Include="NivelesEnsenianzasServices.cs" />
+    <Compile Include="PromocionesTerminalServices.cs" />
     <Compile Include="SuperPromocionesServices.cs" />
     <Compile Include="ComisionesTarjetasClientesServices.cs" />
     <Compile Include="TelefonosAlumnosServices.cs" />

@@ -1,0 +1,11 @@
+﻿.cardEfe {
+    transition: .5s;
+}
+
+    .cardEfe:hover {
+        transform: scale(1.05);
+    }
+
+.h-100 {
+    height: 90% !important;
+}

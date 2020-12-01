@@ -35,17 +35,17 @@ namespace Franquicia.WebForms.Controller
             DateTime HoraDelServidor = DateTime.Now;
             DateTime thisDay = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(HoraDelServidor, TimeZoneInfo.Local.Id, "Eastern Standard Time (Mexico)");
 
-            try
-            {
-                correosServices.CorreoCadena(thisDay + " finalString " + cadena, "serralta2008@gmail.com");
-            }
-            catch (Exception ex)
-            {
-                string mnsj = ex.Message;
-            }
+            //try
+            //{
+            //    correosServices.CorreoCadena(thisDay + " finalString " + cadena, "serralta2008@gmail.com");
+            //}
+            //catch (Exception ex)
+            //{
+            //    string mnsj = ex.Message;
+            //}
 
-            //string key = "5DCC67393750523CD165F17E1EFADD21"; //Credenciales sanbox 
-            string key = "7AACFE849FABD796F6DCB947FD4D5268";
+            string key = "5DCC67393750523CD165F17E1EFADD21"; //Credenciales sanbox 
+            //string key = "7AACFE849FABD796F6DCB947FD4D5268";
             AESCrypto o = new AESCrypto();
             string decryptedString = o.decrypt(key, cadena);
             if (!string.IsNullOrEmpty(decryptedString))
@@ -92,7 +92,7 @@ namespace Franquicia.WebForms.Controller
                             cd_error = RespuestaWebPayPlus[0].ChildNodes[i].InnerText;
                             break;
                         case "reference":
-                            reference = RespuestaWebPayPlus[0].ChildNodes[i].InnerText;
+                            reference = "1126411112020110753328" /*RespuestaWebPayPlus[0].ChildNodes[i].InnerText*/;
                             break;
                         case "response":
                             response = RespuestaWebPayPlus[0].ChildNodes[i].InnerText;
@@ -179,7 +179,9 @@ namespace Franquicia.WebForms.Controller
                         {
                             var list = pagosServices.ObtenerPagoColegiatura(Guid.Parse(para.Item1));
 
-                            correosEscuelaServices.CorreoEnvioPagoColegiatura(list.Item1, list.Item2, "Comprobante de pago de colegiatura", reference, fechaRegistro, "************" + cc_number, foliocpagos, para.Item2, Guid.Parse(para.Item3));
+                            pagosServices.ActualizarPagoColegiatura(Guid.Parse(para.Item1));
+
+                            correosEscuelaServices.CorreoEnvioPagoColegiatura(list.Item1, list.Item2, "Comprobante de pago de colegiatura", reference, fechaRegistro, "************" + cc_number, foliocpagos, para.Item2, "APROBADO", Guid.Parse(para.Item3));
                         }
 
                         pagosServices.ConsultarPromocionLiga(reference);

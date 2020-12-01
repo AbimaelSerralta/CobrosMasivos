@@ -202,7 +202,7 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select lu.UidPropietario, lu.UidPagoColegiatura, us.VchCorreo from LigasUrls lu, PagosTarjeta pt, Usuarios us where us.UidUsuario = lu.UidUsuario and lu.IdReferencia = pt.IdReferencia and lu.IdReferencia = '" + IdReferencia + "'";
+            query.CommandText = "select lu.UidPropietario, lu.UidPagoColegiatura, us.VchCorreo from LigasUrls lu, PagosTarjeta pt, Usuarios us where lu.UidPagoColegiatura is not null and pt.VchEstatus = 'approved' and us.UidUsuario = lu.UidUsuario and lu.IdReferencia = pt.IdReferencia and lu.IdReferencia = '" + IdReferencia + "'";
 
             DataTable dt = this.Busquedas(query);
 
@@ -215,24 +215,27 @@ namespace Franquicia.DataAccess.Repository
 
             return Tuple.Create(Resultado, Resultado2, Resultado3);
         }
-        public Tuple<List<PagosColegiaturas>, List<DetallesPagosColegiaturas>> ObtenerPagoColegiatura(Guid UidPagoColegiatura)
+        public Tuple<List<PagosColegiaturasViewModels>, List<DetallesPagosColegiaturas>> ObtenerPagoColegiatura(Guid UidPagoColegiatura)
         {
-            List<PagosColegiaturas> lsPagosColegiaturas = new List<PagosColegiaturas>();
+            List<PagosColegiaturasViewModels> lsPagosColegiaturasViewModels = new List<PagosColegiaturasViewModels>();
             List<DetallesPagosColegiaturas> lsDetallesPagosColegiaturas = new List<DetallesPagosColegiaturas>();
 
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select * from PagosColegiaturas where UidPagoColegiatura = '" + UidPagoColegiatura + "'";
+            //query.CommandText = "select pc.*, al.VchMatricula, al.VchNombres, al.VchApePaterno, VchApeMaterno from PagosColegiaturas pc, FechasPagos fg, Alumnos al where pc.UidPagoColegiatura = fg.UidPagoColegiatura and fg.UidAlumno = al.UidAlumno and pc.UidPagoColegiatura = '" + UidPagoColegiatura + "'";
+            query.CommandText = "select pc.*, al.VchMatricula, al.VchNombres, al.VchApePaterno, VchApeMaterno, fp.DcmImporteCole from PagosColegiaturas pc, FechasPagos fg, Alumnos al, FechasPagos fp where fp.UidPagoColegiatura = pc.UidPagoColegiatura and pc.UidPagoColegiatura = fg.UidPagoColegiatura and fg.UidAlumno = al.UidAlumno and pc.UidPagoColegiatura = '" + UidPagoColegiatura + "'";
 
             DataTable dt = this.Busquedas(query);
 
             foreach (DataRow item in dt.Rows)
             {
-                lsPagosColegiaturas.Add(new PagosColegiaturas
+                lsPagosColegiaturasViewModels.Add(new PagosColegiaturasViewModels
                 {
-                    //VchAlumno = item["VchAlumno"].ToString(),
-                    //VchMatricula = item["VchMatricula"].ToString(),
+                    VchMatricula = item["VchMatricula"].ToString(),
+                    VchNombres = item["VchNombres"].ToString(),
+                    VchApePaterno = item["VchApePaterno"].ToString(),
+                    VchApeMaterno = item["VchApeMaterno"].ToString(),
                     DtFHPago = DateTime.Parse(item["DtFHPago"].ToString()),
                     VchPromocionDePago = item["VchPromocionDePago"].ToString(),
                     VchComisionBancaria = item["VchComisionBancaria"].ToString(),
@@ -242,7 +245,11 @@ namespace Franquicia.DataAccess.Repository
                     DcmComisionBancaria = decimal.Parse(item["DcmComisionBancaria"].ToString()),
                     BitPromocionDePago = bool.Parse(item["BitPromocionDePago"].ToString()),
                     DcmPromocionDePago = decimal.Parse(item["DcmPromocionDePago"].ToString()),
-                    DcmTotal = decimal.Parse(item["DcmTotal"].ToString())
+                    BitValidarImporte = bool.Parse(item["BitValidarImporte"].ToString()),
+                    DcmValidarImporte = decimal.Parse(item["DcmValidarImporte"].ToString()),
+                    DcmTotal = decimal.Parse(item["DcmTotal"].ToString()),
+
+                    DcmImporteCole = decimal.Parse(item["DcmImporteCole"].ToString())
                 });
             }
 
@@ -264,7 +271,55 @@ namespace Franquicia.DataAccess.Repository
                 });
             }
 
-            return Tuple.Create(lsPagosColegiaturas, lsDetallesPagosColegiaturas);
+            return Tuple.Create(lsPagosColegiaturasViewModels, lsDetallesPagosColegiaturas);
+        }
+        public bool ActualizarPagoColegiatura(Guid UidPagoColegiatura)
+        {
+            SqlCommand Comando = new SqlCommand();
+            bool resultado = false;
+            try
+            {
+                Comando.CommandType = CommandType.StoredProcedure;
+                Comando.CommandText = "sp_PagosColegiaturasEstatusActualizar";
+
+                Comando.Parameters.Add("@UidPagoColegiatura", SqlDbType.UniqueIdentifier);
+                Comando.Parameters["@UidPagoColegiatura"].Value = UidPagoColegiatura;
+
+                resultado = this.ManipulacionDeDatos(Comando);
+
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+            }
+            return resultado;
+        }
+        #endregion
+
+        #region ReporteLigasPadres
+        public List<PagosTarjetaColeDetalleGridViewModel> ConsultarDetallePagoColegiatura(Guid UidPagoColegiatura)
+        {
+            List<PagosTarjetaColeDetalleGridViewModel> lsPagosTarjetaColeDetalleGridViewModel = new List<PagosTarjetaColeDetalleGridViewModel>(); ;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select lu.IdReferencia, pt.FolioPago, pt.DtmFechaDeRegistro, pt.cc_number from LigasUrls lu, PagosTarjeta pt where lu.UidPagoColegiatura is not null and pt.VchEstatus = 'approved'and lu.IdReferencia = pt.IdReferencia and lu.UidPagoColegiatura = '" + UidPagoColegiatura + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                lsPagosTarjetaColeDetalleGridViewModel.Add(new PagosTarjetaColeDetalleGridViewModel()
+                {
+                    IdReferencia = item["IdReferencia"].ToString(),
+                    FolioPago = item["FolioPago"].ToString(),
+                    DtmFechaDeRegistro = DateTime.Parse(item["DtmFechaDeRegistro"].ToString()),
+                    cc_number = item["cc_number"].ToString()
+                });
+            }
+
+            return lsPagosTarjetaColeDetalleGridViewModel;
         }
         #endregion
         #endregion

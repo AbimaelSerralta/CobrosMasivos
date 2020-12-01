@@ -21,6 +21,8 @@ namespace Franquicia.Bussiness
         public List<LigasUrlsPayCardModel> lsLigasUrlsPayCardModel = new List<LigasUrlsPayCardModel>();
         public List<LigasEventoPayCardModel> lsLigasEventoPayCardModel = new List<LigasEventoPayCardModel>();
         
+        public List<PagosTarjetaColeDetalleGridViewModel> lsPagosTarjetaColeDetalleGridViewModel = new List<PagosTarjetaColeDetalleGridViewModel>();
+        
         
         public List<PagosColegiaturas> lsPagosColegiaturas = new List<PagosColegiaturas>();
         
@@ -58,10 +60,22 @@ namespace Franquicia.Bussiness
         {
             return pagosRepository.ConsultarPagoColegiatura(IdReferencia);
         }
-
-        public Tuple<List<PagosColegiaturas>, List<DetallesPagosColegiaturas>> ObtenerPagoColegiatura(Guid UidFechaColegiatura)
+        public Tuple<List<PagosColegiaturasViewModels>, List<DetallesPagosColegiaturas>> ObtenerPagoColegiatura(Guid UidPagoColegiatura)
         {
-            return pagosRepository.ObtenerPagoColegiatura(UidFechaColegiatura);
+            return pagosRepository.ObtenerPagoColegiatura(UidPagoColegiatura);
+        }
+        public bool ActualizarPagoColegiatura(Guid UidPagoColegiatura)
+        {
+            return pagosRepository.ActualizarPagoColegiatura(UidPagoColegiatura);
+        }
+        #endregion
+
+        #region ReporteLigasPadres
+        public List<PagosTarjetaColeDetalleGridViewModel> ConsultarDetallePagoColegiatura(Guid UidPagoColegiatura)
+        {
+            lsPagosTarjetaColeDetalleGridViewModel = new List<PagosTarjetaColeDetalleGridViewModel>();
+
+            return lsPagosTarjetaColeDetalleGridViewModel = pagosRepository.ConsultarDetallePagoColegiatura(UidPagoColegiatura);
         }
         #endregion
 

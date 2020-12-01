@@ -18,6 +18,8 @@ namespace Franquicia.Domain.Models
         public decimal DcmComisionBancaria { get; set; }
         public bool BitPromocionDePago { get; set; }
         public decimal DcmPromocionDePago { get; set; }
+        public bool BitValidarImporte { get; set; }
+        public decimal DcmValidarImporte { get; set; }
         public decimal DcmTotal { get; set; }
         public Guid UidUsuario { get; set; }
         public Guid UidEstatusPagoColegiatura { get; set; }

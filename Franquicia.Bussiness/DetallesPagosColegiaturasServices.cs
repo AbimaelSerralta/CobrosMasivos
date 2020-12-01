@@ -28,6 +28,8 @@ namespace Franquicia.Bussiness
         }
 
         public List<DetallesPagosColegiaturas> lsDetallesPagosColegiaturas = new List<DetallesPagosColegiaturas>();
+        
+        public List<DetallePagosColeGridViewModel> lsDetallePagosColeGridViewModel = new List<DetallePagosColeGridViewModel>();
 
         #region Metodos PagosColegiatura
         //public void CargarAlumnos(Guid UidCliente)
@@ -72,12 +74,30 @@ namespace Franquicia.Bussiness
         //}
         #endregion
 
-        #region Metodos Clientes
+        #region Metodos Panel Tutor
+        #region Alumnos
+
+        #endregion
+
+        #region Metodos Tutores
 
         #endregion
 
         #region Metodos Colegiaturas
 
+        #endregion
+
+        #region Metodos ReporteLigasPadre
+
+        #region ReportViewer
+        public List<DetallePagosColeGridViewModel> rdlcObtenerDetallePagoColegiatura(Guid UidPagoColegiatura)
+        {
+            lsDetallePagosColeGridViewModel = new List<DetallePagosColeGridViewModel>();
+            return lsDetallePagosColeGridViewModel = detallesPagosColegiaturasRepository.rdlcObtenerDetallePagoColegiatura(UidPagoColegiatura);
+        }
+
+        #endregion
+        #endregion
         #endregion
     }
 }
