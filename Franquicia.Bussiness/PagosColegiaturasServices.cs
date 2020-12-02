@@ -46,7 +46,11 @@ namespace Franquicia.Bussiness
         //    alumnosRepository.alumnosGridViewModel = new AlumnosGridViewModel();
         //    alumnosRepository.alumnosGridViewModel = lsAlumnosGridViewModel.Find(x => x.UidAlumno == UidAlumno);
         //}
-        public bool RegistrarPagoColegiatura(Guid UidPagoColegiatura, DateTime DtFHPago, string VchPromocionDePago, string VchComisionBancaria, bool BitSubtotal, decimal DcmSubtotal, bool BitComisionBancaria, decimal DcmComisionBancaria, bool BitPromocionDePago, decimal DcmPromocionDePago, bool BitValidarImporte, decimal DcmValidarImporte, decimal DcmTotal, Guid UidUsuario, Guid UidEstatusPagoColegiatura,
+        public int ObtenerUltimoFolio(Guid UidCliente)
+        {
+            return pagosColegiaturasRepository.ObtenerUltimoFolio(UidCliente);
+        }
+        public bool RegistrarPagoColegiatura(Guid UidPagoColegiatura, int UltimoFolio, DateTime DtFHPago, string VchPromocionDePago, string VchComisionBancaria, bool BitSubtotal, decimal DcmSubtotal, bool BitComisionBancaria, decimal DcmComisionBancaria, bool BitPromocionDePago, decimal DcmPromocionDePago, bool BitValidarImporte, decimal DcmValidarImporte, decimal DcmTotal, Guid UidUsuario, Guid UidEstatusPagoColegiatura,
                                              Guid UidFechaColegiatura, Guid UidAlumno, Guid UidFormaPago, decimal DcmImporteCole, decimal DcmImportePagado, decimal DcmImporteNuevo, Guid EstatusFechaPago)
         {
             bool result = false;
@@ -54,6 +58,7 @@ namespace Franquicia.Bussiness
                 new PagosColegiaturas
                 {
                     UidPagoColegiatura = UidPagoColegiatura,
+                    IntFolio = UltimoFolio,
                     DtFHPago = DtFHPago,
                     VchPromocionDePago = VchPromocionDePago,
                     VchComisionBancaria = VchComisionBancaria,

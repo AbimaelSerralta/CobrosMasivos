@@ -9,6 +9,7 @@ namespace Franquicia.Domain.Models
     public class PagosColegiaturas
     {
         public Guid UidPagoColegiatura { get; set; }
+        public int IntFolio { get; set; }
         public DateTime DtFHPago { get; set; }
         public string VchPromocionDePago { get; set; }
         public string VchComisionBancaria { get; set; }

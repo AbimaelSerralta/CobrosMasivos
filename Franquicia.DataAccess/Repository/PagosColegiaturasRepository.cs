@@ -104,6 +104,24 @@ namespace Franquicia.DataAccess.Repository
 
         //    return lsAlumnosGridViewModel;
         //}
+        public int ObtenerUltimoFolio(Guid UidCliente)
+        {
+            int UltimoFolio = 0;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select MAX(pc.IntFolio) as UltimoFolio from PagosColegiaturas pc, FechasPagos fp, Alumnos al where pc.UidPagoColegiatura = fp.UidPagoColegiatura and al.UidAlumno = fp.UidAlumno and al.UidCliente = '" + UidCliente + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                UltimoFolio = int.Parse(item["UltimoFolio"].ToString());
+            }
+
+            return UltimoFolio + 1;
+        }
         public bool RegistrarPagoColegiatura(PagosColegiaturas pagosColegiaturas, Guid UidFechaColegiatura, Guid UidAlumno, Guid UidFormaPago, decimal DcmImporteCole, decimal DcmImportePagado, decimal DcmImporteNuevo, Guid EstatusFechaPago)
         {
             bool Resultado = false;
@@ -116,6 +134,9 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@UidPagoColegiatura", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidPagoColegiatura"].Value = pagosColegiaturas.UidPagoColegiatura;
+                
+                comando.Parameters.Add("@IntFolio", SqlDbType.Int);
+                comando.Parameters["@IntFolio"].Value = pagosColegiaturas.IntFolio;
 
                 comando.Parameters.Add("@DtFHPago", SqlDbType.DateTime);
                 comando.Parameters["@DtFHPago"].Value = pagosColegiaturas.DtFHPago;

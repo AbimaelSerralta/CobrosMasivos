@@ -389,5 +389,26 @@ namespace Franquicia.DataAccess.Repository
             }
         }
         #endregion
+
+        #region ReportViewer
+        public byte[] ObtenerLogo(Guid UidCliente)
+        {
+            byte[] img = null;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "Select * from ImagenesClientes where  UidCliente = '" + UidCliente + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                img = (byte[])item["Imagen"];
+            }
+
+            return img;
+        }
+        #endregion
     }
 }

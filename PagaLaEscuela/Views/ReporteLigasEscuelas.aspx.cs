@@ -1,6 +1,7 @@
 ﻿using Franquicia.Bussiness;
 using Franquicia.Domain.Models;
 using Franquicia.Domain.ViewModels;
+using Franquicia.WebForms.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,8 @@ namespace PagaLaEscuela.Views
         PromocionesTerminalServices promocionesTerminalServices = new PromocionesTerminalServices();
         DetallesPagosColegiaturasServices detallesPagosColegiaturasServices = new DetallesPagosColegiaturasServices();
         PagosEfectivosServices pagosEfectivosServices = new PagosEfectivosServices();
+        UsuariosServices usuariosServices = new UsuariosServices();
+        ClientesServices clientesServices = new ClientesServices();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -47,6 +50,7 @@ namespace PagaLaEscuela.Views
                 Session["pagosTarjetaServices"] = pagosTarjetaServices;
                 Session["colegiaturasServices"] = colegiaturasServices;
                 Session["estatusFechasPagosServices"] = estatusFechasPagosServices;
+                Session["alumnosServices"] = alumnosServices;
 
                 Session["promocionesTerminalServices"] = promocionesTerminalServices;
 
@@ -65,12 +69,26 @@ namespace PagaLaEscuela.Views
                 ddlEstatus.DataTextField = "VchDescripcion";
                 ddlEstatus.DataValueField = "UidEstatusFechaPago";
                 ddlEstatus.DataBind();
+
+                byte[] imagen = clientesServices.clientesRepository.CargarLogo(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+
+                if (imagen != null)
+                {
+                    imgLogo.ImageUrl = "data:image/png;base64," + Convert.ToBase64String(imagen);
+                    imgLogo.DataBind();
+                }
+                else
+                {
+                    imgLogo.ImageUrl = "../Images/SinLogo2.png";
+                    imgLogo.DataBind();
+                }
             }
             else
             {
                 pagosTarjetaServices = (PagosTarjetaServices)Session["pagosTarjetaServices"];
                 colegiaturasServices = (ColegiaturasServices)Session["colegiaturasServices"];
                 estatusFechasPagosServices = (EstatusFechasPagosServices)Session["estatusFechasPagosServices"];
+                alumnosServices = (AlumnosServices)Session["alumnosServices"];
 
                 promocionesTerminalServices = (PromocionesTerminalServices)Session["promocionesTerminalServices"];
 
@@ -85,6 +103,10 @@ namespace PagaLaEscuela.Views
                 pnlAlertModalTipoPago.Visible = false;
                 lblMnsjModalTipoPago.Text = "";
                 divAlertModalTipoPago.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
+
+                pnlAlertPago.Visible = false;
+                lblMensajeAlertPago.Text = "";
+                divAlertPago.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
 
                 rpEstatusPagos.DataSource = estatusFechasPagosServices.lsEstatusFechasPagos;
                 rpEstatusPagos.DataBind();
@@ -176,16 +198,11 @@ namespace PagaLaEscuela.Views
             ViewState["NewPageIndex"] = null;
             ViewState["NewPageIndex2"] = null;
 
-            //ActualizarDatosPrincipal();
+            ActualizarDatosPrincipal();
 
-            //pnlAlert.Visible = true;
-            //lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha sincronizado exitosamente.";
-            //divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
-
-            Session["rdlcUidPagoColegiatura"] = Guid.Parse("4C1406B0-50EB-46A8-A785-30AEFBE9FE86");
-
-            string _open = "window.open('Reports/ReciboPagoEfectivo2.aspx', '_blank');";
-            ScriptManager.RegisterStartupScript(this, this.GetType(), Guid.NewGuid().ToString(), _open, true);
+            pnlAlert.Visible = true;
+            lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha sincronizado exitosamente.";
+            divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
         }
 
         protected void btnPago_Click(object sender, EventArgs e)
@@ -1156,8 +1173,16 @@ namespace PagaLaEscuela.Views
             Guid UidAlumno = Guid.Parse(gvAlumnos.SelectedDataKey.Value.ToString());
             ViewState["Selected-UidAlumno"] = UidAlumno;
 
-            ViewState["Selected-UidUsuario"] = Guid.Empty;
-            
+            gvPagos.SelectedIndex = -1;
+            usuariosServices.lsUsuarioGridViewModel.Clear();
+            ddlTutorAlu.Items.Clear();
+            usuariosServices.CargarTutoresAlumnos(UidAlumno);
+            ddlTutorAlu.Items.Insert(0, new ListItem("SELECCIONE UN TUTOR", ""));
+            ddlTutorAlu.DataSource = usuariosServices.lsUsuarioGridViewModel;
+            ddlTutorAlu.DataTextField = "NombreCompleto";
+            ddlTutorAlu.DataValueField = "UidUsuario";
+            ddlTutorAlu.DataBind();
+
             string Matricula = row.Cells[3].Text;
             ViewState["Selected-Matricula"] = Matricula;
 
@@ -1167,6 +1192,13 @@ namespace PagaLaEscuela.Views
             //row.Cells[4].Text = "<b>" + row.Cells[4].Text + "</b>"; -- PREUBA DE LETRAS EN NEGRITA
 
             ViewState["gvAlumnosSelect"] = true;
+
+            //LLenar campos de busqueda
+            txtFiltroAlumIdentificador.Text = alumnosServices.lsAlumnosRLEGridViewModel.Find(x => x.UidAlumno == UidAlumno).VchIdentificador;
+            txtFiltroAlumMatricula.Text = alumnosServices.lsAlumnosRLEGridViewModel.Find(x => x.UidAlumno == UidAlumno).VchMatricula;
+            txtFiltroAlumNombre.Text = alumnosServices.lsAlumnosRLEGridViewModel.Find(x => x.UidAlumno == UidAlumno).VchNombres;
+            txtFiltroAlumPaterno.Text = alumnosServices.lsAlumnosRLEGridViewModel.Find(x => x.UidAlumno == UidAlumno).VchApePaterno;
+            txtFiltroAlumMaterno.Text = alumnosServices.lsAlumnosRLEGridViewModel.Find(x => x.UidAlumno == UidAlumno).VchApeMaterno;
 
             colegiaturasServices.CargarPagosColegiaturasRLE(Guid.Parse(ViewState["UidClienteLocal"].ToString()), UidAlumno);
             gvPagos.DataSource = colegiaturasServices.lsPagosColegiaturasViewModel;
@@ -1331,6 +1363,7 @@ namespace PagaLaEscuela.Views
             headAlumno.Text = colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.NombreCompleto;
             headMatricula.Text = colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchMatricula;
             headFPago.Text = hoy.ToString("dd/MM/yyyy");
+            ViewState["headFPago"] = hoy;
             decimal Recargo = 0;
 
             colegiaturasServices.FormarDesgloseCole(1, colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchIdentificador + ". PAGO " + colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchNum, colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.DcmImporte);
@@ -1607,12 +1640,21 @@ namespace PagaLaEscuela.Views
         }
         protected void btnCalcular_Click(object sender, EventArgs e)
         {
-            string MontoMin = "50.00";
-            string MontoMax = "15000.00";
+            btnGenerarPago.Enabled = false;
+
+            ValidacionesServices validacionesServices = new ValidacionesServices();
+            if (!validacionesServices.IsNumeric(txtTotaltb.Text))
+            {
+                pnlAlertPago.Visible = true;
+                txtTotaltb.BackColor = System.Drawing.Color.FromName("#f2dede");
+                lblMensajeAlertPago.Text = "El monto ingresado no es un formato correcto.";
+                divAlertPago.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                return;
+            }
+
             decimal Resta = 0;
 
             lblTotalPago.Text = "Generar pago $0.00";
-            btnGenerarPago.Enabled = false;
 
             ViewState["txtTotaltb.Text"] = 0;
 
@@ -1624,77 +1666,67 @@ namespace PagaLaEscuela.Views
             decimal Total = decimal.Parse(ViewState["txtImporteTotal.Text"].ToString());
             decimal Totaltb = decimal.Parse(txtTotaltb.Text);
 
-            if (Totaltb >= decimal.Parse(MontoMin) && Totaltb <= decimal.Parse(MontoMax))
-            {
-                if (Totaltb > Total)
-                {
-                    pnlAlertPago.Visible = true;
-                    txtTotaltb.BackColor = System.Drawing.Color.FromName("#f2dede");
-                    lblMensajeAlertPago.Text = "El monto ingresado no puede ser mayor al  Total.";
-                    divAlertPago.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
-                }
-                else
-                {
-
-                    ViewState["txtTotaltb.Text"] = decimal.Parse(txtTotaltb.Text);
-
-                    lblTotalPago.Text = "Generar pago $" + decimal.Parse(txtTotaltb.Text).ToString("N2");
-                    btnGenerarPago.Enabled = true;
-
-                    decimal SubTotal = 0;
-                    ViewState["ImpOtraSubTotalTT"] = 0;
-                    decimal ImporteCTT = 0;
-                    ViewState["ImpOtraCantCTT"] = 0;
-                    string CTT = string.Empty;
-                    decimal ImporteCPTT = 0;
-                    ViewState["ImpOtraCantCPTT"] = 0;
-                    string PromocionTT = string.Empty;
-
-                    if (promocionesTerminalServices.lsCBLPromocionesTerminalViewModel.Count != 0)
-                    {
-                        foreach (var itPromo in promocionesTerminalServices.lsCBLPromocionesTerminalViewModel.Where(x => x.UidPromocionTerminal == Guid.Parse(ddlPromocionesTT.SelectedValue)).ToList())
-                        {
-                            ImporteCPTT = Totaltb * itPromo.DcmComicion / (100 + itPromo.DcmComicion);
-                            ViewState["ImpOtraCantCPTT"] = ImporteCPTT;
-                            PromocionTT = "Comisión " + itPromo.VchDescripcion + ": $" + ImporteCPTT.ToString("N2") + "<br />";
-                        }
-                    }
-
-                    SubTotal = Totaltb - ImporteCPTT;
-                    if (ddlTiposTarjetas.SelectedValue != string.Empty)
-                    {
-                        comisionesTarjetasClTer.CargarComisionesTarjetaTerminalTipoTarjeta(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse(ddlTiposTarjetas.SelectedValue));
-                        if (comisionesTarjetasClTer.lsComisionesTarjetasClientesTerminal.Count >= 1)
-                        {
-                            foreach (var itComi in comisionesTarjetasClTer.lsComisionesTarjetasClientesTerminal)
-                            {
-                                if (itComi.BitComision)
-                                {
-                                    ImporteCTT = SubTotal * itComi.DcmComision / (100 + itComi.DcmComision);
-                                    SubTotal = SubTotal - ImporteCTT;
-                                    ViewState["ImpOtraCantCTT"] = ImporteCTT;
-                                    CTT = "Comisión Bancaria: $" + ImporteCTT.ToString("N2") + "<br />";
-                                }
-                            }
-                        }
-                    }
-                    Resta = decimal.Parse(ViewState["ImporteTotal"].ToString()) - SubTotal;
-                    ViewState["ImporteResta"] = Resta;
-
-                    lblToolApagar.Text = "Subtotal: $" + SubTotal.ToString("N2") + "<br />"
-                                       + CTT
-                                       + PromocionTT
-                                       + "Total: $" + Totaltb.ToString("N2");
-
-                    ViewState["ImpOtraSubTotalTT"] = SubTotal;
-                }
-            }
-            else
+            if (Totaltb > Total)
             {
                 pnlAlertPago.Visible = true;
                 txtTotaltb.BackColor = System.Drawing.Color.FromName("#f2dede");
-                lblMensajeAlertPago.Text = "El importe mínimo es de $50.00 y el máximo es de $15,000.00.";
+                lblMensajeAlertPago.Text = "El monto ingresado no puede ser mayor al  Total.";
                 divAlertPago.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+            }
+            else
+            {
+
+                ViewState["txtTotaltb.Text"] = decimal.Parse(txtTotaltb.Text);
+
+                lblTotalPago.Text = "Generar pago $" + decimal.Parse(txtTotaltb.Text).ToString("N2");
+                btnGenerarPago.Enabled = true;
+
+                decimal SubTotal = 0;
+                ViewState["ImpOtraSubTotalTT"] = 0;
+                decimal ImporteCTT = 0;
+                ViewState["ImpOtraCantCTT"] = 0;
+                string CTT = string.Empty;
+                decimal ImporteCPTT = 0;
+                ViewState["ImpOtraCantCPTT"] = 0;
+                string PromocionTT = string.Empty;
+
+                if (promocionesTerminalServices.lsCBLPromocionesTerminalViewModel.Count != 0)
+                {
+                    foreach (var itPromo in promocionesTerminalServices.lsCBLPromocionesTerminalViewModel.Where(x => x.UidPromocionTerminal == Guid.Parse(ddlPromocionesTT.SelectedValue)).ToList())
+                    {
+                        ImporteCPTT = Totaltb * itPromo.DcmComicion / (100 + itPromo.DcmComicion);
+                        ViewState["ImpOtraCantCPTT"] = ImporteCPTT;
+                        PromocionTT = "Comisión " + itPromo.VchDescripcion + ": $" + ImporteCPTT.ToString("N2") + "<br />";
+                    }
+                }
+
+                SubTotal = Totaltb - ImporteCPTT;
+                if (ddlTiposTarjetas.SelectedValue != string.Empty)
+                {
+                    comisionesTarjetasClTer.CargarComisionesTarjetaTerminalTipoTarjeta(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse(ddlTiposTarjetas.SelectedValue));
+                    if (comisionesTarjetasClTer.lsComisionesTarjetasClientesTerminal.Count >= 1)
+                    {
+                        foreach (var itComi in comisionesTarjetasClTer.lsComisionesTarjetasClientesTerminal)
+                        {
+                            if (itComi.BitComision)
+                            {
+                                ImporteCTT = SubTotal * itComi.DcmComision / (100 + itComi.DcmComision);
+                                SubTotal = SubTotal - ImporteCTT;
+                                ViewState["ImpOtraCantCTT"] = ImporteCTT;
+                                CTT = "Comisión Bancaria: $" + ImporteCTT.ToString("N2") + "<br />";
+                            }
+                        }
+                    }
+                }
+                Resta = decimal.Parse(ViewState["ImporteTotal"].ToString()) - SubTotal;
+                ViewState["ImporteResta"] = Resta;
+
+                lblToolApagar.Text = "Subtotal: $" + SubTotal.ToString("N2") + "<br />"
+                                   + CTT
+                                   + PromocionTT
+                                   + "Total: $" + Totaltb.ToString("N2");
+
+                ViewState["ImpOtraSubTotalTT"] = SubTotal;
             }
 
             txtTotaltb.Text = decimal.Parse(txtTotaltb.Text).ToString("N2");
@@ -1927,6 +1959,34 @@ namespace PagaLaEscuela.Views
 
         protected void btnGenerarpago_Click(object sender, EventArgs e)
         {
+            if (ddlTutorAlu.EmptyDropDownList())
+            {
+                pnlAlertPago.Visible = true;
+                lblMensajeAlertPago.Text = "El campo Tutor del alumno es obligatorio.";
+                divAlertPago.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                return;
+            }
+
+            decimal importeTotal = decimal.Parse(ViewState["txtTotaltb.Text"].ToString());
+
+            if (importeTotal > 0)
+            {
+                lblMnsjDialog.Text = "<strong>Importe a pagar </strong>" +
+                                 "<br />" +
+                                 "<h2>$" + importeTotal + "</h2>";
+
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "ModalDialog", "showModalDialog()", true);
+            }
+            else
+            {
+                pnlAlertPago.Visible = true;
+                txtTotaltb.BackColor = System.Drawing.Color.FromName("#f2dede");
+                lblMensajeAlertPago.Text = "El importe debe ser mayor a $0.00.";
+                divAlertPago.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+            }
+        }
+        protected void btnSi_Click(object sender, EventArgs e)
+        {
             Guid UidPagoColegiatura = Guid.NewGuid();
 
             decimal importeTotal = decimal.Parse(ViewState["txtTotaltb.Text"].ToString());
@@ -1940,13 +2000,13 @@ namespace PagaLaEscuela.Views
             Guid EstatusPagoColegiatura = Guid.Parse("51B85D66-866B-4BC2-B08F-FECE1A994053");
             Guid estatusFechaPago = Guid.Parse("8720B2B9-5712-4E75-A981-932887AACDC9");
 
-            bool BitTipoTarjeta = false;
+            bool BitTipoTarjeta = divTiposTarjetas.Visible;
             Guid UidTipoTarjeta = Guid.Empty;
             if (ddlTiposTarjetas.SelectedValue != string.Empty)
             {
                 UidTipoTarjeta = Guid.Parse(ddlTiposTarjetas.SelectedValue);
             }
-            bool BitPromocionTT = false;
+            bool BitPromocionTT = divPromocionesTT.Visible;
             Guid UidPromocionTerminal = Guid.Empty;
             if (ddlPromocionesTT.SelectedValue != string.Empty)
             {
@@ -1959,7 +2019,9 @@ namespace PagaLaEscuela.Views
                 colegiaturasServices.ActualizarEstatusColegiaturaAlumno(Guid.Parse(ViewState["Selected-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["Selected-UidAlumno"].ToString()), DateTime.Parse(headFPago.Text), Guid.Parse("5554CE57-1288-46D5-B36A-8AC69CB94B9A"));
             }
 
-            if (pagosColegiaturasServices.RegistrarPagoColegiatura(UidPagoColegiatura, DateTime.Parse(headFPago.Text), lblPromotb.Text, lblComisionTarjetatb.Text, trSubtotal, decimal.Parse(ViewState["ImpOtraSubTotalTT"].ToString()), trComisionTarjeta, decimal.Parse(ViewState["ImpOtraCantCTT"].ToString()), trPromociones, decimal.Parse(ViewState["ImpOtraCantCPTT"].ToString()), trValidarImporte, DcmValidarImporte, importeTotal, Guid.Parse(ViewState["Selected-UidUsuario"].ToString()), EstatusPagoColegiatura,
+
+            int UltimoFolio = pagosColegiaturasServices.ObtenerUltimoFolio(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+            if (pagosColegiaturasServices.RegistrarPagoColegiatura(UidPagoColegiatura, UltimoFolio, DateTime.Parse(ViewState["headFPago"].ToString()), lblPromotb.Text, lblComisionTarjetatb.Text, trSubtotal, decimal.Parse(ViewState["ImpOtraSubTotalTT"].ToString()), trComisionTarjeta, decimal.Parse(ViewState["ImpOtraCantCTT"].ToString()), trPromociones, decimal.Parse(ViewState["ImpOtraCantCPTT"].ToString()), trValidarImporte, DcmValidarImporte, importeTotal, Guid.Parse(ddlTutorAlu.SelectedValue), EstatusPagoColegiatura,
                 Guid.Parse(ViewState["Selected-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["Selected-UidAlumno"].ToString()), Guid.Parse(ddlFormasPago.SelectedValue), decimal.Parse(lblSubtotaltb.Text.Replace("$", "")), decimal.Parse(ViewState["ImpOtraSubTotalTT"].ToString()), decimal.Parse(ViewState["ImporteResta"].ToString()), estatusFechaPago))
             {
                 foreach (var item in colegiaturasServices.lsDesglosePagosGridViewModel)
@@ -1969,9 +2031,28 @@ namespace PagaLaEscuela.Views
 
                 pagosColegiaturasServices.ActualizarImporteResta(Guid.Parse(ViewState["Selected-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["Selected-UidAlumno"].ToString()), decimal.Parse(ViewState["ImporteResta"].ToString()));
 
-                pagosEfectivosServices.RegistrarPagoEfectivo(UidPagoColegiatura, DateTime.Parse(headFPago.Text), decimal.Parse(ViewState["ImpOtraSubTotalTT"].ToString()), BitTipoTarjeta, UidTipoTarjeta, BitPromocionTT, UidPromocionTerminal);
+                pagosEfectivosServices.RegistrarPagoEfectivo(UidPagoColegiatura, DateTime.Parse(ViewState["headFPago"].ToString()), decimal.Parse(ViewState["ImpOtraSubTotalTT"].ToString()), BitTipoTarjeta, UidTipoTarjeta, BitPromocionTT, UidPromocionTerminal);
 
             }
+
+            string dPromo = ddlPromocionesTT.SelectedItem.Text.Trim().Replace(" MESES", "");
+
+            decimal rdlcDetaPromoImporte = importeTotal / decimal.Parse(dPromo.Trim());
+
+            Session["rdlcAlumno"] = headAlumno.Text;
+            Session["rdlcMatricula"] = headMatricula.Text;
+            Session["rdlcFechaPago"] = headFPago;
+            Session["rdlcFormaPago"] = ddlFormasPago.SelectedItem.Text;
+            Session["rdlcBoolTipoTarjeta"] = BitTipoTarjeta;
+            Session["rdlcTipoTarjeta"] = ddlTiposTarjetas.SelectedItem.Text;
+            Session["rdlcBoolPromocion"] = BitPromocionTT;
+            Session["rdlcPromocion"] = ddlPromocionesTT.SelectedItem.Text;
+            Session["rdlcDetallePromocion"] = dPromo.Trim() + " pagos mensuales de:";
+            Session["rdlcDetaPromoImporte"] = rdlcDetaPromoImporte;
+            Session["rdlcUidPagoColegiatura"] = UidPagoColegiatura;
+
+            string _open = "window.open('Reports/ReciboPagoEfectivo2.aspx', '_blank');";
+            ScriptManager.RegisterStartupScript(this, this.GetType(), Guid.NewGuid().ToString(), _open, true);
 
             ActualizarDatosPrincipal();
 

@@ -72,6 +72,7 @@
                                                         <div class="alert alert-info">No hay pagos realizados</div>
                                                     </EmptyDataTemplate>
                                                     <Columns>
+                                                        <asp:BoundField SortExpression="IntFolio" DataField="IntFolio" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" HeaderText="FOLIO" />
                                                         <asp:TemplateField SortExpression="VchIdentificador" HeaderText="COLEGIATURA">
                                                             <ItemTemplate>
                                                                 <asp:TextBox ID="txtGvIdentificador" ToolTip='<%#Eval("VchIdentificador")%>' Style="width: 100%; text-overflow: ellipsis;" Text='<%#Eval("VchIdentificador")%>' Enabled="false" BackColor="Transparent" BorderStyle="None" runat="server" />
@@ -147,6 +148,7 @@
                                                     </EmptyDataTemplate>
                                                     <Columns>
                                                         <asp:BoundField SortExpression="DtFHPago" DataField="DtFHPago" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" DataFormatString="{0:dd/MM/yyyy}" HeaderText="FECHA PAGO" />
+                                                        <asp:BoundField SortExpression="IntFolio" DataField="IntFolio" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" HeaderText="FOLIO" />
                                                         <asp:BoundField SortExpression="VchFolio" DataField="VchFolio" HeaderText="FOLIO" />
                                                         <asp:BoundField SortExpression="DcmImportePagado" DataField="DcmImportePagado" ItemStyle-CssClass="text-right" HeaderStyle-CssClass="text-right" DataFormatString="{0:C}" HeaderText="IMPORTE PAGO" />
                                                         <asp:BoundField SortExpression="VchFormaPago" DataField="VchFormaPago" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" HeaderText="FORMA PAGO" />
@@ -216,7 +218,7 @@
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="cBodyBottom" runat="server">
     <!--MODAL-->
-    <div id="ModalTipoPago" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div id="ModalTipoPago" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="overflow-y: scroll;">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <asp:UpdatePanel runat="server">
@@ -270,7 +272,7 @@
                                                                 <div class="input-group">
                                                                     <asp:Label ID="lblHeadAlum" Text="Alumno:" Font-Bold="true" runat="server" />
                                                                     <div class="input-group-prepend">
-                                                                        <span class="input-group-text" style="padding-left: 0px;padding-right: 0px;">
+                                                                        <span class="input-group-text" style="padding-left: 0px; padding-right: 0px;">
                                                                             <i class="material-icons">chevron_right</i>
                                                                         </span>
                                                                     </div>
@@ -408,7 +410,7 @@
                                                                             </asp:UpdatePanel>
                                                                             <div class="row" style="padding-top: 10px;">
                                                                                 <div class="col-12 col-md-12 col-lg-6">
-                                                                                    <asp:Image ID="imgLogoSelect2" Height="100" Width="150" class="img-fluid" alt="logoEscuela" runat="server" />
+                                                                                    <asp:Image ID="imgLogo" Height="100" Width="150" class="img-fluid" alt="logoEscuela" runat="server" />
                                                                                 </div>
                                                                                 <div class="col-12 col-md-12 col-lg-6">
                                                                                     <asp:Image Height="80" Width="250" class="img-fluid pull-right" ImageUrl="../Images/logoCompetoPagaLaEscuela.png" runat="server" />
@@ -445,6 +447,18 @@
                                                                                 </div>
                                                                                 <div class="col-sm-12">
                                                                                     <div class="row">
+                                                                                        <div class="form-group col-md-8">
+                                                                                            <label for="ddlTutorAlu" style="color: #ff9800;">Tutor del alumno *</label>
+                                                                                            <div class="input-group">
+                                                                                                <div class="input-group-prepend">
+                                                                                                    <span class="input-group-text" style="padding-left: 0px;">
+                                                                                                        <i class="material-icons">person</i>
+                                                                                                    </span>
+                                                                                                </div>
+                                                                                                <asp:DropDownList ID="ddlTutorAlu" AppendDataBoundItems="true" CssClass="form-control" runat="server">
+                                                                                                </asp:DropDownList>
+                                                                                            </div>
+                                                                                        </div>
                                                                                         <div class="form-group col-md-4">
                                                                                             <label for="ddlFormasPago" style="color: #ff9800;">Forma de pago</label>
                                                                                             <div class="input-group">
@@ -504,10 +518,15 @@
                                                                                                 </tr>
                                                                                             </ItemTemplate>
                                                                                         </asp:Repeater>
-                                                                                        <tr id="trSubtotal" runat="server">
+                                                                                        <tr>
                                                                                             <td style="padding-bottom: 0px;" class="text-center"></td>
-                                                                                            <td style="font-weight: bold; padding-top: 0px; padding-bottom: 0px;" class="text-right">Subtotal:</td>
-                                                                                            <td style="font-weight: bold; padding-top: 0px; padding-bottom: 0px;" class="text-right">
+                                                                                            <td style="font-weight: bold; padding-top: 0px; padding-bottom: 0px;" class="text-right"></td>
+                                                                                            <td style="font-weight: bold; padding-top: 0px; padding-bottom: 0px;" class="text-right"></td>
+                                                                                        </tr>
+                                                                                        <tr id="trSubtotal" runat="server">
+                                                                                            <td style="border-color: white; padding-bottom: 0px;" class="text-center"></td>
+                                                                                            <td style="border-color: white; font-weight: bold; padding-top: 0px; padding-bottom: 0px;" class="text-right">Subtotal:</td>
+                                                                                            <td style="border-color: white; font-weight: bold; padding-top: 0px; padding-bottom: 0px;" class="text-right">
                                                                                                 <asp:Label ID="lblSubtotaltb" runat="server" />
                                                                                             </td>
                                                                                         </tr>
@@ -620,6 +639,56 @@
                         </asp:UpdatePanel>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+    <div id="ModalDialog" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <asp:UpdatePanel runat="server">
+                    <ContentTemplate>
+                        <div class="modal-header" style="padding-bottom: 0px; padding-top: 3px;">
+
+                            <div class="row">
+                                <div style="width: 100%;">
+                                    <img src="../Images/MnsjDialog.jpeg" style="width: 100%; margin: 0 auto; display: block;" height="100" width="100" class="img-fluid align-items-center" alt="Responsive image">
+                                </div>
+                            </div>
+                            <%--<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>--%>
+                        </div>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+                <div class="modal-body pt-0" style="padding-bottom: 0px;">
+                    <div class="tab-content">
+                        <asp:UpdatePanel runat="server">
+                            <ContentTemplate>
+                                <div class="text-center">
+                                    <h5 class="modal-title" runat="server">
+                                        <asp:Label ID="lblTitleDialog" runat="server" />
+                                    </h5>
+                                    <asp:Label ID="lblMnsjDialog" runat="server" />
+                                </div>
+                                <br />
+                                <h4 style="font-weight: bold;" class="text-center">¿Esta seguro que desea continuar?</h4>
+                            </ContentTemplate>
+                        </asp:UpdatePanel>
+                    </div>
+                </div>
+                <asp:UpdatePanel runat="server">
+                    <ContentTemplate>
+                        <div class="modal-footer justify-content-center">
+                            <asp:LinkButton ID="btnSi" OnClick="btnSi_Click" CssClass="btn btn-success btn-round" runat="server">
+                            <i class="material-icons">check</i> SI
+                            </asp:LinkButton>
+
+                            <asp:LinkButton ID="btnNo" OnClientClick="hideModalDialog();" CssClass="btn btn-danger btn-round" runat="server">
+                            <i class="material-icons">close</i> NO
+                            </asp:LinkButton>
+                        </div>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
             </div>
         </div>
     </div>
@@ -812,6 +881,7 @@
                 </asp:UpdatePanel>
 
                 <div class="modal-body pt-0" style="padding-bottom: 0px;">
+                    <asp:Label Text="Despliegue una sección para mostrar los campos de busqueda." runat="server" />
                     <asp:Panel ID="pnlFiltrosBusqueda" runat="server">
                         <div class="accordionCard" style="margin-top: 15px; margin-bottom: 0px; border-left: 8px solid black;">
                             <label style="font-size: 1.0625rem; font-weight: bold; color: black;">Datos colegiatura</label>
@@ -962,12 +1032,16 @@
                     </asp:Panel>
                 </div>
                 <div class="modal-footer justify-content-center" style="padding-top: 5px; padding-bottom: 5px;">
-                    <asp:LinkButton ID="btnBuscar" OnClick="btnBuscar_Click" CssClass="btn btn-primary btn-round" runat="server">
+                    <asp:UpdatePanel runat="server">
+                        <ContentTemplate>
+                            <asp:LinkButton ID="btnBuscar" OnClick="btnBuscar_Click" CssClass="btn btn-primary btn-round" runat="server">
                             <i class="material-icons">search</i> Buscar
-                    </asp:LinkButton>
-                    <asp:LinkButton ID="btnLimpiar" OnClick="btnLimpiar_Click" CssClass="btn btn-warning btn-round" runat="server">
+                            </asp:LinkButton>
+                            <asp:LinkButton ID="btnLimpiar" OnClick="btnLimpiar_Click" CssClass="btn btn-warning btn-round" runat="server">
                             <i class="material-icons">clear_all</i> Limpiar
-                    </asp:LinkButton>
+                            </asp:LinkButton>
+                        </ContentTemplate>
+                    </asp:UpdatePanel>
                 </div>
             </div>
         </div>
@@ -1472,8 +1546,23 @@
 
         function hideModalTipoPago() {
             $('#ModalTipoPago').modal('hide');
+            hideModalDialog();
         }
     </script>
+    <script>
+        function showModalDialog() {
+            let elm = document.getElementById('ModalTipoPago');
+            elm.style = 'overflow-y: scroll; padding-right: 17px; display: block;filter: blur(4px);';
+
+            $('#ModalDialog').modal('show');
+        }
+        function hideModalDialog() {
+            $('#ModalDialog').modal('hide');
+            let elm = document.getElementById('ModalTipoPago');
+            elm.style = 'overflow-y: scroll; padding-right: 17px; display: block;';
+        }
+    </script>
+
     <script>
         function showModalBusqueda() {
             $('#ModalBusqueda').modal('show');

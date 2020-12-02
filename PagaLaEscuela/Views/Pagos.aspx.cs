@@ -833,7 +833,8 @@ namespace PagaLaEscuela.Views
                             colegiaturasServices.ActualizarEstatusColegiaturaAlumno(Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()), DateTime.Parse(headFPago.Text), Guid.Parse("5554CE57-1288-46D5-B36A-8AC69CB94B9A"));
                         }
 
-                        if (pagosColegiaturasServices.RegistrarPagoColegiatura(UidPagoColegiatura, DateTime.Parse(headFPago.Text), lblPromotb.Text, lblComisionTarjetatb.Text, trSubtotal, decimal.Parse(ViewState["ImpOtraSubTotal"].ToString()), trComisionTarjeta, decimal.Parse(ViewState["ImpOtraCantCCT"].ToString()), trPromociones, decimal.Parse(ViewState["ImpOtraCantCP"].ToString()), trValidarImporte, DcmValidarImporte, importeTotal, Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), EstatusPagoColegiatura,
+                        int UltimoFolio = pagosColegiaturasServices.ObtenerUltimoFolio(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()));
+                        if (pagosColegiaturasServices.RegistrarPagoColegiatura(UidPagoColegiatura, UltimoFolio, DateTime.Parse(headFPago.Text), lblPromotb.Text, lblComisionTarjetatb.Text, trSubtotal, decimal.Parse(ViewState["ImpOtraSubTotal"].ToString()), trComisionTarjeta, decimal.Parse(ViewState["ImpOtraCantCCT"].ToString()), trPromociones, decimal.Parse(ViewState["ImpOtraCantCP"].ToString()), trValidarImporte, DcmValidarImporte, importeTotal, Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), EstatusPagoColegiatura,
                             Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()), Guid.Parse("31BE9A23-73EE-4F44-AF6C-6C0648DCEBF7"), decimal.Parse(lblSubtotaltb.Text.Replace("$", "")), decimal.Parse(ViewState["ImpOtraSubTotal"].ToString()), decimal.Parse(ViewState["ImporteResta"].ToString()), estatusFechaPago))
                         {
                             foreach (var item in colegiaturasServices.lsDesglosePagosGridViewModel)
@@ -1594,7 +1595,8 @@ namespace PagaLaEscuela.Views
                 colegiaturasServices.ActualizarEstatusColegiaturaAlumno(Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()), DateTime.Parse(headFPago2.Text), Guid.Parse("5554CE57-1288-46D5-B36A-8AC69CB94B9A"));
             }
 
-            if (pagosColegiaturasServices.RegistrarPagoColegiatura(UidPagoColegiatura, DateTime.Parse(headFPago2.Text), "AL CONTADO(0%):", "", trSubtotal, DcmSubtotal, trComisionTarjeta, DcmComisionTarjeta, trPromociones, DcmComisionPromocion, trValidarImporte, DcmValidarImporte, DcmImportePagar, Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), EstatusPagoColegiatura,
+            int UltimoFolio = pagosColegiaturasServices.ObtenerUltimoFolio(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()));
+            if (pagosColegiaturasServices.RegistrarPagoColegiatura(UidPagoColegiatura, UltimoFolio, DateTime.Parse(headFPago2.Text), "AL CONTADO(0%):", "", trSubtotal, DcmSubtotal, trComisionTarjeta, DcmComisionTarjeta, trPromociones, DcmComisionPromocion, trValidarImporte, DcmValidarImporte, DcmImportePagar, Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), EstatusPagoColegiatura,
                 Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()), Guid.Parse(ViewState["RowCommand-UidFormaPago"].ToString()), decimal.Parse(ViewState["lblTotaltb2"].ToString()), DcmImportePagar, decimal.Parse(ViewState["lblRestaTotal2"].ToString()), estatusFechaPago))
             {
                 pagosManualesServices.RegistrarPagoManual(Guid.Parse(ddlBanco.SelectedValue), txtCuenta.Text, DateTime.Parse(txtFHPago.Text), decimal.Parse(txtMontoPagado.Text), txtFolioPago.Text, UidPagoColegiatura);
