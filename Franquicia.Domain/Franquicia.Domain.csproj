@@ -109,6 +109,7 @@
     <Compile Include="ViewModels\Alumnos\AlumnosRLEGridViewModel.cs" />
     <Compile Include="ViewModels\Alumnos\AlumnosUsuariosExcelViewModel.cs" />
     <Compile Include="ViewModels\Alumnos\AlumnosGridViewModel.cs" />
+    <Compile Include="ViewModels\Clientes\ClienteLogoViewModel.cs" />
     <Compile Include="ViewModels\Colegiaturas\ColegiaturasFechasGridViewModel.cs" />
     <Compile Include="ViewModels\Colegiaturas\DesglosePagosGridViewModel.cs" />
     <Compile Include="ViewModels\Colegiaturas\PagosColegiaturasViewModel.cs" />
@@ -130,6 +131,7 @@
     <Compile Include="ViewModels\PagosColegiaturas\ReportePadresFechasPagosColeViewModel.cs" />
     <Compile Include="ViewModels\PagosColegiaturas\FechasPagosColegiaturasViewModel.cs" />
     <Compile Include="ViewModels\PagosColegiaturas\PagosColegiaturasViewModels.cs" />
+    <Compile Include="ViewModels\PagosEfectivos\rdlcPagosEfectivosViewModels.cs" />
     <Compile Include="ViewModels\PagosManuales\PagosManualesReporteEscuelaViewModel.cs" />
     <Compile Include="ViewModels\PagosTarjeta\PagosTarjetaColeDetalleGridViewModel.cs" />
     <Compile Include="ViewModels\PagosTarjeta\PagTarjDetalUsFinalGridViewModel.cs" />

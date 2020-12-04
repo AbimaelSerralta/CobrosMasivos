@@ -111,6 +111,38 @@ namespace Franquicia.DataAccess.Repository
             return Resultado;
         }
 
+        public List<rdlcPagosEfectivosViewModels> ObtenerPagoEfectivoRLE(Guid UidPagoColegiatura)
+        {
+            List<rdlcPagosEfectivosViewModels> lsrdlcPagosEfectivosViewModels = new List<rdlcPagosEfectivosViewModels>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select pc.DcmTotal, al.VchNombres, al.VchApePaterno, al.VchApeMaterno, al.VchMatricula, PC.DtFHPago, pe.*, fop.VchDescripcion as FormaPago,  pt.VchDescripcion as PromocionTerminal, tt.VchDescripcion as TipoTarjeta from PagosEfectivos pe left join PromocionesTerminal pt on pt.UidPromocionTerminal = pe.UidPromocionTerminal left join TiposTarjetas tt on tt.UidTipoTarjeta = pe.UidTipoTarjeta left join PagosColegiaturas pc on pc.UidPagoColegiatura = pe.UidPagoColegiatura left join FechasPagos fp on fp.UidPagoColegiatura = pc.UidPagoColegiatura left join FormasPagos fop on fop.UidFormaPago = fp.UidFormaPago left join Alumnos al on al.UidAlumno = fp.UidAlumno where pe.UidPagoColegiatura = '" + UidPagoColegiatura + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                lsrdlcPagosEfectivosViewModels.Add(new rdlcPagosEfectivosViewModels()
+                {
+                    VchMatricula = item["VchMatricula"].ToString(),
+                    NombreCompleto = item["VchNombres"].ToString() + " " + item["VchApePaterno"].ToString() + " " + item["VchApeMaterno"].ToString(),
+                    DtFHPago = DateTime.Parse(item["DtFHPago"].ToString()),
+                    DcmTotal = decimal.Parse(item["DcmTotal"].ToString()),
+                    FormaPago = item["FormaPago"].ToString(),
+
+                    UidPagosEfectivos = Guid.Parse(item["UidPagosEfectivos"].ToString()),
+                    BitTipoTarjeta = bool.Parse(item["BitPromocionTT"].ToString()),
+                    TipoTarjeta = item.IsNull("TipoTarjeta") ? "N/A" : item["TipoTarjeta"].ToString(),
+                    BitPromocionTT = bool.Parse(item["BitPromocionTT"].ToString()),
+                    PromocionTerminal = item.IsNull("PromocionTerminal") ? "N/A" : item["PromocionTerminal"].ToString()
+                });
+            }
+
+            return lsrdlcPagosEfectivosViewModels;
+        }
+
         #endregion
     }
 }

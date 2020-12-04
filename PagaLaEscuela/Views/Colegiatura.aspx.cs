@@ -601,7 +601,7 @@ namespace PagaLaEscuela.Views
                 gvAlumnos.DataSource = alumnosServices.lsAlumnosGridViewModel;
                 gvAlumnos.DataBind();
 
-                if (colegiaturasServices.lsColegiaturasGridViewModel[index].blEditar)
+                if (colegiaturasServices.lsColegiaturasGridViewModel.Find(x => x.UidColegiatura == dataKeys).blEditar)
                 {
                     ViewState["Accion"] = "Actualizar";
                     DesbloquearCampos();

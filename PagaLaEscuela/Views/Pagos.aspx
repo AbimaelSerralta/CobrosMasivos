@@ -472,7 +472,7 @@
                                                                         <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" class="text-right">Importe por validar:
                                                                         </td>
                                                                         <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" class="text-right">
-                                                                            <asp:Label ID="lblValidarImportetb" runat="server" />
+                                                                            <asp:Label ID="lblValidarImportetb" Style="color: #f55145;" runat="server" />
                                                                         </td>
                                                                     </tr>
                                                                     <tr id="trComisionTarjeta" runat="server">
@@ -869,7 +869,7 @@
                                                                                             <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" class="text-right">Importe por validar:
                                                                                             </td>
                                                                                             <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" class="text-right">
-                                                                                                <asp:Label ID="lblValidarImportetb2" runat="server" />
+                                                                                                <asp:Label ID="lblValidarImportetb2" Style="color: #f55145;" runat="server" />
                                                                                             </td>
                                                                                         </tr>
                                                                                         <tr>
@@ -1034,6 +1034,7 @@
                                                                 <asp:BoundField SortExpression="DcmImportePagado" DataField="DcmImportePagado" ItemStyle-HorizontalAlign="Right" HeaderStyle-CssClass="text-right" DataFormatString="{0:C}" HeaderText="IMPORTE PAGADO" />
                                                                 <asp:TemplateField SortExpression="VchEstatus" ItemStyle-HorizontalAlign="Center" HeaderStyle-CssClass="text-center" HeaderText="ESTATUS">
                                                                     <ItemTemplate>
+                                                                        <asp:Label ID="lblGvUidFormaPago" Text='<%#Eval("UidFormaPago")%>' Visible="false" runat="server" />
                                                                         <asp:Label Text='<%#Eval("VchEstatus")%>' ForeColor='<%# System.Drawing.ColorTranslator.FromHtml(Eval("VchColor").ToString()) %>' Font-Names="Comic Sans MS" Font-Bold="true" runat="server"></asp:Label>
                                                                     </ItemTemplate>
                                                                 </asp:TemplateField>
@@ -1080,6 +1081,7 @@
             </div>
         </div>
     </div>
+
     <div id="ModalPagoDetalle" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -1087,9 +1089,9 @@
                     <ContentTemplate>
                         <div class="modal-header" style="padding-top: 0px; padding-bottom: 0px;">
                             <h5 class="modal-title" runat="server">
-                                <asp:Label ID="Label4" Text="Detalle del pago" runat="server" /></h5>
-                            <asp:LinkButton ID="LinkButton1" OnClientClick="hideModalPagoDetalle();" aria-label="Close" CssClass="close" runat="server">
-                            <span aria-hidden="true">&times;</span>
+                                <asp:Label ID="Label2" Text="Detalle del pago" runat="server" /></h5>
+                            <asp:LinkButton ID="LinkButton2" data-dismiss="modal" aria-label="Close" CssClass="close" runat="server">
+                            <i class="material-icons">close</i>
                             </asp:LinkButton>
                         </div>
                     </ContentTemplate>
@@ -1128,18 +1130,17 @@
                                                                             </tr>
                                                                             <tr>
                                                                                 <td bgcolor="#ffffff" valign="top" style="border-radius: 4px 4px 0px 0px; padding-left: 10px; padding-right: 10px;">
-                                                                                    <!--&nbsp;-->
                                                                                     <br />
-                                                                                    <label>Alumno: {Alumno}</label>
+                                                                                    <asp:Label ID="lblDetaAlumno" Text="Alumno: " runat="server" />
                                                                                     <br />
-                                                                                    <label>Matricula: {Matricula}</label>
+                                                                                    <asp:Label ID="lblDetaMatricula" Text="Matricula: " runat="server" />
                                                                                     <br />
                                                                                     <br />
 
                                                                                 </td>
                                                                                 <td bgcolor="#ffffff" valign="top" style="border-radius: 4px 4px 0px 0px; padding-left: 10px; padding-right: 10px;">
                                                                                     <br />
-                                                                                    <label>Fecha de pago: {FHPago}</label>
+                                                                                    <asp:Label ID="lblDetaFHpago" Text="Fecha de pago: " runat="server" />
                                                                                 </td>
                                                                             </tr>
                                                                         </tbody>
@@ -1165,37 +1166,54 @@
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
-                                                                            {Desglose}
-                                            <tr style="{trsubtotal}">
-                                                <td style="font-weight: bold; padding-top: 15px; padding-bottom: 0px;" bgcolor="#ffffff" align="center"></td>
-                                                <td style="font-weight: bold; padding-top: 15px; padding-bottom: 0px;" bgcolor="#ffffff" align="right">Subtotal:</td>
-                                                <td style="font-weight: bold; padding-top: 15px; padding-bottom: 0px;" bgcolor="#ffffff" align="right">
-                                                    <label>${Subtotal}</label>
-                                                </td>
-                                            </tr>
+                                                                            <asp:Repeater ID="rpDetalleLiga" runat="server">
+                                                                                <ItemTemplate>
+                                                                                    <tr>
+                                                                                        <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="center"><%#Eval("IntNum")%></td>
+                                                                                        <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff"><%#Eval("VchDescripcion")%></td>
+                                                                                        <td style="border-bottom: 1px solid #ddd; color: <%#Eval("VchColor")%>;" bgcolor="#ffffff" align="right">$<%#Eval("DcmImporte")%> </td>
+                                                                                    </tr>
+                                                                                </ItemTemplate>
+                                                                            </asp:Repeater>
+
+                                                                            <tr id="trsubtotall" runat="server">
+                                                                                <td style="font-weight: bold; padding-top: 15px; padding-bottom: 0px;" bgcolor="#ffffff" align="center"></td>
+                                                                                <td style="font-weight: bold; padding-top: 15px; padding-bottom: 0px;" bgcolor="#ffffff" align="right">Subtotal:</td>
+                                                                                <td style="font-weight: bold; padding-top: 15px; padding-bottom: 0px;" bgcolor="#ffffff" align="right">
+                                                                                    <asp:Label ID="DcmSubtotal" runat="server" />
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr id="trvalidarimportee" runat="server">
+                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px;" bgcolor="#ffffff" align="center"></td>
+                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">Importe por validar:
+                                                                                </td>
+                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">
+                                                                                    <asp:Label ID="DcmValidarImporte" Style="color: #f55145;" runat="server" />
+                                                                                </td>
+                                                                            </tr>
                                                                             <tr>
                                                                                 <td style="border-color: white; padding-top: 0px; padding-bottom: 0px;" bgcolor="#ffffff" align="center"></td>
                                                                                 <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">Importe pagado:</td>
                                                                                 <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">
-                                                                                    <label>${Total}</label>
+                                                                                    <asp:Label ID="DcmTotal" runat="server" />
                                                                                 </td>
                                                                             </tr>
-                                                                            <tr style="{trcomicion}">
+                                                                            <tr id="trcomicion" runat="server">
                                                                                 <td style="border-color: white; padding-top: 0px; padding-bottom: 0px;" bgcolor="#ffffff" align="center"></td>
                                                                                 <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">
-                                                                                    <label>{ComisionBancaria}</label>
+                                                                                    <asp:Label ID="VchComicionBancaria" runat="server" />
                                                                                 </td>
                                                                                 <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">
-                                                                                    <label style="color: #f55145;">$-{ImpComisionBancaria}</label>
+                                                                                    <asp:Label ID="DcmImpComisionBancaria" Style="color: #f55145;" runat="server" />
                                                                                 </td>
                                                                             </tr>
-                                                                            <tr style="{trpromocion}">
+                                                                            <tr id="trpromocion" runat="server">
                                                                                 <td style="border-color: white; padding-top: 0px; padding-bottom: 0px;" bgcolor="#ffffff" align="center"></td>
                                                                                 <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">
-                                                                                    <label>{Promocion}</label>
+                                                                                    <asp:Label ID="VchPromocion" runat="server" />
                                                                                 </td>
                                                                                 <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">
-                                                                                    <label style="color: #f55145;">$-{ImpPromocion}</label>
+                                                                                    <asp:Label ID="DcmImpPromocion" Style="color: #f55145;" runat="server" />
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
@@ -1203,7 +1221,7 @@
                                                                                 <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">Abono pago:
                                                                                 </td>
                                                                                 <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">
-                                                                                    <label>${ImpAbono}</label>
+                                                                                    <asp:Label ID="DcmImpAbono" runat="server" />
                                                                                 </td>
                                                                             </tr>
                                                                             <tr>
@@ -1211,7 +1229,7 @@
                                                                                 <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">Resta:
                                                                                 </td>
                                                                                 <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">
-                                                                                    <label>${ImpResta}</label>
+                                                                                    <asp:Label ID="DcmImpResta" runat="server" />
                                                                                 </td>
                                                                             </tr>
                                                                         </tbody>
@@ -1222,8 +1240,8 @@
                                                     </table>
                                                 </td>
                                             </tr>
-                                            <tr style="{trdetallepromociones}">
-                                                <!--Detalle de promocion-->
+                                            <tr id="trdetallepromociones" runat="server">
+                                                <%--Detalle de promocion--%>
                                                 <td bgcolor="#b62322" align="center" style="padding: 30px 10px 0px 10px;">
                                                     <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
                                                         <tbody>
@@ -1239,10 +1257,12 @@
                                                                         <tbody>
                                                                             <tr>
                                                                                 <td bgcolor="#ffffff" align="left" style="padding: 30px 30px 30px 30px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 25px;">
-                                                                                    <p style="color: #111111; margin: 0; font-size: 14px;">{DetallePromocion}</p>
+                                                                                    <p style="color: #111111; margin: 0; font-size: 14px;">
+                                                                                        <asp:Label ID="VchDetallePromocion" runat="server" />
+                                                                                    </p>
                                                                                 </td>
                                                                                 <td bgcolor="#ffffff" align="left" style="padding: 30px 30px 30px 30px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 25px;">
-                                                                                    <p style="color: #111111; margin: 0; font-size: 14px;">${impDetallePromocion}</p>
+                                                                                    <p style="color: #111111; margin: 0; font-size: 14px;">$<asp:Label ID="DcmImpDetallePromocion" runat="server" /></p>
                                                                                 </td>
                                                                             </tr>
                                                                         </tbody>
@@ -1253,8 +1273,8 @@
                                                     </table>
                                                 </td>
                                             </tr>
-                                            <tr>
-                                                <!--Detalle de la operacion-->
+                                            <tr id="trdetalleoperacion" runat="server">
+                                                <%--Detalle de la operacion--%>
                                                 <td bgcolor="#b62322" align="center" style="padding: 30px 10px 0px 10px;">
                                                     <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
                                                         <tbody>
@@ -1271,20 +1291,30 @@
                                                                             <tr>
                                                                                 <td bgcolor="#ffffff" align="left" style="padding: 30px 30px 30px 30px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 25px;">
                                                                                     <p style="color: #111111; margin: 0; font-size: 14px;">Referencia:</p>
-                                                                                    <p style="color: #111111; margin: 0; font-size: 14px;">{OpeReferencia}</p>
+                                                                                    <p style="color: #111111; margin: 0; font-size: 14px;">
+                                                                                        <asp:Label ID="VchIdreferencia" runat="server" />
+                                                                                    </p>
                                                                                     <br />
                                                                                     <p style="color: #111111; margin: 0; font-size: 14px;">Fecha:</p>
-                                                                                    <p style="color: #111111; margin: 0; font-size: 14px;">{OpeFecha}</p>
+                                                                                    <p style="color: #111111; margin: 0; font-size: 14px;">
+                                                                                        <asp:Label ID="DtmFechaDeRegistro" runat="server" />
+                                                                                    </p>
                                                                                     <br />
                                                                                     <p style="color: #111111; margin: 0; font-size: 14px;">Tarjeta de pago:</p>
-                                                                                    <p style="color: #111111; margin: 0; font-size: 14px;">{OpeTarjeta}</p>
+                                                                                    <p style="color: #111111; margin: 0; font-size: 14px;">
+                                                                                        <asp:Label ID="VchTarjeta" runat="server" />
+                                                                                    </p>
                                                                                 </td>
                                                                                 <td bgcolor="#ffffff" align="left" style="padding: 30px 30px 30px 30px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 25px;">
                                                                                     <p style="color: #111111; margin: 0; font-size: 14px;">Folio:</p>
-                                                                                    <p style="color: #111111; margin: 0; font-size: 14px;">{OpeFolio}</p>
+                                                                                    <p style="color: #111111; margin: 0; font-size: 14px;">
+                                                                                        <asp:Label ID="VchFolioPago" runat="server" />
+                                                                                    </p>
                                                                                     <br />
                                                                                     <p style="color: #111111; margin: 0; font-size: 14px;">Hora:</p>
-                                                                                    <p style="color: #111111; margin: 0; font-size: 14px;">{OpeHora}</p>
+                                                                                    <p style="color: #111111; margin: 0; font-size: 14px;">
+                                                                                        <asp:Label ID="DtmHoraDeRegistro" runat="server" />
+                                                                                    </p>
                                                                                     <br />
                                                                                     <br />
                                                                                     <br />
@@ -1300,7 +1330,7 @@
                                             </tr>
                                             <tr>
                                                 <td bgcolor="#b62322" align="center" style="padding: 30px 10px 0px 10px;"></td>
-                                                <!--#f4f4f4-->
+                                                <%--#f4f4f4--%>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -1312,6 +1342,237 @@
             </div>
         </div>
     </div>
+    <div id="ModalPagoDetalleManual" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <asp:UpdatePanel runat="server">
+                    <ContentTemplate>
+                        <div class="modal-header" style="padding-top: 0px; padding-bottom: 0px;">
+                            <h5 class="modal-title" runat="server">
+                                <asp:Label ID="Label4" Text="Detalle del pago" runat="server" /></h5>
+                            <asp:LinkButton ID="LinkButton1" data-dismiss="modal" aria-label="Close" CssClass="close" runat="server">
+                            <i class="material-icons">close</i>
+                            </asp:LinkButton>
+                        </div>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+                <div class="modal-body pt-0" style="padding-bottom: 0px; padding-left: 15px; padding-right: 15px;">
+                    <div class="tab-content">
+                        <asp:UpdatePanel runat="server">
+                            <ContentTemplate>
+                                <div class="row">
+                                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                        <tbody>
+                                            <tr>
+                                                <td bgcolor="#b62322" align="center">
+                                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td align="center" valign="top" style="padding-top: 80px;"></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td bgcolor="#b62322" align="center" style="padding: 0px 10px 0px 10px;">
+                                                    <table bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td bgcolor="#ffffff" align="left" valign="top" style="border-radius: 4px 4px 0px 0px; padding-left: 10px; padding-right: 10px;"></td>
+                                                                                <td bgcolor="#ffffff" align="right" valign="top" style="border-radius: 4px 4px 0px 0px; padding-left: 10px; padding-right: 10px;">
+                                                                                    <img height="80" width="250" src="https://pagalaescuela.mx/images/logoCompetoPagaLaEscuela.png" alt="PagaLaEscuela" />
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td bgcolor="#ffffff" valign="top" style="border-radius: 4px 4px 0px 0px; padding-left: 10px; padding-right: 10px;">
+                                                                                    <br />
+                                                                                    <asp:Label ID="lblDetaAlumnoManual" Text="Alumno: " runat="server" />
+                                                                                    <br />
+                                                                                    <asp:Label ID="lblDetaMatriculaManual" Text="Matricula: " runat="server" />
+                                                                                    <br />
+                                                                                    <br />
+
+                                                                                </td>
+                                                                                <td bgcolor="#ffffff" valign="top" style="border-radius: 4px 4px 0px 0px; padding-left: 10px; padding-right: 10px;">
+                                                                                    <br />
+                                                                                    <asp:Label ID="lblDetaFHpagoManual" Text="Fecha de pago: " runat="server" />
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td bgcolor="#b62322" align="center" style="padding: 0px 10px 0px 10px;">
+                                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td bgcolor="#ffffff" align="left" style="padding: 10px 10px 10px 10px;">
+                                                                    <table border="0" cellpadding="5" cellspacing="0" width="100%">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;" align="center">N°</th>
+                                                                                <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;" align="left">CONCEPTO</th>
+                                                                                <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;" align="right">PRECIO</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <asp:Repeater ID="rpDetalleLigaManual" runat="server">
+                                                                                <ItemTemplate>
+                                                                                    <tr>
+                                                                                        <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="center"><%#Eval("IntNum")%></td>
+                                                                                        <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff"><%#Eval("VchDescripcion")%></td>
+                                                                                        <td style="border-bottom: 1px solid #ddd; color: <%#Eval("VchColor")%>;" bgcolor="#ffffff" align="right">$<%#Eval("DcmImporte")%> </td>
+                                                                                    </tr>
+                                                                                </ItemTemplate>
+                                                                            </asp:Repeater>
+
+                                                                            <tr>
+                                                                                <td style="font-weight: bold; padding-top: 15px; padding-bottom: 0px;" bgcolor="#ffffff" align="center"></td>
+                                                                                <td style="font-weight: bold; padding-top: 15px; padding-bottom: 0px;" bgcolor="#ffffff" align="right"></td>
+                                                                                <td style="font-weight: bold; padding-top: 15px; padding-bottom: 0px;" bgcolor="#ffffff" align="right"></td>
+                                                                            </tr>
+                                                                            <tr id="trSubtotalManual" runat="server">
+                                                                                <td style="font-weight: bold; padding-top: 0px; padding-bottom: 0px;" bgcolor="#ffffff" align="center"></td>
+                                                                                <td style="font-weight: bold; padding-top: 0px; padding-bottom: 0px;" bgcolor="#ffffff" align="right">Subtotal:</td>
+                                                                                <td style="font-weight: bold; padding-top: 0px; padding-bottom: 0px;" bgcolor="#ffffff" align="right">
+                                                                                    <asp:Label ID="DcmSubtotalManual" runat="server" />
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr id="trValidarImporteManual" runat="server">
+                                                                                <td style="font-weight: bold; padding-top: 0px; padding-bottom: 0px;" bgcolor="#ffffff" align="center"></td>
+                                                                                <td style="font-weight: bold; padding-top: 0px; padding-bottom: 0px;" bgcolor="#ffffff" align="right">Importe por validar:</td>
+                                                                                <td style="font-weight: bold; padding-top: 0px; padding-bottom: 0px;" bgcolor="#ffffff" align="right">
+                                                                                    <asp:Label ID="DcmValidarImporteManual" Style="color: #f55145;" runat="server" />
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td style="font-weight: bold; padding-top: 0px; padding-bottom: 0px;" bgcolor="#ffffff" align="center"></td>
+                                                                                <td style="font-weight: bold; padding-top: 0px; padding-bottom: 0px;" bgcolor="#ffffff" align="right">Total:</td>
+                                                                                <td style="font-weight: bold; padding-top: 0px; padding-bottom: 0px;" bgcolor="#ffffff" align="right">
+                                                                                    <asp:Label ID="DcmTotalManual" runat="server" />
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px;" bgcolor="#ffffff" align="center"></td>
+                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">Importe pagado:</td>
+                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">
+                                                                                    <asp:Label ID="DcmImportePagadoManual" runat="server" />
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px;" bgcolor="#ffffff" align="center"></td>
+                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">Resta:
+                                                                                </td>
+                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">
+                                                                                    <asp:Label ID="DcmImpRestaManual" runat="server" />
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr id="trDetalleOperacionManual" runat="server">
+                                                <%--Detalle de la operacion--%>
+                                                <td bgcolor="#b62322" align="center" style="padding: 30px 10px 0px 10px;">
+                                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td bgcolor="#ffffff" align="left" style="padding: 10px 10px 10px 10px;">
+                                                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th colspan="3" style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px; padding-left: 8px;" align="left">DETALLE DE LA OPERACIÓN
+                                                                                </th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td bgcolor="#ffffff" align="left" style="padding: 30px 30px 30px 30px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 25px;">
+                                                                                    <p style="color: #111111; margin: 0; font-size: 14px;">Banco:</p>
+                                                                                    <p style="color: #111111; margin: 0; font-size: 14px;">
+                                                                                        <asp:Label ID="VchBancoManual" runat="server" />
+                                                                                    </p>
+                                                                                    <br />
+                                                                                    <p style="color: #111111; margin: 0; font-size: 14px;">Fecha:</p>
+                                                                                    <p style="color: #111111; margin: 0; font-size: 14px;">
+                                                                                        <asp:Label ID="DtFechaPagoManual" runat="server" />
+                                                                                    </p>
+                                                                                    <br />
+                                                                                    <p style="color: #111111; margin: 0; font-size: 14px;">Folio:</p>
+                                                                                    <p style="color: #111111; margin: 0; font-size: 14px;">
+                                                                                        <asp:Label ID="VchFolioManual" runat="server" />
+                                                                                    </p>
+                                                                                </td>
+                                                                                <td bgcolor="#ffffff" align="left" style="padding: 30px 30px 30px 30px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 25px;">
+                                                                                    <p style="color: #111111; margin: 0; font-size: 14px;">Cuenta:</p>
+                                                                                    <p style="color: #111111; margin: 0; font-size: 14px;">
+                                                                                        <asp:Label ID="VchCuentaManual" runat="server" />
+                                                                                    </p>
+                                                                                    <br />
+                                                                                    <p style="color: #111111; margin: 0; font-size: 14px;">Hora:</p>
+                                                                                    <p style="color: #111111; margin: 0; font-size: 14px;">
+                                                                                        <asp:Label ID="DtHoraPagoManual" runat="server" />
+                                                                                    </p>
+                                                                                    <br />
+                                                                                    <br />
+                                                                                    <br />
+                                                                                </td>
+                                                                            </tr>
+                                                                            <%--<tr>
+                                                <td bgcolor="#ffffff" align="left" style="padding: 30px 30px 30px 30px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 25px;">
+                                                    <p style="color: #111111;margin: 0; font-size: 14px;">Saludos,</p>
+                                                    <table>
+                                                        <tr>
+                                                            <td>
+                                                                <p style="color: #111111;margin: 0; font-size: 14px;">Equipo </p>
+                                                            </td>
+                                                            <td>
+                                                                <img height="50" width="200" src="https://pagalaescuela.mx/images/logo-cobroscontarjetas.png" alt="Alternate Text" />
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td bgcolor="#ffffff" align="left" style="padding: 30px 30px 30px 30px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 25px;">
+                                                </td>
+                                            </tr>--%>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td bgcolor="#b62322" align="center" style="padding: 30px 10px 0px 10px;"></td>
+                                                <%--#f4f4f4--%>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </ContentTemplate>
+                        </asp:UpdatePanel>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <!--END MODAL-->
 
     <script>
@@ -1356,12 +1617,22 @@
         function hideModalPagos() {
             $('#ModalPagos').modal('hide');
         }
+    </script>
 
+    <script>
         function showModalPagoDetalle() {
             $('#ModalPagoDetalle').modal('show');
         }
         function hideModalPagoDetalle() {
             $('#ModalPagoDetalle').modal('hide');
+        }
+    </script>
+    <script>
+        function showModalPagoDetalleManual() {
+            $('#ModalPagoDetalleManual').modal('show');
+        }
+        function hideModalPagoDetalleManual() {
+            $('#ModalPagoDetalleManual').modal('hide');
         }
     </script>
 

@@ -9,6 +9,7 @@ namespace PagaLaEscuela.Views.Reports
     {
         PagosColegiaturasServices pagosColegiaturasServices = new PagosColegiaturasServices();
         DetallesPagosColegiaturasServices detallesPagosColegiaturasServices = new DetallesPagosColegiaturasServices();
+        ClientesServices clientesServices = new ClientesServices();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -38,6 +39,7 @@ namespace PagaLaEscuela.Views.Reports
                 rvReciboPagoCole.LocalReport.SetParameters(reports);
                 rvReciboPagoCole.LocalReport.DataSources.Add(new ReportDataSource("DetallePagoCole", detallesPagosColegiaturasServices.rdlcObtenerDetallePagoColegiatura(Guid.Parse(Session["rdlcUidPagoColegiatura"].ToString()))));
                 rvReciboPagoCole.LocalReport.DataSources.Add(new ReportDataSource("PagoCole", pagosColegiaturasServices.rdlcObtenerPagoColegiatura(Guid.Parse(Session["rdlcUidPagoColegiatura"].ToString()))));
+                rvReciboPagoCole.LocalReport.DataSources.Add(new ReportDataSource("LogoEscuela", clientesServices.rdlcObtenerLogo(Guid.Parse(Session["rdlcUidPagoColegiatura"].ToString()))));
                 rvReciboPagoCole.LocalReport.Refresh();
             }
         }

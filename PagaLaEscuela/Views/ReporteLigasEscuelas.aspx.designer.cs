@@ -987,6 +987,15 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.LinkButton LinkButton2;
 
         /// <summary>
+        /// Control btnImprimir.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnImprimir;
+
+        /// <summary>
         /// Control lblDetaAlumno.
         /// </summary>
         /// <remarks>
@@ -1167,6 +1176,15 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.Label DcmImpDetallePromocion;
 
         /// <summary>
+        /// Control trdetalleoperacion.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow trdetalleoperacion;
+
+        /// <summary>
         /// Control VchIdreferencia.
         /// </summary>
         /// <remarks>
@@ -1228,6 +1246,15 @@ namespace PagaLaEscuela.Views
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton LinkButton3;
+
+        /// <summary>
+        /// Control btnImprimirManual.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnImprimirManual;
 
         /// <summary>
         /// Control lblDetaAlumnoManual.
@@ -1327,6 +1354,15 @@ namespace PagaLaEscuela.Views
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label DcmImpRestaManual;
+
+        /// <summary>
+        /// Control trDetalleOperacionManual.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow trDetalleOperacionManual;
 
         /// <summary>
         /// Control VchBancoManual.

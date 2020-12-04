@@ -22,12 +22,12 @@ namespace Franquicia.Bussiness
 
         public List<PagosEfectivos> lsPagosEfectivos = new List<PagosEfectivos>();
         
-        public List<PagosManualesReporteEscuelaViewModel> lsPagosManualesReporteEscuelaViewModel = new List<PagosManualesReporteEscuelaViewModel>();
+        public List<rdlcPagosEfectivosViewModels> lsrdlcPagosEfectivosViewModels = new List<rdlcPagosEfectivosViewModels>();
 
         #region PanelEscuela
-       
+
         #region Metodos ReporteLigasEscuela
-        public bool RegistrarPagoEfectivo(Guid UidPagoColegiatura, DateTime DtFHPago, decimal DcmImporte, bool BitTipoTarjeta, Guid UidTipoTarjeta,  bool BitPromocionTT, Guid UidPromocionTerminal)
+        public bool RegistrarPagoEfectivo(Guid UidPagoColegiatura, DateTime DtFHPago, decimal DcmImporte, bool BitTipoTarjeta, Guid UidTipoTarjeta, bool BitPromocionTT, Guid UidPromocionTerminal)
         {
             bool result = false;
             if (pagosEfectivosRepository.RegistrarPagoEfectivo(
@@ -46,6 +46,12 @@ namespace Franquicia.Bussiness
                 result = true;
             }
             return result;
+        }
+
+        public List<rdlcPagosEfectivosViewModels> ObtenerPagoEfectivoRLE(Guid UidPagoColegiatura)
+        {
+            lsrdlcPagosEfectivosViewModels = new List<rdlcPagosEfectivosViewModels>();
+            return lsrdlcPagosEfectivosViewModels = pagosEfectivosRepository.ObtenerPagoEfectivoRLE(UidPagoColegiatura);
         }
         #endregion
         #endregion

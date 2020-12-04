@@ -153,5 +153,12 @@ namespace Franquicia.Bussiness
             clientesRepository.ObtenerClientes(UidAdministrador);
         }
         #endregion
+
+        #region ReportViewer
+        public List<ClienteLogoViewModel> rdlcObtenerLogo(Guid UidPagoColegiatura)
+        {
+            return clientesRepository.rdlcObtenerLogo(UidPagoColegiatura);
+        }
+        #endregion
     }
 }

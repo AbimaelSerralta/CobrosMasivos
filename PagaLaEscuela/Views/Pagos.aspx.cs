@@ -1,5 +1,6 @@
 ﻿using Franquicia.Bussiness;
 using Franquicia.Domain.Models;
+using Franquicia.Domain.ViewModels;
 using Franquicia.WebForms.Util;
 using RestSharp;
 using System;
@@ -34,6 +35,7 @@ namespace PagaLaEscuela.Views
         PagosManualesServices pagosManualesServices = new PagosManualesServices();
         CorreosEscuelaServices correosEscuelaServices = new CorreosEscuelaServices();
         ValidacionesServices validacionesServices = new ValidacionesServices();
+        PagosServices pagosServices = new PagosServices();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -101,7 +103,7 @@ namespace PagaLaEscuela.Views
                 pnlAlertPago.Visible = false;
                 lblMensajeAlertPago.Text = "";
                 divAlertPago.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
-                
+
                 pnlAlertPago2.Visible = false;
                 lblMensajeAlertPago2.Text = "";
                 divAlertPago2.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
@@ -324,10 +326,11 @@ namespace PagaLaEscuela.Views
                 headMatricula.Text = colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchMatricula;
                 lblVencimiento.Text = hoy.ToString("dd/MM/yyyy");
                 headFPago.Text = hoy.ToString("dd/MM/yyyy");
+                ViewState["headFPago"] = hoy;
                 lblImporteCole.Text = colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.DcmImporte.ToString("N2");
                 lblRecargo.Text = "0.00";
 
-                colegiaturasServices.FormarDesgloseCole(1, colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchIdentificador + ". PAGO " + colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchNum, colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.DcmImporte);
+                colegiaturasServices.FormarDesgloseCole(1, colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchIdentificador + ". PAGO " + colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchNum,decimal.Parse(colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.DcmImporte.ToString("N2")));
 
                 decimal recargoTotalLimite = 0;
                 decimal recargoTotalPeriodo = 0;
@@ -347,9 +350,16 @@ namespace PagaLaEscuela.Views
                             {
                                 recargoTotalLimite = colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.DcmRecargo * ImporteCole / 100;
                             }
-                        }
 
-                        colegiaturasServices.FormarDesgloseCole(3, "RECARGO POR FECHA LIMITE (" + colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchFHLimite + ")", decimal.Parse(recargoTotalLimite.ToString("N2")));
+                            if (colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.BitBeca)
+                            {
+                                colegiaturasServices.FormarDesgloseCole(3, "RECARGO POR FECHA LIMITE (" + colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchFHLimite + ")", decimal.Parse(recargoTotalLimite.ToString("N2")));
+                            }
+                            else
+                            {
+                                colegiaturasServices.FormarDesgloseCole(2, "RECARGO POR FECHA LIMITE (" + colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchFHLimite + ")", decimal.Parse(recargoTotalLimite.ToString("N2")));
+                            }
+                        }                        
                     }
                 }
 
@@ -477,10 +487,6 @@ namespace PagaLaEscuela.Views
                 if (ImporteBeca >= 1)
                 {
                     colegiaturasServices.FormarDesgloseCole(2, "DESCUENTO BECA (" + TipoBeca + ")", -decimal.Parse(ImporteBeca.ToString("N2")), "#f55145");
-                }
-                else
-                {
-                    colegiaturasServices.FormarDesgloseCole(2, "DESCUENTO BECA (" + TipoBeca + ")", decimal.Parse(ImporteBeca.ToString("N2")));
                 }
 
                 pagosColegiaturasServices.ObtenerPagosPadres(Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()));
@@ -821,7 +827,7 @@ namespace PagaLaEscuela.Views
                         bool trSubtotal = bool.Parse(ViewState["booltrSubtotal"].ToString());
                         bool trComisionTarjeta = bool.Parse(ViewState["booltrComisionTarjeta"].ToString());
                         bool trPromociones = bool.Parse(ViewState["booltrPromociones"].ToString());
-                        
+
                         decimal DcmValidarImporte = decimal.Parse(ViewState["ValidarImporte"].ToString());
                         bool trValidarImporte = bool.Parse(ViewState["booltrValidarImporte"].ToString());
 
@@ -834,7 +840,7 @@ namespace PagaLaEscuela.Views
                         }
 
                         int UltimoFolio = pagosColegiaturasServices.ObtenerUltimoFolio(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()));
-                        if (pagosColegiaturasServices.RegistrarPagoColegiatura(UidPagoColegiatura, UltimoFolio, DateTime.Parse(headFPago.Text), lblPromotb.Text, lblComisionTarjetatb.Text, trSubtotal, decimal.Parse(ViewState["ImpOtraSubTotal"].ToString()), trComisionTarjeta, decimal.Parse(ViewState["ImpOtraCantCCT"].ToString()), trPromociones, decimal.Parse(ViewState["ImpOtraCantCP"].ToString()), trValidarImporte, DcmValidarImporte, importeTotal, Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), EstatusPagoColegiatura,
+                        if (pagosColegiaturasServices.RegistrarPagoColegiatura(UidPagoColegiatura, UltimoFolio, DateTime.Parse(ViewState["headFPago"].ToString()), lblPromotb.Text, lblComisionTarjetatb.Text, trSubtotal, decimal.Parse(ViewState["ImpOtraSubTotal"].ToString()), trComisionTarjeta, decimal.Parse(ViewState["ImpOtraCantCCT"].ToString()), trPromociones, decimal.Parse(ViewState["ImpOtraCantCP"].ToString()), trValidarImporte, DcmValidarImporte, importeTotal, Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), EstatusPagoColegiatura,
                             Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()), Guid.Parse("31BE9A23-73EE-4F44-AF6C-6C0648DCEBF7"), decimal.Parse(lblSubtotaltb.Text.Replace("$", "")), decimal.Parse(ViewState["ImpOtraSubTotal"].ToString()), decimal.Parse(ViewState["ImporteResta"].ToString()), estatusFechaPago))
                         {
                             foreach (var item in colegiaturasServices.lsDesglosePagosGridViewModel)
@@ -1099,13 +1105,203 @@ namespace PagaLaEscuela.Views
                 GridView valor = (GridView)sender;
                 Guid dataKey = Guid.Parse(valor.DataKeys[Seleccionado.RowIndex].Value.ToString());
 
+                Label lblGvUidFormaPago = (Label)Seleccionado.FindControl("lblGvUidFormaPago");
 
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalPagoDetalle()", true);
+                string FormaPago = string.Empty;
+
+                if (Guid.Parse(lblGvUidFormaPago.Text) == Guid.Parse("31BE9A23-73EE-4F44-AF6C-6C0648DCEBF7"))
+                {
+                    FormaPago = "LIGA";
+                    trdetalleoperacion.Style.Add("display", "");
+                }
+                else if (Guid.Parse(lblGvUidFormaPago.Text) == Guid.Parse("3359D33E-C879-4A8B-96D3-C6A211AF014F"))
+                {
+                    FormaPago = "TARJETA";
+                    trdetalleoperacion.Style.Add("display", "none");
+                }
+                else if (Guid.Parse(lblGvUidFormaPago.Text) == Guid.Parse("D92A2C64-C797-4C96-AD18-C2A433081F37"))
+                {
+                    FormaPago = "EFECTIVO";
+                    trDetalleOperacionManual.Style.Add("display", "none");
+                }
+                else
+                {
+                    FormaPago = "MANUAL";
+                    trDetalleOperacionManual.Style.Add("display", "");
+                }
+
+                var list = pagosColegiaturasServices.ObtenerPagoColegiatura(dataKey);
+
+                switch (FormaPago)
+                {
+                    case "LIGA":
+                        DetallePagoColegiaturaLiga(list.Item1, list.Item2, dataKey);
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalPagoDetalle()", true);
+                        break;
+
+                    case "TARJETA":
+                        DetallePagoColegiaturaLiga(list.Item1, list.Item2, dataKey);
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalPagoDetalle()", true);
+                        break;
+
+                    case "EFECTIVO":
+
+                        DetallePagoColegiaturaManual(list.Item1, list.Item2, dataKey);
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalPagoDetalleManual()", true);
+                        break;
+
+                    case "MANUAL":
+
+                        DetallePagoColegiaturaManual(list.Item1, list.Item2, dataKey);
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalPagoDetalleManual()", true);
+                        break;
+                }
             }
         }
         protected void gvPagosColegiaturas_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
 
+        }
+
+        private void DetallePagoColegiaturaLiga(List<PagosColegiaturasViewModels> lsPagosColegiaturas, List<DetallePagosColeGridViewModel> lsDetallePagosColeGridViewModel, Guid UidPagoColegiatura)
+        {
+            //Resumen del pago
+            foreach (var item in lsPagosColegiaturas)
+            {
+                //Asigancion de parametros
+
+                //Encabezado del pago
+                lblDetaAlumno.Text = "Alumno: " + item.VchAlumno;
+                lblDetaMatricula.Text = "Matricula: " + item.VchMatricula;
+                lblDetaFHpago.Text = "Fecha de pago: " + item.DtFHPago.ToString("dd/MM/yyyy");
+
+                if (item.BitSubtotal)
+                {
+                    DcmSubtotal.Text = "$" + item.DcmImporteCole.ToString("N2");
+                    trsubtotall.Style.Add("display", "");
+                }
+                else
+                {
+                    trsubtotall.Style.Add("display", "none");
+                    DcmSubtotal.Text = "$0.00";
+                }
+
+                if (item.BitValidarImporte)
+                {
+                    DcmValidarImporte.Text = "$-" + item.DcmValidarImporte.ToString("N2");
+                    trvalidarimportee.Style.Add("display", "");
+                }
+                else
+                {
+                    trvalidarimportee.Style.Add("display", "none");
+                    DcmValidarImporte.Text = "$0.00";
+                }
+
+                DcmTotal.Text = item.DcmTotal.ToString("N2");
+
+                if (item.BitComisionBancaria)
+                {
+                    VchComicionBancaria.Text = item.VchComisionBancaria;
+                    DcmImpComisionBancaria.Text = "$-" + item.DcmComisionBancaria.ToString("N2");
+                    trcomicion.Style.Add("display", "");
+                }
+                else
+                {
+                    trcomicion.Style.Add("style", "display:none");
+                    DcmImpComisionBancaria.Text = "$0.00";
+                }
+
+                if (item.BitPromocionDePago)
+                {
+                    VchPromocion.Text = item.VchPromocionDePago;
+                    DcmImpPromocion.Text = "$-" + item.DcmPromocionDePago.ToString("N2");
+                    trpromocion.Style.Add("display", "");
+
+                    string dPromo = item.VchPromocionDePago.Replace("COMISIÓN ", "").Replace(" MESES:", "");
+
+                    VchDetallePromocion.Text = dPromo.Trim() + " pagos mensuales de:";
+                    DcmImpDetallePromocion.Text = (item.DcmTotal / decimal.Parse(dPromo.Trim())).ToString("N2");
+                    trdetallepromociones.Style.Add("display", "");
+                }
+                else
+                {
+                    trpromocion.Style.Add("display", "none");
+                    trdetallepromociones.Style.Add("display", "none");
+                    DcmImpPromocion.Text = "$0.00";
+                }
+
+                DcmImpAbono.Text = "$" + item.DcmSubtotal.ToString("N2");
+                DcmImpResta.Text = "$" + (item.DcmImporteCole - item.DcmSubtotal).ToString("N2");
+
+            }
+
+            rpDetalleLiga.DataSource = lsDetallePagosColeGridViewModel;
+            rpDetalleLiga.DataBind();
+
+            //Desglose del pago Liga
+            pagosServices.ConsultarDetallePagoColegiatura(UidPagoColegiatura);
+            foreach (var item in pagosServices.lsPagosTarjetaColeDetalleGridViewModel)
+            {
+                //Detalle de la operacion
+                VchIdreferencia.Text = item.IdReferencia;
+                DtmFechaDeRegistro.Text = item.DtmFechaDeRegistro.ToLongDateString();
+                DtmHoraDeRegistro.Text = item.DtmFechaDeRegistro.ToString("HH:mm:ss");
+                VchTarjeta.Text = "************" + item.cc_number;
+                VchFolioPago.Text = item.FolioPago;
+            }
+        }
+        private void DetallePagoColegiaturaManual(List<PagosColegiaturasViewModels> lsPagosColegiaturas, List<DetallePagosColeGridViewModel> lsDetallePagosColeGridViewModel, Guid UidPagoColegiatura)
+        {
+            //Resumen del pago
+            foreach (var item in lsPagosColegiaturas)
+            {
+                //Asigancion de parametros
+
+                //Encabezado del pago
+                lblDetaAlumnoManual.Text = "Alumno: " + item.VchAlumno;
+                lblDetaMatriculaManual.Text = "Matricula: " + item.VchMatricula;
+                lblDetaFHpagoManual.Text = "Fecha de pago: " + item.DtFHPago.ToString("dd/MM/yyyy");
+
+                if (item.BitSubtotal)
+                {
+                    DcmSubtotalManual.Text = "$" + item.DcmSubtotal.ToString("N2");
+                    trSubtotalManual.Style.Add("display", "");
+                }
+                else
+                {
+                    trSubtotalManual.Style.Add("display", "none");
+                    DcmSubtotalManual.Text = "$0.00";
+                }
+
+                if (item.BitValidarImporte)
+                {
+                    DcmValidarImporteManual.Text = "$-" + item.DcmValidarImporte.ToString("N2");
+                    trValidarImporteManual.Style.Add("display", "");
+                }
+                else
+                {
+                    trValidarImporteManual.Style.Add("display", "none");
+                    DcmValidarImporteManual.Text = "$0.00";
+                }
+
+                DcmTotalManual.Text = "$" + item.DcmImporteCole.ToString("N2");
+                DcmImportePagadoManual.Text = "$" + item.DcmTotal.ToString("N2");
+                DcmImpRestaManual.Text = "$" + (item.DcmImporteCole - item.DcmTotal).ToString("N2");
+            }
+
+            rpDetalleLigaManual.DataSource = lsDetallePagosColeGridViewModel;
+            rpDetalleLigaManual.DataBind();
+
+
+            pagosManualesServices.ConsultarDetallePagoColegiatura(UidPagoColegiatura);
+            foreach (var item in pagosManualesServices.lsPagosManualesReporteEscuelaViewModel)
+            {
+                VchBancoManual.Text = item.VchBanco;
+                DtFechaPagoManual.Text = item.DtFHPago.ToLongDateString();
+                VchFolioManual.Text = item.VchFolio;
+                VchCuentaManual.Text = "************" + item.VchCuenta;
+                DtHoraPagoManual.Text = item.DtFHPago.ToString("HH:mm:ss");
+            }
         }
         #endregion
 
@@ -1226,10 +1422,11 @@ namespace PagaLaEscuela.Views
             headAlumno2.Text = colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.NombreCompleto;
             headMatricula2.Text = colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchMatricula;
             headFPago2.Text = hoy.ToString("dd/MM/yyyy");
+            ViewState["headFPago2"] = hoy;
             ViewState["ImporteCole2"] = colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.DcmImporte.ToString("N2");
             ViewState["Recargo2"] = "0.00";
 
-            colegiaturasServices.FormarDesgloseCole(1, colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchIdentificador + ". PAGO " + colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchNum, colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.DcmImporte);
+            colegiaturasServices.FormarDesgloseCole(1, colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchIdentificador + ". PAGO " + colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchNum, decimal.Parse(colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.DcmImporte.ToString("N2")));
 
             decimal recargoTotalLimite = 0;
             decimal recargoTotalPeriodo = 0;
@@ -1249,9 +1446,16 @@ namespace PagaLaEscuela.Views
                         {
                             recargoTotalLimite = colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.DcmRecargo * ImporteCole / 100;
                         }
-                    }
 
-                    colegiaturasServices.FormarDesgloseCole(3, "RECARGO POR FECHA LIMITE (" + colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchFHLimite + ")", decimal.Parse(recargoTotalLimite.ToString("N2")));
+                        if (colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.BitBeca)
+                        {
+                            colegiaturasServices.FormarDesgloseCole(3, "RECARGO POR FECHA LIMITE (" + colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchFHLimite + ")", decimal.Parse(recargoTotalLimite.ToString("N2")));
+                        }
+                        else
+                        {
+                            colegiaturasServices.FormarDesgloseCole(2, "RECARGO POR FECHA LIMITE (" + colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchFHLimite + ")", decimal.Parse(recargoTotalLimite.ToString("N2")));
+                        }                        
+                    }
                 }
             }
 
@@ -1371,10 +1575,6 @@ namespace PagaLaEscuela.Views
             if (ImporteBeca >= 1)
             {
                 colegiaturasServices.FormarDesgloseCole(2, "DESCUENTO BECA (" + TipoBeca + ")", -decimal.Parse(ImporteBeca.ToString("N2")), "#f55145");
-            }
-            else
-            {
-                colegiaturasServices.FormarDesgloseCole(2, "DESCUENTO BECA (" + TipoBeca + ")", decimal.Parse(ImporteBeca.ToString("N2")));
             }
 
             pagosColegiaturasServices.ObtenerPagosPadres(Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()));
@@ -1596,10 +1796,10 @@ namespace PagaLaEscuela.Views
             }
 
             int UltimoFolio = pagosColegiaturasServices.ObtenerUltimoFolio(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()));
-            if (pagosColegiaturasServices.RegistrarPagoColegiatura(UidPagoColegiatura, UltimoFolio, DateTime.Parse(headFPago2.Text), "AL CONTADO(0%):", "", trSubtotal, DcmSubtotal, trComisionTarjeta, DcmComisionTarjeta, trPromociones, DcmComisionPromocion, trValidarImporte, DcmValidarImporte, DcmImportePagar, Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), EstatusPagoColegiatura,
+            if (pagosColegiaturasServices.RegistrarPagoColegiatura(UidPagoColegiatura, UltimoFolio, DateTime.Parse(ViewState["headFPago2"].ToString()), "AL CONTADO(0%):", "", trSubtotal, DcmSubtotal, trComisionTarjeta, DcmComisionTarjeta, trPromociones, DcmComisionPromocion, trValidarImporte, DcmValidarImporte, DcmImportePagar, Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), EstatusPagoColegiatura,
                 Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()), Guid.Parse(ViewState["RowCommand-UidFormaPago"].ToString()), decimal.Parse(ViewState["lblTotaltb2"].ToString()), DcmImportePagar, decimal.Parse(ViewState["lblRestaTotal2"].ToString()), estatusFechaPago))
             {
-                pagosManualesServices.RegistrarPagoManual(Guid.Parse(ddlBanco.SelectedValue), txtCuenta.Text, DateTime.Parse(txtFHPago.Text), decimal.Parse(txtMontoPagado.Text), txtFolioPago.Text, UidPagoColegiatura);
+                pagosManualesServices.RegistrarPagoManual(Guid.Parse(ddlBanco.SelectedValue), txtCuenta.Text, DateTime.Parse(ViewState["headFPago2"].ToString()), decimal.Parse(txtMontoPagado.Text), txtFolioPago.Text, UidPagoColegiatura);
 
                 foreach (var item in colegiaturasServices.lsDesglosePagosGridViewModel)
                 {

@@ -217,7 +217,7 @@
     </asp:UpdatePanel>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="cBodyBottom" runat="server">
-    <!--MODAL-->
+    <%--MODAL--%>
     <div id="ModalTipoPago" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="overflow-y: scroll;">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -237,7 +237,6 @@
                         <div class="row">
                             <div class="card card-nav-tabs">
                                 <div class="card-header card-header-primary" style="background: #326497;">
-                                    <!-- colors: "header-primary", "header-info", "header-success", "header-warning", "header-danger" -->
                                     <div class="nav-tabs-navigation">
                                         <div class="nav-tabs-wrapper">
                                             <ul class="nav nav-tabs" id="ulTabAgregarPago" data-tabs="tabs">
@@ -417,8 +416,8 @@
                                                                                 </div>
                                                                             </div>
                                                                             <div class="row" style="padding-top: 10px;">
-                                                                                <div class="col-12 col-md-12 col-lg-8">
-                                                                                    <div class="form-group col-md-12">
+                                                                                <div class="col-12 col-md-12 col-lg-7" style="padding-left: 0px;">
+                                                                                    <div class="form-group col-md-12" style="padding-bottom: 0px;">
                                                                                         <div class="input-group">
                                                                                             <div class="input-group-prepend">
                                                                                                 <asp:Label Text="Alumno:&nbsp;" Font-Bold="true" runat="server" />
@@ -426,7 +425,7 @@
                                                                                             <asp:Label ID="headAlumno" runat="server" />
                                                                                         </div>
                                                                                     </div>
-                                                                                    <div class="form-group col-md-12">
+                                                                                    <div class="form-group col-md-12" style="padding-bottom: 0px;">
                                                                                         <div class="input-group">
                                                                                             <div class="input-group-prepend">
                                                                                                 <asp:Label Text="Matricula:&nbsp;" Font-Bold="true" runat="server" />
@@ -435,7 +434,7 @@
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
-                                                                                <div class="col-12 col-md-12 col-lg-4">
+                                                                                <div class="col-12 col-md-12 col-lg-5" style="padding-left: 0px;">
                                                                                     <div class="form-group col-md-12">
                                                                                         <div class="input-group">
                                                                                             <div class="input-group-prepend">
@@ -445,20 +444,20 @@
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
+                                                                                <div class="form-group col-md-12" style="padding-bottom: 0px;">
+                                                                                    <label for="ddlTutorAlu" style="color: #ff9800;">Tutor del alumno *</label>
+                                                                                    <div class="input-group">
+                                                                                        <div class="input-group-prepend">
+                                                                                            <span class="input-group-text" style="padding-left: 0px;">
+                                                                                                <i class="material-icons">person</i>
+                                                                                            </span>
+                                                                                        </div>
+                                                                                        <asp:DropDownList ID="ddlTutorAlu" AppendDataBoundItems="true" CssClass="form-control" runat="server">
+                                                                                        </asp:DropDownList>
+                                                                                    </div>
+                                                                                </div>
                                                                                 <div class="col-sm-12">
                                                                                     <div class="row">
-                                                                                        <div class="form-group col-md-8">
-                                                                                            <label for="ddlTutorAlu" style="color: #ff9800;">Tutor del alumno *</label>
-                                                                                            <div class="input-group">
-                                                                                                <div class="input-group-prepend">
-                                                                                                    <span class="input-group-text" style="padding-left: 0px;">
-                                                                                                        <i class="material-icons">person</i>
-                                                                                                    </span>
-                                                                                                </div>
-                                                                                                <asp:DropDownList ID="ddlTutorAlu" AppendDataBoundItems="true" CssClass="form-control" runat="server">
-                                                                                                </asp:DropDownList>
-                                                                                            </div>
-                                                                                        </div>
                                                                                         <div class="form-group col-md-4">
                                                                                             <label for="ddlFormasPago" style="color: #ff9800;">Forma de pago</label>
                                                                                             <div class="input-group">
@@ -890,17 +889,21 @@
                             <div class="row">
                                 <div class="card" style="margin-top: 0px; margin-bottom: 0px; border-left: 8px solid black;">
                                     <div class="card-body">
-                                        <div class="row">
-                                            <div class="form-group col-md-6">
-                                                <label for="txtColegiatura" style="margin-left: 15px; color: black;">Colegiatura</label>
-                                                <asp:TextBox ID="txtColegiatura" CssClass="form-control" aria-label="Search" runat="server" />
-                                            </div>
-                                            <div class="form-group col-md-2">
-                                                <label for="txtNumPago" style="margin-left: 15px; color: black;"># de pago</label>
-                                                <asp:TextBox ID="txtNumPago" CssClass="form-control" TextMode="Number" aria-label="Search" runat="server" />
-                                                <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" TargetControlID="txtNumPago" runat="server" />
-                                            </div>
-                                        </div>
+                                        <asp:UpdatePanel runat="server">
+                                            <ContentTemplate>
+                                                <div class="row">
+                                                    <div class="form-group col-md-6">
+                                                        <label for="txtColegiatura" style="margin-left: 15px; color: black;">Colegiatura</label>
+                                                        <asp:TextBox ID="txtColegiatura" CssClass="form-control" aria-label="Search" runat="server" />
+                                                    </div>
+                                                    <div class="form-group col-md-2">
+                                                        <label for="txtNumPago" style="margin-left: 15px; color: black;"># de pago</label>
+                                                        <asp:TextBox ID="txtNumPago" CssClass="form-control" TextMode="Number" aria-label="Search" runat="server" />
+                                                        <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" TargetControlID="txtNumPago" runat="server" />
+                                                    </div>
+                                                </div>
+                                            </ContentTemplate>
+                                        </asp:UpdatePanel>
                                     </div>
                                 </div>
                             </div>
@@ -913,24 +916,28 @@
                             <div class="row">
                                 <div class="card" style="margin-top: 0px; margin-bottom: 0px; border-left: 8px solid #326497;">
                                     <div class="card-body">
-                                        <div class="row">
-                                            <div class="form-group col-md-3">
-                                                <label for="txtMatricula" style="margin-left: 15px; color: black;">Matricula</label>
-                                                <asp:TextBox ID="txtMatricula" CssClass="form-control" aria-label="Search" runat="server" />
-                                            </div>
-                                            <div class="form-group col-md-3">
-                                                <label for="txtAlNombre" style="margin-left: 15px; color: black;">Nombre</label>
-                                                <asp:TextBox ID="txtAlNombre" CssClass="form-control" aria-label="Search" runat="server" />
-                                            </div>
-                                            <div class="form-group col-md-3">
-                                                <label for="txtAlApPaterno" style="margin-left: 15px; color: black;">Apellido Paterno</label>
-                                                <asp:TextBox ID="txtAlApPaterno" CssClass="form-control" aria-label="Search" runat="server" />
-                                            </div>
-                                            <div class="form-group col-md-3">
-                                                <label for="txtAlApMaterno" style="margin-left: 15px; color: black;">Apellido Materno</label>
-                                                <asp:TextBox ID="txtAlApMaterno" CssClass="form-control" aria-label="Search" runat="server" />
-                                            </div>
-                                        </div>
+                                        <asp:UpdatePanel runat="server">
+                                            <ContentTemplate>
+                                                <div class="row">
+                                                    <div class="form-group col-md-3">
+                                                        <label for="txtMatricula" style="margin-left: 15px; color: black;">Matricula</label>
+                                                        <asp:TextBox ID="txtMatricula" CssClass="form-control" aria-label="Search" runat="server" />
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="txtAlNombre" style="margin-left: 15px; color: black;">Nombre</label>
+                                                        <asp:TextBox ID="txtAlNombre" CssClass="form-control" aria-label="Search" runat="server" />
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="txtAlApPaterno" style="margin-left: 15px; color: black;">Apellido Paterno</label>
+                                                        <asp:TextBox ID="txtAlApPaterno" CssClass="form-control" aria-label="Search" runat="server" />
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="txtAlApMaterno" style="margin-left: 15px; color: black;">Apellido Materno</label>
+                                                        <asp:TextBox ID="txtAlApMaterno" CssClass="form-control" aria-label="Search" runat="server" />
+                                                    </div>
+                                                </div>
+                                            </ContentTemplate>
+                                        </asp:UpdatePanel>
                                     </div>
                                 </div>
                             </div>
@@ -943,20 +950,24 @@
                             <div class="row">
                                 <div class="card" style="margin-top: 0px; margin-bottom: 0px; border-left: 8px solid #ff9800;">
                                     <div class="card-body">
-                                        <div class="row">
-                                            <div class="form-group col-md-4">
-                                                <label for="txtTuNombre" style="margin-left: 15px; color: black;">Nombre</label>
-                                                <asp:TextBox ID="txtTuNombre" CssClass="form-control" aria-label="Search" runat="server" />
-                                            </div>
-                                            <div class="form-group col-md-4">
-                                                <label for="txtTuApPaterno" style="margin-left: 15px; color: black;">Apellido Paterno</label>
-                                                <asp:TextBox ID="txtTuApPaterno" CssClass="form-control" aria-label="Search" runat="server" />
-                                            </div>
-                                            <div class="form-group col-md-4">
-                                                <label for="txtTuApMaterno" style="margin-left: 15px; color: black;">Apellido Materno</label>
-                                                <asp:TextBox ID="txtTuApMaterno" CssClass="form-control" aria-label="Search" runat="server" />
-                                            </div>
-                                        </div>
+                                        <asp:UpdatePanel runat="server">
+                                            <ContentTemplate>
+                                                <div class="row">
+                                                    <div class="form-group col-md-4">
+                                                        <label for="txtTuNombre" style="margin-left: 15px; color: black;">Nombre</label>
+                                                        <asp:TextBox ID="txtTuNombre" CssClass="form-control" aria-label="Search" runat="server" />
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label for="txtTuApPaterno" style="margin-left: 15px; color: black;">Apellido Paterno</label>
+                                                        <asp:TextBox ID="txtTuApPaterno" CssClass="form-control" aria-label="Search" runat="server" />
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label for="txtTuApMaterno" style="margin-left: 15px; color: black;">Apellido Materno</label>
+                                                        <asp:TextBox ID="txtTuApMaterno" CssClass="form-control" aria-label="Search" runat="server" />
+                                                    </div>
+                                                </div>
+                                            </ContentTemplate>
+                                        </asp:UpdatePanel>
                                     </div>
                                 </div>
                             </div>
@@ -969,62 +980,66 @@
                             <div class="row">
                                 <div class="card" style="margin-top: 0px; margin-bottom: 0px; border-left: 8px solid #0094ff;">
                                     <div class="card-body">
-                                        <div class="row">
-                                            <div class="form-group col-md-4">
-                                                <label for="txtFolio" style="margin-left: 15px; color: black;">Folio</label>
-                                                <asp:TextBox ID="txtFolio" CssClass="form-control" aria-label="Search" runat="server" />
-                                            </div>
-                                            <div class="form-group col-md-4">
-                                                <label for="txtCuenta" style="margin-left: 15px; color: black;">Cuenta</label>
-                                                <asp:TextBox ID="txtCuenta" CssClass="form-control" MaxLength="4" aria-label="Search" runat="server" />
-                                            </div>
-                                            <div class="form-group col-md-4">
-                                                <label for="txtBanco" style="margin-left: 15px; color: black;">Banco</label>
-                                                <asp:TextBox ID="txtBanco" CssClass="form-control" aria-label="Search" runat="server" />
-                                            </div>
-                                            <div class="form-group col-md-6">
-                                                <label for="txtRegistroDesde" style="margin-left: 15px; color: black;">Fecha Pago(desde)</label>
-                                                <asp:TextBox ID="txtRegistroDesde" CssClass="form-control" TextMode="Date" aria-label="Search" runat="server" />
-                                            </div>
-                                            <div class="form-group col-md-6">
-                                                <label for="txtRegistroHasta" style="color: black;">Fecha Pago(hasta)</label>
-                                                <asp:TextBox ID="txtRegistroHasta" CssClass="form-control" TextMode="Date" aria-label="Search" runat="server" />
-                                            </div>
-                                            <div class="form-group col-md-3">
-                                                <label for="ddlImporteMayor" style="color: black;">Importe</label>
-                                                <asp:DropDownList ID="ddlImporteMayor" CssClass="form-control" runat="server">
-                                                    <asp:ListItem Text="(>=) Mayor o igual que" Value=">=" />
-                                                    <asp:ListItem Text="(>) Mayor que" Value=">" />
-                                                </asp:DropDownList>
-                                            </div>
-                                            <div class="form-group col-md-3">
-                                                <label for="txtImporte" style="color: black;"></label>
-                                                <asp:TextBox ID="txtImporteMayor" CssClass="form-control" placeholder="Mayor" aria-label="Search" Style="margin-top: 33px;" runat="server" />
-                                                <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtImporteMayor" runat="server" />
-                                            </div>
-                                            <div class="form-group col-md-3">
-                                                <label for="ddlImporteMenor" style="color: black;"></label>
-                                                <asp:DropDownList ID="ddlImporteMenor" CssClass="form-control" Style="margin-top: 6px;" runat="server">
-                                                    <asp:ListItem Text="(<=) Menor o igual que" Value="<=" />
-                                                    <asp:ListItem Text="(<) Menor que" Value="<" />
-                                                </asp:DropDownList>
-                                            </div>
-                                            <div class="form-group col-md-3">
-                                                <label for="txtImporte" style="color: black;"></label>
-                                                <asp:TextBox ID="txtImporteMenor" CssClass="form-control" placeholder="Menor" aria-label="Search" Style="margin-top: 33px;" runat="server" />
-                                                <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtImporteMenor" runat="server" />
-                                            </div>
-                                            <div class="form-group col-md-3">
-                                                <label for="ddlFormaPago" style="color: black;">Forma pago</label>
-                                                <asp:DropDownList ID="ddlFormaPago" AppendDataBoundItems="true" CssClass="form-control" Style="margin-top: 6px;" runat="server">
-                                                </asp:DropDownList>
-                                            </div>
-                                            <div class="form-group col-md-3">
-                                                <label for="ddlEstatus" style="color: black;">Estatus</label>
-                                                <asp:DropDownList ID="ddlEstatus" AppendDataBoundItems="true" CssClass="form-control" Style="margin-top: 6px;" runat="server">
-                                                </asp:DropDownList>
-                                            </div>
-                                        </div>
+                                        <asp:UpdatePanel runat="server">
+                                            <ContentTemplate>
+                                                <div class="row">
+                                                    <div class="form-group col-md-4">
+                                                        <label for="txtFolio" style="margin-left: 15px; color: black;">Folio</label>
+                                                        <asp:TextBox ID="txtFolio" CssClass="form-control" aria-label="Search" runat="server" />
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label for="txtCuenta" style="margin-left: 15px; color: black;">Cuenta</label>
+                                                        <asp:TextBox ID="txtCuenta" CssClass="form-control" MaxLength="4" aria-label="Search" runat="server" />
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label for="txtBanco" style="margin-left: 15px; color: black;">Banco</label>
+                                                        <asp:TextBox ID="txtBanco" CssClass="form-control" aria-label="Search" runat="server" />
+                                                    </div>
+                                                    <div class="form-group col-md-6">
+                                                        <label for="txtRegistroDesde" style="margin-left: 15px; color: black;">Fecha Pago(desde)</label>
+                                                        <asp:TextBox ID="txtRegistroDesde" CssClass="form-control" TextMode="Date" aria-label="Search" runat="server" />
+                                                    </div>
+                                                    <div class="form-group col-md-6">
+                                                        <label for="txtRegistroHasta" style="color: black;">Fecha Pago(hasta)</label>
+                                                        <asp:TextBox ID="txtRegistroHasta" CssClass="form-control" TextMode="Date" aria-label="Search" runat="server" />
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="ddlImporteMayor" style="color: black;">Importe</label>
+                                                        <asp:DropDownList ID="ddlImporteMayor" CssClass="form-control" runat="server">
+                                                            <asp:ListItem Text="(>=) Mayor o igual que" Value=">=" />
+                                                            <asp:ListItem Text="(>) Mayor que" Value=">" />
+                                                        </asp:DropDownList>
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="txtImporte" style="color: black;"></label>
+                                                        <asp:TextBox ID="txtImporteMayor" CssClass="form-control" placeholder="Mayor" aria-label="Search" Style="margin-top: 33px;" runat="server" />
+                                                        <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtImporteMayor" runat="server" />
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="ddlImporteMenor" style="color: black;"></label>
+                                                        <asp:DropDownList ID="ddlImporteMenor" CssClass="form-control" Style="margin-top: 6px;" runat="server">
+                                                            <asp:ListItem Text="(<=) Menor o igual que" Value="<=" />
+                                                            <asp:ListItem Text="(<) Menor que" Value="<" />
+                                                        </asp:DropDownList>
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="txtImporte" style="color: black;"></label>
+                                                        <asp:TextBox ID="txtImporteMenor" CssClass="form-control" placeholder="Menor" aria-label="Search" Style="margin-top: 33px;" runat="server" />
+                                                        <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtImporteMenor" runat="server" />
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="ddlFormaPago" style="color: black;">Forma pago</label>
+                                                        <asp:DropDownList ID="ddlFormaPago" AppendDataBoundItems="true" CssClass="form-control" Style="margin-top: 6px;" runat="server">
+                                                        </asp:DropDownList>
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="ddlEstatus" style="color: black;">Estatus</label>
+                                                        <asp:DropDownList ID="ddlEstatus" AppendDataBoundItems="true" CssClass="form-control" Style="margin-top: 6px;" runat="server">
+                                                        </asp:DropDownList>
+                                                    </div>
+                                                </div>
+                                            </ContentTemplate>
+                                        </asp:UpdatePanel>
                                     </div>
                                 </div>
                             </div>
@@ -1073,7 +1088,11 @@
                                                     <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
                                                         <tbody>
                                                             <tr>
-                                                                <td align="center" valign="top" style="padding-top: 80px;"></td>
+                                                                <td align="center" valign="top" style="padding-top: 20px;">
+                                                                    <asp:LinkButton ID="btnImprimir" OnClick="btnImprimir_Click" CssClass="btn btn-success btn-round" runat="server">
+                                                                        <i class="material-icons">print</i>Imprimir
+                                                                    </asp:LinkButton>
+                                                                </td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
@@ -1238,7 +1257,7 @@
                                                     </table>
                                                 </td>
                                             </tr>
-                                            <tr>
+                                            <tr id="trdetalleoperacion" runat="server">
                                                 <%--Detalle de la operacion--%>
                                                 <td bgcolor="#b62322" align="center" style="padding: 30px 10px 0px 10px;">
                                                     <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
@@ -1295,7 +1314,7 @@
                                             </tr>
                                             <tr>
                                                 <td bgcolor="#b62322" align="center" style="padding: 30px 10px 0px 10px;"></td>
-                                                <!--#f4f4f4-->
+                                                <%--#f4f4f4--%>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -1333,7 +1352,11 @@
                                                     <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
                                                         <tbody>
                                                             <tr>
-                                                                <td align="center" valign="top" style="padding-top: 80px;"></td>
+                                                                <td align="center" valign="top" style="padding-top: 20px;">
+                                                                    <asp:LinkButton ID="btnImprimirManual" OnClick="btnImprimir_Click" CssClass="btn btn-success btn-round" runat="server">
+                                                                        <i class="material-icons">print</i>Imprimir
+                                                                    </asp:LinkButton>
+                                                                </td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
@@ -1450,8 +1473,8 @@
                                                     </table>
                                                 </td>
                                             </tr>
-                                            <tr>
-                                                <!--Detalle de la operacion-->
+                                            <tr id="trDetalleOperacionManual" runat="server">
+                                                <%--Detalle de la operacion--%>
                                                 <td bgcolor="#b62322" align="center" style="padding: 30px 10px 0px 10px;">
                                                     <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
                                                         <tbody>
@@ -1497,7 +1520,7 @@
                                                                                     <br />
                                                                                 </td>
                                                                             </tr>
-                                                                            <!--<tr>
+                                                                            <%--<tr>
                                                 <td bgcolor="#ffffff" align="left" style="padding: 30px 30px 30px 30px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 25px;">
                                                     <p style="color: #111111;margin: 0; font-size: 14px;">Saludos,</p>
                                                     <table>
@@ -1513,7 +1536,7 @@
                                                 </td>
                                                 <td bgcolor="#ffffff" align="left" style="padding: 30px 30px 30px 30px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 25px;">
                                                 </td>
-                                            </tr>-->
+                                            </tr>--%>
                                                                         </tbody>
                                                                     </table>
                                                                 </td>
@@ -1524,7 +1547,7 @@
                                             </tr>
                                             <tr>
                                                 <td bgcolor="#b62322" align="center" style="padding: 30px 10px 0px 10px;"></td>
-                                                <!--#f4f4f4-->
+                                                <%--#f4f4f4--%>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -1536,7 +1559,7 @@
             </div>
         </div>
     </div>
-    <!--END MODAL-->
+    <%--END MODAL--%>
 
     <script>
         function showModalTipoPago() {
