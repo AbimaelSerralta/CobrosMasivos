@@ -68,6 +68,11 @@ namespace Franquicia.Bussiness
         {
             return pagosRepository.ActualizarPagoColegiatura(UidPagoColegiatura);
         }
+
+        public Tuple<string, string, string, string> ConsultarDatosValidarPago(Guid UidPagoColegiatura)
+        {
+            return pagosRepository.ConsultarDatosValidarPago(UidPagoColegiatura);
+        }
         #endregion
 
         #region ReporteLigasPadres

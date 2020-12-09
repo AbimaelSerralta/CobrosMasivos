@@ -117,7 +117,7 @@ namespace Franquicia.DataAccess.Repository
 
             foreach (DataRow item in dt.Rows)
             {
-                UltimoFolio = int.Parse(item["UltimoFolio"].ToString());
+                UltimoFolio = item.IsNull("UltimoFolio") ? 0 : int.Parse(item["UltimoFolio"].ToString());
             }
 
             return UltimoFolio + 1;
@@ -776,7 +776,7 @@ namespace Franquicia.DataAccess.Repository
 
             foreach (DataRow item in dt.Rows)
             {
-                DcmImportePagado = decimal.Parse(item["DcmImportePagado"].ToString());
+                DcmImportePagado = item.IsNull("DcmImportePagado") ? 0 : decimal.Parse(item["DcmImportePagado"].ToString());
             }
             return DcmImportePagado;
         }

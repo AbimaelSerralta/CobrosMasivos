@@ -104,7 +104,7 @@
                                                                                 </asp:Label>
                                                                             </asp:LinkButton>
                                                                         </td>
-                                                                        <td style="border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
+                                                                        <td style="display:none; border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
                                                                             <asp:LinkButton ID="btnReportePagos" ToolTip="Reporte de pagos" CommandArgument="<%# ((GridViewRow)Container).RowIndex %>" CommandName="btnReportePagos" Style="margin-left: 5px;" runat="server">
                                                                                 <asp:Label class="btn btn-sm btn-warning btn-fab btn-fab-mini btn-round" runat="server">
                                                                                         <i class="material-icons">description</i>

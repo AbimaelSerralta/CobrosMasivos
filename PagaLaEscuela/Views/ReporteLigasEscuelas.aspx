@@ -223,7 +223,7 @@
             <div class="modal-content">
                 <asp:UpdatePanel runat="server">
                     <ContentTemplate>
-                        <div class="modal-header">
+                        <div class="modal-header" style="padding-top: 5px;padding-bottom: 5px;">
                             <h5 class="modal-title" runat="server">
                                 <asp:Label ID="lblTitleModalTipoPago" Text="Seleccione un alumno" runat="server" /></h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -235,7 +235,7 @@
                 <div class="modal-body pt-0" style="padding-bottom: 0px;">
                     <div class="tab-content">
                         <div class="row">
-                            <div class="card card-nav-tabs">
+                            <div class="card card-nav-tabs" style="margin-bottom: 0px;">
                                 <div class="card-header card-header-primary" style="background: #326497;">
                                     <div class="nav-tabs-navigation">
                                         <div class="nav-tabs-wrapper">
@@ -361,7 +361,7 @@
                                             <asp:UpdatePanel runat="server">
                                                 <ContentTemplate>
                                                     <div class="table-responsive">
-                                                        <asp:GridView ID="gvPagos" OnSelectedIndexChanged="gvPagos_SelectedIndexChanged" OnPageIndexChanging="gvPagos_PageIndexChanging" OnRowDataBound="gvPagos_RowDataBound" OnSorting="gvPagos_Sorting" OnRowCommand="gvPagos_RowCommand" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidFechaColegiatura" GridLines="None" border="0" EnablePersistedSelection="true" AllowPaging="true" PageSize="10" runat="server">
+                                                        <asp:GridView ID="gvPagos" OnSelectedIndexChanged="gvPagos_SelectedIndexChanged" OnPageIndexChanging="gvPagos_PageIndexChanging" OnRowDataBound="gvPagos_RowDataBound" OnSorting="gvPagos_Sorting" OnRowCommand="gvPagos_RowCommand" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidFechaColegiatura" GridLines="None" border="0" EnablePersistedSelection="true" AllowPaging="true" PageSize="5" runat="server">
                                                             <EmptyDataTemplate>
                                                                 <div class="alert alert-info"><strong>Felicidades</strong> no tiene pagos disponibles.</div>
                                                             </EmptyDataTemplate>

@@ -294,6 +294,31 @@ namespace Franquicia.DataAccess.Repository
             }
             return resultado;
         }
+
+        public Tuple<string, string, string, string> ConsultarDatosValidarPago(Guid UidPagoColegiatura)
+        {
+            string UidCliente = string.Empty;
+            string UidUsuario = string.Empty;
+            string UidFechaColegiatura = string.Empty;
+            string UidAlumno = string.Empty;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select al.UidCliente, pc.UidUsuario, fp.UidFechaColegiatura, al.UidAlumno from FechasPagos fp, PagosColegiaturas pc, Alumnos al where pc.UidPagoColegiatura = fp.UidPagoColegiatura and fp.UidAlumno = al.UidAlumno and pc.UidPagoColegiatura = '" + UidPagoColegiatura + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                UidCliente = item["UidCliente"].ToString();
+                UidUsuario = item["UidUsuario"].ToString();
+                UidFechaColegiatura = item["UidFechaColegiatura"].ToString();
+                UidAlumno = item["UidAlumno"].ToString();
+            }
+
+            return Tuple.Create(UidCliente, UidUsuario, UidFechaColegiatura, UidAlumno);
+        }
         #endregion
 
         #region ReporteLigasPadres

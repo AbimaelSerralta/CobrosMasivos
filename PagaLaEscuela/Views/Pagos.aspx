@@ -199,11 +199,13 @@
                                                             <tbody>
                                                                 <tr style="background: transparent;">
                                                                     <td style="border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
-                                                                        <asp:LinkButton ID="btnFormasPago" ToolTip="Pagar por otro medio" CommandArgument="<%# ((GridViewRow)Container).RowIndex %>" CommandName="btnFormasPago" Style="margin-left: 5px;" runat="server">
+                                                                        <asp:Panel Visible='<%#Eval("blPagar")%>' runat="server">
+                                                                            <asp:LinkButton ID="btnFormasPago" ToolTip="Pagar por otro medio" CommandArgument="<%# ((GridViewRow)Container).RowIndex %>" CommandName="btnFormasPago" Style="margin-left: 5px;" runat="server">
                                                                                 <asp:Label class="btn btn-sm btn-success btn-fab btn-fab-mini btn-round" runat="server">
                                                                                         <i class="material-icons">add</i>
                                                                                 </asp:Label>
-                                                                        </asp:LinkButton>
+                                                                            </asp:LinkButton>
+                                                                        </asp:Panel>
                                                                     </td>
                                                                     <td style="border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
                                                                         <asp:Panel Visible='<%#Eval("blPagar")%>' runat="server">

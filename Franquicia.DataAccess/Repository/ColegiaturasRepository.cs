@@ -609,7 +609,7 @@ namespace Franquicia.DataAccess.Repository
 
             return lsColegiaturasFechasGridViewModel;
         }
-        
+
         public List<ColegiaturasFechasGridViewModel> ObtenerFechasColegiaturasVicular(Guid UidColegiatura)
         {
             List<ColegiaturasFechasGridViewModel> lsColegiaturasFechasGridViewModel = new List<ColegiaturasFechasGridViewModel>();
@@ -645,16 +645,16 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@UidFechaColegiatura", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidFechaColegiatura"].Value = UidFechaColegiatura;
-                
+
                 comando.Parameters.Add("@UidAlumno", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidAlumno"].Value = UidAlumno;
-                
+
                 comando.Parameters.Add("@DcmImporteResta", SqlDbType.Decimal);
                 comando.Parameters["@DcmImporteResta"].Value = DcmImporteResta;
 
                 comando.Parameters.Add("@UidEstatusFechaColegiatura", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidEstatusFechaColegiatura"].Value = UidEstatusFechaColegiatura;
-                
+
                 Resultado = this.ManipulacionDeDatos(comando);
             }
             catch (Exception)
@@ -1452,7 +1452,7 @@ namespace Franquicia.DataAccess.Repository
             //query.CommandText = "select cl.VchNombreComercial, al.VchMatricula, al.VchNombres, al.VchApePaterno, al.VchApeMaterno, al.BitBeca, al.VchTipoBeca, al.DcmBeca, co.*, fc.UidFechaColegiatura, fc.IntNum, fc.DtFHInicio as fcInicio, fc.DtFHLimite as fcLimite, fc.DtFHVencimiento as fcVencimiento, fc.DtFHFinPeriodo as fcFinPeriodo, efc.VchDescripcion as EstatusFechas, pe.VchDescripcion as Periodicidad from clientes cl, Colegiaturas co, FechasColegiaturas fc, ColegiaturasAlumnos ca, Alumnos al, Usuarios us, UsuariosAlumnos ua, EstatusFechasColegiaturas efc, Periodicidades pe where pe.UidPeriodicidad = co.UidPeriodicidad and not exists (select * from LigasUrls lu, PagosTarjeta pt where lu.UidUsuario = us.UidUsuario and pt.IdReferencia = lu.IdReferencia and pt.VchEstatus = 'approved' and lu.UidFechaColegiatura = fc.UidFechaColegiatura) and co.UidEstatus = '65E46BC9-1864-4145-AD1A-70F5B5F69739' and efc.UidEstatusFechaColegiatura = fc.UidEstatusFechaColegiatura and cl.UidCliente = co.UidCliente and co.UidColegiatura = fc.UidColegiatura and ca.UidColegiatura = co.UidColegiatura and ca.UidAlumno = al.UidAlumno and ua.UidUsuario = us.UidUsuario and ua.UidAlumno = al.UidAlumno and cl.UidCliente = '" + UidCliente + "' and us.UidUsuario = '" + UidUsuario + "' order by al.VchMatricula";
             // ==> ANTES DE LOS 3 IMPORTES query.CommandText = "select cl.VchNombreComercial, al.VchMatricula, al.VchNombres, al.VchApePaterno, al.VchApeMaterno, al.BitBeca, al.VchTipoBeca, al.DcmBeca, co.*, fc.UidFechaColegiatura, fc.IntNum, fc.DtFHInicio as fcInicio, fc.DtFHLimite as fcLimite, fc.DtFHVencimiento as fcVencimiento, fc.DtFHFinPeriodo as fcFinPeriodo, efc.VchDescripcion as EstatusFechas, pe.VchDescripcion as Periodicidad from clientes cl, Colegiaturas co, FechasColegiaturas fc, ColegiaturasAlumnos ca, Alumnos al, Usuarios us, UsuariosAlumnos ua, EstatusFechasColegiaturas efc, Periodicidades pe where pe.UidPeriodicidad = co.UidPeriodicidad and not exists (select * from FechasColegiaturas feco, FechasPagos fepa, PagosColegiaturas paco, Alumnos alu where alu.UidAlumno = fepa.UidAlumno and feco.UidFechaColegiatura = fepa.UidFechaColegiatura and fepa.UidPagoColegiatura = paco.UidPagoColegiatura and alu.UidAlumno = al.UidAlumno and fepa.UidEstatusFechaPago = '8720B2B9-5712-4E75-A981-932887AACDC9' and paco.UidEstatusPagoColegiatura = '51B85D66-866B-4BC2-B08F-FECE1A994053' and fepa.UidFechaColegiatura = fc.UidFechaColegiatura) and co.UidEstatus = '65E46BC9-1864-4145-AD1A-70F5B5F69739' and efc.UidEstatusFechaColegiatura = fc.UidEstatusFechaColegiatura and cl.UidCliente = co.UidCliente and co.UidColegiatura = fc.UidColegiatura and ca.UidColegiatura = co.UidColegiatura and ca.UidAlumno = al.UidAlumno and ua.UidUsuario = us.UidUsuario and ua.UidAlumno = al.UidAlumno and cl.UidCliente = '" + UidCliente + "' and us.UidUsuario = '" + UidUsuario + "' order by al.VchMatricula";
             // ==> Amarre sin la tabla nueva FecPagAlu query.CommandText = "select cl.VchNombreComercial, al.VchMatricula, al.VchNombres, al.VchApePaterno, al.VchApeMaterno, al.BitBeca, al.VchTipoBeca, al.DcmBeca, co.*, fc.UidFechaColegiatura, fc.IntNum, fc.DtFHInicio as fcInicio, fc.DtFHLimite as fcLimite, fc.DtFHVencimiento as fcVencimiento, fc.DtFHFinPeriodo as fcFinPeriodo, efc.VchDescripcion as EstatusFechas, pe.VchDescripcion as Periodicidad, (select SUM(fepa.DcmImportePagado) from FechasColegiaturas feco, FechasPagos fepa, PagosColegiaturas paco where feco.UidFechaColegiatura = fepa.UidFechaColegiatura and fepa.UidPagoColegiatura = paco.UidPagoColegiatura and fepa.UidEstatusFechaPago != '8720B2B9-5712-4E75-A981-932887AACDC9' and paco.UidEstatusPagoColegiatura = '51B85D66-866B-4BC2-B08F-FECE1A994053' and fepa.UidFechaColegiatura = fc.UidFechaColegiatura and fepa.UidAlumno = al.UidAlumno) ImpPagado from clientes cl, Colegiaturas co, FechasColegiaturas fc, ColegiaturasAlumnos ca, Alumnos al, Usuarios us, UsuariosAlumnos ua, EstatusFechasColegiaturas efc, Periodicidades pe where pe.UidPeriodicidad = co.UidPeriodicidad and not exists (select * from FechasColegiaturas feco, FechasPagos fepa, PagosColegiaturas paco, Alumnos alu where alu.UidAlumno = fepa.UidAlumno and feco.UidFechaColegiatura = fepa.UidFechaColegiatura and fepa.UidPagoColegiatura = paco.UidPagoColegiatura and alu.UidAlumno = al.UidAlumno and fepa.UidEstatusFechaPago = '8720B2B9-5712-4E75-A981-932887AACDC9' and paco.UidEstatusPagoColegiatura = '51B85D66-866B-4BC2-B08F-FECE1A994053' and fepa.UidFechaColegiatura = fc.UidFechaColegiatura) and co.UidEstatus = '65E46BC9-1864-4145-AD1A-70F5B5F69739' and efc.UidEstatusFechaColegiatura = fc.UidEstatusFechaColegiatura and cl.UidCliente = co.UidCliente and co.UidColegiatura = fc.UidColegiatura and ca.UidColegiatura = co.UidColegiatura and ca.UidAlumno = al.UidAlumno and ua.UidUsuario = us.UidUsuario and ua.UidAlumno = al.UidAlumno and cl.UidCliente = '" + UidCliente + "' and us.UidUsuario = '" + UidUsuario + "' order by al.VchMatricula";
-            query.CommandText = "select fca.DtFechaPago, fc.UidFechaColegiatura, cl.VchNombreComercial, al.VchMatricula, al.VchNombres, al.VchApePaterno, al.VchApeMaterno, al.BitBeca, al.VchTipoBeca, al.DcmBeca, co.*, fc.UidFechaColegiatura, fc.IntNum, fc.DtFHInicio as fcInicio, fc.DtFHLimite as fcLimite, fc.DtFHVencimiento as fcVencimiento, fc.DtFHFinPeriodo as fcFinPeriodo, efc.VchDescripcion as EstatusFechas, pe.VchDescripcion as Periodicidad, (select SUM(fepa.DcmImportePagado) from FechasColegiaturas feco, FechasPagos fepa, PagosColegiaturas paco where feco.UidFechaColegiatura = fepa.UidFechaColegiatura and fepa.UidPagoColegiatura = paco.UidPagoColegiatura and fepa.UidFechaColegiatura = fc.UidFechaColegiatura and fepa.UidAlumno = al.UidAlumno and (fepa.UidEstatusFechaPago = '8720B2B9-5712-4E75-A981-932887AACDC9' or fepa.UidEstatusFechaPago = 'F25E4AAB-6044-46E9-A575-98DCBCCF7604')) ImpPagado from clientes cl, Colegiaturas co, FechasColegiaturas fc, Alumnos al, Usuarios us, UsuariosAlumnos ua, EstatusFechasColegiaturas efc, Periodicidades pe, FechasColegiaturasAlumnos fca where fca.UidEstatusFechaColegiatura = efc.UidEstatusFechaColegiatura and fca.UidAlumno = al.UidAlumno and fca.UidFechaColegiatura = fc.UidFechaColegiatura and pe.UidPeriodicidad = co.UidPeriodicidad and co.UidEstatus = '65E46BC9-1864-4145-AD1A-70F5B5F69739' and (fca.UidEstatusFechaColegiatura != '5554CE57-1288-46D5-B36A-8AC69CB94B9A' and fca.UidEstatusFechaColegiatura != '605A7881-54E0-47DF-8398-EDE080F4E0AA') and cl.UidCliente = co.UidCliente and co.UidColegiatura = fc.UidColegiatura and ua.UidUsuario = us.UidUsuario and ua.UidAlumno = al.UidAlumno and cl.UidCliente = '" + UidCliente + "' and us.UidUsuario = '" + UidUsuario + "' order by al.VchMatricula";
+            query.CommandText = "select fca.BitUsarFecha, fca.DtFechaPago, fc.UidFechaColegiatura, cl.VchNombreComercial, al.VchMatricula, al.VchNombres, al.VchApePaterno, al.VchApeMaterno, al.BitBeca, al.VchTipoBeca, al.DcmBeca, co.*, fc.UidFechaColegiatura, fc.IntNum, fc.DtFHInicio as fcInicio, fc.DtFHLimite as fcLimite, fc.DtFHVencimiento as fcVencimiento, fc.DtFHFinPeriodo as fcFinPeriodo, efc.UidEstatusFechaColegiatura, efc.VchDescripcion as EstatusFechas, efc.VchColor, pe.VchDescripcion as Periodicidad, (select SUM(fepa.DcmImportePagado) from FechasColegiaturas feco, FechasPagos fepa, PagosColegiaturas paco where feco.UidFechaColegiatura = fepa.UidFechaColegiatura and fepa.UidPagoColegiatura = paco.UidPagoColegiatura and fepa.UidFechaColegiatura = fc.UidFechaColegiatura and fepa.UidAlumno = al.UidAlumno and (fepa.UidEstatusFechaPago = '8720B2B9-5712-4E75-A981-932887AACDC9' or fepa.UidEstatusFechaPago = 'F25E4AAB-6044-46E9-A575-98DCBCCF7604')) ImpPagado from clientes cl, Colegiaturas co, FechasColegiaturas fc, Alumnos al, Usuarios us, UsuariosAlumnos ua, EstatusFechasColegiaturas efc, Periodicidades pe, FechasColegiaturasAlumnos fca where fca.UidEstatusFechaColegiatura = efc.UidEstatusFechaColegiatura and fca.UidAlumno = al.UidAlumno and fca.UidFechaColegiatura = fc.UidFechaColegiatura and pe.UidPeriodicidad = co.UidPeriodicidad and co.UidEstatus = '65E46BC9-1864-4145-AD1A-70F5B5F69739' and (fca.UidEstatusFechaColegiatura != '5554CE57-1288-46D5-B36A-8AC69CB94B9A' and fca.UidEstatusFechaColegiatura != '605A7881-54E0-47DF-8398-EDE080F4E0AA') and cl.UidCliente = co.UidCliente and co.UidColegiatura = fc.UidColegiatura and ua.UidUsuario = us.UidUsuario and ua.UidAlumno = al.UidAlumno and cl.UidCliente = '" + UidCliente + "' and us.UidUsuario = '" + UidUsuario + "' order by al.VchMatricula";
 
             DataTable dt = this.Busquedas(query);
 
@@ -1463,22 +1463,11 @@ namespace Franquicia.DataAccess.Repository
                 bool FHVence = false;
                 bool blDatoFecha = false;
 
-                bool blpagar = false;
+                bool blpagar = true;
 
-                string VchColor = "#007bff";
-
-                if (!string.IsNullOrEmpty(item["EstatusFechas"].ToString()))
+                if (Guid.Parse(item["UidEstatusFechaColegiatura"].ToString()) == Guid.Parse("1331D93D-EA53-487F-BF28-E72F5E7D19BF"))
                 {
-                    switch (item["EstatusFechas"].ToString())
-                    {
-                        case "VIGENTE":
-                            blpagar = true;
-                            VchColor = "#4caf50 ";
-                            break;
-                        case "VENCIDO":
-                            VchColor = "#f55145 ";
-                            break;
-                    }
+                    blpagar = false;
                 }
 
                 if (!string.IsNullOrEmpty(item["fcLimite"].ToString()))
@@ -1491,9 +1480,12 @@ namespace Franquicia.DataAccess.Repository
                     FHVence = true;
                 }
 
-                if (!string.IsNullOrEmpty(item["DtFechaPago"].ToString()))
+                if (bool.Parse(item["BitUsarFecha"].ToString()))
                 {
-                    blDatoFecha = true;
+                    if (!string.IsNullOrEmpty(item["DtFechaPago"].ToString()))
+                    {
+                        blDatoFecha = true;
+                    }
                 }
 
                 lsPagosColegiaturasViewModel.Add(new PagosColegiaturasViewModel()
@@ -1510,7 +1502,7 @@ namespace Franquicia.DataAccess.Repository
                     VchFHVencimiento = FHVencimiento,
                     DtFHFinPeriodo = DateTime.Parse(item["fcFinPeriodo"].ToString()),
                     VchEstatusFechas = item["EstatusFechas"].ToString(),
-                    VchColor = VchColor,
+                    VchColor = item["VchColor"].ToString(),
                     BitRecargo = bool.Parse(item["BitRecargo"].ToString()),
                     VchTipoRecargo = item["VchTipoRecargo"].ToString(),
                     DcmRecargo = decimal.Parse(item["DcmRecargo"].ToString()),
@@ -1605,7 +1597,7 @@ namespace Franquicia.DataAccess.Repository
             query.CommandType = CommandType.Text;
 
             //query.CommandText = "select cl.VchNombreComercial, al.UidAlumno, al.VchMatricula, al.VchNombres, al.VchApePaterno, al.VchApeMaterno, al.BitBeca, al.VchTipoBeca, al.DcmBeca, co.*, fc.UidFechaColegiatura, fc.IntNum, fc.DtFHInicio as fcInicio, fc.DtFHLimite as fcLimite, fc.DtFHVencimiento as fcVencimiento, fc.DtFHFinPeriodo as fcFinPeriodo, efc.VchDescripcion as EstatusFechas, pe.VchDescripcion as Periodicidad from clientes cl, Colegiaturas co, FechasColegiaturas fc, ColegiaturasAlumnos ca, Alumnos al, Usuarios us, UsuariosAlumnos ua, EstatusFechasColegiaturas efc, Periodicidades pe where pe.UidPeriodicidad = co.UidPeriodicidad and not exists (select * from LigasUrls lu, PagosTarjeta pt where lu.UidUsuario = us.UidUsuario and pt.IdReferencia = lu.IdReferencia and pt.VchEstatus = 'approved' and lu.UidFechaColegiatura = fc.UidFechaColegiatura) and co.UidEstatus = '65E46BC9-1864-4145-AD1A-70F5B5F69739' and efc.UidEstatusFechaColegiatura = fc.UidEstatusFechaColegiatura and cl.UidCliente = co.UidCliente and co.UidColegiatura = fc.UidColegiatura and ca.UidColegiatura = co.UidColegiatura and ca.UidAlumno = al.UidAlumno and ua.UidUsuario = us.UidUsuario and ua.UidAlumno = al.UidAlumno and cl.UidCliente = '" + UidCliente + "' and us.UidUsuario = '" + UidUsuario + "' and fc.UidFechaColegiatura = '" + UidFechaColegiatura + "' and al.VchMatricula = '" + VchMatricula + "'";
-            query.CommandText = "select cl.VchNombreComercial, al.UidAlumno, al.VchMatricula, al.VchNombres, al.VchApePaterno, al.VchApeMaterno, al.BitBeca, al.VchTipoBeca, al.DcmBeca, co.*, fc.UidFechaColegiatura, fc.IntNum, fc.DtFHInicio as fcInicio, fc.DtFHLimite as fcLimite, fc.DtFHVencimiento as fcVencimiento, fc.DtFHFinPeriodo as fcFinPeriodo, efc.VchDescripcion as EstatusFechas, pe.VchDescripcion as Periodicidad from clientes cl, Colegiaturas co, FechasColegiaturas fc, ColegiaturasAlumnos ca, Alumnos al, Usuarios us, UsuariosAlumnos ua, EstatusFechasColegiaturas efc, Periodicidades pe where pe.UidPeriodicidad = co.UidPeriodicidad and co.UidEstatus = '65E46BC9-1864-4145-AD1A-70F5B5F69739' and efc.UidEstatusFechaColegiatura = fc.UidEstatusFechaColegiatura and cl.UidCliente = co.UidCliente and co.UidColegiatura = fc.UidColegiatura and ca.UidColegiatura = co.UidColegiatura and ca.UidAlumno = al.UidAlumno and ua.UidUsuario = us.UidUsuario and ua.UidAlumno = al.UidAlumno and cl.UidCliente = '" + UidCliente + "' and us.UidUsuario = '" + UidUsuario + "' and fc.UidFechaColegiatura = '" + UidFechaColegiatura + "' and al.VchMatricula = '" + VchMatricula + "'";
+            query.CommandText = "select cl.VchNombreComercial, al.UidAlumno, al.VchMatricula, al.VchNombres, al.VchApePaterno, al.VchApeMaterno, al.BitBeca, al.VchTipoBeca, al.DcmBeca, co.*, fc.UidFechaColegiatura, fc.IntNum, fc.DtFHInicio as fcInicio, fc.DtFHLimite as fcLimite, fc.DtFHVencimiento as fcVencimiento, fc.DtFHFinPeriodo as fcFinPeriodo, efc.UidEstatusFechaColegiatura, efc.VchDescripcion as EstatusFechas, efc.VchColor, pe.VchDescripcion as Periodicidad from clientes cl, Colegiaturas co, FechasColegiaturas fc, ColegiaturasAlumnos ca, Alumnos al, Usuarios us, UsuariosAlumnos ua, EstatusFechasColegiaturas efc, Periodicidades pe where pe.UidPeriodicidad = co.UidPeriodicidad and co.UidEstatus = '65E46BC9-1864-4145-AD1A-70F5B5F69739' and efc.UidEstatusFechaColegiatura = fc.UidEstatusFechaColegiatura and cl.UidCliente = co.UidCliente and co.UidColegiatura = fc.UidColegiatura and ca.UidColegiatura = co.UidColegiatura and ca.UidAlumno = al.UidAlumno and ua.UidUsuario = us.UidUsuario and ua.UidAlumno = al.UidAlumno and cl.UidCliente = '" + UidCliente + "' and us.UidUsuario = '" + UidUsuario + "' and fc.UidFechaColegiatura = '" + UidFechaColegiatura + "' and al.VchMatricula = '" + VchMatricula + "'";
 
             DataTable dt = this.Busquedas(query);
 
@@ -1616,22 +1608,6 @@ namespace Franquicia.DataAccess.Repository
                 bool FHVence = false;
 
                 bool blpagar = false;
-
-                string VchColor = "#007bff";
-
-                if (!string.IsNullOrEmpty(item["EstatusFechas"].ToString()))
-                {
-                    switch (item["EstatusFechas"].ToString())
-                    {
-                        case "VIGENTE":
-                            blpagar = true;
-                            VchColor = "#4caf50";
-                            break;
-                        case "VENCIDO":
-                            VchColor = "#f55145";
-                            break;
-                    }
-                }
 
                 if (!string.IsNullOrEmpty(item["fcLimite"].ToString()))
                 {
@@ -1653,7 +1629,7 @@ namespace Franquicia.DataAccess.Repository
                 pagosColegiaturasViewModel.VchFHVencimiento = FHVencimiento;
                 pagosColegiaturasViewModel.DtFHFinPeriodo = DateTime.Parse(item["fcFinPeriodo"].ToString());
                 pagosColegiaturasViewModel.VchEstatusFechas = item["EstatusFechas"].ToString();
-                pagosColegiaturasViewModel.VchColor = VchColor;
+                pagosColegiaturasViewModel.VchColor = item["VchColor"].ToString();
                 pagosColegiaturasViewModel.BitRecargo = bool.Parse(item["BitRecargo"].ToString());
                 pagosColegiaturasViewModel.VchTipoRecargo = item["VchTipoRecargo"].ToString();
                 pagosColegiaturasViewModel.DcmRecargo = decimal.Parse(item["DcmRecargo"].ToString());
@@ -1742,7 +1718,7 @@ namespace Franquicia.DataAccess.Repository
             //query.CommandText = "select cl.VchNombreComercial, al.VchMatricula, al.VchNombres, al.VchApePaterno, al.VchApeMaterno, al.BitBeca, al.VchTipoBeca, al.DcmBeca, co.*, fc.UidFechaColegiatura, fc.IntNum, fc.DtFHInicio as fcInicio, fc.DtFHLimite as fcLimite, fc.DtFHVencimiento as fcVencimiento, fc.DtFHFinPeriodo as fcFinPeriodo, efc.VchDescripcion as EstatusFechas, pe.VchDescripcion as Periodicidad from clientes cl, Colegiaturas co, FechasColegiaturas fc, ColegiaturasAlumnos ca, Alumnos al, Usuarios us, UsuariosAlumnos ua, EstatusFechasColegiaturas efc, Periodicidades pe where pe.UidPeriodicidad = co.UidPeriodicidad and not exists (select * from LigasUrls lu, PagosTarjeta pt where lu.UidUsuario = us.UidUsuario and pt.IdReferencia = lu.IdReferencia and pt.VchEstatus = 'approved' and lu.UidFechaColegiatura = fc.UidFechaColegiatura) and co.UidEstatus = '65E46BC9-1864-4145-AD1A-70F5B5F69739' and efc.UidEstatusFechaColegiatura = fc.UidEstatusFechaColegiatura and cl.UidCliente = co.UidCliente and co.UidColegiatura = fc.UidColegiatura and ca.UidColegiatura = co.UidColegiatura and ca.UidAlumno = al.UidAlumno and ua.UidUsuario = us.UidUsuario and ua.UidAlumno = al.UidAlumno and cl.UidCliente = '" + UidCliente + "' and us.UidUsuario = '" + UidUsuario + "' order by al.VchMatricula";
             // ==>ANTES DE LOS 3 IMPORTES query.CommandText = "select cl.VchNombreComercial, al.VchMatricula, al.VchNombres, al.VchApePaterno, al.VchApeMaterno, al.BitBeca, al.VchTipoBeca, al.DcmBeca, co.*, fc.UidFechaColegiatura, fc.IntNum, fc.DtFHInicio as fcInicio, fc.DtFHLimite as fcLimite, fc.DtFHVencimiento as fcVencimiento, fc.DtFHFinPeriodo as fcFinPeriodo, efc.VchDescripcion as EstatusFechas, pe.VchDescripcion as Periodicidad from clientes cl, Colegiaturas co, FechasColegiaturas fc, ColegiaturasAlumnos ca, Alumnos al, Usuarios us, UsuariosAlumnos ua, EstatusFechasColegiaturas efc, Periodicidades pe where pe.UidPeriodicidad = co.UidPeriodicidad and not exists (select * from FechasColegiaturas feco, FechasPagos fepa, PagosColegiaturas paco, Alumnos alu where alu.UidAlumno = fepa.UidAlumno and feco.UidFechaColegiatura = fepa.UidFechaColegiatura and fepa.UidPagoColegiatura = paco.UidPagoColegiatura and alu.UidAlumno = al.UidAlumno and fepa.UidEstatusFechaPago = '8720B2B9-5712-4E75-A981-932887AACDC9' and paco.UidEstatusPagoColegiatura = '51B85D66-866B-4BC2-B08F-FECE1A994053' and fepa.UidFechaColegiatura = fc.UidFechaColegiatura) and co.UidEstatus = '65E46BC9-1864-4145-AD1A-70F5B5F69739' and efc.UidEstatusFechaColegiatura = fc.UidEstatusFechaColegiatura and cl.UidCliente = co.UidCliente and co.UidColegiatura = fc.UidColegiatura and ca.UidColegiatura = co.UidColegiatura and ca.UidAlumno = al.UidAlumno and ua.UidUsuario = us.UidUsuario and ua.UidAlumno = al.UidAlumno and cl.UidCliente = '" + UidCliente + "' and us.UidUsuario = '" + UidUsuario + "' order by al.VchMatricula";
             //==> Amarre sin la tabla nueva Amarre sin la tabla nueva FecPagAlu query.CommandText = "select cl.VchNombreComercial, al.VchMatricula, al.VchNombres, al.VchApePaterno, al.VchApeMaterno, al.BitBeca, al.VchTipoBeca, al.DcmBeca, co.*, fc.UidFechaColegiatura, fc.IntNum, fc.DtFHInicio as fcInicio, fc.DtFHLimite as fcLimite, fc.DtFHVencimiento as fcVencimiento, fc.DtFHFinPeriodo as fcFinPeriodo, efc.VchDescripcion as EstatusFechas, pe.VchDescripcion as Periodicidad, (select SUM(fepa.DcmImportePagado) from FechasColegiaturas feco, FechasPagos fepa, PagosColegiaturas paco where feco.UidFechaColegiatura = fepa.UidFechaColegiatura and fepa.UidPagoColegiatura = paco.UidPagoColegiatura and fepa.UidEstatusFechaPago != '8720B2B9-5712-4E75-A981-932887AACDC9' and paco.UidEstatusPagoColegiatura = '51B85D66-866B-4BC2-B08F-FECE1A994053' and fepa.UidFechaColegiatura = fc.UidFechaColegiatura and fepa.UidAlumno = al.UidAlumno) ImpPagado from clientes cl, Colegiaturas co, FechasColegiaturas fc, ColegiaturasAlumnos ca, Alumnos al, Usuarios us, UsuariosAlumnos ua, EstatusFechasColegiaturas efc, Periodicidades pe where pe.UidPeriodicidad = co.UidPeriodicidad and co.UidEstatus = '65E46BC9-1864-4145-AD1A-70F5B5F69739' and efc.UidEstatusFechaColegiatura = fc.UidEstatusFechaColegiatura and cl.UidCliente = co.UidCliente and co.UidColegiatura = fc.UidColegiatura and ca.UidColegiatura = co.UidColegiatura and ca.UidAlumno = al.UidAlumno and ua.UidUsuario = us.UidUsuario and ua.UidAlumno = al.UidAlumno and us.UidUsuario = '" + UidUsuario + "' order by al.VchMatricula";
-            query.CommandText = "select fca.DtFechaPago, cl.VchNombreComercial, al.VchMatricula, al.VchNombres, al.VchApePaterno, al.VchApeMaterno, al.BitBeca, al.VchTipoBeca, al.DcmBeca, co.*, fc.UidFechaColegiatura, fc.IntNum, fc.DtFHInicio as fcInicio, fc.DtFHLimite as fcLimite, fc.DtFHVencimiento as fcVencimiento, fc.DtFHFinPeriodo as fcFinPeriodo, efc.VchDescripcion as EstatusFechas, pe.VchDescripcion as Periodicidad, (select SUM(fepa.DcmImportePagado) from FechasColegiaturas feco, FechasPagos fepa, PagosColegiaturas paco where feco.UidFechaColegiatura = fepa.UidFechaColegiatura and fepa.UidPagoColegiatura = paco.UidPagoColegiatura and fepa.UidFechaColegiatura = fc.UidFechaColegiatura and fepa.UidAlumno = al.UidAlumno and (fepa.UidEstatusFechaPago = '8720B2B9-5712-4E75-A981-932887AACDC9' or fepa.UidEstatusFechaPago = 'F25E4AAB-6044-46E9-A575-98DCBCCF7604')) ImpPagado from clientes cl, Colegiaturas co, FechasColegiaturas fc, Alumnos al, Usuarios us, UsuariosAlumnos ua, EstatusFechasColegiaturas efc, Periodicidades pe, FechasColegiaturasAlumnos fca where fca.UidEstatusFechaColegiatura = efc.UidEstatusFechaColegiatura and fca.UidAlumno = al.UidAlumno and fca.UidFechaColegiatura = fc.UidFechaColegiatura and  pe.UidPeriodicidad = co.UidPeriodicidad and co.UidEstatus = '65E46BC9-1864-4145-AD1A-70F5B5F69739' and cl.UidCliente = co.UidCliente and co.UidColegiatura = fc.UidColegiatura and ua.UidUsuario = us.UidUsuario and ua.UidAlumno = al.UidAlumno and us.UidUsuario = '" + UidUsuario + "' order by al.VchMatricula";
+            query.CommandText = "select fca.BitUsarFecha, fca.DtFechaPago, cl.VchNombreComercial, al.VchMatricula, al.VchNombres, al.VchApePaterno, al.VchApeMaterno, al.BitBeca, al.VchTipoBeca, al.DcmBeca, co.*, fc.UidFechaColegiatura, fc.IntNum, fc.DtFHInicio as fcInicio, fc.DtFHLimite as fcLimite, fc.DtFHVencimiento as fcVencimiento, fc.DtFHFinPeriodo as fcFinPeriodo, efc.UidEstatusFechaColegiatura, efc.VchDescripcion as EstatusFechas, efc.VchColor, pe.VchDescripcion as Periodicidad, (select SUM(fepa.DcmImportePagado) from FechasColegiaturas feco, FechasPagos fepa, PagosColegiaturas paco where feco.UidFechaColegiatura = fepa.UidFechaColegiatura and fepa.UidPagoColegiatura = paco.UidPagoColegiatura and fepa.UidFechaColegiatura = fc.UidFechaColegiatura and fepa.UidAlumno = al.UidAlumno and (fepa.UidEstatusFechaPago = '8720B2B9-5712-4E75-A981-932887AACDC9' or fepa.UidEstatusFechaPago = 'F25E4AAB-6044-46E9-A575-98DCBCCF7604')) ImpPagado from clientes cl, Colegiaturas co, FechasColegiaturas fc, Alumnos al, Usuarios us, UsuariosAlumnos ua, EstatusFechasColegiaturas efc, Periodicidades pe, FechasColegiaturasAlumnos fca where fca.UidEstatusFechaColegiatura = efc.UidEstatusFechaColegiatura and fca.UidAlumno = al.UidAlumno and fca.UidFechaColegiatura = fc.UidFechaColegiatura and  pe.UidPeriodicidad = co.UidPeriodicidad and co.UidEstatus = '65E46BC9-1864-4145-AD1A-70F5B5F69739' and cl.UidCliente = co.UidCliente and co.UidColegiatura = fc.UidColegiatura and ua.UidUsuario = us.UidUsuario and ua.UidAlumno = al.UidAlumno and us.UidUsuario = '" + UidUsuario + "' order by al.VchMatricula";
 
             DataTable dt = this.Busquedas(query);
 
@@ -1755,23 +1731,6 @@ namespace Franquicia.DataAccess.Repository
 
                 bool blpagar = false;
 
-                string VchColor = "#007bff";
-
-                if (!string.IsNullOrEmpty(item["EstatusFechas"].ToString()))
-                {
-                    switch (item["EstatusFechas"].ToString())
-                    {
-                        case "VIGENTE":
-                            blpagar = true;
-                            VchColor = "#4caf50 ";
-                            break;
-                        case "VENCIDO":
-                            blpagar = true;
-                            VchColor = "#f55145 ";
-                            break;
-                    }
-                }
-
                 if (!string.IsNullOrEmpty(item["fcLimite"].ToString()))
                 {
                     FHLimite = DateTime.Parse(item["fcLimite"].ToString()).ToString("dd/MM/yyyy");
@@ -1782,9 +1741,12 @@ namespace Franquicia.DataAccess.Repository
                     FHVence = true;
                 }
 
-                if (!string.IsNullOrEmpty(item["DtFechaPago"].ToString()))
+                if (bool.Parse(item["BitUsarFecha"].ToString()))
                 {
-                    blDatoFecha = true;
+                    if (!string.IsNullOrEmpty(item["DtFechaPago"].ToString()))
+                    {
+                        blDatoFecha = true;
+                    }
                 }
 
                 lsPagosColegiaturasViewModel.Add(new PagosColegiaturasViewModel()
@@ -1801,7 +1763,7 @@ namespace Franquicia.DataAccess.Repository
                     VchFHVencimiento = FHVencimiento,
                     DtFHFinPeriodo = DateTime.Parse(item["fcFinPeriodo"].ToString()),
                     VchEstatusFechas = item["EstatusFechas"].ToString(),
-                    VchColor = VchColor,
+                    VchColor = item["VchColor"].ToString(),
                     BitRecargo = bool.Parse(item["BitRecargo"].ToString()),
                     VchTipoRecargo = item["VchTipoRecargo"].ToString(),
                     DcmRecargo = decimal.Parse(item["DcmRecargo"].ToString()),
@@ -1856,13 +1818,13 @@ namespace Franquicia.DataAccess.Repository
                     blAprobarPago = true;
                     blRechazarPago = false;
                 }
-                
+
                 if (Guid.Parse(item["UidEstatusFechaPago"].ToString()) == Guid.Parse("F25E4AAB-6044-46E9-A575-98DCBCCF7604"))
                 {
                     blConfirmarPago = true;
                     blEditarPago = false;
                 }
-                
+
                 if (Guid.Parse(item["UidFormaPago"].ToString()) == Guid.Parse("31BE9A23-73EE-4F44-AF6C-6C0648DCEBF7"))
                 {
                     blAprobarPago = false;
@@ -1871,7 +1833,7 @@ namespace Franquicia.DataAccess.Repository
                     blConfirmarPago = false;
                     blEditarPago = false;
                 }
-                
+
                 if (Guid.Parse(item["UidFormaPago"].ToString()) == Guid.Parse("D92A2C64-C797-4C96-AD18-C2A433081F37") || Guid.Parse(item["UidFormaPago"].ToString()) == Guid.Parse("3359D33E-C879-4A8B-96D3-C6A211AF014F"))
                 {
                     blAprobarPago = false;
@@ -1940,7 +1902,7 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select al.BitBeca, al.VchTipoBeca, al.DcmBeca, co.*, fc.DtFHInicio as fcInicio, fc.DtFHLimite as fcLimite, fc.DtFHVencimiento as fcVencimiento, fc.DtFHFinPeriodo as fcFinPeriodo, efc.VchDescripcion as EstatusFechas, pe.VchDescripcion as Periodicidad, fca.DtFechaPago from Usuarios us, UsuariosAlumnos ua, Alumnos al, FechasColegiaturasAlumnos fca, FechasColegiaturas fc, Colegiaturas co, clientes cl, EstatusFechasColegiaturas efc, Periodicidades pe where us.UidUsuario = ua.UidUsuario and al.UidAlumno = ua.UidAlumno and fca.UidAlumno = al.UidAlumno and fca.UidFechaColegiatura = fc.UidFechaColegiatura and fc.UidColegiatura = co.UidColegiatura and cl.UidCliente = co.UidCliente and efc.UidEstatusFechaColegiatura = fca.UidEstatusFechaColegiatura and pe.UidPeriodicidad = co.UidPeriodicidad and co.UidEstatus = '65E46BC9-1864-4145-AD1A-70F5B5F69739' and cl.UidCliente = '" + UidCliente + "' and us.UidUsuario = '" + UidUsuario + "' and fc.UidFechaColegiatura = '" + UidFechaColegiatura + "' and al.UidAlumno = '" + UidAlumno + "'";
+            query.CommandText = "select al.BitBeca, al.VchTipoBeca, al.DcmBeca, co.*, fc.DtFHInicio as fcInicio, fc.DtFHLimite as fcLimite, fc.DtFHVencimiento as fcVencimiento, fc.DtFHFinPeriodo as fcFinPeriodo, efc.VchDescripcion as EstatusFechas, pe.VchDescripcion as Periodicidad, fca.BitUsarFecha, fca.DtFechaPago from Usuarios us, UsuariosAlumnos ua, Alumnos al, FechasColegiaturasAlumnos fca, FechasColegiaturas fc, Colegiaturas co, clientes cl, EstatusFechasColegiaturas efc, Periodicidades pe where us.UidUsuario = ua.UidUsuario and al.UidAlumno = ua.UidAlumno and fca.UidAlumno = al.UidAlumno and fca.UidFechaColegiatura = fc.UidFechaColegiatura and fc.UidColegiatura = co.UidColegiatura and cl.UidCliente = co.UidCliente and efc.UidEstatusFechaColegiatura = fca.UidEstatusFechaColegiatura and pe.UidPeriodicidad = co.UidPeriodicidad and co.UidEstatus = '65E46BC9-1864-4145-AD1A-70F5B5F69739' and cl.UidCliente = '" + UidCliente + "' and us.UidUsuario = '" + UidUsuario + "' and fc.UidFechaColegiatura = '" + UidFechaColegiatura + "' and al.UidAlumno = '" + UidAlumno + "'";
 
             DataTable dt = this.Busquedas(query);
 
@@ -1959,9 +1921,12 @@ namespace Franquicia.DataAccess.Repository
                     FHVencimiento = DateTime.Parse(item["fcVencimiento"].ToString()).ToString("dd/MM/yyyy");
                 }
 
-                if (!string.IsNullOrEmpty(item["DtFechaPago"].ToString()))
+                if (bool.Parse(item["BitUsarFecha"].ToString()))
                 {
-                    blDatoFecha = true;
+                    if (!string.IsNullOrEmpty(item["DtFechaPago"].ToString()))
+                    {
+                        blDatoFecha = true;
+                    }
                 }
 
                 ImporteColegiatura = Calculo(decimal.Parse(
@@ -1985,7 +1950,7 @@ namespace Franquicia.DataAccess.Repository
             }
             return decimal.Parse(ImporteColegiatura.ToString("N2"));
         }
-        public bool ActualizarEstatusFeColegiaturaAlumno(Guid UidFechaColegiatura, Guid UidAlumno, Guid UidEstatus)
+        public bool ActualizarEstatusFeColegiaturaAlumno(Guid UidFechaColegiatura, Guid UidAlumno, Guid UidEstatus, bool BitUsarFecha)
         {
             bool Resultado = false;
 
@@ -2004,6 +1969,9 @@ namespace Franquicia.DataAccess.Repository
                 comando.Parameters.Add("@UidEstatus", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidEstatus"].Value = UidEstatus;
 
+                comando.Parameters.Add("@BitUsarFecha", SqlDbType.Bit);
+                comando.Parameters["@BitUsarFecha"].Value = BitUsarFecha;
+
                 Resultado = this.ManipulacionDeDatos(comando);
             }
             catch (Exception)
@@ -2011,6 +1979,86 @@ namespace Franquicia.DataAccess.Repository
                 throw;
             }
             return Resultado;
+        }
+
+        public string ObtenerEstatusColegiaturasRLE(DateTime hoy, Guid UidFechaColegiatura, Guid UidAlumno)
+        {
+            string valor = string.Empty;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select fc.*, efc.UidEstatusFechaColegiatura, efc.VchDescripcion as EstatusFechaColegiatura from FechasColegiaturasAlumnos fca, FechasColegiaturas fc, EstatusFechasColegiaturas efc where efc.UidEstatusFechaColegiatura = fca.UidEstatusFechaColegiatura and fca.UidFechaColegiatura = fc.UidFechaColegiatura and fca.UidFechaColegiatura = '" + UidFechaColegiatura + "' and fca.UidAlumno = '" + UidAlumno + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                Guid EstatusFechaColegiatura = Guid.Parse("76C8793B-4493-44C8-B274-696A61358BDF");
+                string strEstatusFechaColegiatura = "VIGENTE";
+
+                //DtFHInicio DtFHLimite  DtFHVencimiento DtFHFinPeriodo
+
+                if (!string.IsNullOrEmpty(item["DtFHLimite"].ToString()))
+                {
+
+                    if (hoy > DateTime.Parse(item["DtFHLimite"].ToString()))
+                    {
+                        strEstatusFechaColegiatura = "RETRASADO";
+                        EstatusFechaColegiatura = Guid.Parse("FD1E57E9-1476-482A-A850-501E55298500");
+                    }
+
+                    if (!string.IsNullOrEmpty(item["DtFHVencimiento"].ToString()))
+                    {
+                        if (hoy > DateTime.Parse(item["DtFHVencimiento"].ToString()))
+                        {
+                            strEstatusFechaColegiatura = "VENCIDO";
+                            EstatusFechaColegiatura = Guid.Parse("DB36D040-9E05-4E7B-83B4-DD4FF0D5AC3C");
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(item["DtFHFinPeriodo"].ToString()))
+                    {
+                        if (hoy > DateTime.Parse(item["DtFHFinPeriodo"].ToString()))
+                        {
+                            strEstatusFechaColegiatura = "BLOQUEADO";
+                            EstatusFechaColegiatura = Guid.Parse("1331D93D-EA53-487F-BF28-E72F5E7D19BF");
+                        }
+                    }
+
+                }
+                else if (!string.IsNullOrEmpty(item["DtFHVencimiento"].ToString()))
+                {
+
+                    if (hoy > DateTime.Parse(item["DtFHVencimiento"].ToString()))
+                    {
+                        strEstatusFechaColegiatura = "VENCIDO";
+                        EstatusFechaColegiatura = Guid.Parse("DB36D040-9E05-4E7B-83B4-DD4FF0D5AC3C");
+                    }
+                    if (!string.IsNullOrEmpty(item["DtFHFinPeriodo"].ToString()))
+                    {
+                        if (hoy > DateTime.Parse(item["DtFHFinPeriodo"].ToString()))
+                        {
+                            strEstatusFechaColegiatura = "BLOQUEADO";
+                            EstatusFechaColegiatura = Guid.Parse("1331D93D-EA53-487F-BF28-E72F5E7D19BF");
+                        }
+                    }
+
+                }
+                else if (!string.IsNullOrEmpty(item["DtFHFinPeriodo"].ToString()))
+                {
+                    if (hoy > DateTime.Parse(item["DtFHFinPeriodo"].ToString()))
+                    {
+                        strEstatusFechaColegiatura = "BLOQUEADO";
+                        EstatusFechaColegiatura = Guid.Parse("1331D93D-EA53-487F-BF28-E72F5E7D19BF");
+                    }
+                }
+
+                valor = EstatusFechaColegiatura.ToString();
+
+
+            }
+            return valor;
         }
 
         public List<PagosReporteLigaEscuelaViewModels> BuscarPagosEscuelas(Guid UidCliente, string Colegiatura, string NumPago, string Matricula, string AlNombre, string AlApePaterno, string AlApeMaterno, string TuNombre, string TuApePaterno, string TuApeMaterno, string Folio, string Cuenta, string Banco, decimal ImporteMayor, decimal ImporteMenor, string RegistroDesde, string RegistroHasta, Guid FormaPago, Guid Estatus)
@@ -2027,7 +2075,7 @@ namespace Franquicia.DataAccess.Repository
                     comando.Parameters.Add("@UidCliente", SqlDbType.UniqueIdentifier);
                     comando.Parameters["@UidCliente"].Value = UidCliente;
                 }
-                
+
                 if (Colegiatura != string.Empty)
                 {
                     comando.Parameters.Add("@Colegiatura", SqlDbType.VarChar, 50);
@@ -2231,7 +2279,7 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select fca.DtFechaPago, fc.UidFechaColegiatura, cl.VchNombreComercial, al.VchMatricula, al.VchNombres, al.VchApePaterno, al.VchApeMaterno, al.BitBeca, al.VchTipoBeca, al.DcmBeca, co.*, fc.UidFechaColegiatura, fc.IntNum, fc.DtFHInicio as fcInicio, fc.DtFHLimite as fcLimite, fc.DtFHVencimiento as fcVencimiento, fc.DtFHFinPeriodo as fcFinPeriodo, efc.VchDescripcion as EstatusFechas, pe.VchDescripcion as Periodicidad, (select SUM(fepa.DcmImportePagado) from FechasColegiaturas feco, FechasPagos fepa, PagosColegiaturas paco where feco.UidFechaColegiatura = fepa.UidFechaColegiatura and fepa.UidPagoColegiatura = paco.UidPagoColegiatura and fepa.UidFechaColegiatura = fc.UidFechaColegiatura and fepa.UidAlumno = al.UidAlumno and (fepa.UidEstatusFechaPago = '8720B2B9-5712-4E75-A981-932887AACDC9' or fepa.UidEstatusFechaPago = 'F25E4AAB-6044-46E9-A575-98DCBCCF7604')) ImpPagado from clientes cl, Colegiaturas co, FechasColegiaturas fc, Alumnos al, EstatusFechasColegiaturas efc, Periodicidades pe, FechasColegiaturasAlumnos fca where fca.UidEstatusFechaColegiatura = efc.UidEstatusFechaColegiatura and fca.UidAlumno = al.UidAlumno and fca.UidFechaColegiatura = fc.UidFechaColegiatura and pe.UidPeriodicidad = co.UidPeriodicidad and co.UidEstatus = '65E46BC9-1864-4145-AD1A-70F5B5F69739' and (fca.UidEstatusFechaColegiatura != '5554CE57-1288-46D5-B36A-8AC69CB94B9A' and fca.UidEstatusFechaColegiatura != '605A7881-54E0-47DF-8398-EDE080F4E0AA') and cl.UidCliente = co.UidCliente and co.UidColegiatura = fc.UidColegiatura and cl.UidCliente = '" + UidCliente + "' and al.UidAlumno = '" + UidAlumno + "' order by al.VchMatricula";
+            query.CommandText = "select fca.BitUsarFecha, fca.DtFechaPago, fc.UidFechaColegiatura, cl.VchNombreComercial, al.VchMatricula, al.VchNombres, al.VchApePaterno, al.VchApeMaterno, al.BitBeca, al.VchTipoBeca, al.DcmBeca, co.*, fc.UidFechaColegiatura, fc.IntNum, fc.DtFHInicio as fcInicio, fc.DtFHLimite as fcLimite, fc.DtFHVencimiento as fcVencimiento, fc.DtFHFinPeriodo as fcFinPeriodo, efc.UidEstatusFechaColegiatura, efc.VchDescripcion as EstatusFechas, efc.VchColor, pe.VchDescripcion as Periodicidad, (select SUM(fepa.DcmImportePagado) from FechasColegiaturas feco, FechasPagos fepa, PagosColegiaturas paco where feco.UidFechaColegiatura = fepa.UidFechaColegiatura and fepa.UidPagoColegiatura = paco.UidPagoColegiatura and fepa.UidFechaColegiatura = fc.UidFechaColegiatura and fepa.UidAlumno = al.UidAlumno and (fepa.UidEstatusFechaPago = '8720B2B9-5712-4E75-A981-932887AACDC9' or fepa.UidEstatusFechaPago = 'F25E4AAB-6044-46E9-A575-98DCBCCF7604')) ImpPagado from clientes cl, Colegiaturas co, FechasColegiaturas fc, Alumnos al, EstatusFechasColegiaturas efc, Periodicidades pe, FechasColegiaturasAlumnos fca where fca.UidEstatusFechaColegiatura = efc.UidEstatusFechaColegiatura and fca.UidAlumno = al.UidAlumno and fca.UidFechaColegiatura = fc.UidFechaColegiatura and pe.UidPeriodicidad = co.UidPeriodicidad and co.UidEstatus = '65E46BC9-1864-4145-AD1A-70F5B5F69739' and (fca.UidEstatusFechaColegiatura != '5554CE57-1288-46D5-B36A-8AC69CB94B9A' and fca.UidEstatusFechaColegiatura != '605A7881-54E0-47DF-8398-EDE080F4E0AA') and cl.UidCliente = co.UidCliente and co.UidColegiatura = fc.UidColegiatura and fca.UidEstatusFechaColegiatura != '1331D93D-EA53-487F-BF28-E72F5E7D19BF' and cl.UidCliente = '" + UidCliente + "' and al.UidAlumno = '" + UidAlumno + "' order by al.VchMatricula";
 
             DataTable dt = this.Busquedas(query);
 
@@ -2244,22 +2292,6 @@ namespace Franquicia.DataAccess.Repository
 
                 bool blpagar = false;
 
-                string VchColor = "#007bff";
-
-                if (!string.IsNullOrEmpty(item["EstatusFechas"].ToString()))
-                {
-                    switch (item["EstatusFechas"].ToString())
-                    {
-                        case "VIGENTE":
-                            blpagar = true;
-                            VchColor = "#4caf50 ";
-                            break;
-                        case "VENCIDO":
-                            VchColor = "#f55145 ";
-                            break;
-                    }
-                }
-
                 if (!string.IsNullOrEmpty(item["fcLimite"].ToString()))
                 {
                     FHLimite = DateTime.Parse(item["fcLimite"].ToString()).ToString("dd/MM/yyyy");
@@ -2270,9 +2302,12 @@ namespace Franquicia.DataAccess.Repository
                     FHVence = true;
                 }
 
-                if (!string.IsNullOrEmpty(item["DtFechaPago"].ToString()))
+                if (bool.Parse(item["BitUsarFecha"].ToString()))
                 {
-                    blDatoFecha = true;
+                    if (!string.IsNullOrEmpty(item["DtFechaPago"].ToString()))
+                    {
+                        blDatoFecha = true;
+                    }
                 }
 
                 lsPagosColegiaturasViewModel.Add(new PagosColegiaturasViewModel()
@@ -2289,7 +2324,7 @@ namespace Franquicia.DataAccess.Repository
                     VchFHVencimiento = FHVencimiento,
                     DtFHFinPeriodo = DateTime.Parse(item["fcFinPeriodo"].ToString()),
                     VchEstatusFechas = item["EstatusFechas"].ToString(),
-                    VchColor = VchColor,
+                    VchColor = item["VchColor"].ToString(),
                     BitRecargo = bool.Parse(item["BitRecargo"].ToString()),
                     VchTipoRecargo = item["VchTipoRecargo"].ToString(),
                     DcmRecargo = decimal.Parse(item["DcmRecargo"].ToString()),
@@ -2319,7 +2354,7 @@ namespace Franquicia.DataAccess.Repository
             query.CommandType = CommandType.Text;
 
             //con tutor query.CommandText = "select cl.VchNombreComercial, al.UidAlumno, al.VchMatricula, al.VchNombres, al.VchApePaterno, al.VchApeMaterno, al.BitBeca, al.VchTipoBeca, al.DcmBeca, co.*, fc.UidFechaColegiatura, fc.IntNum, fc.DtFHInicio as fcInicio, fc.DtFHLimite as fcLimite, fc.DtFHVencimiento as fcVencimiento, fc.DtFHFinPeriodo as fcFinPeriodo, efc.VchDescripcion as EstatusFechas, pe.VchDescripcion as Periodicidad from clientes cl, Colegiaturas co, FechasColegiaturas fc, ColegiaturasAlumnos ca, Alumnos al, Usuarios us, UsuariosAlumnos ua, EstatusFechasColegiaturas efc, Periodicidades pe where pe.UidPeriodicidad = co.UidPeriodicidad and co.UidEstatus = '65E46BC9-1864-4145-AD1A-70F5B5F69739' and efc.UidEstatusFechaColegiatura = fc.UidEstatusFechaColegiatura and cl.UidCliente = co.UidCliente and co.UidColegiatura = fc.UidColegiatura and ca.UidColegiatura = co.UidColegiatura and ca.UidAlumno = al.UidAlumno and ua.UidUsuario = us.UidUsuario and ua.UidAlumno = al.UidAlumno and cl.UidCliente = '" + UidCliente + "' and us.UidUsuario = '" + UidUsuario + "' and fc.UidFechaColegiatura = '" + UidFechaColegiatura + "' and al.VchMatricula = '" + VchMatricula + "'";
-            query.CommandText = "select cl.VchNombreComercial, al.UidAlumno, al.VchMatricula, al.VchNombres, al.VchApePaterno, al.VchApeMaterno, al.BitBeca, al.VchTipoBeca, al.DcmBeca, co.*, fc.UidFechaColegiatura, fc.IntNum, fc.DtFHInicio as fcInicio, fc.DtFHLimite as fcLimite, fc.DtFHVencimiento as fcVencimiento, fc.DtFHFinPeriodo as fcFinPeriodo, efc.VchDescripcion as EstatusFechas, pe.VchDescripcion as Periodicidad from clientes cl, Colegiaturas co, FechasColegiaturas fc, ColegiaturasAlumnos ca, Alumnos al, EstatusFechasColegiaturas efc, Periodicidades pe where pe.UidPeriodicidad = co.UidPeriodicidad and co.UidEstatus = '65E46BC9-1864-4145-AD1A-70F5B5F69739' and efc.UidEstatusFechaColegiatura = fc.UidEstatusFechaColegiatura and cl.UidCliente = co.UidCliente and co.UidColegiatura = fc.UidColegiatura and ca.UidColegiatura = co.UidColegiatura and ca.UidAlumno = al.UidAlumno and cl.UidCliente = '" + UidCliente + "' and fc.UidFechaColegiatura = '" + UidFechaColegiatura + "' and al.UidAlumno = '" + UidAlumno + "'";
+            query.CommandText = "select cl.VchNombreComercial, al.UidAlumno, al.VchMatricula, al.VchNombres, al.VchApePaterno, al.VchApeMaterno, al.BitBeca, al.VchTipoBeca, al.DcmBeca, co.*, fc.UidFechaColegiatura, fc.IntNum, fc.DtFHInicio as fcInicio, fc.DtFHLimite as fcLimite, fc.DtFHVencimiento as fcVencimiento, fc.DtFHFinPeriodo as fcFinPeriodo, efc.UidEstatusFechaColegiatura, efc.VchDescripcion as EstatusFechas, efc.VchColor, pe.VchDescripcion as Periodicidad from clientes cl, Colegiaturas co, FechasColegiaturas fc, ColegiaturasAlumnos ca, Alumnos al, EstatusFechasColegiaturas efc, Periodicidades pe where pe.UidPeriodicidad = co.UidPeriodicidad and co.UidEstatus = '65E46BC9-1864-4145-AD1A-70F5B5F69739' and efc.UidEstatusFechaColegiatura = fc.UidEstatusFechaColegiatura and cl.UidCliente = co.UidCliente and co.UidColegiatura = fc.UidColegiatura and ca.UidColegiatura = co.UidColegiatura and ca.UidAlumno = al.UidAlumno and cl.UidCliente = '" + UidCliente + "' and fc.UidFechaColegiatura = '" + UidFechaColegiatura + "' and al.UidAlumno = '" + UidAlumno + "'";
 
             DataTable dt = this.Busquedas(query);
 
@@ -2330,22 +2365,6 @@ namespace Franquicia.DataAccess.Repository
                 bool FHVence = false;
 
                 bool blpagar = false;
-
-                string VchColor = "#007bff";
-
-                if (!string.IsNullOrEmpty(item["EstatusFechas"].ToString()))
-                {
-                    switch (item["EstatusFechas"].ToString())
-                    {
-                        case "VIGENTE":
-                            blpagar = true;
-                            VchColor = "#4caf50";
-                            break;
-                        case "VENCIDO":
-                            VchColor = "#f55145";
-                            break;
-                    }
-                }
 
                 if (!string.IsNullOrEmpty(item["fcLimite"].ToString()))
                 {
@@ -2367,7 +2386,7 @@ namespace Franquicia.DataAccess.Repository
                 pagosColegiaturasViewModel.VchFHVencimiento = FHVencimiento;
                 pagosColegiaturasViewModel.DtFHFinPeriodo = DateTime.Parse(item["fcFinPeriodo"].ToString());
                 pagosColegiaturasViewModel.VchEstatusFechas = item["EstatusFechas"].ToString();
-                pagosColegiaturasViewModel.VchColor = VchColor;
+                pagosColegiaturasViewModel.VchColor = item["VchColor"].ToString();
                 pagosColegiaturasViewModel.BitRecargo = bool.Parse(item["BitRecargo"].ToString());
                 pagosColegiaturasViewModel.VchTipoRecargo = item["VchTipoRecargo"].ToString();
                 pagosColegiaturasViewModel.DcmRecargo = decimal.Parse(item["DcmRecargo"].ToString());
@@ -2393,7 +2412,94 @@ namespace Franquicia.DataAccess.Repository
 
 
         #region Procesos Automaticos
-        public bool ActualizarEstatusFechasPagos(DateTime Fecha)
+        public List<FCAATMViewModel> ObtenerFechaColegiaturasATM(DateTime hoy)
+        {
+            List<FCAATMViewModel> lsFCAATMViewModel = new List<FCAATMViewModel>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select *, efc.VchDescripcion as EstatusFechaColegiatura from FechasColegiaturasAlumnos fca, FechasColegiaturas fc, EstatusFechasColegiaturas efc where efc.UidEstatusFechaColegiatura = fca.UidEstatusFechaColegiatura and fca.UidEstatusFechaColegiatura != '5554CE57-1288-46D5-B36A-8AC69CB94B9A' and fca.UidEstatusFechaColegiatura != '605A7881-54E0-47DF-8398-EDE080F4E0AA' and fca.UidFechaColegiatura = fc.UidFechaColegiatura";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                Guid EstatusFechaColegiatura = Guid.Parse("76C8793B-4493-44C8-B274-696A61358BDF");
+                string strEstatusFechaColegiatura = "VIGENTE";
+
+                //DtFHInicio DtFHLimite  DtFHVencimiento DtFHFinPeriodo
+
+                if (!string.IsNullOrEmpty(item["DtFHLimite"].ToString()))
+                {
+
+                    if (hoy > DateTime.Parse(item["DtFHLimite"].ToString()))
+                    {
+                        strEstatusFechaColegiatura = "RETRASADO";
+                        EstatusFechaColegiatura = Guid.Parse("FD1E57E9-1476-482A-A850-501E55298500");
+                    }
+
+                    if (!string.IsNullOrEmpty(item["DtFHVencimiento"].ToString()))
+                    {
+                        if (hoy > DateTime.Parse(item["DtFHVencimiento"].ToString()))
+                        {
+                            strEstatusFechaColegiatura = "VENCIDO";
+                            EstatusFechaColegiatura = Guid.Parse("DB36D040-9E05-4E7B-83B4-DD4FF0D5AC3C");
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(item["DtFHFinPeriodo"].ToString()))
+                    {
+                        if (hoy > DateTime.Parse(item["DtFHFinPeriodo"].ToString()))
+                        {
+                            strEstatusFechaColegiatura = "BLOQUEADO";
+                            EstatusFechaColegiatura = Guid.Parse("1331D93D-EA53-487F-BF28-E72F5E7D19BF");
+                        }
+                    }
+
+                }
+                else if (!string.IsNullOrEmpty(item["DtFHVencimiento"].ToString()))
+                {
+
+                    if (hoy > DateTime.Parse(item["DtFHVencimiento"].ToString()))
+                    {
+                        strEstatusFechaColegiatura = "VENCIDO";
+                        EstatusFechaColegiatura = Guid.Parse("DB36D040-9E05-4E7B-83B4-DD4FF0D5AC3C");
+                    }
+                    if (!string.IsNullOrEmpty(item["DtFHFinPeriodo"].ToString()))
+                    {
+                        if (hoy > DateTime.Parse(item["DtFHFinPeriodo"].ToString()))
+                        {
+                            strEstatusFechaColegiatura = "BLOQUEADO";
+                            EstatusFechaColegiatura = Guid.Parse("1331D93D-EA53-487F-BF28-E72F5E7D19BF");
+                        }
+                    }
+
+                }
+                else if (!string.IsNullOrEmpty(item["DtFHFinPeriodo"].ToString()))
+                {
+                    if (hoy > DateTime.Parse(item["DtFHFinPeriodo"].ToString()))
+                    {
+                        strEstatusFechaColegiatura = "BLOQUEADO";
+                        EstatusFechaColegiatura = Guid.Parse("1331D93D-EA53-487F-BF28-E72F5E7D19BF");
+                    }
+                }
+
+                lsFCAATMViewModel.Add(new FCAATMViewModel()
+                {
+                    UidFechaColegiaturaAlumno = Guid.Parse(item["UidFechaColegiaturaAlumno"].ToString()),
+                    UidFechaColegiatura = Guid.Parse(item["UidFechaColegiatura"].ToString()),
+                    UidAlumno = Guid.Parse(item["UidAlumno"].ToString()),
+                    EstatusFechaColegiatura = strEstatusFechaColegiatura,
+                    FHInicio = DateTime.Parse(item["DtFHInicio"].ToString()).ToString("dd/MM/yyyy"),
+                    FHLimite = item["DtFHLimite"].ToString(),
+                    FHVencimiento = item["DtFHVencimiento"].ToString(),
+                    UidEstatusFechaColegiatura = EstatusFechaColegiatura
+                });
+            }
+            return lsFCAATMViewModel;
+        }
+        public bool ActualizarEstatusFechasPagosATM(Guid UidFechaColegiaturaAlumno, Guid UidEstatusFechaColegiatura)
         {
             bool Resultado = false;
 
@@ -2403,8 +2509,11 @@ namespace Franquicia.DataAccess.Repository
                 comando.CommandType = System.Data.CommandType.StoredProcedure;
                 comando.CommandText = "sp_ColegiaturasFechasActualizarAutomatico";
 
-                comando.Parameters.Add("@Fecha", SqlDbType.Date);
-                comando.Parameters["@Fecha"].Value = Fecha;
+                comando.Parameters.Add("@UidFechaColegiaturaAlumno", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidFechaColegiaturaAlumno"].Value = UidFechaColegiaturaAlumno;
+
+                comando.Parameters.Add("@UidEstatusFechaColegiatura", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidEstatusFechaColegiatura"].Value = UidEstatusFechaColegiatura;
 
                 Resultado = this.ManipulacionDeDatos(comando);
             }

@@ -849,6 +849,8 @@ namespace PagaLaEscuela.Views
                             }
 
                             pagosColegiaturasServices.ActualizarImporteResta(Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()), decimal.Parse(ViewState["ImporteResta"].ToString()));
+
+                            ValidarPago(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()));
                         }
                     }
                     else
@@ -941,6 +943,36 @@ namespace PagaLaEscuela.Views
             url = str1.Replace("</nb_url></P_RESPONSE>", "");
 
             return url;
+        }
+
+        private void ValidarPago(Guid UidClienteLocal, Guid UidUsuario, Guid UidFechaColegiatura, Guid UidAlumno)
+        {
+            //Necesito saber el importe de la colegiatura
+            decimal ImporteCole = colegiaturasServices.ObtenerDatosFechaColegiatura(UidClienteLocal, UidUsuario, UidFechaColegiatura, UidAlumno);
+
+            //Necesito saber el importe de todos los pagos
+            decimal ImportePagado = pagosColegiaturasServices.ObtenerPagosPadresRLE(UidFechaColegiatura, UidAlumno);
+            decimal ImportePendiente = pagosColegiaturasServices.ObtenerPendientesPadresRLE(UidFechaColegiatura, UidAlumno);
+
+            // ==>Validar con importe<==
+            if (ImporteCole == ImportePagado) //el importeColegiatura es igual al importe de todos los pagos con estatus aprobado
+            {
+                //Se cambia el estatus de la colegiatura a pagado.
+                colegiaturasServices.ActualizarEstatusFeColegiaturaAlumno(UidFechaColegiatura, UidAlumno, Guid.Parse("605A7881-54E0-47DF-8398-EDE080F4E0AA"), true);
+            }
+            else if (ImporteCole == (ImportePagado + ImportePendiente)) //el importe de los pagos aprobado y pendiente es igual al importe la colegiatura
+            {
+                // La colegiatura mantiene el estatus en proceso
+                colegiaturasServices.ActualizarEstatusFeColegiaturaAlumno(UidFechaColegiatura, UidAlumno, Guid.Parse("5554CE57-1288-46D5-B36A-8AC69CB94B9A"), true);
+            }
+            else
+            {
+                // La colegiatura regresa al ultimo estatus
+                DateTime HoraDelServidor = DateTime.Now;
+                DateTime hoy = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(HoraDelServidor, TimeZoneInfo.Local.Id, "Eastern Standard Time (Mexico)");
+                string UidEstatus = colegiaturasServices.ObtenerEstatusColegiaturasRLE(hoy, UidFechaColegiatura, UidAlumno);
+                colegiaturasServices.ActualizarEstatusFeColegiaturaAlumno(UidFechaColegiatura, UidAlumno, Guid.Parse(UidEstatus.ToString()), false);
+            }
         }
         protected void tmValidar_Tick(object sender, EventArgs e)
         {
@@ -1072,7 +1104,7 @@ namespace PagaLaEscuela.Views
                         }
                     }
 
-                    Resta = decimal.Parse(lblImporteTotal.Text) - SubTotal;
+                    Resta = decimal.Parse(lblImporteTotal.Text) - decimal.Parse(SubTotal.ToString("N2"));
                     ViewState["ImporteResta"] = Resta;
 
                     lblToolApagar.Text = "Subtotal: $" + SubTotal.ToString("N2") + "<br />"

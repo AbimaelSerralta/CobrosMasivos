@@ -27,6 +27,9 @@ namespace Franquicia.Bussiness
         public List<PagosReporteLigaEscuelaViewModels> lsPagosReporteLigaEscuelaViewModels = new List<PagosReporteLigaEscuelaViewModels>();
 
         public List<ColegiaturasFechasGridViewModel> lsFechasColegiaturas = new List<ColegiaturasFechasGridViewModel>();
+        
+        
+        public List<FCAATMViewModel> lsFCAATMViewModel = new List<FCAATMViewModel>();
 
         #region Metodos Cliente
         public List<ColegiaturasGridViewModel> CargarColegiaturas(Guid UidCliente)
@@ -295,9 +298,14 @@ namespace Franquicia.Bussiness
         {
             return colegiaturasRepository.ObtenerDatosFechaColegiatura(UidCliente, UidUsuario, UidFechaColegiatura, UidAlumno);
         }
-        public bool ActualizarEstatusFeColegiaturaAlumno(Guid UidFechaColegiatura, Guid UidAlumno, Guid UidEstatus)
+        public bool ActualizarEstatusFeColegiaturaAlumno(Guid UidFechaColegiatura, Guid UidAlumno, Guid UidEstatus, bool BitUsarFecha)
         {
-            return colegiaturasRepository.ActualizarEstatusFeColegiaturaAlumno(UidFechaColegiatura, UidAlumno, UidEstatus);
+            return colegiaturasRepository.ActualizarEstatusFeColegiaturaAlumno(UidFechaColegiatura, UidAlumno, UidEstatus, BitUsarFecha);
+        }
+
+        public string ObtenerEstatusColegiaturasRLE(DateTime hoy, Guid UidFechaColegiatura, Guid UidAlumno)
+        {
+            return colegiaturasRepository.ObtenerEstatusColegiaturasRLE(hoy, UidFechaColegiatura, UidAlumno);
         }
 
         public List<PagosReporteLigaEscuelaViewModels> BuscarPagosEscuelas(Guid UidCliente, string Colegiatura, string NumPago, string Matricula, string AlNombre, string AlApePaterno, string AlApeMaterno, string TuNombre, string TuApePaterno, string TuApeMaterno, string Folio, string Cuenta, string Banco, decimal ImporteMayor, decimal ImporteMenor, string RegistroDesde, string RegistroHasta, Guid FormaPago, Guid Estatus)
@@ -318,9 +326,13 @@ namespace Franquicia.Bussiness
         #endregion
 
         #region Procesos Automaticos
-        public void ActualizarEstatusFechasPagos(DateTime Fecha)
+        public List<FCAATMViewModel> ObtenerFechaColegiaturasATM(DateTime Fecha)
         {
-            colegiaturasRepository.ActualizarEstatusFechasPagos(Fecha);
+            return lsFCAATMViewModel = colegiaturasRepository.ObtenerFechaColegiaturasATM(Fecha);
+        }
+        public bool ActualizarEstatusFechasPagosATM(Guid UidFechaColegiaturaAlumno, Guid UidEstatusFechaColegiatura)
+        {
+            return colegiaturasRepository.ActualizarEstatusFechasPagosATM(UidFechaColegiaturaAlumno, UidEstatusFechaColegiatura);
         }
         #endregion
     }

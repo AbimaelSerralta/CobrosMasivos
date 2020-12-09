@@ -46,6 +46,8 @@ namespace PagaLaEscuela.Views
                 txtTotaltb.Attributes.Add("onchange", "button_click(this,'" + btnCalcular.ClientID + "')");
 
                 ViewState["gvDatos"] = SortDirection.Ascending;
+                ViewState["gvAlumnos"] = SortDirection.Ascending;
+                ViewState["gvPagos"] = SortDirection.Ascending;
 
                 Session["pagosTarjetaServices"] = pagosTarjetaServices;
                 Session["colegiaturasServices"] = colegiaturasServices;
@@ -216,7 +218,7 @@ namespace PagaLaEscuela.Views
             gvAlumnos.DataSource = null;
             gvAlumnos.DataBind();
 
-            btnFiltroBuscar_Click(null, null);
+            btnFiltroLimpiar_Click(null, null);
 
             ViewState["gvPagosSelect"] = false;
             gvPagos.SelectedIndex = -1;
@@ -766,7 +768,7 @@ namespace PagaLaEscuela.Views
 
                 if (pagosColegiaturasServices.ActualizarEstatusFechaPago(Guid.Parse(ViewState["RowCommand-UidPagoColegiatura"].ToString()), Guid.Parse("8720B2B9-5712-4E75-A981-932887AACDC9")))
                 {
-                    ValidarPago();
+                    ValidarPago(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse(ViewState["RowCommand-UidUsuario"].ToString()), Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()));
 
                     ActualizarDatosPrincipal();
 
@@ -803,7 +805,7 @@ namespace PagaLaEscuela.Views
 
                 if (pagosColegiaturasServices.ActualizarEstatusFechaPago(Guid.Parse(ViewState["RowCommand-UidPagoColegiatura"].ToString()), Guid.Parse("77DB3F13-7EC8-4CE1-A3DB-E5C96D14A581")))
                 {
-                    ValidarPago();
+                    ValidarPago(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse(ViewState["RowCommand-UidUsuario"].ToString()), Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()));
 
                     ActualizarDatosPrincipal();
 
@@ -1102,7 +1104,7 @@ namespace PagaLaEscuela.Views
 
             if (pagosColegiaturasServices.ActualizarEstatusFechaPago(Guid.Parse(ViewState["RowCommand-UidPagoColegiatura"].ToString()), Guid.Parse(ViewState["ItemCommand-UidEstatusFechaPago"].ToString())))
             {
-                ValidarPago();
+                ValidarPago(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse(ViewState["RowCommand-UidUsuario"].ToString()), Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()));
 
                 ActualizarDatosPrincipal();
 
@@ -1131,30 +1133,33 @@ namespace PagaLaEscuela.Views
             gvDatosPagos.DataBind();
         }
 
-        private void ValidarPago()
+        private void ValidarPago(Guid UidClienteLocal, Guid UidUsuario, Guid UidFechaColegiatura, Guid UidAlumno)
         {
             //Necesito saber el importe de la colegiatura
-            decimal ImporteCole = colegiaturasServices.ObtenerDatosFechaColegiatura(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse(ViewState["RowCommand-UidUsuario"].ToString()), Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()));
+            decimal ImporteCole = colegiaturasServices.ObtenerDatosFechaColegiatura(UidClienteLocal, UidUsuario, UidFechaColegiatura, UidAlumno);
 
             //Necesito saber el importe de todos los pagos
-            decimal ImportePagado = pagosColegiaturasServices.ObtenerPagosPadresRLE(Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()));
-            decimal ImportePendiente = pagosColegiaturasServices.ObtenerPendientesPadresRLE(Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()));
+            decimal ImportePagado = pagosColegiaturasServices.ObtenerPagosPadresRLE(UidFechaColegiatura, UidAlumno);
+            decimal ImportePendiente = pagosColegiaturasServices.ObtenerPendientesPadresRLE(UidFechaColegiatura, UidAlumno);
 
             // ==>Validar con importe<==
-            if (ImporteCole == ImportePagado) //el importeColegiatura es igual al importe de todos los pagos con estatus aprovado
+            if (ImporteCole == ImportePagado) //el importeColegiatura es igual al importe de todos los pagos con estatus aprobado
             {
                 //Se cambia el estatus de la colegiatura a pagado.
-                colegiaturasServices.ActualizarEstatusFeColegiaturaAlumno(Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()), Guid.Parse("605A7881-54E0-47DF-8398-EDE080F4E0AA"));
+                colegiaturasServices.ActualizarEstatusFeColegiaturaAlumno(UidFechaColegiatura, UidAlumno, Guid.Parse("605A7881-54E0-47DF-8398-EDE080F4E0AA"), true);
             }
-            else if (ImporteCole == (ImportePagado + ImportePendiente)) //el importe de los pagos aprovado y pendiente es igual al importe la colegiatura
+            else if (ImporteCole == (ImportePagado + ImportePendiente)) //el importe de los pagos aprobado y pendiente es igual al importe la colegiatura
             {
                 // La colegiatura mantiene el estatus en proceso
-                colegiaturasServices.ActualizarEstatusFeColegiaturaAlumno(Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()), Guid.Parse("5554CE57-1288-46D5-B36A-8AC69CB94B9A"));
+                colegiaturasServices.ActualizarEstatusFeColegiaturaAlumno(UidFechaColegiatura, UidAlumno, Guid.Parse("5554CE57-1288-46D5-B36A-8AC69CB94B9A"), true);
             }
             else
             {
                 // La colegiatura regresa al ultimo estatus
-                colegiaturasServices.ActualizarEstatusFeColegiaturaAlumno(Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()), Guid.Parse("76C8793B-4493-44C8-B274-696A61358BDF"));
+                DateTime HoraDelServidor = DateTime.Now;
+                DateTime hoy = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(HoraDelServidor, TimeZoneInfo.Local.Id, "Eastern Standard Time (Mexico)");
+                string UidEstatus = colegiaturasServices.ObtenerEstatusColegiaturasRLE(hoy, UidFechaColegiatura, UidAlumno);
+                colegiaturasServices.ActualizarEstatusFeColegiaturaAlumno(UidFechaColegiatura, UidAlumno, Guid.Parse(UidEstatus.ToString()), false);
             }
         }
 
@@ -1172,6 +1177,10 @@ namespace PagaLaEscuela.Views
             txtFiltroAlumPaterno.Text = string.Empty;
             txtFiltroAlumMaterno.Text = string.Empty;
             txtFiltroAlumMatricula.Text = string.Empty;
+
+            ViewState["gvAlumnosSelect"] = false;
+            gvAlumnos.SelectedIndex = -1;
+            btnFiltroBuscar_Click(null, null);
         }
         protected void gvAlumnos_Sorting(object sender, GridViewSortEventArgs e)
         {
@@ -1195,16 +1204,6 @@ namespace PagaLaEscuela.Views
 
                 switch (SortExpression)
                 {
-                    case "VchMatricula":
-                        if (Orden == "ASC")
-                        {
-                            alumnosServices.lsAlumnosRLEGridViewModel = alumnosServices.lsAlumnosRLEGridViewModel.OrderBy(x => x.VchMatricula).ToList();
-                        }
-                        else
-                        {
-                            alumnosServices.lsAlumnosRLEGridViewModel = alumnosServices.lsAlumnosRLEGridViewModel.OrderByDescending(x => x.VchMatricula).ToList();
-                        }
-                        break;
                     case "VchIdentificador":
                         if (Orden == "ASC")
                         {
@@ -1213,6 +1212,16 @@ namespace PagaLaEscuela.Views
                         else
                         {
                             alumnosServices.lsAlumnosRLEGridViewModel = alumnosServices.lsAlumnosRLEGridViewModel.OrderByDescending(x => x.VchIdentificador).ToList();
+                        }
+                        break;
+                    case "VchMatricula":
+                        if (Orden == "ASC")
+                        {
+                            alumnosServices.lsAlumnosRLEGridViewModel = alumnosServices.lsAlumnosRLEGridViewModel.OrderBy(x => x.VchMatricula).ToList();
+                        }
+                        else
+                        {
+                            alumnosServices.lsAlumnosRLEGridViewModel = alumnosServices.lsAlumnosRLEGridViewModel.OrderByDescending(x => x.VchMatricula).ToList();
                         }
                         break;
                     case "NombreCompleto":
@@ -1278,6 +1287,9 @@ namespace PagaLaEscuela.Views
             txtFiltroAlumPaterno.Text = alumnosServices.lsAlumnosRLEGridViewModel.Find(x => x.UidAlumno == UidAlumno).VchApePaterno;
             txtFiltroAlumMaterno.Text = alumnosServices.lsAlumnosRLEGridViewModel.Find(x => x.UidAlumno == UidAlumno).VchApeMaterno;
 
+            ViewState["gvPagosSelect"] = false;
+            gvPagos.SelectedIndex = -1;
+
             colegiaturasServices.CargarPagosColegiaturasRLE(Guid.Parse(ViewState["UidClienteLocal"].ToString()), UidAlumno);
             gvPagos.DataSource = colegiaturasServices.lsPagosColegiaturasViewModel;
             gvPagos.DataBind();
@@ -1317,26 +1329,6 @@ namespace PagaLaEscuela.Views
                             colegiaturasServices.lsPagosColegiaturasViewModel = colegiaturasServices.lsPagosColegiaturasViewModel.OrderByDescending(x => x.VchIdentificador).ToList();
                         }
                         break;
-                    case "VchMatricula":
-                        if (Orden == "ASC")
-                        {
-                            colegiaturasServices.lsPagosColegiaturasViewModel = colegiaturasServices.lsPagosColegiaturasViewModel.OrderBy(x => x.VchMatricula).ToList();
-                        }
-                        else
-                        {
-                            colegiaturasServices.lsPagosColegiaturasViewModel = colegiaturasServices.lsPagosColegiaturasViewModel.OrderByDescending(x => x.VchMatricula).ToList();
-                        }
-                        break;
-                    case "NombreCompleto":
-                        if (Orden == "ASC")
-                        {
-                            colegiaturasServices.lsPagosColegiaturasViewModel = colegiaturasServices.lsPagosColegiaturasViewModel.OrderBy(x => x.NombreCompleto).ToList();
-                        }
-                        else
-                        {
-                            colegiaturasServices.lsPagosColegiaturasViewModel = colegiaturasServices.lsPagosColegiaturasViewModel.OrderByDescending(x => x.NombreCompleto).ToList();
-                        }
-                        break;
                     case "VchNum":
                         if (Orden == "ASC")
                         {
@@ -1357,14 +1349,24 @@ namespace PagaLaEscuela.Views
                             colegiaturasServices.lsPagosColegiaturasViewModel = colegiaturasServices.lsPagosColegiaturasViewModel.OrderByDescending(x => x.DcmImporte).ToList();
                         }
                         break;
-                    case "DtFHInicio":
+                    case "ImpPagado":
                         if (Orden == "ASC")
                         {
-                            colegiaturasServices.lsPagosColegiaturasViewModel = colegiaturasServices.lsPagosColegiaturasViewModel.OrderBy(x => x.DtFHInicio).ToList();
+                            colegiaturasServices.lsPagosColegiaturasViewModel = colegiaturasServices.lsPagosColegiaturasViewModel.OrderBy(x => x.ImpPagado).ToList();
                         }
                         else
                         {
-                            colegiaturasServices.lsPagosColegiaturasViewModel = colegiaturasServices.lsPagosColegiaturasViewModel.OrderByDescending(x => x.DtFHInicio).ToList();
+                            colegiaturasServices.lsPagosColegiaturasViewModel = colegiaturasServices.lsPagosColegiaturasViewModel.OrderByDescending(x => x.ImpPagado).ToList();
+                        }
+                        break;
+                    case "ImpTotal":
+                        if (Orden == "ASC")
+                        {
+                            colegiaturasServices.lsPagosColegiaturasViewModel = colegiaturasServices.lsPagosColegiaturasViewModel.OrderBy(x => x.ImpTotal).ToList();
+                        }
+                        else
+                        {
+                            colegiaturasServices.lsPagosColegiaturasViewModel = colegiaturasServices.lsPagosColegiaturasViewModel.OrderByDescending(x => x.ImpTotal).ToList();
                         }
                         break;
                     case "VchFHLimite":
@@ -1385,16 +1387,6 @@ namespace PagaLaEscuela.Views
                         else
                         {
                             colegiaturasServices.lsPagosColegiaturasViewModel = colegiaturasServices.lsPagosColegiaturasViewModel.OrderByDescending(x => x.VchFHVencimiento).ToList();
-                        }
-                        break;
-                    case "VchEstatusFechas":
-                        if (Orden == "ASC")
-                        {
-                            colegiaturasServices.lsPagosColegiaturasViewModel = colegiaturasServices.lsPagosColegiaturasViewModel.OrderBy(x => x.VchEstatusFechas).ToList();
-                        }
-                        else
-                        {
-                            colegiaturasServices.lsPagosColegiaturasViewModel = colegiaturasServices.lsPagosColegiaturasViewModel.OrderByDescending(x => x.VchEstatusFechas).ToList();
                         }
                         break;
                 }
@@ -2116,18 +2108,36 @@ namespace PagaLaEscuela.Views
 
             }
 
-            string dPromo = ddlPromocionesTT.SelectedItem.Text.Trim().Replace(" MESES", "");
+            ValidarPago(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse(ddlTutorAlu.SelectedValue), Guid.Parse(ViewState["Selected-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["Selected-UidAlumno"].ToString()));
 
-            decimal rdlcDetaPromoImporte = importeTotal / decimal.Parse(dPromo.Trim());
+            string promocion = "0 MESES";
+            string dPromo = "0 MESES";
+            decimal rdlcDetaPromoImporte = 0;
+
+            string tiposTarjetas = "Ninguna";
+
+            if (ddlPromocionesTT.SelectedValue != string.Empty)
+            {
+                promocion = ddlPromocionesTT.SelectedItem.Text;
+
+                dPromo = ddlPromocionesTT.SelectedItem.Text.Trim().Replace(" MESES", "");
+
+                rdlcDetaPromoImporte = importeTotal / decimal.Parse(dPromo.Trim());
+            }
+
+            if (ddlTiposTarjetas.SelectedValue != string.Empty)
+            {
+                tiposTarjetas = ddlTiposTarjetas.SelectedItem.Text;
+            }
 
             Session["rdlcAlumno"] = headAlumno.Text;
             Session["rdlcMatricula"] = headMatricula.Text;
             Session["rdlcFechaPago"] = headFPago.Text;
             Session["rdlcFormaPago"] = ddlFormasPago.SelectedItem.Text;
             Session["rdlcBoolTipoTarjeta"] = BitTipoTarjeta;
-            Session["rdlcTipoTarjeta"] = ddlTiposTarjetas.SelectedItem.Text;
+            Session["rdlcTipoTarjeta"] = tiposTarjetas;
             Session["rdlcBoolPromocion"] = BitPromocionTT;
-            Session["rdlcPromocion"] = ddlPromocionesTT.SelectedItem.Text;
+            Session["rdlcPromocion"] = promocion;
             Session["rdlcDetallePromocion"] = dPromo.Trim() + " pagos mensuales de:";
             Session["rdlcDetaPromoImporte"] = rdlcDetaPromoImporte;
             Session["rdlcUidPagoColegiatura"] = UidPagoColegiatura;

@@ -48,9 +48,9 @@ namespace PagaLaEscuela.Views
                 Session["ReporteLigasUsuariosformasPagosServices"] = formasPagosServices;
                 Session["ReporteLigasUsuariosbancosServices"] = bancosServices;
 
-                ligasUrlsServices.ConsultarLigaPadres(Guid.Parse(ViewState["UidUsuarioLocal"].ToString()));
-                gvLigasGeneradas.DataSource = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel;
-                gvLigasGeneradas.DataBind();
+                //ligasUrlsServices.ConsultarLigaPadres(Guid.Parse(ViewState["UidUsuarioLocal"].ToString()));
+                //gvLigasGeneradas.DataSource = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel;
+                //gvLigasGeneradas.DataBind();
 
                 colegiaturasServices.CargarPagosColegiaturasReporte(Guid.Parse(ViewState["UidUsuarioLocal"].ToString()));
                 gvPagos.DataSource = colegiaturasServices.lsPagosColegiaturasViewModel;
@@ -120,7 +120,7 @@ namespace PagaLaEscuela.Views
 
         protected void btnFiltros_Click(object sender, EventArgs e)
         {
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalBusqueda()", true);
+            //ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalBusqueda()", true);
         }
 
         protected void gvDetalleLiga_PageIndexChanging(object sender, GridViewPageEventArgs e)

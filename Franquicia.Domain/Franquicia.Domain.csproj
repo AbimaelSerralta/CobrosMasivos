@@ -110,6 +110,7 @@
     <Compile Include="ViewModels\Alumnos\AlumnosUsuariosExcelViewModel.cs" />
     <Compile Include="ViewModels\Alumnos\AlumnosGridViewModel.cs" />
     <Compile Include="ViewModels\Clientes\ClienteLogoViewModel.cs" />
+    <Compile Include="ViewModels\Colegiaturas\FCAATMViewModel.cs" />
     <Compile Include="ViewModels\Colegiaturas\ColegiaturasFechasGridViewModel.cs" />
     <Compile Include="ViewModels\Colegiaturas\DesglosePagosGridViewModel.cs" />
     <Compile Include="ViewModels\Colegiaturas\PagosColegiaturasViewModel.cs" />
