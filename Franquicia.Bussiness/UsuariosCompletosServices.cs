@@ -67,7 +67,7 @@ namespace Franquicia.Bussiness
 
         #region Metodos Principal
         public bool RegistrarAdministradores(
-            string Nombre, string ApePaterno, string ApeMaterno, string Correo, string Usuario, string Password, Guid UidSegPerfil,
+            string Nombre, string ApePaterno, string ApeMaterno, string Correo, string Usuario, string Password, Guid UidSegPerfil, Guid UidSegPerfilEscuela,
             string Identificador, Guid UidPais, Guid UidEstado, Guid Municipio, Guid UidCiudad, Guid UidColonia, string Calle, string EntreCalle, string YCalle, string NumeroExterior, string NumeroInterior, string CodigoPostal, string Referencia,
             string Telefono, Guid UidTipoTelefono, Guid UidFranquicia)
         {
@@ -86,6 +86,7 @@ namespace Franquicia.Bussiness
                     VchContrasenia = Password,
                     UidSegPerfil = UidSegPerfil
                 },
+                UidSegPerfilEscuela,
                 new DireccionesUsuarios
                 {
                     Identificador = Identificador,
@@ -171,7 +172,7 @@ namespace Franquicia.Bussiness
         }
 
         public bool RegistrarAdministradoresPrincipal(
-            string Nombre, string ApePaterno, string ApeMaterno, string Correo, string Usuario, string Password, Guid UidSegPerfil,
+            string Nombre, string ApePaterno, string ApeMaterno, string Correo, string Usuario, string Password, Guid UidSegPerfil, Guid UidSegPerfilEscuela,
             string Identificador, Guid UidPais, Guid UidEstado, Guid Municipio, Guid UidCiudad, Guid UidColonia, string Calle, string EntreCalle, string YCalle, string NumeroExterior, string NumeroInterior, string CodigoPostal, string Referencia,
             string Telefono, Guid UidTipoTelefono)
         {
@@ -190,6 +191,7 @@ namespace Franquicia.Bussiness
                     VchContrasenia = Password,
                     UidSegPerfil = UidSegPerfil
                 },
+                UidSegPerfilEscuela,
                 new DireccionesUsuarios
                 {
                     Identificador = Identificador,
@@ -219,7 +221,7 @@ namespace Franquicia.Bussiness
         }
 
         public bool ActualizarAdministradoresPrincipal(
-            Guid UidUsuario, string Nombre, string ApePaterno, string ApeMaterno, string Correo, Guid UidEstatus, string Usuario, string Password, Guid UidSegPerfil,
+            Guid UidUsuario, string Nombre, string ApePaterno, string ApeMaterno, string Correo, Guid UidEstatus, string Usuario, string Password, Guid UidSegPerfil, Guid UidSegPerfilEscuela,
             string Identificador, Guid UidPais, Guid UidEstado, Guid Municipio, Guid UidCiudad, Guid UidColonia, string Calle, string EntreCalle, string YCalle, string NumeroExterior, string NumeroInterior, string CodigoPostal, string Referencia,
             string Telefono, Guid UidTipoTelefono)
         {
@@ -238,6 +240,7 @@ namespace Franquicia.Bussiness
                     VchContrasenia = Password,
                     UidSegPerfil = UidSegPerfil
                 },
+                UidSegPerfilEscuela,
                 new DireccionesUsuarios
                 {
                     Identificador = Identificador,
@@ -411,7 +414,7 @@ namespace Franquicia.Bussiness
             lsUsuariosCompletos = usuariosCompletosRepository.CargarAdministradoresFranquicia(UidFranquiciatario, UidTipoPerfilFranquicia);
         }
         public bool RegistrarAdministradoresFranquicia(
-            string Nombre, string ApePaterno, string ApeMaterno, string Correo, string Usuario, string Password, Guid UidSegPerfil,
+            string Nombre, string ApePaterno, string ApeMaterno, string Correo, string Usuario, string Password, Guid UidSegPerfil, Guid UidSegPerfilEscuela,
             string Identificador, Guid UidPais, Guid UidEstado, Guid Municipio, Guid UidCiudad, Guid UidColonia, string Calle, string EntreCalle, string YCalle, string NumeroExterior, string NumeroInterior, string CodigoPostal, string Referencia,
             string Telefono, Guid UidTipoTelefono, Guid UidFranquicia)
         {
@@ -430,6 +433,7 @@ namespace Franquicia.Bussiness
                     VchContrasenia = Password,
                     UidSegPerfil = UidSegPerfil
                 },
+                UidSegPerfilEscuela,
                 new DireccionesUsuarios
                 {
                     Identificador = Identificador,
@@ -460,7 +464,7 @@ namespace Franquicia.Bussiness
         }
 
         public bool ActualizarAdministradoresFranquicia(
-            Guid UidUsuario, string Nombre, string ApePaterno, string ApeMaterno, string Correo, Guid UidEstatus, string Usuario, string Password, Guid UidSegPerfil,
+            Guid UidUsuario, string Nombre, string ApePaterno, string ApeMaterno, string Correo, Guid UidEstatus, string Usuario, string Password, Guid UidSegPerfil, Guid UidSegPerfilEscuela,
             string Identificador, Guid UidPais, Guid UidEstado, Guid Municipio, Guid UidCiudad, Guid UidColonia, string Calle, string EntreCalle, string YCalle, string NumeroExterior, string NumeroInterior, string CodigoPostal, string Referencia,
             string Telefono, Guid UidTipoTelefono, Guid UidFranquicia)
         {
@@ -479,6 +483,7 @@ namespace Franquicia.Bussiness
                     VchContrasenia = Password,
                     UidSegPerfil = UidSegPerfil
                 },
+                UidSegPerfilEscuela,
                 new DireccionesUsuarios
                 {
                     Identificador = Identificador,

@@ -1,7 +1,7 @@
 ﻿using ClosedXML.Excel;
 using Franquicia.Bussiness;
 using Franquicia.Domain.ViewModels;
-using Franquicia.WebForms.Util;
+using PagaLaEscuela.Util;
 using System;
 using System.Collections.Generic;
 using System.Data;

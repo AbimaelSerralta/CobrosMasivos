@@ -62,11 +62,11 @@ namespace Franquicia.WebForms.Views
 
                 ddlTipoPerfil_SelectedIndexChanged(null, null);
 
-                modulosServices.CargarModulosNivelClientes();
+                modulosServices.CargarModulosNivelClientes(Guid.Parse("D2C80D47-C14C-4677-A63D-C46BCB50FE17"));
                 gvModulosClientes.DataSource = modulosServices.lsmodulos;
                 gvModulosClientes.DataBind();
 
-                modulosServices.CargarModulosNivelUsuarios();
+                modulosServices.CargarModulosNivelUsuarios(Guid.Parse("18E9669B-C238-4BCC-9213-AF995644A5A4"));
                 gvModulosUsuarios.DataSource = modulosServices.lsmodulos;
                 gvModulosUsuarios.DataBind();
             }
@@ -206,7 +206,7 @@ namespace Franquicia.WebForms.Views
             listPermisosPrincipal.Clear();
             listDenegarPermisos.Clear();
 
-            permisosServices.CargarModulosPermisosFranquicias();
+            permisosServices.CargarModulosPermisosFranquicias(Guid.Parse("18523B2B-C671-44AE-A3F6-F0255C4D11A8"));
 
             foreach (var item in permisosServices.lsModulosPermisos)
             {
@@ -327,7 +327,7 @@ namespace Franquicia.WebForms.Views
             //==================PermisosAccesos============================
             DesmarcarTodosPermisos();
 
-            permisosServices.CargarModulosPermisos();
+            permisosServices.CargarModulosPermisos(Guid.Parse("17BB8F08-9D5F-425C-9B9B-1CA230C07C7F"));
             permisosServices.CargarAccesosModulosPermisos(dataKeys);
 
             foreach (var item in permisosServices.lsAccesosModulosPermisos)
@@ -490,7 +490,7 @@ namespace Franquicia.WebForms.Views
             switch (ddlTipoPerfil.SelectedItem.ToString())
             {
                 case "USUARIO CLIENTE":
-                    modulosServices.CargarModulosNivelClientes();
+                    modulosServices.CargarModulosNivelClientes(Guid.Parse("D2C80D47-C14C-4677-A63D-C46BCB50FE17"));
                     ddlModuloInicial.DataSource = modulosServices.lsmodulos;
                     ddlModuloInicial.DataTextField = "VchNombre";
                     ddlModuloInicial.DataValueField = "UidSegModulo";
@@ -501,7 +501,7 @@ namespace Franquicia.WebForms.Views
 
                     break;
                 case "USUARIO FINAL":
-                    modulosServices.CargarModulosNivelUsuarios();
+                    modulosServices.CargarModulosNivelUsuarios(Guid.Parse("18E9669B-C238-4BCC-9213-AF995644A5A4"));
                     ddlModuloInicial.DataSource = modulosServices.lsmodulos;
                     ddlModuloInicial.DataTextField = "VchNombre";
                     ddlModuloInicial.DataValueField = "UidSegModulo";

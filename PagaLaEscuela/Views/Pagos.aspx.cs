@@ -1,7 +1,7 @@
 ﻿using Franquicia.Bussiness;
 using Franquicia.Domain.Models;
 using Franquicia.Domain.ViewModels;
-using Franquicia.WebForms.Util;
+using PagaLaEscuela.Util;
 using RestSharp;
 using System;
 using System.Collections.Generic;

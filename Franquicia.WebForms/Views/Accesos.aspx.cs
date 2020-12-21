@@ -54,19 +54,19 @@ namespace Franquicia.WebForms.Views
 
                 ddlTipoPerfil_SelectedIndexChanged(null, null);
 
-                modulosServices.CargarModulosNivelPrincipal();
+                modulosServices.CargarModulosNivelPrincipal(Guid.Parse("17BB8F08-9D5F-425C-9B9B-1CA230C07C7F"));
                 gvModulosPrincipal.DataSource = modulosServices.lsmodulos;
                 gvModulosPrincipal.DataBind();
 
-                modulosServices.CargarModulosNivelFranquicias();
+                modulosServices.CargarModulosNivelFranquicias(Guid.Parse("18523B2B-C671-44AE-A3F6-F0255C4D11A8"));
                 gvModulosFranquicias.DataSource = modulosServices.lsmodulos;
                 gvModulosFranquicias.DataBind();
 
-                modulosServices.CargarModulosNivelClientes();
+                modulosServices.CargarModulosNivelClientes(Guid.Parse("D2C80D47-C14C-4677-A63D-C46BCB50FE17"));
                 gvModulosClientes.DataSource = modulosServices.lsmodulos;
                 gvModulosClientes.DataBind();
 
-                modulosServices.CargarModulosNivelUsuarios();
+                modulosServices.CargarModulosNivelUsuarios(Guid.Parse("18E9669B-C238-4BCC-9213-AF995644A5A4"));
                 gvModulosUsuarios.DataSource = modulosServices.lsmodulos;
                 gvModulosUsuarios.DataBind();
             }
@@ -201,7 +201,7 @@ namespace Franquicia.WebForms.Views
             listPermisosPrincipal.Clear();
             listDenegarPermisos.Clear();
 
-            permisosServices.CargarModulosPermisos();
+            permisosServices.CargarModulosPermisos(Guid.Parse("17BB8F08-9D5F-425C-9B9B-1CA230C07C7F"));
             foreach (var item in permisosServices.lsModulosPermisos)
             {
                 listPermisosPrincipal.Add(item.UidPermiso.ToString());
@@ -321,7 +321,7 @@ namespace Franquicia.WebForms.Views
             //==================PermisosAccesos============================
             DesmarcarTodosPermisos();
 
-            permisosServices.CargarModulosPermisos();
+            permisosServices.CargarModulosPermisos(Guid.Parse("17BB8F08-9D5F-425C-9B9B-1CA230C07C7F"));
             permisosServices.CargarAccesosModulosPermisos(dataKeys);
 
             foreach (var item in permisosServices.lsAccesosModulosPermisos)
@@ -529,11 +529,31 @@ namespace Franquicia.WebForms.Views
 
         protected void gvModulosUsuarios_SelectedIndexChanged(object sender, EventArgs e)
         {
+            Guid dataKey = new Guid(gvModulosUsuarios.SelectedDataKey.Value.ToString());
 
+            permisosServices.ObtenerModulosPermisos(dataKey);
+            cblPermisosUsuarios.DataSource = permisosServices.lsModulosCheckBoxListModel;
+            cblPermisosUsuarios.DataTextField = "VchDescripcion";
+            cblPermisosUsuarios.DataValueField = "UidPermiso";
+            cblPermisosUsuarios.DataBind();
+
+            foreach (ListItem item in cblPermisosUsuarios.Items)
+            {
+                for (int i = 0; i < listPermisosPrincipal.Count; i++)
+                {
+                    if (item.Value == listPermisosPrincipal[i])
+                    {
+                        item.Selected = true;
+                    }
+                }
+            }
         }
         protected void gvModulosUsuarios_RowDataBound(object sender, GridViewRowEventArgs e)
         {
-
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                e.Row.Attributes["onclick"] = Page.ClientScript.GetPostBackClientHyperlink(gvModulosUsuarios, "Select$" + e.Row.RowIndex);
+            }
         }
         protected void cblPermisosUsuarios_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -592,7 +612,7 @@ namespace Franquicia.WebForms.Views
         }
         protected void ddlTipoPerfil_SelectedIndexChanged(object sender, EventArgs e)
         {
-            modulosServices.CargarModulosNivelPrincipal();
+            modulosServices.CargarModulosNivelPrincipal(Guid.Parse("17BB8F08-9D5F-425C-9B9B-1CA230C07C7F"));
             ddlModuloInicial.DataSource = modulosServices.lsmodulos;
             ddlModuloInicial.DataTextField = "VchNombre";
             ddlModuloInicial.DataValueField = "UidSegModulo";

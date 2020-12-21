@@ -1,5 +1,5 @@
 ﻿using Franquicia.Bussiness;
-using Franquicia.WebForms.Util;
+using PagaLaEscuela.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
