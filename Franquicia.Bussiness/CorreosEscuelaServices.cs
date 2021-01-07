@@ -1,6 +1,7 @@
 ﻿using Franquicia.DataAccess.Repository;
 using Franquicia.Domain;
 using Franquicia.Domain.Models;
+using Franquicia.Domain.ViewModels;
 using Newtonsoft.Json;
 using SendGrid;
 using SendGrid.Helpers.Mail;
@@ -128,7 +129,7 @@ namespace Franquicia.Bussiness
 
             return mnsj;
         }
-        public string CorreoEnvioPagoColegiatura(List<PagosColegiaturas> lsPagosColegiaturas, List<DetallesPagosColegiaturas> lsDetallesPagosColegiaturas, string Asunto, string Referencia, DateTime FHPago, string TarjetaPago, string Folio, string Correo, Guid UidCliente)
+        public string CorreoEnvioPagoColegiatura(List<PagosColegiaturasViewModels> lsPagosColegiaturas, List<DetallesPagosColegiaturas> lsDetallesPagosColegiaturas, string Asunto, string Referencia, DateTime FHPago, string TarjetaPago, string Folio, string Correo, string EstatusPago, Guid UidCliente)
         {
             string mnsj = string.Empty;
             string VchDesglose = string.Empty;
@@ -170,29 +171,81 @@ namespace Franquicia.Bussiness
                 //    html = html.Replace("{LogoEscuela}", "https://pagalaescuela.mx/images/SinLogo2.png");
                 //}
 
-                html = html.Replace("{trSubtotal}", "display:none;");
-                html = html.Replace("{trComicion}", "display:none;");
-                html = html.Replace("{trPromocion}", "display:none;");
-                html = html.Replace("{trDetallePromociones}", "display:none;");
-
+                //Resumen del pago
                 foreach (var item in lsPagosColegiaturas)
                 {
                     //Asigancion de parametros
+
+                    //Estatus del pago
+
+                    switch (EstatusPago)
+                    {
+                        case "APROBADO":
+                            html = html.Replace("{AlertTitle}", "¡Felicidades!");
+                            html = html.Replace("{AlertParagraph}", "Su pago se ha validado exitosamente.");
+                            html = html.Replace("{AlertColor}", "#4caf50");
+                            break;
+                        case "PROCESANDO":
+                            html = html.Replace("{AlertTitle}", "¡Pago en proceso de validación!");
+                            html = html.Replace("{AlertParagraph}", "La escuela le notificará cuando validen el pago.");
+                            html = html.Replace("{AlertColor}", "#003770");
+                            break;
+                        case "RECHAZADO":
+                            html = html.Replace("{AlertTitle}", "¡Lo sentimos!");
+                            html = html.Replace("{AlertParagraph}", "Su pago ha sido rechazado, por favor comuníquese con la escuela.");
+                            html = html.Replace("{AlertColor}", "#000000");
+                            break;
+                        case "DENEGADO":
+                            html = html.Replace("{AlertTitle}", "¡Lo sentimos!");
+                            html = html.Replace("{AlertParagraph}", "Su pago ha sido denegado, por favor comuníquese con la escuela.");
+                            html = html.Replace("{AlertColor}", "#ff9800");
+                            break;
+                        case "ERROR":
+                            html = html.Replace("{AlertTitle}", "¡Lo sentimos!");
+                            html = html.Replace("{AlertParagraph}", "Su pago ha sido erroneo, por favor comuníquese con la escuela.");
+                            html = html.Replace("{AlertColor}", "#f55145");
+                            break;
+                    }
+
+                    //Encabezado del pago
                     html = html.Replace("{Alumno}", item.VchAlumno);
                     html = html.Replace("{Matricula}", item.VchMatricula);
                     html = html.Replace("{FHPago}", item.DtFHPago.ToString("dd/MM/yyyy"));
 
                     if (item.BitSubtotal)
                     {
-                        html = html.Replace("{Subtotal}", item.DcmSubtotal.ToString("N2"));
+                        html = html.Replace("{Subtotal}", item.DcmImporteCole.ToString("N2"));
                         html = html.Replace("{trSubtotal}", "");
                     }
+                    else
+                    {
+                        html = html.Replace("{trSubtotal}", "display:none;");
+                        html = html.Replace("{Subtotal}", "0.00");
+                    }
+
+                    if (item.BitValidarImporte)
+                    {
+                        html = html.Replace("{ValidarImporte}", item.DcmValidarImporte.ToString("N2"));
+                        html = html.Replace("{trValidarImporte}", "");
+                    }
+                    else
+                    {
+                        html = html.Replace("{trValidarImporte}", "display:none;");
+                        html = html.Replace("{ValidarImporte}", "0.00");
+                    }
+
+                    html = html.Replace("{Total}", item.DcmTotal.ToString("N2"));
 
                     if (item.BitComisionBancaria)
                     {
                         html = html.Replace("{ComisionBancaria}", item.VchComisionBancaria);
                         html = html.Replace("{ImpComisionBancaria}", item.DcmComisionBancaria.ToString("N2"));
                         html = html.Replace("{trComicion}", "");
+                    }
+                    else
+                    {
+                        html = html.Replace("{trComicion}", "display:none;");
+                        html = html.Replace("{ImpComisionBancaria}", "0.00");
                     }
 
                     if (item.BitPromocionDePago)
@@ -206,21 +259,152 @@ namespace Franquicia.Bussiness
                         html = html.Replace("{DetallePromocion}", dPromo.Trim() + " pagos mensuales de:");
                         html = html.Replace("{impDetallePromocion}", (item.DcmTotal / decimal.Parse(dPromo.Trim())).ToString("N2"));
                         html = html.Replace("{trDetallePromociones}", "");
-
-                        
+                    }
+                    else
+                    {
+                        html = html.Replace("{trPromocion}", "display:none;");
+                        html = html.Replace("{trDetallePromociones}", "display:none;");
+                        html = html.Replace("{ImpPromocion}", "0.00");
                     }
 
-                    html = html.Replace("{Total}", item.DcmTotal.ToString("N2"));
+                    html = html.Replace("{ImpAbono}", item.DcmSubtotal.ToString("N2"));
+                    html = html.Replace("{ImpResta}", (item.DcmImporteCole - item.DcmSubtotal).ToString("N2"));
 
                 }
+
+                //Desglose del pago
                 html = html.Replace("{Desglose}", VchDesglose);
-                
+
+                //Detalle de la operacion
                 html = html.Replace("{OpeReferencia}", Referencia);
                 html = html.Replace("{OpeFecha}", FHPago.ToLongDateString());
                 html = html.Replace("{OpeHora}", FHPago.ToString("HH:mm:ss"));
                 html = html.Replace("{OpeTarjeta}", TarjetaPago);
                 html = html.Replace("{OpeFolio}", Folio);
-                
+
+                Creden(Asunto, Correo, html);
+
+                ApiEmail(new EmailConfiguration
+                {
+                    Host = Host,
+                    EmailFrom = EmailFrom,
+                    Password = Password,
+                    IsBodyHtml = IsBodyHtml,
+                    EnableSsl = EnableSsl,
+                    UseDefaultCredentials = UseDefaultCredentials,
+                    Port = Port,
+                    BodyHtml = html,
+                    EmailTo = Correo,
+                    Subject = Asunto
+                });
+            }
+            catch (Exception ex)
+            {
+                mnsj = ex.Message;
+            }
+
+            return mnsj;
+        }
+        public string CorreoEnvioPagoColegiaturaManual(string VchAlumno, string VchMatricula, DateTime DtFHPago, bool BitSubtotal, decimal Subtotal, bool BitValidarImporte, decimal ValidarImporte, decimal DcmTotal, decimal DcmImportePagado, List<DesglosePagosGridViewModel> lsDesglosePagosGridViewModel, string Asunto, string Banco, string Cuenta, DateTime FHPago, string Folio, string Correo, string EstatusPago)
+        {
+            string mnsj = string.Empty;
+            string VchDesglose = string.Empty;
+
+            try
+            {
+                foreach (var item in lsDesglosePagosGridViewModel.OrderBy(x => x.IntNum))
+                {
+                    string negativo = "#222";
+                    if (item.DcmImporte < 0)
+                    {
+                        negativo = "#f55145";
+                    }
+
+                    VchDesglose +=
+                        "\t\t\t\t\t\t\t\t<tr>\r\n" +
+                        "\t\t\t\t\t\t\t\t\t<td style=\"border-bottom:1px solid #ddd;\" bgcolor=\"#ffffff\" align =\"center\">" + item.IntNum + " </td>\r\n" +
+                        "\t\t\t\t\t\t\t\t\t<td style=\"border-bottom:1px solid #ddd;\" bgcolor=\"#ffffff\">" + item.VchConcepto + "</td>\r\n" +
+                        "\t\t\t\t\t\t\t\t\t<td style=\"border-bottom:1px solid #ddd;color:" + negativo + ";\" bgcolor=\"#ffffff\" align=\"right\"> $" + item.DcmImporte + " </td>\r\n" +
+                        "\t\t\t\t\t\t\t\t</tr>\r\n";
+                }
+
+                //Se crea el contenido del correo eletronico
+                var html = System.IO.File.ReadAllText(HttpContext.Current.Server.MapPath("/PlantillasHtml/CorreoEnvioPagoColegiaturaManual.html"));
+
+                // ==>Asigancion de parametros<==
+
+                //Estatus del pago
+
+                switch (EstatusPago)
+                {
+                    case "APROBADO":
+                        html = html.Replace("{AlertTitle}", "¡Felicidades!");
+                        html = html.Replace("{AlertParagraph}", "Su pago se ha validado exitosamente.");
+                        html = html.Replace("{AlertColor}", "#4caf50");
+                        break;
+                    case "PROCESANDO":
+                        html = html.Replace("{AlertTitle}", "¡Pago en proceso de validación!");
+                        html = html.Replace("{AlertParagraph}", "La escuela le notificará cuando validen el pago.");
+                        html = html.Replace("{AlertColor}", "#003770");
+                        break;
+                    case "RECHAZADO":
+                        html = html.Replace("{AlertTitle}", "¡Lo sentimos!");
+                        html = html.Replace("{AlertParagraph}", "Su pago ha sido rechazado, por favor comuníquese con la escuela.");
+                        html = html.Replace("{AlertColor}", "#000000");
+                        break;
+                    case "DENEGADO":
+                        html = html.Replace("{AlertTitle}", "¡Lo sentimos!");
+                        html = html.Replace("{AlertParagraph}", "Su pago ha sido denegado, por favor comuníquese con la escuela.");
+                        html = html.Replace("{AlertColor}", "#ff9800");
+                        break;
+                    case "ERROR":
+                        html = html.Replace("{AlertTitle}", "¡Lo sentimos!");
+                        html = html.Replace("{AlertParagraph}", "Su pago ha sido erroneo, por favor comuníquese con la escuela.");
+                        html = html.Replace("{AlertColor}", "#f55145");
+                        break;
+                }
+
+                //Encabezado del pago
+                html = html.Replace("{Alumno}", VchAlumno);
+                html = html.Replace("{Matricula}", VchMatricula);
+                html = html.Replace("{FHPago}", DtFHPago.ToString("dd/MM/yyyy"));
+
+                //Resumen del pago
+                if (BitSubtotal)
+                {
+                    html = html.Replace("{Subtotal}", Subtotal.ToString("N2"));
+                    html = html.Replace("{trSubtotal}", "");
+                }
+                else
+                {
+                    html = html.Replace("{trSubtotal}", "display:none;");
+                    html = html.Replace("{Subtotal}", "0.00");
+                }
+                if (BitValidarImporte)
+                {
+                    html = html.Replace("{ValidarImporte}", ValidarImporte.ToString("N2"));
+                    html = html.Replace("{trValidarImporte}", "");
+                }
+                else
+                {
+                    html = html.Replace("{trValidarImporte}", "display:none;");
+                    html = html.Replace("{ValidarImporte}", "0.00");
+                }
+
+                html = html.Replace("{Total}", DcmTotal.ToString("N2"));
+                html = html.Replace("{ImportePagado}", DcmImportePagado.ToString("N2"));
+                html = html.Replace("{ImpResta}", (DcmTotal - DcmImportePagado).ToString("N2"));
+
+                //Desglose del pago
+                html = html.Replace("{Desglose}", VchDesglose);
+
+                //Detalle de la operacion
+                html = html.Replace("{OpeBanco}", Banco);
+                html = html.Replace("{OpeCuenta}", Cuenta);
+                html = html.Replace("{OpeFecha}", FHPago.ToLongDateString());
+                html = html.Replace("{OpeHora}", FHPago.ToString("HH:mm:ss"));
+                html = html.Replace("{OpeFolio}", Folio);
+
                 Creden(Asunto, Correo, html);
 
                 ApiEmail(new EmailConfiguration
@@ -331,6 +515,5 @@ namespace Franquicia.Bussiness
             //}
 
         }
-
     }
 }

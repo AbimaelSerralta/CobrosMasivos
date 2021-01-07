@@ -1,7 +1,7 @@
 ﻿using ClosedXML.Excel;
 using Franquicia.Bussiness;
 using Franquicia.Domain.ViewModels;
-using Franquicia.WebForms.Util;
+using PagaLaEscuela.Util;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -257,6 +257,15 @@ namespace PagaLaEscuela.Views
                         {
                             RegistrarFechas(UidColegiatura);
 
+                            colegiaturasServices.ObtenerFechasColegiaturasVicular(UidColegiatura);
+                            foreach (var itFechaColegiatura in colegiaturasServices.lsFechasColegiaturas)
+                            {
+                                foreach (var itAlumno in alumnosServices.lsSelectAlumnosGridViewModel)
+                                {
+                                    colegiaturasServices.RegistrarFechasColegiaturasAlumnos(itFechaColegiatura.UidFechaColegiatura, itAlumno.UidAlumno, decimal.Parse(txtImporte.Text), Guid.Parse("76C8793B-4493-44C8-B274-696A61358BDF"));
+                                }
+                            }
+
                             foreach (ListItem promo in ListBoxPromociones.Items)
                             {
                                 if (promo.Selected)
@@ -295,8 +304,23 @@ namespace PagaLaEscuela.Views
                     {
                         if (colegiaturasServices.ActualizarColegiatura(Guid.Parse(ViewState["UidRequerido"].ToString()), txtIdentificador.Text.Trim().ToUpper(), decimal.Parse(txtImporte.Text), int.Parse(txtCantPagos.Text), Guid.Parse(ddlPeriodicidad.SelectedValue), DateTime.Parse(txtFHInicio.Text), cbActivarFHL.Checked, DateTime.Parse(txtFHLimite.Text), cbActivarFHV.Checked, DateTime.Parse(txtFHVencimiento.Text), cbActivarRL.Checked, ddlTipoRecargo.SelectedValue, decimal.Parse(txtRecargo.Text), cbActivarRP.Checked, ddlTipoRecargoP.SelectedValue, decimal.Parse(txtRecargoP.Text)))
                         {
+                            colegiaturasServices.ObtenerFechasColegiaturasVicular(Guid.Parse(ViewState["UidRequerido"].ToString()));
+                            foreach (var itFechaColegiatura in colegiaturasServices.lsFechasColegiaturas)
+                            {
+                                colegiaturasServices.EliminarFechasColegiaturasAlumnos(itFechaColegiatura.UidFechaColegiatura);
+                            }
+
                             colegiaturasServices.EliminarColegiaturaFechas(Guid.Parse(ViewState["UidRequerido"].ToString()));
                             RegistrarFechas(Guid.Parse(ViewState["UidRequerido"].ToString()));
+
+                            colegiaturasServices.ObtenerFechasColegiaturasVicular(Guid.Parse(ViewState["UidRequerido"].ToString()));
+                            foreach (var itFechaColegiatura in colegiaturasServices.lsFechasColegiaturas)
+                            {
+                                foreach (var itAlumno in alumnosServices.lsSelectAlumnosGridViewModel)
+                                {
+                                    colegiaturasServices.RegistrarFechasColegiaturasAlumnos(itFechaColegiatura.UidFechaColegiatura, itAlumno.UidAlumno, decimal.Parse(txtImporte.Text), Guid.Parse("76C8793B-4493-44C8-B274-696A61358BDF"));
+                                }
+                            }
 
                             colegiaturasServices.EliminarPromocionesColegiatura(Guid.Parse(ViewState["UidRequerido"].ToString()));
                             foreach (ListItem promo in ListBoxPromociones.Items)
@@ -577,7 +601,7 @@ namespace PagaLaEscuela.Views
                 gvAlumnos.DataSource = alumnosServices.lsAlumnosGridViewModel;
                 gvAlumnos.DataBind();
 
-                if (colegiaturasServices.lsColegiaturasGridViewModel[index].blEditar)
+                if (colegiaturasServices.lsColegiaturasGridViewModel.Find(x => x.UidColegiatura == dataKeys).blEditar)
                 {
                     ViewState["Accion"] = "Actualizar";
                     DesbloquearCampos();

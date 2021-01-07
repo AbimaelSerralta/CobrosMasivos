@@ -27,14 +27,15 @@ namespace Franquicia.DataAccess.Repository
             set { _permisosCheckBoxListModel = value; }
         }
 
-        public List<PermisosCheckBoxListModel> CargarModulosPermisos()
+        public List<PermisosCheckBoxListModel> CargarModulosPermisos(Guid UidSegPerfil)
         {
             List<PermisosCheckBoxListModel> lsmodulosCheckBoxListModel = new List<PermisosCheckBoxListModel>();
 
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select * from Permisos order by VchDescripcion asc";
+            //No tiene validacion de perfil query.CommandText = "select * from Permisos order by VchDescripcion asc";
+            query.CommandText = "select pe.* from Permisos pe, SegModulos sm, AccesosPerfiles ap, SegPerfiles sp where ap.UidPermiso = pe.UidPermiso and sp.UidSegPerfil = ap.UidSegPerfil and ap.UidSegModulo = sm.UidSegModulo and pe.UidSegModulo = sm.UidSegModulo and sp.UidSegPerfil = '" + UidSegPerfil + "' order by pe.VchDescripcion asc";
 
             DataTable dt = this.Busquedas(query);
 
@@ -179,14 +180,15 @@ namespace Franquicia.DataAccess.Repository
         }
 
         #region MetodosFranquicias
-        public List<PermisosCheckBoxListModel> CargarModulosPermisosFranquicias()
+        public List<PermisosCheckBoxListModel> CargarModulosPermisosFranquicias(Guid UidSegPerfil)
         {
             List<PermisosCheckBoxListModel> lsmodulosCheckBoxListModel = new List<PermisosCheckBoxListModel>();
 
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select * from Permisos p, SegModulos sm where sm.UidAppWeb != '514433C7-4439-42F5-ABE4-6BF1C330F0CA' and p.UidSegModulo = sm.UidSegModulo order by VchDescripcion asc";
+            //query.CommandText = "select * from Permisos p, SegModulos sm where sm.UidAppWeb != '514433C7-4439-42F5-ABE4-6BF1C330F0CA' and p.UidSegModulo = sm.UidSegModulo order by VchDescripcion asc";
+            query.CommandText = "select pe.*, sm.* from Permisos pe, SegModulos sm, AccesosPerfiles ap, SegPerfiles sp where ap.UidPermiso = pe.UidPermiso and sp.UidSegPerfil = ap.UidSegPerfil and ap.UidSegModulo = sm.UidSegModulo and pe.UidSegModulo = sm.UidSegModulo and sp.UidSegPerfil = '" + UidSegPerfil + "' order by pe.VchDescripcion asc";
 
             DataTable dt = this.Busquedas(query);
 

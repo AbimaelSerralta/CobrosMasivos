@@ -45,7 +45,7 @@ namespace Franquicia.WebForms.Views
                 //Session["telefonosUsuariosServices"] = telefonosUsuariosServices;
                 Session["estatusService"] = estatusService;
 
-                usuariosCompletosServices.CargarUsuariosPrincipal(new Guid("2DBF3126-03A3-41A3-9DFD-31D9D93D35AA"));
+                usuariosCompletosServices.CargarUsuariosPrincipal(Guid.Parse("2DBF3126-03A3-41A3-9DFD-31D9D93D35AA"));
                 gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
                 gvAdministradores.DataBind();
 
@@ -67,7 +67,7 @@ namespace Franquicia.WebForms.Views
                 ddlPais.DataValueField = "UidPais";
                 ddlPais.DataBind();
 
-                perfilesServices.CargarPerfilesDropDownListModel(new Guid("2DBF3126-03A3-41A3-9DFD-31D9D93D35AA"));
+                perfilesServices.CargarPerfilesDropDownListModel(Guid.Parse("2DBF3126-03A3-41A3-9DFD-31D9D93D35AA"));
                 ddlPerfil.DataSource = perfilesServices.lsPerfilesDropDownListModel;
                 ddlPerfil.DataTextField = "VchNombre";
                 ddlPerfil.DataValueField = "UidSegPerfil";
@@ -283,7 +283,7 @@ namespace Franquicia.WebForms.Views
             #endregion
 
             List<PermisosMenuModel> permisosMenuModels = (List<PermisosMenuModel>)Session["lsAccesosPermitidos"];
-            permisosMenuModels = permisosMenuModels.Where(x => x.UidSegModulo == new Guid("363889FA-F9A5-494D-A25F-D5F1EED080A7")).ToList();
+            permisosMenuModels = permisosMenuModels.Where(x => x.UidSegModulo == Guid.Parse("363889FA-F9A5-494D-A25F-D5F1EED080A7")).ToList();
             foreach (var item in permisosMenuModels)
             {
                 if (ViewState["Accion"].ToString() == "Guardar")
@@ -297,11 +297,11 @@ namespace Franquicia.WebForms.Views
                                 if (!validacionesServices.ExisteCorreo(txtCorreo.Text.Trim()))
                                 {
                                     if (usuariosCompletosServices.RegistrarAdministradoresPrincipal(
-                                    txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), txtUsuario.Text.Trim().ToUpper(), txtPassword.Text.Trim(), new Guid(ddlPerfil.SelectedValue),
-                                    txtIdentificador.Text.Trim().ToUpper(), new Guid(ddlPais.SelectedValue), new Guid(ddlEstado.SelectedValue), new Guid(ddlMunicipio.SelectedValue), new Guid(ddlCiudad.SelectedValue), new Guid(ddlColonia.SelectedValue), txtCalle.Text.Trim().ToUpper(), txtEntreCalle.Text.Trim().ToUpper(), txtYCalle.Text.Trim().ToUpper(), txtNumeroExterior.Text.Trim().ToUpper(), txtNumeroInterior.Text.Trim().ToUpper(), txtCodigoPostal.Text.Trim().ToUpper(), txtReferencia.Text.Trim().ToUpper(),
-                                    txtNumero.Text.Trim(), new Guid(ddlTipoTelefono.SelectedValue)))
+                                    txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), txtUsuario.Text.Trim().ToUpper(), txtPassword.Text.Trim(), Guid.Parse(ddlPerfil.SelectedValue), Guid.Parse(ddlPerfil.SelectedValue),
+                                    txtIdentificador.Text.Trim().ToUpper(), Guid.Parse(ddlPais.SelectedValue), Guid.Parse(ddlEstado.SelectedValue), Guid.Parse(ddlMunicipio.SelectedValue), Guid.Parse(ddlCiudad.SelectedValue), Guid.Parse(ddlColonia.SelectedValue), txtCalle.Text.Trim().ToUpper(), txtEntreCalle.Text.Trim().ToUpper(), txtYCalle.Text.Trim().ToUpper(), txtNumeroExterior.Text.Trim().ToUpper(), txtNumeroInterior.Text.Trim().ToUpper(), txtCodigoPostal.Text.Trim().ToUpper(), txtReferencia.Text.Trim().ToUpper(),
+                                    txtNumero.Text.Trim(), Guid.Parse(ddlTipoTelefono.SelectedValue)))
                                     {
-                                        usuariosCompletosServices.CargarUsuariosPrincipal(new Guid("2DBF3126-03A3-41A3-9DFD-31D9D93D35AA"));
+                                        usuariosCompletosServices.CargarUsuariosPrincipal(Guid.Parse("2DBF3126-03A3-41A3-9DFD-31D9D93D35AA"));
                                         gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
                                         gvAdministradores.DataBind();
 
@@ -363,11 +363,11 @@ namespace Franquicia.WebForms.Views
                             if (Actualizar)
                             {
                                 if (usuariosCompletosServices.ActualizarAdministradoresPrincipal(
-                                new Guid(ViewState["UidRequerido"].ToString()), txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), new Guid(ddlEstatus.SelectedValue), txtUsuario.Text.Trim().ToUpper(), txtPassword.Text.Trim(), new Guid(ddlPerfil.SelectedValue),
-                                txtIdentificador.Text.Trim().ToUpper(), new Guid(ddlPais.SelectedValue), new Guid(ddlEstado.SelectedValue), new Guid(ddlMunicipio.SelectedValue), new Guid(ddlCiudad.SelectedValue), new Guid(ddlColonia.SelectedValue), txtCalle.Text.Trim().ToUpper(), txtEntreCalle.Text.Trim().ToUpper(), txtYCalle.Text.Trim().ToUpper(), txtNumeroExterior.Text.Trim().ToUpper(), txtNumeroInterior.Text.Trim().ToUpper(), txtCodigoPostal.Text.Trim().ToUpper(), txtReferencia.Text.Trim().ToUpper(),
-                                txtNumero.Text.Trim(), new Guid(ddlTipoTelefono.SelectedValue)))
+                                Guid.Parse(ViewState["UidRequerido"].ToString()), txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), Guid.Parse(ddlEstatus.SelectedValue), txtUsuario.Text.Trim().ToUpper(), txtPassword.Text.Trim(), Guid.Parse(ddlPerfil.SelectedValue), Guid.Parse(ddlPerfil.SelectedValue),
+                                txtIdentificador.Text.Trim().ToUpper(), Guid.Parse(ddlPais.SelectedValue), Guid.Parse(ddlEstado.SelectedValue), Guid.Parse(ddlMunicipio.SelectedValue), Guid.Parse(ddlCiudad.SelectedValue), Guid.Parse(ddlColonia.SelectedValue), txtCalle.Text.Trim().ToUpper(), txtEntreCalle.Text.Trim().ToUpper(), txtYCalle.Text.Trim().ToUpper(), txtNumeroExterior.Text.Trim().ToUpper(), txtNumeroInterior.Text.Trim().ToUpper(), txtCodigoPostal.Text.Trim().ToUpper(), txtReferencia.Text.Trim().ToUpper(),
+                                txtNumero.Text.Trim(), Guid.Parse(ddlTipoTelefono.SelectedValue)))
                                 {
-                                    usuariosCompletosServices.CargarUsuariosPrincipal(new Guid("2DBF3126-03A3-41A3-9DFD-31D9D93D35AA"));
+                                    usuariosCompletosServices.CargarUsuariosPrincipal(Guid.Parse("2DBF3126-03A3-41A3-9DFD-31D9D93D35AA"));
                                     gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
                                     gvAdministradores.DataBind();
 

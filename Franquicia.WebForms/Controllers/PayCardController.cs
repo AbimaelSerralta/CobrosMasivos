@@ -25,6 +25,8 @@ namespace Franquicia.WebForms.Controller
             TicketsServices ticketsServices = new TicketsServices();
             TarifasServices tarifasServices = new TarifasServices();
             ParametrosTwiServices parametrosTwiServices = new ParametrosTwiServices();
+            ColegiaturasServices colegiaturasServices = new ColegiaturasServices();
+            PagosColegiaturasServices pagosColegiaturasServices = new PagosColegiaturasServices();
 
             strResponse.StrResponse = HttpUtility.HtmlEncode(strResponse.StrResponse);
             var respuesta = new ResponseHelpers();
@@ -179,7 +181,44 @@ namespace Franquicia.WebForms.Controller
                         {
                             var list = pagosServices.ObtenerPagoColegiatura(Guid.Parse(para.Item1));
 
-                            correosEscuelaServices.CorreoEnvioPagoColegiatura(list.Item1, list.Item2, "Comprobante de pago de colegiatura", reference, fechaRegistro, "************" + cc_number, foliocpagos, para.Item2, Guid.Parse(para.Item3));
+                            pagosServices.ActualizarPagoColegiatura(Guid.Parse(para.Item1));
+
+                            correosEscuelaServices.CorreoEnvioPagoColegiatura(list.Item1, list.Item2, "Comprobante de pago de colegiatura", reference, fechaRegistro, "************" + cc_number, foliocpagos, para.Item2, "APROBADO", Guid.Parse(para.Item3));
+
+                            var data = pagosServices.ConsultarDatosValidarPago(Guid.Parse(para.Item1));
+
+                            Guid UidClienteLocal = Guid.Parse(data.Item1);
+                            Guid UidUsuario = Guid.Parse(data.Item2);
+                            Guid UidFechaColegiatura = Guid.Parse(data.Item3);
+                            Guid UidAlumno = Guid.Parse(data.Item4);
+
+                            //Necesito saber el importe de la colegiatura
+                            decimal ImporteCole = colegiaturasServices.ObtenerDatosFechaColegiatura(UidClienteLocal, UidUsuario, UidFechaColegiatura, UidAlumno);
+
+                            //Necesito saber el importe de todos los pagos
+                            decimal ImportePagado = pagosColegiaturasServices.ObtenerPagosPadresRLE(UidFechaColegiatura, UidAlumno);
+                            decimal ImportePendiente = pagosColegiaturasServices.ObtenerPendientesPadresRLE(UidFechaColegiatura, UidAlumno);
+
+                            // ==>Validar con importe<==
+                            if (ImporteCole == ImportePagado) //el importeColegiatura es igual al importe de todos los pagos con estatus aprobado
+                            {
+                                //Se cambia el estatus de la colegiatura a pagado.
+                                colegiaturasServices.ActualizarEstatusFeColegiaturaAlumno(UidFechaColegiatura, UidAlumno, Guid.Parse("605A7881-54E0-47DF-8398-EDE080F4E0AA"), true);
+                            }
+                            else if (ImporteCole == (ImportePagado + ImportePendiente)) //el importe de los pagos aprobado y pendiente es igual al importe la colegiatura
+                            {
+                                // La colegiatura mantiene el estatus en proceso
+                                colegiaturasServices.ActualizarEstatusFeColegiaturaAlumno(UidFechaColegiatura, UidAlumno, Guid.Parse("5554CE57-1288-46D5-B36A-8AC69CB94B9A"), true);
+                            }
+                            else
+                            {
+                                // La colegiatura regresa al ultimo estatus
+                                DateTime HoraServidor = DateTime.Now;
+                                DateTime hoy = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(HoraServidor, TimeZoneInfo.Local.Id, "Eastern Standard Time (Mexico)");
+                                string UidEstatus = colegiaturasServices.ObtenerEstatusColegiaturasRLE(hoy, UidFechaColegiatura, UidAlumno);
+                                colegiaturasServices.ActualizarEstatusFeColegiaturaAlumno(UidFechaColegiatura, UidAlumno, Guid.Parse(UidEstatus.ToString()), false);
+                            }
+
                         }
 
                         pagosServices.ConsultarPromocionLiga(reference);

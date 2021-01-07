@@ -9,5 +9,6 @@ namespace Franquicia.Domain.ViewModels
 {
     public class UsuarioGridViewModel: Usuarios
     {
+        public string NombreCompleto { get { return StrNombre + " " + StrApePaterno + " " + StrApeMaterno; } }
     }
 }

@@ -15,6 +15,14 @@ namespace Franquicia.DataAccess.Repository
 {
     public class CorreosRepository
     {
+        private ParametrosSendGridRepository _parametrosSendGridRepository = new ParametrosSendGridRepository();
+        public ParametrosSendGridRepository parametrosSendGridRepository
+        {
+            get { return _parametrosSendGridRepository; }
+            set { _parametrosSendGridRepository = value; }
+        }
+
+
         string Host = "smtpout.secureserver.net";
         string EmailFrom = "ligas@cobrosmasivos.com";
         string Password = "C0br05m4s1v05.@";
@@ -68,7 +76,9 @@ namespace Franquicia.DataAccess.Repository
             string msnj = string.Empty;
             try
             {
-                var apiKey = "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"; //insert your Sendgrid API Key
+                parametrosSendGridRepository.ObtenerParametrosSendGrid();
+
+                var apiKey = parametrosSendGridRepository.parametrosSendGrid.VchApiKey; //insert your Sendgrid API Key
                 var client = new SendGridClient(apiKey);
                 var from = new EmailAddress("ligas@cobrosmasivos.com", "CobrosMasivos");
                 var subject = Asunto;

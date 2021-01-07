@@ -28,28 +28,28 @@ namespace Franquicia.Bussiness
             lsmodulos = modulosRepository.CargarModulosNivel();
         }
 
-        public void CargarModulosNivelPrincipal()
+        public void CargarModulosNivelPrincipal(Guid UidSegPerfil)
         {
             lsmodulos = new List<Modulos>();
 
-            lsmodulos = modulosRepository.CargarModulosNivelPrincipal();
+            lsmodulos = modulosRepository.CargarModulosNivelPrincipal(UidSegPerfil);
         }
-        public void CargarModulosNivelFranquicias()
+        public void CargarModulosNivelFranquicias(Guid UidSegPerfil)
         {
             lsmodulos = new List<Modulos>();
 
-            lsmodulos = modulosRepository.CargarModulosNivelFranquicias();
+            lsmodulos = modulosRepository.CargarModulosNivelFranquicias(UidSegPerfil);
         }
-        public void CargarModulosNivelClientes()
+        public void CargarModulosNivelClientes(Guid UidSegPerfil)
         {
             lsmodulos = new List<Modulos>();
 
-            lsmodulos = modulosRepository.CargarModulosNivelClientes();
+            lsmodulos = modulosRepository.CargarModulosNivelClientes(UidSegPerfil);
         }
-        public void CargarModulosNivelUsuarios()
+        public void CargarModulosNivelUsuarios(Guid UidSegPerfil)
         {
             lsmodulos = new List<Modulos>();
-            lsmodulos = modulosRepository.CargarModulosNivelUsuarios();
+            lsmodulos = modulosRepository.CargarModulosNivelUsuarios(UidSegPerfil);
         }
         public void CargarMenu(Guid UidAppWeb)
         {

@@ -49,7 +49,8 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select sp.UidSegPerfil, sp.VchNombre, tp.UidTipoPerfil, sp.UidModuloInicial, tp.VchDescripcion as VchPerfil, es.VchDescripcion as VchEstatus, es.VchIcono from SegPerfiles sp, TiposPerfiles tp, Estatus es where sp.UidSegPerfil != '17BB8F08-9D5F-425C-9B9B-1CA230C07C7F' and sp.UidSegPerfil != '18523B2B-C671-44AE-A3F6-F0255C4D11A8' and sp.UidTipoPerfil = tp.UidTipoPerfil and sp.UidEstatus = es.UidEstatus and tp.UidAppWeb = '514433C7-4439-42F5-ABE4-6BF1C330F0CA'";
+            // No tiene validacion de perfil escuela query.CommandText = "select sp.UidSegPerfil, sp.VchNombre, tp.UidTipoPerfil, sp.UidModuloInicial, tp.VchDescripcion as VchPerfil, es.VchDescripcion as VchEstatus, es.VchIcono from SegPerfiles sp, TiposPerfiles tp, Estatus es where sp.UidSegPerfil != '17BB8F08-9D5F-425C-9B9B-1CA230C07C7F' and sp.UidSegPerfil != '18523B2B-C671-44AE-A3F6-F0255C4D11A8' and sp.UidTipoPerfil = tp.UidTipoPerfil and sp.UidEstatus = es.UidEstatus and tp.UidAppWeb = '514433C7-4439-42F5-ABE4-6BF1C330F0CA'";
+            query.CommandText = "select sp.UidSegPerfil, sp.VchNombre, tp.UidTipoPerfil, sp.UidModuloInicial, tp.VchDescripcion as VchPerfil, es.VchDescripcion as VchEstatus, es.VchIcono from SegPerfiles sp, TiposPerfiles tp, Estatus es where sp.UidSegPerfil != '17BB8F08-9D5F-425C-9B9B-1CA230C07C7F' and sp.UidSegPerfil != '18523B2B-C671-44AE-A3F6-F0255C4D11A8' and sp.UidSegPerfil != 'ED9F4B98-EA8F-4D8F-8248-6BA42EC87B4E' and sp.UidSegPerfil != 'D0B10017-5701-4B1D-B72F-8458AA6F7ADE' and sp.UidTipoPerfil = tp.UidTipoPerfil and sp.UidEstatus = es.UidEstatus and tp.UidAppWeb = '514433C7-4439-42F5-ABE4-6BF1C330F0CA'";
 
             DataTable dt = this.Busquedas(query);
 
@@ -79,7 +80,8 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select sp.UidSegPerfil, sp.VchNombre, tp.VchDescripcion as VchPerfil, es.VchDescripcion as VchEstatus, es.VchIcono  from SegPerfiles sp, TiposPerfiles tp, Estatus es where sp.UidSegPerfil != '17BB8F08-9D5F-425C-9B9B-1CA230C07C7F' and sp.UidTipoPerfil = tp.UidTipoPerfil and sp.UidEstatus = es.UidEstatus and tp.UidTipoPerfil = '" + UidSegPerfil + "'";
+            // No tiene el perfil SuperAdminEscuela query.CommandText = "select sp.UidSegPerfil, sp.VchNombre, tp.VchDescripcion as VchPerfil, es.VchDescripcion as VchEstatus, es.VchIcono  from SegPerfiles sp, TiposPerfiles tp, Estatus es where sp.UidSegPerfil != '17BB8F08-9D5F-425C-9B9B-1CA230C07C7F' and sp.UidTipoPerfil = tp.UidTipoPerfil and sp.UidEstatus = es.UidEstatus and tp.UidTipoPerfil = '" + UidSegPerfil + "'";
+            query.CommandText = "select sp.UidSegPerfil, sp.VchNombre, tp.VchDescripcion as VchPerfil, es.VchDescripcion as VchEstatus, es.VchIcono from SegPerfiles sp, TiposPerfiles tp, Estatus es where sp.UidSegPerfil != '17BB8F08-9D5F-425C-9B9B-1CA230C07C7F' and sp.UidSegPerfil != 'ED9F4B98-EA8F-4D8F-8248-6BA42EC87B4E' and sp.UidTipoPerfil = tp.UidTipoPerfil and sp.UidEstatus = es.UidEstatus and tp.UidTipoPerfil = '" + UidSegPerfil + "'";
 
             DataTable dt = this.Busquedas(query);
 

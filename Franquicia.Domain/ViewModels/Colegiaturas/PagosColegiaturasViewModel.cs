@@ -9,6 +9,7 @@ namespace Franquicia.Domain.ViewModels
 {
     public class PagosColegiaturasViewModel : Colegiaturas
     {
+        public Guid UidAlumno { get; set; }
         public string VchMatricula { get; set; }
         public string VchNombreComercial { get; set; }
 
@@ -29,11 +30,13 @@ namespace Franquicia.Domain.ViewModels
         public string VchDescripcion { get; set; }
         public Guid UidEstatusFechaColegiatura { get; set; }
         
-        
         public string VchEstatusFechas { get; set; }
         public string VchColor { get; set; }
         
         public bool blPagar { get; set; }
         public string VchPeriodicidad { get; set; }
+        
+        public decimal ImpPagado { get; set; }
+        public decimal ImpTotal { get { return DcmImporte - ImpPagado; } }
     }
 }

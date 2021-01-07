@@ -16,7 +16,7 @@ namespace PagaLaEscuela.Views
             DateTime HoraDelServidor = DateTime.Now;
             DateTime hoy = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(HoraDelServidor, TimeZoneInfo.Local.Id, "Eastern Standard Time (Mexico)");
 
-            colegiaturasServices.ActualizarEstatusFechasPagos(hoy);
+            //colegiaturasServices.ActualizarEstatusFechasPagos(hoy);
         }
     }
 }
