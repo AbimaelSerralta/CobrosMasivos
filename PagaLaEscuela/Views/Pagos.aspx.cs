@@ -1,5 +1,6 @@
 ﻿using Franquicia.Bussiness;
 using Franquicia.Domain.Models;
+using Franquicia.Domain.Models.ClubPago;
 using Franquicia.Domain.ViewModels;
 using PagaLaEscuela.Util;
 using RestSharp;
@@ -1857,5 +1858,24 @@ namespace PagaLaEscuela.Views
             }
         }
         #endregion
+
+        protected void btnPraga_Click(object sender, EventArgs e)
+        {
+            GenerarLigaPraga generarLigaPraga = new GenerarLigaPraga();
+
+            generarLigaPraga.ApiGenerarURL(decimal.Parse("1500"), "MXN", "22/12/2020", "0123456789", "1,2,9", "Pago de servicios", "PagaLaEscuela");
+        }
+
+        protected void btnGenerarRf_Click(object sender, EventArgs e)
+        {
+            GenerarRefereciaClubPago generarRefereciaClubPago = new GenerarRefereciaClubPago();
+
+            List<ObtenerRefereciaPago> obtenerRefereciaPago = generarRefereciaClubPago.GenerarReferencia(lblConcepto.Text, txtTotaltb.Text.Replace(".", "").Replace(",",""), "12345610", "serralta@compuandsoft.com", headAlumno.Text, "2021-01-05");
+
+            foreach (var item in obtenerRefereciaPago)
+            {
+                ifrFormatoRef.Src = item.PayFormat;
+            }
+        }
     }
 }

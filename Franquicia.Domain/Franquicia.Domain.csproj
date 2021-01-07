@@ -41,8 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\ClubPago\GenerarRefereciaPago.cs" />
+    <Compile Include="Models\ClubPago\ObtenerRefereciaPago.cs" />
     <Compile Include="Models\ComisionesTarjetasClientesTerminal.cs" />
     <Compile Include="Models\PagosEfectivos.cs" />
+    <Compile Include="Models\Praga\UrlV3PaymentRequest.cs" />
     <Compile Include="Models\TiposTarjetas.cs" />
     <Compile Include="Models\EstatusFechasPagos.cs" />
     <Compile Include="Models\PagosManuales.cs" />

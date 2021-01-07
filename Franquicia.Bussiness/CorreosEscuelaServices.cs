@@ -515,6 +515,5 @@ namespace Franquicia.Bussiness
             //}
 
         }
-
     }
 }

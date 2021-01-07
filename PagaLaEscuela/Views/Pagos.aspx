@@ -144,6 +144,12 @@
                                                         <i class="material-icons">arrow_back</i> Regresar
                                                     </asp:Label>
                                                 </asp:LinkButton>
+
+                                                <asp:LinkButton ID="btnPraga" OnClick="btnPraga_Click" Style="padding-left: 10px; padding-right: 10px;" CssClass="btn btn-round" runat="server">
+                                                    <asp:Label ForeColor="White" runat="server">
+                                                        <i class="material-icons">arrow_back</i> Praga
+                                                    </asp:Label>
+                                                </asp:LinkButton>
                                             </td>
                                             <td style="width: 15%; padding-right: 5px;">
                                                 <asp:Image ID="imgLogoSelect" Width="110" Height="60" class="img-fluid pull-right" alt="logoEscuela" runat="server" />
@@ -541,12 +547,20 @@
                                                             </table>
                                                         </div>
                                                         <div class="pull-right" style="padding-top: 10px;">
+                                                            <asp:LinkButton ID="btnGenerarRf" OnClick="btnGenerarRf_Click" ToolTip="Generar referencia" runat="server">
+                                                                <asp:Label class="btn btn-success btn-round" runat="server">
+                                                                    <asp:Label Text="Generar referencia" runat="server" /><i class="material-icons">arrow_forward</i>
+                                                                </asp:Label>
+                                                            </asp:LinkButton>
+
                                                             <asp:LinkButton ID="btnGenerarLiga" OnClick="btnGenerarLiga_Click" ToolTip="Generar pago" runat="server">
                                                                 <asp:Label class="btn btn-success btn-round" runat="server">
                                                                     <asp:Label ID="lblTotalPago" Text="Generar pago $0.00" runat="server" /><i class="material-icons">arrow_forward</i>
                                                                 </asp:Label>
                                                             </asp:LinkButton>
                                                         </div>
+
+                                                        <iframe id="ifrFormatoRef" type="application/pdf" width="100%" height="600px" src="https://qa.clubpago.site/ReferenceGenerator/PayFormat/12345610_970609332000.pdf" runat="server"></iframe>
                                                     </div>
                                                 </div>
                                             </div>

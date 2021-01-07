@@ -169,7 +169,7 @@
                                         <asp:UpdatePanel runat="server">
                                             <ContentTemplate>
                                                 <div class="row">
-                                                    <div class="form-group col-md-6">
+                                                    <div visible="false" class="form-group col-md-6" runat="server">
                                                         <label for="txtRFC" style="color: black;">Descripcion para Whats y SMS</label>
                                                         <asp:TextBox ID="txtIdentificadorWASMS" PlaceHolder="Max 20 caracteres" MaxLength="20" CssClass="form-control" runat="server" />
                                                     </div>
@@ -201,10 +201,9 @@
                                                         <asp:DropDownList ID="ddlZonaHoraria" CssClass="form-control" runat="server">
                                                         </asp:DropDownList>
                                                     </div>
-                                                    <div class="form-group col-md-3">
+                                                    <div visible="false" class="form-group col-md-3" runat="server">
                                                         <label for="ddlEscuela" style="font-weight:bold; color: black;">¿Es una escuela?</label>
                                                         <asp:DropDownList ID="ddlEscuela" CssClass="form-control" runat="server">
-                                                            <asp:ListItem Text="NO" Value="false" />
                                                             <asp:ListItem Text="SI" Value="true" />
                                                         </asp:DropDownList>
                                                     </div>
