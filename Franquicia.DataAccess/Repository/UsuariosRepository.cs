@@ -1,5 +1,6 @@
 ﻿using Franquicia.DataAccess.Common;
 using Franquicia.Domain.Models;
+using Franquicia.Domain.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -82,5 +83,35 @@ namespace Franquicia.DataAccess.Repository
             }
             return resultado;
         }
+
+        #region PanelTutor
+        #region ReporteLigasEscuela
+        public List<UsuarioGridViewModel> CargarTutoresAlumnos(Guid UidAlumno)
+        {
+            List<UsuarioGridViewModel> lsUsuarioGridViewModel = new List<UsuarioGridViewModel>();
+
+            SqlCommand query = new SqlCommand();
+
+            query.CommandText = "select us.* from Usuarios us, UsuariosAlumnos ua, Alumnos al where us.UidUsuario = ua.UidUsuario and ua.UidAlumno = al.UidAlumno and al.UidAlumno = '" + UidAlumno + "'";
+
+            query.CommandType = CommandType.Text;
+            
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                lsUsuarioGridViewModel.Add(new UsuarioGridViewModel()
+                {
+                    UidUsuario = new Guid(item["UidUsuario"].ToString()),
+                    StrNombre = item["VchNombre"].ToString(),
+                    StrApePaterno = item["VchApePaterno"].ToString(),
+                    StrApeMaterno = item["VchApeMaterno"].ToString()
+                });
+            }
+
+            return lsUsuarioGridViewModel;
+        }
+        #endregion
+        #endregion
     }
 }

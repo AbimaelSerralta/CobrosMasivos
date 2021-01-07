@@ -23,10 +23,10 @@ namespace Franquicia.Bussiness
 
         public List<PermisosCheckBoxListModel> lsModulosPermisosInsertar = new List<PermisosCheckBoxListModel>();
 
-        public List<PermisosCheckBoxListModel> CargarModulosPermisos()
+        public List<PermisosCheckBoxListModel> CargarModulosPermisos(Guid UidSegPerfil)
         {
             lsModulosPermisos = new List<PermisosCheckBoxListModel>();
-            return lsModulosPermisos = permisosRepository.CargarModulosPermisos();
+            return lsModulosPermisos = permisosRepository.CargarModulosPermisos(UidSegPerfil);
         }
         
         public List<PermisosCheckBoxListModel> CargarAccesosModulosPermisos(Guid UidSegPerfil)
@@ -103,10 +103,10 @@ namespace Franquicia.Bussiness
         }
 
         #region Metodos Franquicias
-        public List<PermisosCheckBoxListModel> CargarModulosPermisosFranquicias()
+        public List<PermisosCheckBoxListModel> CargarModulosPermisosFranquicias(Guid UidSegPerfil)
         {
             lsModulosPermisos = new List<PermisosCheckBoxListModel>();
-            return lsModulosPermisos = permisosRepository.CargarModulosPermisosFranquicias();
+            return lsModulosPermisos = permisosRepository.CargarModulosPermisosFranquicias(UidSegPerfil);
         }
         #endregion
     }

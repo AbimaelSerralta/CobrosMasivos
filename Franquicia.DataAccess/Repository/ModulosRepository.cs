@@ -50,14 +50,15 @@ namespace Franquicia.DataAccess.Repository
 
             return lsModulos;
         }
-        public List<Modulos> CargarModulosNivelPrincipal()
+        public List<Modulos> CargarModulosNivelPrincipal(Guid UidSegPerfil)
         {
             List<Modulos> lsModulos = new List<Modulos>();
 
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select * from SegModulos where UidAppWeb = '514433c7-4439-42f5-abe4-6bf1c330f0ca'";
+            //query.CommandText = "select * from SegModulos where UidAppWeb = '514433c7-4439-42f5-abe4-6bf1c330f0ca'";
+            query.CommandText = "select distinct sm.* from SegModulos sm, AccesosPerfiles ap, SegPerfiles sp where sm.UidSegModulo = ap.UidSegModulo and sp.UidSegPerfil = ap.UidSegPerfil and sm.UidAppWeb = '514433c7-4439-42f5-abe4-6bf1c330f0ca' and sp.UidSegPerfil = '"+ UidSegPerfil + "' order by sm.IntGerarquia asc";
 
             DataTable dt = this.Busquedas(query);
 
@@ -74,14 +75,16 @@ namespace Franquicia.DataAccess.Repository
 
             return lsModulos;
         }
-        public List<Modulos> CargarModulosNivelFranquicias()
+        public List<Modulos> CargarModulosNivelFranquicias(Guid UidSegPerfil)
         {
             List<Modulos> lsModulos = new List<Modulos>();
 
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select * from SegModulos where UidAppWeb = '6d70f88d-3ce0-4c8b-87a1-92666039f5b2'";
+            //query.CommandText = "select * from SegModulos where UidAppWeb = '6d70f88d-3ce0-4c8b-87a1-92666039f5b2'";
+            query.CommandText = "select distinct sm.* from SegModulos sm, AccesosPerfiles ap, SegPerfiles sp where sm.UidSegModulo = ap.UidSegModulo and sp.UidSegPerfil = ap.UidSegPerfil and sm.UidAppWeb = '6d70f88d-3ce0-4c8b-87a1-92666039f5b2' and sp.UidSegPerfil = '" + UidSegPerfil + "' order by sm.IntGerarquia asc";
+            
 
             DataTable dt = this.Busquedas(query);
 
@@ -98,14 +101,15 @@ namespace Franquicia.DataAccess.Repository
 
             return lsModulos;
         }
-        public List<Modulos> CargarModulosNivelClientes()
+        public List<Modulos> CargarModulosNivelClientes(Guid UidSegPerfil)
         {
             List<Modulos> lsModulos = new List<Modulos>();
 
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select * from SegModulos where UidAppWeb = '0d910772-ae62-467a-a7a3-79540f0445cb'";
+            //query.CommandText = "select * from SegModulos where UidAppWeb = '0d910772-ae62-467a-a7a3-79540f0445cb'";
+            query.CommandText = "select distinct sm.* from SegModulos sm, AccesosPerfiles ap, SegPerfiles sp where sm.UidSegModulo = ap.UidSegModulo and sp.UidSegPerfil = ap.UidSegPerfil and sm.UidAppWeb = '0d910772-ae62-467a-a7a3-79540f0445cb' and sp.UidSegPerfil = '" + UidSegPerfil + "' order by sm.IntGerarquia asc";
 
             DataTable dt = this.Busquedas(query);
 
@@ -122,14 +126,15 @@ namespace Franquicia.DataAccess.Repository
 
             return lsModulos;
         }
-        public List<Modulos> CargarModulosNivelUsuarios()
+        public List<Modulos> CargarModulosNivelUsuarios(Guid UidSegPerfil)
         {
             List<Modulos> lsModulos = new List<Modulos>();
 
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select * from SegModulos where UidAppWeb = '9C8AD059-A37B-42EE-BF37-FEB7ACA84088'";
+            //query.CommandText = "select * from SegModulos where UidAppWeb = '9C8AD059-A37B-42EE-BF37-FEB7ACA84088'";
+            query.CommandText = "select distinct sm.* from SegModulos sm, AccesosPerfiles ap, SegPerfiles sp where sm.UidSegModulo = ap.UidSegModulo and sp.UidSegPerfil = ap.UidSegPerfil and sm.UidAppWeb = '9C8AD059-A37B-42EE-BF37-FEB7ACA84088' and sp.UidSegPerfil = '" + UidSegPerfil + "' order by sm.IntGerarquia asc";
 
             DataTable dt = this.Busquedas(query);
 

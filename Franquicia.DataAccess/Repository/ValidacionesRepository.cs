@@ -413,5 +413,24 @@ namespace Franquicia.DataAccess.Repository
 
             return result;
         }
+
+        public string ObtenerCorreoUsuario(Guid UidUsuario)
+        {
+            string result = "";
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select VchCorreo from Usuarios where UidUsuario = '" + UidUsuario + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                result = item["VchCorreo"].ToString();
+            };
+
+            return result;
+        }
     }
 }

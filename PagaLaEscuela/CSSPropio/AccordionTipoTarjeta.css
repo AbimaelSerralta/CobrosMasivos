@@ -1,0 +1,45 @@
+﻿.accordionTipoTarjeta {
+    position: relative;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid #eeeeee;
+    border-radius: 0.25rem;
+    color: #444;
+    cursor: pointer;
+    padding: 8px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+    transition: 0.4s;
+    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.14);
+}
+
+.activeAccordionTT, .accordionTipoTarjeta:hover {
+    background-color: #f4f1f1;
+}
+
+.accordionTipoTarjeta:after {
+    content: '\002B';
+    color: #777;
+    font-weight: bold;
+    float: right;
+    margin-left: 5px;
+}
+
+.activeAccordionTT:after {
+    content: "\2212";
+}
+
+.panelTipoTarjeta {
+    padding: 0 15px;
+    background-color: white;
+    max-height: 0;
+    width: 100%;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+}

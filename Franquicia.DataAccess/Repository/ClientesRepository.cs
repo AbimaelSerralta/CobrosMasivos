@@ -389,5 +389,29 @@ namespace Franquicia.DataAccess.Repository
             }
         }
         #endregion
+
+        #region ReportViewer
+        public List<ClienteLogoViewModel> rdlcObtenerLogo(Guid UidPagoColegiatura)
+        {
+            List<ClienteLogoViewModel> lsClienteLogoViewModel = new List<ClienteLogoViewModel>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select ic.Imagen from ImagenesClientes ic, Clientes cl, Alumnos al, PagosColegiaturas pc, FechasPagos fp where ic.UidCliente = cl.UidCliente and cl.UidCliente = al.UidCliente and pc.UidPagoColegiatura = fp.UidPagoColegiatura and fp.UidAlumno = al.UidAlumno and pc.UidPagoColegiatura = '" + UidPagoColegiatura + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                lsClienteLogoViewModel.Add(new ClienteLogoViewModel()
+                {
+                    ByLogo = (byte[])item["Imagen"]
+                });
+            }
+
+            return lsClienteLogoViewModel;
+        }
+        #endregion
     }
 }

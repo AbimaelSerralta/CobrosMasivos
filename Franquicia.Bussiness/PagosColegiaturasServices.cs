@@ -28,6 +28,13 @@ namespace Franquicia.Bussiness
         }
 
         public List<PagosColegiaturas> lsPagosColegiaturas = new List<PagosColegiaturas>();
+        
+        public List<FechasPagosColegiaturasViewModel> lsFechasPagosColegiaturasViewModel = new List<FechasPagosColegiaturasViewModel>();
+        public List<FechasPagosColegiaturasViewModel> lsPagosPendientes = new List<FechasPagosColegiaturasViewModel>();
+        
+        public List<ReportePadresFechasPagosColeViewModel> lsReportePadresFechasPagosColeViewModel = new List<ReportePadresFechasPagosColeViewModel>();
+
+        public List<DetallePagosColeGridViewModel> lsDetallePagosColeGridViewModel = new List<DetallePagosColeGridViewModel>();
 
         #region Metodos PagosColegiatura
         //public void CargarAlumnos(Guid UidCliente)
@@ -39,15 +46,19 @@ namespace Franquicia.Bussiness
         //    alumnosRepository.alumnosGridViewModel = new AlumnosGridViewModel();
         //    alumnosRepository.alumnosGridViewModel = lsAlumnosGridViewModel.Find(x => x.UidAlumno == UidAlumno);
         //}
-        public bool RegistrarPagoColegiatura(Guid UidPagoColegiatura, string VchAlumno, string VchMatricula, DateTime DtFHPago, string VchPromocionDePago, string VchComisionBancaria, bool BitSubtotal, decimal DcmSubtotal, bool BitComisionBancaria, decimal DcmComisionBancaria, bool BitPromocionDePago, decimal DcmPromocionDePago, decimal DcmTotal, Guid UidFechaColegiatura)
+        public int ObtenerUltimoFolio(Guid UidCliente)
+        {
+            return pagosColegiaturasRepository.ObtenerUltimoFolio(UidCliente);
+        }
+        public bool RegistrarPagoColegiatura(Guid UidPagoColegiatura, int UltimoFolio, DateTime DtFHPago, string VchPromocionDePago, string VchComisionBancaria, bool BitSubtotal, decimal DcmSubtotal, bool BitComisionBancaria, decimal DcmComisionBancaria, bool BitPromocionDePago, decimal DcmPromocionDePago, bool BitValidarImporte, decimal DcmValidarImporte, decimal DcmTotal, Guid UidUsuario, Guid UidEstatusPagoColegiatura,
+                                             Guid UidFechaColegiatura, Guid UidAlumno, Guid UidFormaPago, decimal DcmImporteCole, decimal DcmImportePagado, decimal DcmImporteNuevo, Guid EstatusFechaPago)
         {
             bool result = false;
             if (pagosColegiaturasRepository.RegistrarPagoColegiatura(
                 new PagosColegiaturas
                 {
                     UidPagoColegiatura = UidPagoColegiatura,
-                    VchAlumno = VchAlumno,
-                    VchMatricula = VchMatricula,
+                    IntFolio = UltimoFolio,
                     DtFHPago = DtFHPago,
                     VchPromocionDePago = VchPromocionDePago,
                     VchComisionBancaria = VchComisionBancaria,
@@ -57,9 +68,19 @@ namespace Franquicia.Bussiness
                     DcmComisionBancaria = DcmComisionBancaria,
                     BitPromocionDePago = BitPromocionDePago,
                     DcmPromocionDePago = DcmPromocionDePago,
+                    BitValidarImporte = BitValidarImporte,
+                    DcmValidarImporte = DcmValidarImporte,
                     DcmTotal = DcmTotal,
-                    UidFechaColegiatura = UidFechaColegiatura
-                }
+                    UidUsuario = UidUsuario,
+                    UidEstatusPagoColegiatura = UidEstatusPagoColegiatura
+                },
+                UidFechaColegiatura,
+                UidAlumno,
+                UidFormaPago,
+                DcmImporteCole,
+                DcmImportePagado,
+                DcmImporteNuevo,
+                EstatusFechaPago
                 ))
             {
                 result = true;
@@ -111,12 +132,80 @@ namespace Franquicia.Bussiness
         //}
         #endregion
 
-        #region Metodos Clientes
-
+        #region Metodos Panel Tutor
+        #region Pagos
+        public List<FechasPagosColegiaturasViewModel> ObtenerPagosPadres(Guid UidFechaColegiatura, Guid UidAlumno)
+        {
+            lsFechasPagosColegiaturasViewModel = new List<FechasPagosColegiaturasViewModel>();
+            return lsFechasPagosColegiaturasViewModel = pagosColegiaturasRepository.ObtenerPagosPadres(UidFechaColegiatura, UidAlumno);
+        }
+        public List<FechasPagosColegiaturasViewModel> ObtenerPagosPendientesPadres(Guid UidFechaColegiatura, Guid UidAlumno)
+        {
+            lsPagosPendientes = new List<FechasPagosColegiaturasViewModel>();
+            return lsPagosPendientes = pagosColegiaturasRepository.ObtenerPagosPendientesPadres(UidFechaColegiatura, UidAlumno);
+        }
+        public List<ReportePadresFechasPagosColeViewModel> ObtenerPagosReportePadres(Guid UidFechaColegiatura, string VchMatricula)
+        {
+            lsReportePadresFechasPagosColeViewModel = new List<ReportePadresFechasPagosColeViewModel>();
+            return lsReportePadresFechasPagosColeViewModel = pagosColegiaturasRepository.ObtenerPagosPadresReporte(UidFechaColegiatura, VchMatricula);
+        }
+        
+        public decimal ObtenerImporteResta(Guid UidFechaColegiatura, Guid UidAlumno)
+        {
+            return pagosColegiaturasRepository.ObtenerImporteResta(UidFechaColegiatura, UidAlumno);
+        }
+        public bool ActualizarImporteResta(Guid UidFechaColegiatura, Guid UidAlumno, decimal DcmImporteResta)
+        {
+            bool result = false;
+            if (pagosColegiaturasRepository.ActualizarImporteResta(UidFechaColegiatura, UidAlumno, DcmImporteResta))
+            {
+                result = true;
+            }
+            return result;
+        }
         #endregion
 
-        #region Metodos Colegiaturas
+        #region Metodos ReporteLigasPadres
+        public List<ReportePadresFechasPagosColeViewModel> ObtenerPagosPadresReporte(Guid UidFechaColegiatura, string VchMatricula)
+        {
+            lsReportePadresFechasPagosColeViewModel = new List<ReportePadresFechasPagosColeViewModel>();
+            return lsReportePadresFechasPagosColeViewModel = pagosColegiaturasRepository.ObtenerPagosPadresReporte(UidFechaColegiatura, VchMatricula);
+        }
+        public Tuple<List<PagosColegiaturasViewModels>, List<DetallePagosColeGridViewModel>> ObtenerPagoColegiatura(Guid UidPagoColegiatura)
+        {
+            return pagosColegiaturasRepository.ObtenerPagoColegiatura(UidPagoColegiatura);
+        }
 
+        #region ReportViewer
+        public List<PagosColegiaturasViewModels> rdlcObtenerPagoColegiatura(Guid UidPagoColegiatura)
+        {
+            return pagosColegiaturasRepository.rdlcObtenerPagoColegiatura(UidPagoColegiatura);
+        }
+
+        #endregion
+        #endregion
+        #endregion
+
+        #region Metodos PanelEscuela
+        #region ReporteLigasEscuelas
+        public bool ActualizarEstatusFechaPago(Guid UidPagoColegiatura, Guid UidEstatusFechaPago)
+        {
+            bool result = false;
+            if (pagosColegiaturasRepository.ActualizarEstatusFechaPago(UidPagoColegiatura, UidEstatusFechaPago))
+            {
+                result = true;
+            }
+            return result;
+        }
+        public decimal ObtenerPagosPadresRLE(Guid UidFechaColegiatura, Guid UidAlumno)
+        {
+            return pagosColegiaturasRepository.ObtenerPagosPadresRLE(UidFechaColegiatura, UidAlumno);
+        }
+        public decimal ObtenerPendientesPadresRLE(Guid UidFechaColegiatura, Guid UidAlumno)
+        {
+            return pagosColegiaturasRepository.ObtenerPendientesPadresRLE(UidFechaColegiatura, UidAlumno);
+        }
+        #endregion
         #endregion
     }
 }

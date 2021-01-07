@@ -277,7 +277,7 @@ namespace Franquicia.DataAccess.Repository
             return lsUsuariosCompletos;
         }
 
-        public bool RegistrarAdministradores(UsuariosCompletos usuariosCompletos, DireccionesUsuarios direccionesUsuarios, TelefonosUsuarios telefonosUsuarios, Guid UidFranquicia)
+        public bool RegistrarAdministradores(UsuariosCompletos usuariosCompletos, Guid UidSegPerfilEscuela, DireccionesUsuarios direccionesUsuarios, TelefonosUsuarios telefonosUsuarios, Guid UidFranquicia)
         {
             bool Resultado = false;
 
@@ -310,6 +310,9 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@UidSegPerfil", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidSegPerfil"].Value = usuariosCompletos.UidSegPerfil;
+                
+                comando.Parameters.Add("@UidSegPerfilEscuela", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidSegPerfilEscuela"].Value = UidSegPerfilEscuela;
 
                 //===========================DIRECCION==================================================
 
@@ -471,7 +474,7 @@ namespace Franquicia.DataAccess.Repository
             return Resultado;
         }
 
-        public bool RegistrarAdministradoresPrincipal(UsuariosCompletos usuariosCompletos, DireccionesUsuarios direccionesUsuarios, TelefonosUsuarios telefonosUsuarios)
+        public bool RegistrarAdministradoresPrincipal(UsuariosCompletos usuariosCompletos, Guid UidSegPerfilEscuela, DireccionesUsuarios direccionesUsuarios, TelefonosUsuarios telefonosUsuarios)
         {
             bool Resultado = false;
 
@@ -504,6 +507,9 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@UidSegPerfil", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidSegPerfil"].Value = usuariosCompletos.UidSegPerfil;
+                
+                comando.Parameters.Add("@UidSegPerfilEscuela", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidSegPerfilEscuela"].Value = UidSegPerfilEscuela;
 
                 //===========================DIRECCION==================================================
 
@@ -564,7 +570,7 @@ namespace Franquicia.DataAccess.Repository
             return Resultado;
         }
 
-        public bool ActualizarAdministradoresPrincipal(UsuariosCompletos usuariosCompletos, DireccionesUsuarios direccionesUsuarios, TelefonosUsuarios telefonosUsuarios)
+        public bool ActualizarAdministradoresPrincipal(UsuariosCompletos usuariosCompletos, Guid UidSegPerfilEscuela, DireccionesUsuarios direccionesUsuarios, TelefonosUsuarios telefonosUsuarios)
         {
             bool Resultado = false;
 
@@ -600,6 +606,9 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@UidSegPerfil", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidSegPerfil"].Value = usuariosCompletos.UidSegPerfil;
+                
+                comando.Parameters.Add("@UidSegPerfilEscuela", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidSegPerfilEscuela"].Value = UidSegPerfilEscuela;
 
                 //===========================DIRECCION==================================================
 
@@ -749,7 +758,7 @@ namespace Franquicia.DataAccess.Repository
 
             return lsUsuariosCompletos;
         }
-        public bool RegistrarAdministradoresFranquicia(UsuariosCompletos usuariosCompletos, DireccionesUsuarios direccionesUsuarios, TelefonosUsuarios telefonosUsuarios, Guid UidFranquicia)
+        public bool RegistrarAdministradoresFranquicia(UsuariosCompletos usuariosCompletos, Guid UidSegPerfilEscuela, DireccionesUsuarios direccionesUsuarios, TelefonosUsuarios telefonosUsuarios, Guid UidFranquicia)
         {
             bool Resultado = false;
 
@@ -782,6 +791,9 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@UidSegPerfil", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidSegPerfil"].Value = usuariosCompletos.UidSegPerfil;
+                
+                comando.Parameters.Add("@UidSegPerfilEscuela", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidSegPerfilEscuela"].Value = UidSegPerfilEscuela;
 
                 //===========================DIRECCION==================================================
 
@@ -844,7 +856,7 @@ namespace Franquicia.DataAccess.Repository
             }
             return Resultado;
         }
-        public bool ActualizarAdministradoresFranquicia(UsuariosCompletos usuariosCompletos, DireccionesUsuarios direccionesUsuarios, TelefonosUsuarios telefonosUsuarios, Guid UidFranquicia)
+        public bool ActualizarAdministradoresFranquicia(UsuariosCompletos usuariosCompletos, Guid UidSegPerfilEscuela, DireccionesUsuarios direccionesUsuarios, TelefonosUsuarios telefonosUsuarios, Guid UidFranquicia)
         {
             bool Resultado = false;
 
@@ -880,6 +892,9 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@UidSegPerfil", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidSegPerfil"].Value = usuariosCompletos.UidSegPerfil;
+                
+                comando.Parameters.Add("@UidSegPerfilEscuela", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidSegPerfilEscuela"].Value = UidSegPerfilEscuela;
 
                 //===========================DIRECCION==================================================
 

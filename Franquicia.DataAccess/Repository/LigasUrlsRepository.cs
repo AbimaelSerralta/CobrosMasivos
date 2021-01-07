@@ -91,13 +91,13 @@ namespace Franquicia.DataAccess.Repository
                     switch (item["VchEstatus"].ToString())
                     {
                         case "approved":
-                            VchColor = "#4caf50 ";
+                            VchColor = "#4caf50";
                             break;
                         case "denied":
-                            VchColor = "#ff9800 ";
+                            VchColor = "#ff9800";
                             break;
                         case "error":
-                            VchColor = "#f55145 ";
+                            VchColor = "#f55145";
                             break;
                     }
                 }

@@ -308,8 +308,13 @@ namespace Franquicia.Bussiness
 
                                                         if (AlumnoAsociado.Item1)
                                                         {
-                                                            errorMatricula = true;
-                                                            lsErrorMatricula.Add(matriculas[i].Trim() + "{Error: La matricula esta asociado a " + AlumnoAsociado.Item2 + "}");
+                                                            //Valida cuando un alumno solo tenia un tutor
+                                                            //errorMatricula = true;
+                                                            //lsErrorMatricula.Add(matriculas[i].Trim() + "{Error: La matricula esta asociado a " + AlumnoAsociado.Item2 + "}");
+                                                            lsExcelInsertarAlumnos.Add(new AlumnosUsuariosExcelViewModel
+                                                            {
+                                                                UidAlumno = Guid.Parse(DataAlumno.Item2)
+                                                            });
                                                         }
                                                         else
                                                         {

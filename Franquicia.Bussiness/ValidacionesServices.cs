@@ -152,6 +152,11 @@ namespace Franquicia.Bussiness
         {
             return validacionesRepository.ExisteMatricula(Matricula);
         }
+
+        public string ObtenerCorreoUsuario(Guid UidUsuario)
+        {
+            return validacionesRepository.ObtenerCorreoUsuario(UidUsuario);
+        }
         #endregion
     }
 }

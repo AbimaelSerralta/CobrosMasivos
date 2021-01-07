@@ -52,7 +52,7 @@ namespace Franquicia.WebForms.Views
                     ViewState["UidFranquiciaLocal"] = Guid.Empty;
                 }
 
-                usuariosCompletosServices.CargarAdministradoresFranquicia(new Guid(ViewState["UidFranquiciaLocal"].ToString()), new Guid("8490C81D-5979-49AC-92CC-E34A50A497D5"));
+                usuariosCompletosServices.CargarAdministradoresFranquicia(Guid.Parse(ViewState["UidFranquiciaLocal"].ToString()), Guid.Parse("8490C81D-5979-49AC-92CC-E34A50A497D5"));
                 gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
                 gvAdministradores.DataBind();
 
@@ -74,7 +74,7 @@ namespace Franquicia.WebForms.Views
                 ddlPais.DataValueField = "UidPais";
                 ddlPais.DataBind();
 
-                perfilesServices.CargarPerfilesFranquiciaDropDownListModel(new Guid(ViewState["UidFranquiciaLocal"].ToString()), new Guid("8490C81D-5979-49AC-92CC-E34A50A497D5"));
+                perfilesServices.CargarPerfilesFranquiciaDropDownListModel(Guid.Parse(ViewState["UidFranquiciaLocal"].ToString()), Guid.Parse("8490C81D-5979-49AC-92CC-E34A50A497D5"));
                 ddlPerfil.DataSource = perfilesServices.lsPerfilesDropDownListModel;
                 ddlPerfil.DataTextField = "VchNombre";
                 ddlPerfil.DataValueField = "UidSegPerfil";
@@ -290,7 +290,7 @@ namespace Franquicia.WebForms.Views
             #endregion
 
             List<PermisosMenuModel> permisosMenuModels = (List<PermisosMenuModel>)Session["lsAccesosPermitidos"];
-            permisosMenuModels = permisosMenuModels.Where(x => x.UidSegModulo == new Guid("67172786-B5FE-4E05-8FFE-AF8B2A31491C")).ToList();
+            permisosMenuModels = permisosMenuModels.Where(x => x.UidSegModulo == Guid.Parse("67172786-B5FE-4E05-8FFE-AF8B2A31491C")).ToList();
             foreach (var item in permisosMenuModels)
             {
                 if (ViewState["Accion"].ToString() == "Guardar")
@@ -304,11 +304,11 @@ namespace Franquicia.WebForms.Views
                                 if (!validacionesServices.ExisteCorreo(txtCorreo.Text.Trim()))
                                 {
                                     if (usuariosCompletosServices.RegistrarAdministradoresFranquicia(
-                                    txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), txtUsuario.Text.Trim().ToUpper(), txtPassword.Text.Trim(), new Guid(ddlPerfil.SelectedValue),
-                                    txtIdentificador.Text.Trim().ToUpper(), new Guid(ddlPais.SelectedValue), new Guid(ddlEstado.SelectedValue), new Guid(ddlMunicipio.SelectedValue), new Guid(ddlCiudad.SelectedValue), new Guid(ddlColonia.SelectedValue), txtCalle.Text.Trim().ToUpper(), txtEntreCalle.Text.Trim().ToUpper(), txtYCalle.Text.Trim().ToUpper(), txtNumeroExterior.Text.Trim().ToUpper(), txtNumeroInterior.Text.Trim().ToUpper(), txtCodigoPostal.Text.Trim().ToUpper(), txtReferencia.Text.Trim().ToUpper(),
-                                    txtNumero.Text.Trim(), new Guid(ddlTipoTelefono.SelectedValue), new Guid(Session["UidFranquiciaMaster"].ToString())))
+                                    txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), txtUsuario.Text.Trim().ToUpper(), txtPassword.Text.Trim(), Guid.Parse(ddlPerfil.SelectedValue), Guid.Parse(ddlPerfil.SelectedValue),
+                                    txtIdentificador.Text.Trim().ToUpper(), Guid.Parse(ddlPais.SelectedValue), Guid.Parse(ddlEstado.SelectedValue), Guid.Parse(ddlMunicipio.SelectedValue), Guid.Parse(ddlCiudad.SelectedValue), Guid.Parse(ddlColonia.SelectedValue), txtCalle.Text.Trim().ToUpper(), txtEntreCalle.Text.Trim().ToUpper(), txtYCalle.Text.Trim().ToUpper(), txtNumeroExterior.Text.Trim().ToUpper(), txtNumeroInterior.Text.Trim().ToUpper(), txtCodigoPostal.Text.Trim().ToUpper(), txtReferencia.Text.Trim().ToUpper(),
+                                    txtNumero.Text.Trim(), Guid.Parse(ddlTipoTelefono.SelectedValue), Guid.Parse(Session["UidFranquiciaMaster"].ToString())))
                                     {
-                                        usuariosCompletosServices.CargarAdministradoresFranquicia(new Guid(ViewState["UidFranquiciaLocal"].ToString()), new Guid("8490C81D-5979-49AC-92CC-E34A50A497D5"));
+                                        usuariosCompletosServices.CargarAdministradoresFranquicia(Guid.Parse(ViewState["UidFranquiciaLocal"].ToString()), Guid.Parse("8490C81D-5979-49AC-92CC-E34A50A497D5"));
                                         gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
                                         gvAdministradores.DataBind();
 
@@ -370,11 +370,11 @@ namespace Franquicia.WebForms.Views
                             if (Actualizar)
                             {
                                 if (usuariosCompletosServices.ActualizarAdministradoresFranquicia(
-                                new Guid(ViewState["UidRequerido"].ToString()), txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), new Guid(ddlEstatus.SelectedValue), txtUsuario.Text.Trim().ToUpper(), txtPassword.Text.Trim(), new Guid(ddlPerfil.SelectedValue),
-                                txtIdentificador.Text.Trim().ToUpper(), new Guid(ddlPais.SelectedValue), new Guid(ddlEstado.SelectedValue), new Guid(ddlMunicipio.SelectedValue), new Guid(ddlCiudad.SelectedValue), new Guid(ddlColonia.SelectedValue), txtCalle.Text.Trim().ToUpper(), txtEntreCalle.Text.Trim().ToUpper(), txtYCalle.Text.Trim().ToUpper(), txtNumeroExterior.Text.Trim().ToUpper(), txtNumeroInterior.Text.Trim().ToUpper(), txtCodigoPostal.Text.Trim().ToUpper(), txtReferencia.Text.Trim().ToUpper(),
-                                txtNumero.Text.Trim(), new Guid(ddlTipoTelefono.SelectedValue), new Guid(Session["UidFranquiciaMaster"].ToString())))
+                                Guid.Parse(ViewState["UidRequerido"].ToString()), txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), Guid.Parse(ddlEstatus.SelectedValue), txtUsuario.Text.Trim().ToUpper(), txtPassword.Text.Trim(), Guid.Parse(ddlPerfil.SelectedValue), Guid.Parse(ddlPerfil.SelectedValue),
+                                txtIdentificador.Text.Trim().ToUpper(), Guid.Parse(ddlPais.SelectedValue), Guid.Parse(ddlEstado.SelectedValue), Guid.Parse(ddlMunicipio.SelectedValue), Guid.Parse(ddlCiudad.SelectedValue), Guid.Parse(ddlColonia.SelectedValue), txtCalle.Text.Trim().ToUpper(), txtEntreCalle.Text.Trim().ToUpper(), txtYCalle.Text.Trim().ToUpper(), txtNumeroExterior.Text.Trim().ToUpper(), txtNumeroInterior.Text.Trim().ToUpper(), txtCodigoPostal.Text.Trim().ToUpper(), txtReferencia.Text.Trim().ToUpper(),
+                                txtNumero.Text.Trim(), Guid.Parse(ddlTipoTelefono.SelectedValue), Guid.Parse(Session["UidFranquiciaMaster"].ToString())))
                                 {
-                                    usuariosCompletosServices.CargarAdministradoresFranquicia(new Guid(ViewState["UidFranquiciaLocal"].ToString()), new Guid("8490C81D-5979-49AC-92CC-E34A50A497D5"));
+                                    usuariosCompletosServices.CargarAdministradoresFranquicia(Guid.Parse(ViewState["UidFranquiciaLocal"].ToString()), Guid.Parse("8490C81D-5979-49AC-92CC-E34A50A497D5"));
                                     gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
                                     gvAdministradores.DataBind();
 

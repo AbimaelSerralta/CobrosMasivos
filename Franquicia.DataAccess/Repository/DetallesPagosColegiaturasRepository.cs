@@ -113,16 +113,16 @@ namespace Franquicia.DataAccess.Repository
             {
                 comando.CommandType = System.Data.CommandType.StoredProcedure;
                 comando.CommandText = "sp_DetallesPagosColegiaturasRegistrar";
-                
+
                 comando.Parameters.Add("@IntNum", SqlDbType.Int);
                 comando.Parameters["@IntNum"].Value = detallesPagosColegiaturas.IntNum;
-                
+
                 comando.Parameters.Add("@VchDescripcion", SqlDbType.VarChar);
                 comando.Parameters["@VchDescripcion"].Value = detallesPagosColegiaturas.VchDescripcion;
-                                
+
                 comando.Parameters.Add("@DcmImporte", SqlDbType.Decimal);
                 comando.Parameters["@DcmImporte"].Value = detallesPagosColegiaturas.DcmImporte;
-                
+
                 comando.Parameters.Add("@UidPagoColegiatura", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidPagoColegiatura"].Value = detallesPagosColegiaturas.UidPagoColegiatura;
 
@@ -322,13 +322,40 @@ namespace Franquicia.DataAccess.Repository
         //}
         #endregion
 
-        #region Metodos Clientes
+        #region Metodos ReporteLigasPadre
 
+        #region ReportViewer
+        public List<DetallePagosColeGridViewModel> rdlcObtenerDetallePagoColegiatura(Guid UidPagoColegiatura)
+        {
+            List<DetallePagosColeGridViewModel> lsDetallePagosColeGridViewModel = new List<DetallePagosColeGridViewModel>();
+
+            SqlCommand query2 = new SqlCommand();
+            query2.CommandType = CommandType.Text;
+
+            query2.CommandText = "select * from DetallesPagosColegiaturas where UidPagoColegiatura = '" + UidPagoColegiatura + "' order by IntNum asc";
+
+            DataTable dt2 = this.Busquedas(query2);
+
+            foreach (DataRow item in dt2.Rows)
+            {
+                string VchColor = "#222";
+                if (decimal.Parse(item["DcmImporte"].ToString()) < 0)
+                {
+                    VchColor = "#f55145";
+                }
+
+                lsDetallePagosColeGridViewModel.Add(new DetallePagosColeGridViewModel
+                {
+                    IntNum = int.Parse(item["IntNum"].ToString()),
+                    VchDescripcion = item["VchDescripcion"].ToString(),
+                    DcmImporte = decimal.Parse(item["DcmImporte"].ToString()),
+                    VchColor = VchColor
+                });
+            }
+
+            return lsDetallePagosColeGridViewModel;
+        }
         #endregion
-
-        #region Metodos Colegiaturas
-
         #endregion
-
     }
 }
