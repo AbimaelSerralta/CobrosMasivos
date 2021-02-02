@@ -87,6 +87,44 @@ namespace Franquicia.Bussiness
             }
             return result;
         }
+        public bool RegistrarPagoColegiatura2(Guid UidPagoColegiatura, int UltimoFolio, DateTime DtFHPago, string VchPromocionDePago, string VchComisionBancaria, bool BitSubtotal, decimal DcmSubtotal, bool BitComisionBancaria, decimal DcmComisionBancaria, bool BitPromocionDePago, decimal DcmPromocionDePago, bool BitValidarImporte, decimal DcmValidarImporte, decimal DcmTotal, Guid UidUsuario, Guid UidEstatusPagoColegiatura,
+                                             int IdParcialidad, Guid UidFechaColegiatura, Guid UidAlumno, Guid UidFormaPago, decimal DcmImporteCole, decimal DcmImportePagado, decimal DcmImporteNuevo, Guid EstatusFechaPago)
+        {
+            bool result = false;
+            if (pagosColegiaturasRepository.RegistrarPagoColegiatura2(
+                new PagosColegiaturas
+                {
+                    UidPagoColegiatura = UidPagoColegiatura,
+                    IntFolio = UltimoFolio,
+                    DtFHPago = DtFHPago,
+                    VchPromocionDePago = VchPromocionDePago,
+                    VchComisionBancaria = VchComisionBancaria,
+                    BitSubtotal = BitSubtotal,
+                    DcmSubtotal = DcmSubtotal,
+                    BitComisionBancaria = BitComisionBancaria,
+                    DcmComisionBancaria = DcmComisionBancaria,
+                    BitPromocionDePago = BitPromocionDePago,
+                    DcmPromocionDePago = DcmPromocionDePago,
+                    BitValidarImporte = BitValidarImporte,
+                    DcmValidarImporte = DcmValidarImporte,
+                    DcmTotal = DcmTotal,
+                    UidUsuario = UidUsuario,
+                    UidEstatusPagoColegiatura = UidEstatusPagoColegiatura
+                },
+                IdParcialidad,
+                UidFechaColegiatura,
+                UidAlumno,
+                UidFormaPago,
+                DcmImporteCole,
+                DcmImportePagado,
+                DcmImporteNuevo,
+                EstatusFechaPago
+                ))
+            {
+                result = true;
+            }
+            return result;
+        }
         public bool ActualizarPagoColegiatura(Guid UidAlumno, string Identificador, string Nombre, string ApePaterno, string ApeMaterno, string Matricula, string Correo, bool BitBeca, string TipoBeca, decimal Beca, Guid UidEstatus, string Telefono, Guid UidPrefijo)
         {
             bool result = false;
@@ -206,6 +244,13 @@ namespace Franquicia.Bussiness
             return pagosColegiaturasRepository.ObtenerPendientesPadresRLE(UidFechaColegiatura, UidAlumno);
         }
         #endregion
+        #endregion
+
+        #region GenerarReferencia
+        public Tuple<string, int, int, bool> GenerarReferencia(Guid UidFechaColegiatura, Guid UidAlumno)
+        {
+            return pagosColegiaturasRepository.GenerarReferencia(UidFechaColegiatura, UidAlumno);
+        }
         #endregion
     }
 }

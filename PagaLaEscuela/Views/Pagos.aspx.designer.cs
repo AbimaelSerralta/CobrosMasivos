@@ -222,15 +222,6 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.Label headMatricula;
 
         /// <summary>
-        /// Control ddlFormasPago.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlFormasPago;
-
-        /// <summary>
         /// Control headFPago.
         /// </summary>
         /// <remarks>
@@ -238,6 +229,33 @@ namespace PagaLaEscuela.Views
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label headFPago;
+
+        /// <summary>
+        /// Control ddlTipoPago.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlTipoPago;
+
+        /// <summary>
+        /// Control divFormasPago.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divFormasPago;
+
+        /// <summary>
+        /// Control ddlFormasPago.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlFormasPago;
 
         /// <summary>
         /// Control lblVencimiento.
@@ -492,15 +510,6 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.Label lblRestaTotal;
 
         /// <summary>
-        /// Control btnGenerarRf.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton btnGenerarRf;
-
-        /// <summary>
         /// Control btnGenerarLiga.
         /// </summary>
         /// <remarks>
@@ -517,15 +526,6 @@ namespace PagaLaEscuela.Views
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblTotalPago;
-
-        /// <summary>
-        /// Control ifrFormatoRef.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlIframe ifrFormatoRef;
 
         /// <summary>
         /// Control pnlIframe.

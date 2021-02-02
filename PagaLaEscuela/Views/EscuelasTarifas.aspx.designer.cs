@@ -78,6 +78,24 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.Label lblMnsjEstatus;
 
         /// <summary>
+        /// Control gvTipoTarjetaPagoEnLinea.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvTipoTarjetaPagoEnLinea;
+
+        /// <summary>
+        /// Control btnGuardarPromocionesPagoEnLinea.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnGuardarPromocionesPagoEnLinea;
+
+        /// <summary>
         /// Control gvPromociones.
         /// </summary>
         /// <remarks>
@@ -139,5 +157,23 @@ namespace PagaLaEscuela.Views
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton btnGuardarPromocionesTerminal;
+
+        /// <summary>
+        /// Control gvTipoTarjetaClubPago.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvTipoTarjetaClubPago;
+
+        /// <summary>
+        /// Control btnGuardarPromocionesClubPago.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnGuardarPromocionesClubPago;
     }
 }

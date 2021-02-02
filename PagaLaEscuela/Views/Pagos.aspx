@@ -298,8 +298,8 @@
                                                             </div>
                                                         </div>
                                                         <div class="row" style="padding-top: 10px;">
-                                                            <div class="col-12 col-md-12 col-lg-8">
-                                                                <div class="form-group col-md-12">
+                                                            <div class="col-12 col-md-12 col-lg-7" style="padding-left: 0px; padding-right: 0px;">
+                                                                <div class="form-group col-md-12" style="padding-bottom: 0px;">
                                                                     <div class="input-group">
                                                                         <div class="input-group-prepend">
                                                                             <asp:Label Text="Alumno:&nbsp;" Font-Bold="true" runat="server" />
@@ -307,7 +307,7 @@
                                                                         <asp:Label ID="headAlumno" runat="server" />
                                                                     </div>
                                                                 </div>
-                                                                <div class="form-group col-md-12">
+                                                                <div class="form-group col-md-12" style="padding-bottom: 0px;">
                                                                     <div class="input-group">
                                                                         <div class="input-group-prepend">
                                                                             <asp:Label Text="Matricula:&nbsp;" Font-Bold="true" runat="server" />
@@ -316,26 +316,38 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-12 col-md-12 col-lg-4">
-                                                                <div class="form-group col-md-12">
-                                                                    <label for="ddlFormasPago" style="color: #ff9800;">Promoción de pago</label>
+                                                            <div class="col-12 col-md-12 col-lg-5" style="padding-left: 0px; padding-right: 0px;">
+                                                                <div class="form-group col-md-12" style="padding-bottom: 0px;">
                                                                     <div class="input-group">
                                                                         <div class="input-group-prepend">
-                                                                            <span class="input-group-text" style="padding-left: 0px;">
-                                                                                <i class="material-icons">format_list_numbered</i>
-                                                                            </span>
+                                                                            <asp:Label Text="Fecha de pago:&nbsp;" Font-Bold="true" runat="server" />
                                                                         </div>
-                                                                        <asp:DropDownList ID="ddlFormasPago" OnSelectedIndexChanged="ddlFormasPago_SelectedIndexChanged" AppendDataBoundItems="true" AutoPostBack="true" CssClass="form-control" runat="server">
-                                                                        </asp:DropDownList>
+                                                                        <asp:Label ID="headFPago" runat="server" />
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="form-group col-md-12">
+                                                            <div class="form-group col-md-4" style="padding-bottom: 0px;">
+                                                                <label for="ddlTipoPago" style="color: #ff9800;">Forma de pago</label>
                                                                 <div class="input-group">
                                                                     <div class="input-group-prepend">
-                                                                        <asp:Label Text="Fecha de pago:&nbsp;" Font-Bold="true" runat="server" />
+                                                                        <span class="input-group-text" style="padding-left: 0px;">
+                                                                            <i class="material-icons">format_list_numbered</i>
+                                                                        </span>
                                                                     </div>
-                                                                    <asp:Label ID="headFPago" runat="server" />
+                                                                    <asp:DropDownList ID="ddlTipoPago" OnSelectedIndexChanged="ddlTipoPago_SelectedIndexChanged" AutoPostBack="true" CssClass="form-control" runat="server">
+                                                                    </asp:DropDownList>
+                                                                </div>
+                                                            </div>
+                                                            <div id="divFormasPago" class="form-group col-md-4" style="padding-bottom: 0px;" runat="server">
+                                                                <label for="ddlFormasPago" style="color: #ff9800;">Promoción de pago</label>
+                                                                <div class="input-group">
+                                                                    <div class="input-group-prepend">
+                                                                        <span class="input-group-text" style="padding-left: 0px;">
+                                                                            <i class="material-icons">format_list_numbered</i>
+                                                                        </span>
+                                                                    </div>
+                                                                    <asp:DropDownList ID="ddlFormasPago" OnSelectedIndexChanged="ddlFormasPago_SelectedIndexChanged" AppendDataBoundItems="true" AutoPostBack="true" CssClass="form-control" runat="server">
+                                                                    </asp:DropDownList>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -547,20 +559,12 @@
                                                             </table>
                                                         </div>
                                                         <div class="pull-right" style="padding-top: 10px;">
-                                                            <asp:LinkButton ID="btnGenerarRf" OnClick="btnGenerarRf_Click" ToolTip="Generar referencia" runat="server">
-                                                                <asp:Label class="btn btn-success btn-round" runat="server">
-                                                                    <asp:Label Text="Generar referencia" runat="server" /><i class="material-icons">arrow_forward</i>
-                                                                </asp:Label>
-                                                            </asp:LinkButton>
-
                                                             <asp:LinkButton ID="btnGenerarLiga" OnClick="btnGenerarLiga_Click" ToolTip="Generar pago" runat="server">
                                                                 <asp:Label class="btn btn-success btn-round" runat="server">
                                                                     <asp:Label ID="lblTotalPago" Text="Generar pago $0.00" runat="server" /><i class="material-icons">arrow_forward</i>
                                                                 </asp:Label>
                                                             </asp:LinkButton>
                                                         </div>
-
-                                                        <iframe id="ifrFormatoRef" type="application/pdf" width="100%" height="600px" src="https://qa.clubpago.site/ReferenceGenerator/PayFormat/12345610_970609332000.pdf" runat="server"></iframe>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1065,6 +1069,24 @@
                                                                                         <i class="material-icons">info_outline</i>
                                                                                 </asp:Label>
                                                                                         </asp:LinkButton>
+                                                                                    </td>
+                                                                                    <td style="border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
+                                                                                        <asp:Panel Visible='<%#Eval("blMostrarRefClub")%>' runat="server">
+                                                                                            <asp:LinkButton ID="btnReferenciaCP" ToolTip="Imprimir referencia" CommandArgument="<%# ((GridViewRow)Container).RowIndex %>" CommandName="btnReferenciaCP" Style="margin-left: 5px;" runat="server">
+                                                                                <asp:Label class="btn btn-sm btn-fab btn-fab-mini btn-round" style="background-color:black;" runat="server">
+                                                                                        <i class="material-icons">picture_as_pdf</i>
+                                                                                </asp:Label>
+                                                                                            </asp:LinkButton>
+                                                                                        </asp:Panel>
+                                                                                    </td>
+                                                                                    <td style="border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
+                                                                                        <asp:Panel Visible='<%#Eval("blCancelRefClub")%>' runat="server">
+                                                                                            <asp:LinkButton ID="btnCancelarRef" ToolTip="Cancelar Referencia" CommandArgument="<%# ((GridViewRow)Container).RowIndex %>" CommandName="btnCancelarRef" Style="margin-left: 5px;" runat="server">
+                                                                                <asp:Label class="btn btn-sm btn-danger btn-fab btn-fab-mini btn-round" runat="server">
+                                                                                        <i class="material-icons">cancel_presentation</i>
+                                                                                </asp:Label>
+                                                                                            </asp:LinkButton>
+                                                                                        </asp:Panel>
                                                                                     </td>
                                                                                 </tr>
                                                                             </tbody>

@@ -134,7 +134,7 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@UidPagoColegiatura", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidPagoColegiatura"].Value = pagosColegiaturas.UidPagoColegiatura;
-                
+
                 comando.Parameters.Add("@IntFolio", SqlDbType.Int);
                 comando.Parameters["@IntFolio"].Value = pagosColegiaturas.IntFolio;
 
@@ -182,6 +182,99 @@ namespace Franquicia.DataAccess.Repository
 
                 //=============================================================================================
 
+                comando.Parameters.Add("@UidFechaColegiatura", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidFechaColegiatura"].Value = UidFechaColegiatura;
+
+                comando.Parameters.Add("@UidAlumno", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidAlumno"].Value = UidAlumno;
+
+                comando.Parameters.Add("@UidFormaPago", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidFormaPago"].Value = UidFormaPago;
+
+                comando.Parameters.Add("@DcmImporteCole", SqlDbType.Decimal);
+                comando.Parameters["@DcmImporteCole"].Value = DcmImporteCole;
+
+                comando.Parameters.Add("@DcmImportePagado", SqlDbType.Decimal);
+                comando.Parameters["@DcmImportePagado"].Value = DcmImportePagado;
+
+                comando.Parameters.Add("@DcmImporteNuevo", SqlDbType.Decimal);
+                comando.Parameters["@DcmImporteNuevo"].Value = DcmImporteNuevo;
+
+                comando.Parameters.Add("@EstatusFechaPago", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@EstatusFechaPago"].Value = EstatusFechaPago;
+
+                Resultado = this.ManipulacionDeDatos(comando);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return Resultado;
+        }
+        public bool RegistrarPagoColegiatura2(PagosColegiaturas pagosColegiaturas, int IdParcialidad, Guid UidFechaColegiatura, Guid UidAlumno, Guid UidFormaPago, decimal DcmImporteCole, decimal DcmImportePagado, decimal DcmImporteNuevo, Guid EstatusFechaPago)
+        {
+            bool Resultado = false;
+
+            SqlCommand comando = new SqlCommand();
+            try
+            {
+                comando.CommandType = System.Data.CommandType.StoredProcedure;
+                comando.CommandText = "sp_PagosColegiaturasRegistrar2";
+
+                comando.Parameters.Add("@UidPagoColegiatura", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidPagoColegiatura"].Value = pagosColegiaturas.UidPagoColegiatura;
+
+                comando.Parameters.Add("@IntFolio", SqlDbType.Int);
+                comando.Parameters["@IntFolio"].Value = pagosColegiaturas.IntFolio;
+
+                comando.Parameters.Add("@DtFHPago", SqlDbType.DateTime);
+                comando.Parameters["@DtFHPago"].Value = pagosColegiaturas.DtFHPago;
+
+                comando.Parameters.Add("@VchPromocionDePago", SqlDbType.VarChar);
+                comando.Parameters["@VchPromocionDePago"].Value = pagosColegiaturas.VchPromocionDePago;
+
+                comando.Parameters.Add("@VchComisionBancaria", SqlDbType.VarChar);
+                comando.Parameters["@VchComisionBancaria"].Value = pagosColegiaturas.VchComisionBancaria;
+
+                comando.Parameters.Add("@BitSubtotal", SqlDbType.Bit);
+                comando.Parameters["@BitSubtotal"].Value = pagosColegiaturas.BitSubtotal;
+
+                comando.Parameters.Add("@DcmSubtotal", SqlDbType.Decimal);
+                comando.Parameters["@DcmSubtotal"].Value = pagosColegiaturas.DcmSubtotal;
+
+                comando.Parameters.Add("@BitComisionBancaria", SqlDbType.Bit);
+                comando.Parameters["@BitComisionBancaria"].Value = pagosColegiaturas.BitComisionBancaria;
+
+                comando.Parameters.Add("@DcmComisionBancaria", SqlDbType.Decimal);
+                comando.Parameters["@DcmComisionBancaria"].Value = pagosColegiaturas.DcmComisionBancaria;
+
+                comando.Parameters.Add("@BitPromocionDePago", SqlDbType.Bit);
+                comando.Parameters["@BitPromocionDePago"].Value = pagosColegiaturas.BitPromocionDePago;
+
+                comando.Parameters.Add("@DcmPromocionDePago", SqlDbType.Decimal);
+                comando.Parameters["@DcmPromocionDePago"].Value = pagosColegiaturas.DcmPromocionDePago;
+
+                comando.Parameters.Add("@BitValidarImporte", SqlDbType.Bit);
+                comando.Parameters["@BitValidarImporte"].Value = pagosColegiaturas.BitValidarImporte;
+
+                comando.Parameters.Add("@DcmValidarImporte", SqlDbType.Decimal);
+                comando.Parameters["@DcmValidarImporte"].Value = pagosColegiaturas.DcmValidarImporte;
+
+                comando.Parameters.Add("@DcmTotal", SqlDbType.Decimal);
+                comando.Parameters["@DcmTotal"].Value = pagosColegiaturas.DcmTotal;
+
+                comando.Parameters.Add("@UidUsuario", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidUsuario"].Value = pagosColegiaturas.UidUsuario;
+
+                comando.Parameters.Add("@UidEstatusPagoColegiatura", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidEstatusPagoColegiatura"].Value = pagosColegiaturas.UidEstatusPagoColegiatura;
+
+                //=============================================================================================
+
+                comando.Parameters.Add("@IdParcialidad", SqlDbType.Int);
+                comando.Parameters["@IdParcialidad"].Value = IdParcialidad;
+                
                 comando.Parameters.Add("@UidFechaColegiatura", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidFechaColegiatura"].Value = UidFechaColegiatura;
 
@@ -558,12 +651,26 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select pc.UidPagoColegiatura, us.VchNombre, us.VchApePaterno, us.VchApeMaterno, pc.DtFHPago, fop.UidFormaPago, fop.VchDescripcion as VchFormaPago, fp.DcmImportePagado, efp.VchDescripcion as EstatusPago, efp.VchColor from PagosColegiaturas pc, FechasPagos fp, FechasColegiaturas fc, FormasPagos fop, Usuarios us, Alumnos al, EstatusFechasPagos efp where efp.UidEstatusFechaPago = fp.UidEstatusFechaPago and al.UidAlumno = fp.UidAlumno and us.UidUsuario = pc.UidUsuario and fop.UidFormaPago = fp.UidFormaPago and fp.UidPagoColegiatura = pc.UidPagoColegiatura and fp.UidFechaColegiatura = fc.UidFechaColegiatura and pc.UidEstatusPagoColegiatura = '51B85D66-866B-4BC2-B08F-FECE1A994053' and fc.UidFechaColegiatura = '" + UidFechaColegiatura + "' and al.VchMatricula = '" + VchMatricula + "' order by DtFHPago desc";
+            query.CommandText = "select pc.UidPagoColegiatura, us.VchNombre, us.VchApePaterno, us.VchApeMaterno, pc.DtFHPago, fop.UidFormaPago, fop.VchDescripcion as VchFormaPago, fp.DcmImportePagado, efp.UidEstatusFechaPago, efp.VchDescripcion as EstatusPago, efp.VchColor from PagosColegiaturas pc, FechasPagos fp, FechasColegiaturas fc, FormasPagos fop, Usuarios us, Alumnos al, EstatusFechasPagos efp where efp.UidEstatusFechaPago = fp.UidEstatusFechaPago and al.UidAlumno = fp.UidAlumno and us.UidUsuario = pc.UidUsuario and fop.UidFormaPago = fp.UidFormaPago and fp.UidPagoColegiatura = pc.UidPagoColegiatura and fp.UidFechaColegiatura = fc.UidFechaColegiatura and pc.UidEstatusPagoColegiatura = '51B85D66-866B-4BC2-B08F-FECE1A994053' and fc.UidFechaColegiatura = '" + UidFechaColegiatura + "' and al.VchMatricula = '" + VchMatricula + "' order by DtFHPago desc";
 
             DataTable dt = this.Busquedas(query);
 
             foreach (DataRow item in dt.Rows)
             {
+
+
+                bool blCancelRefClub = false;
+                bool blMostrarRefClub = false;
+
+                if (Guid.Parse(item["UidFormaPago"].ToString()) == Guid.Parse("6BE13FFE-E567-4D4D-9CBC-37DA30EC23A5"))
+                {
+                    if (Guid.Parse(item["UidEstatusFechaPago"].ToString()) != Guid.Parse("408431CA-DB94-4BAA-AB9B-8FF468A77582"))
+                    {
+                        blCancelRefClub = true;
+                    }
+                    blMostrarRefClub = true;
+                }
+
                 lsReportePadresFechasPagosColeViewModel.Add(new ReportePadresFechasPagosColeViewModel()
                 {
                     UidPagoColegiatura = Guid.Parse(item["UidPagoColegiatura"].ToString()),
@@ -575,7 +682,10 @@ namespace Franquicia.DataAccess.Repository
                     VchFormaPago = item["VchFormaPago"].ToString(),
                     DcmImportePagado = decimal.Parse(item["DcmImportePagado"].ToString()),
                     VchEstatus = item["EstatusPago"].ToString(),
-                    VchColor = item["VchColor"].ToString()
+                    VchColor = item["VchColor"].ToString(),
+
+                    blCancelRefClub = blCancelRefClub,
+                    blMostrarRefClub = blMostrarRefClub
                 });
 
             }
@@ -646,7 +756,7 @@ namespace Franquicia.DataAccess.Repository
 
             return Tuple.Create(lsPagosColegiaturasViewModels, lsDetallePagosColeGridViewModel);
         }
-       
+
         public decimal ObtenerImporteResta(Guid UidFechaColegiatura, Guid UidAlumno)
         {
             decimal ImporteResta = 0;
@@ -800,5 +910,40 @@ namespace Franquicia.DataAccess.Repository
         #endregion
         #endregion
 
+        #region GenerarReferencia
+        public Tuple<string, int, int, bool> GenerarReferencia(Guid UidFechaColegiatura, Guid UidAlumno)
+        {
+            string Referencia = "";
+            int IdPago = 0;
+            int IdParcialidad = 0;
+            bool Error = false;
+
+            try
+            {
+                SqlCommand query = new SqlCommand();
+                query.CommandType = CommandType.Text;
+
+                query.CommandText = "select cl.IdCliente, al.IdAlumno, fca.IdPago, (select CASE WHEN MAX(IdParcialidad) IS NULL THEN 0 ELSE MAX(IdParcialidad) END AS IdParcialidad from FechasPagos where UidFechaColegiatura = '" + UidFechaColegiatura + "' and UidAlumno = '" + UidAlumno + "') AS IdParcialidad from Clientes cl, Alumnos al, FechasColegiaturasAlumnos fca where cl.UidCliente = al.UidCliente and fca.UidAlumno = al.UidAlumno and fca.UidFechaColegiatura = '" + UidFechaColegiatura + "' and fca.UidAlumno = '" + UidAlumno + "'";
+
+                DataTable dt = this.Busquedas(query);
+
+                foreach (DataRow item in dt.Rows)
+                {
+                    IdPago = int.Parse(item["IdPago"].ToString());
+                    IdParcialidad = int.Parse(item["IdParcialidad"].ToString()) + 1;
+
+                    Referencia = int.Parse(item["IdAlumno"].ToString()).ToString("D6") + int.Parse(item["IdAlumno"].ToString()).ToString("D9") + IdPago.ToString("D4") + IdParcialidad.ToString("D3");
+
+                    Error = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                string mnsj = ex.Message;
+            }
+
+            return Tuple.Create(Referencia, IdPago, IdParcialidad, Error);
+        }
+        #endregion
     }
 }

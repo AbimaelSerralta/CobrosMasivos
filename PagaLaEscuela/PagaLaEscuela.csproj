@@ -16,7 +16,8 @@
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
-    <IISExpressSSLPort>44392</IISExpressSSLPort>
+    <IISExpressSSLPort>
+    </IISExpressSSLPort>
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
@@ -242,6 +243,7 @@
     <Content Include="Images\EventoCerrado.png" />
     <Content Include="Images\face.png" />
     <Content Include="Images\FormasDePago\cheque.png" />
+    <Content Include="Images\FormasDePago\comercio.png" />
     <Content Include="Images\FormasDePago\deposito.png" />
     <Content Include="Images\FormasDePago\efectivo.png" />
     <Content Include="Images\FormasDePago\liga.png" />
@@ -267,6 +269,7 @@
     <Content Include="Images\SinLogo2.png" />
     <Content Include="Images\SinPagos.png" />
     <Content Include="Images\think.png" />
+    <Content Include="Images\TipoTarjeta\efectivo.png" />
     <Content Include="Images\TipoTarjeta\tarjetaAmericanExpress.png" />
     <Content Include="Images\TipoTarjeta\tarjetaCredito.png" />
     <Content Include="Images\TipoTarjeta\tarjetaDebito.png" />
@@ -329,6 +332,9 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\PagoReferenciaController.cs" />
+    <Compile Include="Controllers\CancelaPagoController.cs" />
+    <Compile Include="Controllers\ConsultaReferenciaController.cs" />
     <Compile Include="Controllers\ContactoController.cs" />
     <Compile Include="Controllers\PayCardController.cs" />
     <Compile Include="Controllers\StatusColeController.cs" />
@@ -339,6 +345,7 @@
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Filters\SecurityFilter.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -806,7 +813,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Reports\ReciboPagoEfectivoColegiatura.rdlc" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Utilities\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -823,6 +832,8 @@
           <DevelopmentServerPort>52544</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost:52534/</IISUrl>
+          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
+          <IISAppRootUrl>http://localhost:52534/</IISAppRootUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

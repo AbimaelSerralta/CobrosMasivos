@@ -43,9 +43,17 @@ namespace Franquicia.Bussiness
         //bool UseDefaultCredentials = true;
         //int Port = 587;
 
-        string Host = "smtpout.secureserver.net";
-        string EmailFrom = "ventas@pagalaescuela.mx";
-        string Password = "P4gal4e5cu3l@.MX";
+        //string Host = "smtpout.secureserver.net";
+        //string EmailFrom = "ventas@pagalaescuela.mx";
+        //string Password = "P4gal4e5cu3l@.MX";
+        //bool IsBodyHtml = true;
+        //bool EnableSsl = false;
+        //bool UseDefaultCredentials = true;
+        //int Port = 587; /*465; Con Ssl*/
+
+        string Host = "mail.pagalaescuela.com";
+        string EmailFrom = "info@pagalaescuela.com";
+        string Password = "Kb6v2q5@";
         bool IsBodyHtml = true;
         bool EnableSsl = false;
         bool UseDefaultCredentials = true;

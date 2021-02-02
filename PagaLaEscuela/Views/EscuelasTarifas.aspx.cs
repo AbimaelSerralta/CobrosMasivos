@@ -18,6 +18,10 @@ namespace PagaLaEscuela.Views
         TiposTarjetasServices tiposTarjetasServices = new TiposTarjetasServices();
         PromocionesTerminalServices promocionesTerminalServices = new PromocionesTerminalServices();
         ComisionesTarjetasClientesTerminalServices comisionesTarjetasTerminalServices = new ComisionesTarjetasClientesTerminalServices();
+
+        TiposTarjetasClubPagoServices tiposTarjetasClubPagoServices = new TiposTarjetasClubPagoServices();
+        PromocionesClubPagoServices promocionesClubPagoServices = new PromocionesClubPagoServices();
+        ComisionesTarjetasClubPagoServices comisionesTarjetasClubPagoServices = new ComisionesTarjetasClubPagoServices();
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Session["UidClienteMaster"] != null)
@@ -38,6 +42,7 @@ namespace PagaLaEscuela.Views
                 CargarComision(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
 
                 CargarTipoTarjeta();
+                CargarTipoTarjetaClubPago();
             }
             else
             {
@@ -307,8 +312,8 @@ namespace PagaLaEscuela.Views
 
                 //if (promocionesTerminalServices.lsCBLPromocionesTerminalViewModel.Count >= 1)
                 //{
-                    ViewState["AccionPromocionesTerminal"] = "ActualizarPromocionesTerminal";
-                    btnGuardarPromocionesTerminal.Text = "<i class=" + "material-icons>" + "refresh </i> Actualizar";
+                ViewState["AccionPromocionesTerminal"] = "ActualizarPromocionesTerminal";
+                btnGuardarPromocionesTerminal.Text = "<i class=" + "material-icons>" + "refresh </i> Actualizar";
                 //}
                 //else
                 //{
@@ -395,7 +400,7 @@ namespace PagaLaEscuela.Views
                     txtComisionTipoTarjeta.Text = "0";
                 }
                 comisionesTarjetasTerminalServices.RegistrarComisionesTarjetaTerminal(cbComisionTerminal.Checked, decimal.Parse(txtComisionTipoTarjeta.Text), UidTipoTarjeta, Guid.Parse(ViewState["UidClienteLocal"].ToString()));
-                
+
                 foreach (GridViewRow rowPT in gvPromocionesTerminal.Rows)
                 {
                     Guid UidPromocionTerminal = Guid.Parse(rowPT.Cells[0].Text);
@@ -440,6 +445,185 @@ namespace PagaLaEscuela.Views
 
             CargarTipoTarjeta();
         }
+        #endregion
+
+        #region PagosEnEfectivo
+
+        #region ClubPago
+        private void CargarTipoTarjetaClubPago()
+        {
+            tiposTarjetasClubPagoServices.CargarTiposTarjetas();
+            gvTipoTarjetaClubPago.DataSource = tiposTarjetasClubPagoServices.lsTiposTarjetasClubPago;
+            gvTipoTarjetaClubPago.DataBind();
+        }
+
+        #region GridViewTipoTarjeta
+        protected void gvTipoTarjetaClubPago_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                //e.Row.Attributes["onclick"] = Page.ClientScript.GetPostBackClientHyperlink(DGVCajas, "Select$" + e.Row.RowIndex);
+
+                CheckBox cbComisionClubPago = e.Row.FindControl("cbComisionClubPago") as CheckBox;
+                TextBox txtComisionTipoTarjetaClubPago = e.Row.FindControl("txtComisionTipoTarjetaClubPago") as TextBox;
+                GridView gvPromocionesClubPago = e.Row.FindControl("gvPromocionesClubPago") as GridView;
+
+
+                comisionesTarjetasClubPagoServices.CargarComisionesTarjeta(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+
+                foreach (var item in comisionesTarjetasClubPagoServices.lsComisionesTarjetasClubPago)
+                {
+
+                    if (Guid.Parse(e.Row.Cells[0].Text) == item.UidTipoTarjeta)
+                    {
+                        ViewState["item.UidComicionTarjetaCliente"] = item.UidComicionTarjeta;
+
+                        cbComisionClubPago .Checked = false;
+                        if (item.BitComision)
+                        {
+                            cbComisionClubPago.Checked = true;
+                        }
+
+                        txtComisionTipoTarjetaClubPago.Text = item.DcmComision.ToString("N2");
+                    }
+                }
+
+                //if (promocionesTerminalServices.lsCBLPromocionesTerminalViewModel.Count >= 1)
+                //{
+                ViewState["AccionPromocionesClubPago"] = "ActualizarPromocionesClubPago";
+                btnGuardarPromocionesClubPago.Text = "<i class=" + "material-icons>" + "refresh </i> Actualizar";
+                //}
+                //else
+                //{
+                //    ViewState["AccionPromocionesClubPago"] = "GuardarPromocionesClubPago";
+                //    btnGuardarPromocionesTerminal.Text = "<i class=" + "material-icons>" + "check </i> Guardar";
+                //}
+
+                foreach (var itemTT in tiposTarjetasClubPagoServices.lsTiposTarjetasClubPago)
+                {
+                    if (itemTT.BitPromociones && Guid.Parse(e.Row.Cells[0].Text) == itemTT.UidTipoTarjeta)
+                    {
+                        promocionesClubPagoServices.lsCBLPromocionesClubPagoViewModel.Clear();
+                        promocionesClubPagoServices.CargarPromocionesCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()), itemTT.UidTipoTarjeta);
+                        gvPromocionesClubPago.DataSource = promocionesClubPagoServices.lsCBLPromocionesClubPagoViewModel;
+                        gvPromocionesClubPago.DataBind();
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region GridViewPromociones
+        protected void gvPromocionesClubPago_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                //e.Row.Attributes["onclick"] = Page.ClientScript.GetPostBackClientHyperlink(DGVCajas, "Select$" + e.Row.RowIndex);
+
+                //CheckBox cbPromocionTerminal = e.Row.FindControl("cbPromocionTerminal") as CheckBox;
+                //TextBox txtComisionTerminal = e.Row.FindControl("txtComisionTerminal") as TextBox;
+                //TextBox txtApartirDeTerminal = e.Row.FindControl("txtApartirDeTerminal") as TextBox;
+
+
+                //foreach (var item in promocionesTerminalServices.lsCBLPromocionesTerminalViewModel)
+                //{
+                //    if (Guid.Parse(e.Row.Cells[0].Text) == item.UidPromocionTerminal)
+                //    {
+                //        cbPromocionTerminal.Checked = true;
+                //        txtComisionTerminal.Text = item.DcmComicion.ToString();
+                //        txtApartirDeTerminal.Text = item.DcmApartirDe.ToString("N2");
+                //    }
+                //}
+            }
+        }
+
+        protected void cbPromocionClubPago_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+        #endregion
+        protected void btnGuardarPromocionesClubPago_Click(object sender, EventArgs e)
+        {
+            comisionesTarjetasClubPagoServices.EliminarComisionesTarjeta(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+            promocionesClubPagoServices.EliminarPromocionesCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+
+            foreach (GridViewRow row in gvTipoTarjetaClubPago.Rows)
+            {
+                Guid UidTipoTarjeta = Guid.Parse(row.Cells[0].Text);
+                CheckBox cbComisionClubPago = row.FindControl("cbComisionClubPago") as CheckBox;
+                TextBox txtComisionTipoTarjetaClubPago = row.FindControl("txtComisionTipoTarjetaClubPago") as TextBox;
+                GridView gvPromocionesClubPago = row.FindControl("gvPromocionesClubPago") as GridView;
+
+                if (cbComisionClubPago.Checked)
+                {
+                    if (txtComisionTipoTarjetaClubPago.EmptyTextBox())
+                    {
+                        pnlAlert.Visible = true;
+                        lblMensajeAlert.Text = "El campo comisión es obligatorio.";
+                        divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                        return;
+                    }
+
+                    ValidacionesServices validacionesServices = new ValidacionesServices();
+                    if (!validacionesServices.IsNumeric(txtComisionTipoTarjetaClubPago.Text))
+                    {
+                        pnlAlert.Visible = true;
+                        lblMensajeAlert.Text = "La comisión no es un formato correcto.";
+                        divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                        return;
+                    }
+                }
+                else
+                {
+                    txtComisionTipoTarjetaClubPago.Text = "0";
+                }
+                comisionesTarjetasClubPagoServices.RegistrarComisionesTarjeta(cbComisionClubPago.Checked, decimal.Parse(txtComisionTipoTarjetaClubPago.Text), UidTipoTarjeta, Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+
+                foreach (GridViewRow rowPT in gvPromocionesClubPago.Rows)
+                {
+                    Guid UidPromocion = Guid.Parse(rowPT.Cells[0].Text);
+                    CheckBox cbPromocionClubPago = rowPT.FindControl("cbPromocionClubPago") as CheckBox;
+                    TextBox txtComisionClubPago = rowPT.FindControl("txtComisionClubPago") as TextBox;
+                    TextBox txtApartirDeClubPago = rowPT.FindControl("txtApartirDeClubPago") as TextBox;
+
+                    if (cbPromocionClubPago.Checked)
+                    {
+                        decimal DcmComicion = 0;
+                        decimal DcmApartirDe = 0;
+
+                        if (!string.IsNullOrEmpty(txtComisionClubPago.Text.Trim()))
+                        {
+                            DcmComicion = decimal.Parse(txtComisionClubPago.Text.Trim());
+                        }
+
+                        if (!string.IsNullOrEmpty(txtApartirDeClubPago.Text.Trim()))
+                        {
+                            DcmApartirDe = decimal.Parse(txtApartirDeClubPago.Text.Trim());
+                        }
+
+                        promocionesClubPagoServices.RegistrarPromocionesCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()), UidPromocion, DcmComicion, DcmApartirDe, UidTipoTarjeta);
+                    }
+                }
+
+                switch (ViewState["AccionPromocionesClubPago"].ToString())
+                {
+                    case "ActualizarPromocionesClubPago":
+                        pnlAlert.Visible = true;
+                        lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha actualizado exitosamente.";
+                        divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                        break;
+
+                    case "GuardarPromocionesClubPago":
+                        pnlAlert.Visible = true;
+                        lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
+                        divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                        break;
+                }
+            }
+
+            CargarTipoTarjetaClubPago();
+        }
+        #endregion
         #endregion
     }
 }

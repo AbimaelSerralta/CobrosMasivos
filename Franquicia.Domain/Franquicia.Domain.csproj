@@ -41,11 +41,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\ClubPago\AuthClub.cs" />
+    <Compile Include="Models\ClubPago\CancelacionPagoResp.cs" />
+    <Compile Include="Models\ClubPago\ErrorHeader.cs" />
+    <Compile Include="Models\ClubPago\HeaderClubPago.cs" />
+    <Compile Include="Models\ClubPago\SolicitudPago.cs" />
+    <Compile Include="Models\ClubPago\CancelacionPago.cs" />
+    <Compile Include="Models\ClubPago\AutorizacionPago.cs" />
+    <Compile Include="Models\ClubPago\ConsultarReferencia.cs" />
     <Compile Include="Models\ClubPago\GenerarRefereciaPago.cs" />
     <Compile Include="Models\ClubPago\ObtenerRefereciaPago.cs" />
+    <Compile Include="Models\ComisionesTarjetasClubPago.cs" />
     <Compile Include="Models\ComisionesTarjetasClientesTerminal.cs" />
+    <Compile Include="Models\PromocionesClubPago.cs" />
+    <Compile Include="Models\ReferenciasClubPago.cs" />
     <Compile Include="Models\PagosEfectivos.cs" />
     <Compile Include="Models\Praga\UrlV3PaymentRequest.cs" />
+    <Compile Include="Models\TiposTarjetasClubPago.cs" />
     <Compile Include="Models\TiposTarjetas.cs" />
     <Compile Include="Models\EstatusFechasPagos.cs" />
     <Compile Include="Models\PagosManuales.cs" />
@@ -108,6 +120,7 @@
     <Compile Include="Models\TiposTelefonos.cs" />
     <Compile Include="Models\UsuariosCompletos.cs" />
     <Compile Include="Models\Usuarios.cs" />
+    <Compile Include="ViewModels\PromocionesClubPago\CBLPromocionesClubPagoViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\Alumnos\AlumnosRLEGridViewModel.cs" />
     <Compile Include="ViewModels\Alumnos\AlumnosUsuariosExcelViewModel.cs" />
@@ -167,6 +180,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Enums\" />
+    <Folder Include="ViewModels\ReferenciasClubPago\" />
     <Folder Include="ViewModels\WhatsAppPendientes\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -83,46 +83,76 @@ namespace Franquicia.Bussiness
             }
         }
 
-        public void AuthClub()
+        public List<AuthClub> AuthClub()
         {
+            List<AuthClub> lsAuthClub = new List<AuthClub>();
+
             var client = new RestClient("https://qa.clubpago.site/auth/api/auth?=");
             var request = new RestRequest(Method.POST);
             request.AddHeader("content-type", "application/json");
-            request.AddParameter("application/json",
-"{\n\t\"user\":\"Pagalaescuela433\",\n\t\"pswd\":\"Pagalaescuela433$\"\n}",
-ParameterType.RequestBody);
+            request.AddParameter("application/json", "{\n\t\"user\":\"" + User + "\",\n\t\"pswd\":\"" + Pswd + "\"\n}", ParameterType.RequestBody);
 
             IRestResponse response = client.Execute(request);
             var content = response.Content;
+
+            AuthClub authClub = JsonConvert.DeserializeObject<AuthClub>(content.ToString());
+
+            lsAuthClub.Add(authClub);
+
+            return lsAuthClub;
+            
         }
 
         public List<ObtenerRefereciaPago> GenerarReferencia(string Description, string Amount, string Account, string CustomerEmail, string CustomerName, string ExpirationDate)
         {
+            string token = string.Empty;
+            foreach (var item in AuthClub())
+            {
+                token = item.Token;
+            }
+
             GenerarRefereciaPago generarRefereciaPago = new GenerarRefereciaPago();
             List<ObtenerRefereciaPago> lsObtenerRefereciaPago = new List<ObtenerRefereciaPago>();
 
-            generarRefereciaPago.Description = Description;
-            generarRefereciaPago.Amount = Amount;
-            generarRefereciaPago.Account = Account;
-            generarRefereciaPago.CustomerEmail = CustomerEmail;
-            generarRefereciaPago.CustomerName = CustomerName;
-            generarRefereciaPago.ExpirationDate = ExpirationDate;
+            try
+            {
+                generarRefereciaPago.Description = Description;
+                generarRefereciaPago.Amount = Amount;
+                generarRefereciaPago.Account = Account;
+                generarRefereciaPago.CustomerEmail = CustomerEmail;
+                generarRefereciaPago.CustomerName = CustomerName;
+                generarRefereciaPago.ExpirationDate = ExpirationDate;
 
-            var client = new
-            RestClient("https://qa.clubpago.site/referencegenerator/svc/generator/payformat");
-            var request = new RestRequest(Method.POST);
-            string json = JsonConvert.SerializeObject(generarRefereciaPago);
-            request.AddHeader("content-type", "application/json");
-            request.AddHeader("authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IlBhZ2FsYWVzY3VlbGE0MzMiLCJFbWlzb3JJZCI6IjQzMyIsImp0aSI6IjU5YmY5MzQyLWJhMWYtNDZiMy05NDdiLTI2NjhiOWVhYzNlOCIsIm5iZiI6MTYwOTc5NjEyMSwiZXhwIjoxNjA5ODM5MzIxLCJpc3MiOiJjbHVicGFnby5teCIsImF1ZCI6ImNsdWJwYWdvLm14In0.qwu6tDnDir_Us3EtSogw7jRepMAMxwHbc2AOkFmrGcA");
-            request.AddParameter("application/json", json, ParameterType.RequestBody);
-            IRestResponse response = client.Execute(request);
-            var content = response.Content;
+                var client = new
+                RestClient("https://qa.clubpago.site/referencegenerator/svc/generator/payformat");
+                var request = new RestRequest(Method.POST);
+                string json = JsonConvert.SerializeObject(generarRefereciaPago);
+                request.AddHeader("content-type", "application/json");
+                request.AddHeader("authorization", "Bearer " + token);
+                request.AddParameter("application/json", json, ParameterType.RequestBody);
+                IRestResponse response = client.Execute(request);
+                var content = response.Content;
 
-            ObtenerRefereciaPago obtenerRefereciaPago = JsonConvert.DeserializeObject<ObtenerRefereciaPago>(content.ToString());
+                if (content != string.Empty)
+                {
+                    ObtenerRefereciaPago obtenerRefereciaPago = JsonConvert.DeserializeObject<ObtenerRefereciaPago>(content.ToString());
 
-            lsObtenerRefereciaPago.Add(obtenerRefereciaPago);
+                    lsObtenerRefereciaPago.Add(obtenerRefereciaPago);
 
-            return lsObtenerRefereciaPago;
+                    return lsObtenerRefereciaPago;
+                }
+                else
+                {
+                    return lsObtenerRefereciaPago;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string mnsj = ex.Message;
+
+                return lsObtenerRefereciaPago;
+            }
         }
     }
 }

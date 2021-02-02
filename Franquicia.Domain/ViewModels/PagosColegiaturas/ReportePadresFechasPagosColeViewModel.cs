@@ -18,6 +18,9 @@ namespace Franquicia.Domain.ViewModels
         public decimal DcmImportePagado { get; set; }
         public string VchEstatus { get; set; }
         public string VchColor { get; set; }
+        
+        public bool blCancelRefClub { get; set; }
+        public bool blMostrarRefClub { get; set; }
 
     }
 }

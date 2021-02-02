@@ -45,7 +45,35 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select * from FormasPagos where IntGerarquia != 1 and IntGerarquia != 2 and IntGerarquia != 3 and IntGerarquia != 5  order by IntGerarquia asc";
+            query.CommandText = "select * from FormasPagos where IntGerarquia = 4 or IntGerarquia = 6 or IntGerarquia = 7 order by IntGerarquia asc";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                string VchImagen = string.Empty;
+
+                lsFormasPagos.Add(new FormasPagos()
+                {
+                    UidFormaPago = new Guid(item["UidFormaPago"].ToString()),
+                    VchDescripcion = item["VchDescripcion"].ToString(),
+                    VchImagen = item["VchImagen"].ToString(),
+                    IntGerarquia = int.Parse(item["IntGerarquia"].ToString()),
+                    VchColor = item["VchColor"].ToString()
+                });
+            }
+
+            return lsFormasPagos;
+        }
+        
+        public List<FormasPagos> CargarFormasPagosPadres2()
+        {
+            List<FormasPagos> lsFormasPagos = new List<FormasPagos>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select * from FormasPagos where IntGerarquia = 3 or IntGerarquia = 5 order by IntGerarquia asc";
 
             DataTable dt = this.Busquedas(query);
 
@@ -75,7 +103,7 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select * from FormasPagos where IntGerarquia != 1 and IntGerarquia != 2 and IntGerarquia != 3 and IntGerarquia != 5  order by IntGerarquia asc";
+            query.CommandText = "select * from FormasPagos where IntGerarquia = 4 or IntGerarquia = 6 or IntGerarquia = 7 order by IntGerarquia asc";
 
             DataTable dt = this.Busquedas(query);
 

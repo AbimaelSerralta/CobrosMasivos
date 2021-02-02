@@ -37,7 +37,12 @@
                             <div class="nav-tabs-wrapper">
                                 <ul class="nav nav-tabs" id="ulTabColegiatura" data-tabs="tabs">
                                     <li class="nav-item">
-                                        <a class="nav-link active show" href="#promociones" data-toggle="tab">
+                                        <a class="nav-link active show" href="#pagoenlinea" data-toggle="tab">
+                                            <i class="material-icons">payment</i>Pago en linea<div class="ripple-container"></div>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#promociones" data-toggle="tab">
                                             <i class="material-icons">list</i>Promociones<div class="ripple-container"></div>
                                         </a>
                                     </li>
@@ -49,6 +54,11 @@
                                     <li class="nav-item">
                                         <a class="nav-link" href="#terminal" data-toggle="tab">
                                             <i class="material-icons">phonelink_ring</i>Terminal bancaria<div class="ripple-container"></div>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#pagoenefectivo" data-toggle="tab">
+                                            <i class="material-icons">attach_money</i>Pago en efectivo<div class="ripple-container"></div>
                                         </a>
                                     </li>
                                 </ul>
@@ -70,7 +80,134 @@
                                 </ContentTemplate>
                             </asp:UpdatePanel>
 
-                            <div class="tab-pane active show" id="promociones">
+                            <div class="tab-pane active show" id="pagoenlinea">
+                                <asp:GridView ID="gvTipoTarjetaPagoEnLinea" OnRowDataBound="gvTipoTarjeta_RowDataBound" Width="100%" ShowHeader="false" GridLines="None" AutoGenerateColumns="false" runat="server">
+                                    <Columns>
+                                        <asp:BoundField DataField="UidTipoTarjeta" ItemStyle-CssClass="d-none" HeaderStyle-CssClass="d-none" />
+                                        <asp:TemplateField>
+                                            <ItemTemplate>
+                                                <div class="row">
+                                                    <div class="accordionTipoTarjeta" style="margin-top: 15px; margin-bottom: 0px; border-left: 8px solid <%#Eval("VchColor")%>;">
+                                                        <asp:UpdatePanel runat="server">
+                                                            <ContentTemplate>
+                                                                <div>
+                                                                    <label style="font-size: 1.0625rem; font-weight: bold; color: black;">
+                                                                        <div class="row">
+                                                                            <div class="col-sm-2">
+                                                                                <img src="../Images/TipoTarjeta/<%#Eval("VchImagen")%>" style="background-color: #d8ecfe" height="70" width="70" class="float-left rounded-circle">
+                                                                            </div>
+                                                                            <div class="col-sm-5">
+                                                                                <h5 class="card-title" style="padding-top: 15px;">
+                                                                                    <asp:CheckBox ID="cbComisionPagoEnLinea" Font-Bold="true" AutoPostBack="true" Text='<%#Eval("VchDescripcion")%>' runat="server" />
+                                                                                </h5>
+                                                                            </div>
+                                                                            <div class="col-sm-5">
+                                                                                <div class="form-group col-md-12" style="padding-left: 0px;">
+                                                                                    <div class="input-group">
+                                                                                        <asp:TextBox ID="txtComisionTipoTarjetaPagoEnLinea" Text="0.00" CssClass="form-control" TextMode="Phone" Font-Size="Large" runat="server" />
+                                                                                        <div class="input-group-prepend">
+                                                                                            <span class="input-group-text" style="padding-left: 0px; padding-right: 5px;">
+                                                                                                <i class="material-icons">%</i>
+                                                                                            </span>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtComisionTipoTarjetaPagoEnLinea" runat="server" />
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </label>
+                                                                </div>
+                                                            </ContentTemplate>
+                                                            <Triggers>
+                                                                <asp:AsyncPostBackTrigger ControlID="cbComisionTerminalPagoEnLinea" EventName="CheckedChanged" />
+                                                            </Triggers>
+                                                        </asp:UpdatePanel>
+                                                    </div>
+                                                    <div class="panelTipoTarjeta">
+                                                        <asp:UpdatePanel runat="server">
+                                                            <ContentTemplate>
+                                                                <div class="row">
+                                                                    <div class="card" style="margin-top: 0px; margin-bottom: 0px; border-left: 8px solid <%#Eval("VchColor")%>;">
+                                                                        <div class="card-body">
+                                                                            <div class="row">
+                                                                                <div class="table-responsive">
+                                                                                    <asp:GridView ID="gvPromocionesTerminalPagoEnLinea" CssClass="table" GridLines="None" border="0" OnRowDataBound="gvPromocionesTerminal_RowDataBound" AutoGenerateColumns="false" DataKeyNames="UidPromocionTerminal" runat="server">
+                                                                                        <EmptyDataTemplate>
+                                                                                            <div class="alert alert-info">No hay promociones disponibles</div>
+                                                                                        </EmptyDataTemplate>
+                                                                                        <Columns>
+                                                                                            <asp:BoundField DataField="UidPromocionTerminal" ItemStyle-CssClass="d-none" HeaderStyle-CssClass="d-none" />
+                                                                                            <asp:TemplateField HeaderStyle-CssClass="d-none">
+                                                                                                <ItemTemplate>
+                                                                                                    <asp:UpdatePanel runat="server">
+                                                                                                        <ContentTemplate>
+                                                                                                            <table>
+                                                                                                                <tbody>
+                                                                                                                    <tr>
+                                                                                                                        <td style="width: 30%;">
+                                                                                                                            <asp:CheckBox ID="cbPromocionTerminalPagoEnLinea" Checked='<%#Eval("blChecked")%>' OnCheckedChanged="cbPromocionTerminal_CheckedChanged" AutoPostBack="true" Text='<%#Eval("VchDescripcion")%>' runat="server" />
+                                                                                                                        </td>
+                                                                                                                        <td style="width: 35%;">
+                                                                                                                            <div class="input-group">
+                                                                                                                                <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtComisionTerminalPagoEnLinea" runat="server" />
+                                                                                                                                <asp:TextBox ID="txtComisionTerminalPagoEnLinea" Text='<%#Eval("DcmComicion")%>' Font-Size="Large" CssClass="form-control text-right" placeholder="123...100" runat="server" />
+                                                                                                                                <div class="input-group-prepend">
+                                                                                                                                    <span class="input-group-text">
+                                                                                                                                        <i class="material-icons">%</i>
+                                                                                                                                    </span>
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                        </td>
+                                                                                                                        <td style="width: 35%;">
+                                                                                                                            <div class="input-group">
+                                                                                                                                <div class="input-group-prepend">
+                                                                                                                                    <span class="input-group-text">
+                                                                                                                                        <i class="material-icons">$</i>
+                                                                                                                                    </span>
+                                                                                                                                </div>
+                                                                                                                                <asp:TextBox ID="txtApartirDeTerminalPagoEnLinea" Text='<%#Eval("DcmApartirDe")%>' ToolTip="A partir del monto ingresado se activará esta promoción." Font-Size="Large" CssClass="form-control text-right" placeholder="A partir de" runat="server" />
+                                                                                                                                <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtApartirDeTerminalPagoEnLinea" runat="server" />
+                                                                                                                            </div>
+                                                                                                                        </td>
+                                                                                                                    </tr>
+                                                                                                                </tbody>
+                                                                                                            </table>
+                                                                                                        </ContentTemplate>
+                                                                                                        <Triggers>
+                                                                                                            <asp:AsyncPostBackTrigger ControlID="cbPromocionTerminalPagoEnLinea" EventName="CheckedChanged" />
+                                                                                                        </Triggers>
+                                                                                                    </asp:UpdatePanel>
+                                                                                                </ItemTemplate>
+                                                                                            </asp:TemplateField>
+                                                                                        </Columns>
+                                                                                    </asp:GridView>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </ContentTemplate>
+                                                        </asp:UpdatePanel>
+                                                    </div>
+                                                </div>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                    </Columns>
+                                </asp:GridView>
+
+                                <asp:UpdatePanel runat="server">
+                                    <ContentTemplate>
+                                        <div class="modal-footer justify-content-center">
+                                            <asp:LinkButton ID="btnGuardarPromocionesPagoEnLinea" CssClass="btn btn-success btn-round" runat="server">
+                                                                <i class="material-icons">check</i> Guardar
+                                            </asp:LinkButton>
+                                        </div>
+                                    </ContentTemplate>
+                                </asp:UpdatePanel>
+                            </div>
+
+                            <div class="tab-pane" id="promociones">
                                 <asp:UpdatePanel runat="server">
                                     <ContentTemplate>
                                         <div class="row">
@@ -315,6 +452,133 @@
                                     <ContentTemplate>
                                         <div class="modal-footer justify-content-center">
                                             <asp:LinkButton ID="btnGuardarPromocionesTerminal" OnClick="btnGuardarPromocionesTerminal_Click" CssClass="btn btn-success btn-round" runat="server">
+                                                                <i class="material-icons">check</i> Guardar
+                                            </asp:LinkButton>
+                                        </div>
+                                    </ContentTemplate>
+                                </asp:UpdatePanel>
+                            </div>
+
+                            <div class="tab-pane" id="pagoenefectivo">
+                                <asp:GridView ID="gvTipoTarjetaClubPago" OnRowDataBound="gvTipoTarjetaClubPago_RowDataBound" Width="100%" ShowHeader="false" GridLines="None" AutoGenerateColumns="false" runat="server">
+                                    <Columns>
+                                        <asp:BoundField DataField="UidTipoTarjeta" ItemStyle-CssClass="d-none" HeaderStyle-CssClass="d-none" />
+                                        <asp:TemplateField>
+                                            <ItemTemplate>
+                                                <div class="row">
+                                                    <div class="accordionTipoTarjeta" style="margin-top: 15px; margin-bottom: 0px; border-left: 8px solid <%#Eval("VchColor")%>;">
+                                                        <asp:UpdatePanel runat="server">
+                                                            <ContentTemplate>
+                                                                <div>
+                                                                    <label style="font-size: 1.0625rem; font-weight: bold; color: black;">
+                                                                        <div class="row">
+                                                                            <div class="col-sm-2">
+                                                                                <img src="../Images/TipoTarjeta/<%#Eval("VchImagen")%>" style="background-color: #d8ecfe" height="70" width="70" class="float-left rounded-circle">
+                                                                            </div>
+                                                                            <div class="col-sm-5">
+                                                                                <h5 class="card-title" style="padding-top: 15px;">
+                                                                                    <asp:CheckBox ID="cbComisionClubPago" Font-Bold="true" AutoPostBack="true" Text='<%#Eval("VchDescripcion")%>' runat="server" />
+                                                                                </h5>
+                                                                            </div>
+                                                                            <div class="col-sm-5">
+                                                                                <div class="form-group col-md-12" style="padding-left: 0px;">
+                                                                                    <div class="input-group">
+                                                                                        <asp:TextBox ID="txtComisionTipoTarjetaClubPago" Text="0.00" CssClass="form-control" TextMode="Phone" Font-Size="Large" runat="server" />
+                                                                                        <div class="input-group-prepend">
+                                                                                            <span class="input-group-text" style="padding-left: 0px; padding-right: 5px;">
+                                                                                                <i class="material-icons">%</i>
+                                                                                            </span>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtComisionTipoTarjetaClubPago" runat="server" />
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </label>
+                                                                </div>
+                                                            </ContentTemplate>
+                                                            <Triggers>
+                                                                <asp:AsyncPostBackTrigger ControlID="cbComisionClubPago" EventName="CheckedChanged" />
+                                                            </Triggers>
+                                                        </asp:UpdatePanel>
+                                                    </div>
+                                                    <div class="panelTipoTarjeta">
+                                                        <asp:UpdatePanel runat="server">
+                                                            <ContentTemplate>
+                                                                <div class="row">
+                                                                    <div class="card" style="margin-top: 0px; margin-bottom: 0px; border-left: 8px solid <%#Eval("VchColor")%>;">
+                                                                        <div class="card-body">
+                                                                            <div class="row">
+                                                                                <div class="table-responsive">
+                                                                                    <asp:GridView ID="gvPromocionesClubPago" CssClass="table" GridLines="None" border="0" OnRowDataBound="gvPromocionesClubPago_RowDataBound" AutoGenerateColumns="false" DataKeyNames="UidPromocionTerminal" runat="server">
+                                                                                        <EmptyDataTemplate>
+                                                                                            <div class="alert alert-info">No hay promociones disponibles</div>
+                                                                                        </EmptyDataTemplate>
+                                                                                        <Columns>
+                                                                                            <asp:BoundField DataField="UidPromocionTerminal" ItemStyle-CssClass="d-none" HeaderStyle-CssClass="d-none" />
+                                                                                            <asp:TemplateField HeaderStyle-CssClass="d-none">
+                                                                                                <ItemTemplate>
+                                                                                                    <asp:UpdatePanel runat="server">
+                                                                                                        <ContentTemplate>
+                                                                                                            <table>
+                                                                                                                <tbody>
+                                                                                                                    <tr>
+                                                                                                                        <td style="width: 30%;">
+                                                                                                                            <asp:CheckBox ID="cbPromocionClubPago" Checked='<%#Eval("blChecked")%>' OnCheckedChanged="cbPromocionClubPago_CheckedChanged" AutoPostBack="true" Text='<%#Eval("VchDescripcion")%>' runat="server" />
+                                                                                                                        </td>
+                                                                                                                        <td style="width: 35%;">
+                                                                                                                            <div class="input-group">
+                                                                                                                                <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtComisionTerminalPagoEnLinea" runat="server" />
+                                                                                                                                <asp:TextBox ID="txtComisionClubPago" Text='<%#Eval("DcmComicion")%>' Font-Size="Large" CssClass="form-control text-right" placeholder="123...100" runat="server" />
+                                                                                                                                <div class="input-group-prepend">
+                                                                                                                                    <span class="input-group-text">
+                                                                                                                                        <i class="material-icons">%</i>
+                                                                                                                                    </span>
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                        </td>
+                                                                                                                        <td style="width: 35%;">
+                                                                                                                            <div class="input-group">
+                                                                                                                                <div class="input-group-prepend">
+                                                                                                                                    <span class="input-group-text">
+                                                                                                                                        <i class="material-icons">$</i>
+                                                                                                                                    </span>
+                                                                                                                                </div>
+                                                                                                                                <asp:TextBox ID="txtApartirDeClubPago" Text='<%#Eval("DcmApartirDe")%>' ToolTip="A partir del monto ingresado se activará esta promoción." Font-Size="Large" CssClass="form-control text-right" placeholder="A partir de" runat="server" />
+                                                                                                                                <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtApartirDeTerminalPagoEnLinea" runat="server" />
+                                                                                                                            </div>
+                                                                                                                        </td>
+                                                                                                                    </tr>
+                                                                                                                </tbody>
+                                                                                                            </table>
+                                                                                                        </ContentTemplate>
+                                                                                                        <Triggers>
+                                                                                                            <asp:AsyncPostBackTrigger ControlID="cbPromocionClubPago" EventName="CheckedChanged" />
+                                                                                                        </Triggers>
+                                                                                                    </asp:UpdatePanel>
+                                                                                                </ItemTemplate>
+                                                                                            </asp:TemplateField>
+                                                                                        </Columns>
+                                                                                    </asp:GridView>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </ContentTemplate>
+                                                        </asp:UpdatePanel>
+                                                    </div>
+                                                </div>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                    </Columns>
+                                </asp:GridView>
+
+                                <asp:UpdatePanel runat="server">
+                                    <ContentTemplate>
+                                        <div class="modal-footer justify-content-center">
+                                            <asp:LinkButton ID="btnGuardarPromocionesClubPago" OnClick="btnGuardarPromocionesClubPago_Click" CssClass="btn btn-success btn-round" runat="server">
                                                                 <i class="material-icons">check</i> Guardar
                                             </asp:LinkButton>
                                         </div>

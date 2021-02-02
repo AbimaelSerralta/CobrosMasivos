@@ -29,6 +29,13 @@ namespace Franquicia.Bussiness
 
             lsFormasPagos = formasPagosRepository.CargarFormasPagosPadres();
         }
+
+        public void CargarFormasPagosPadres2()
+        {
+            lsFormasPagos = new List<FormasPagos>();
+
+            lsFormasPagos = formasPagosRepository.CargarFormasPagosPadres2();
+        }
         #endregion
 
         #region ReportePagosPadres

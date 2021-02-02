@@ -13,11 +13,11 @@ namespace Franquicia.Bussiness
 {
     public class GenerarLigaPraga
     {
-        int BusinessId = 1802;
+        int BusinessId = 13131;
         string Url = $"https://qaag.mitec.com.mx/praga-ws/url/generateUrlV3";
-        string UserCode = "1607022879421";
-        string WSEncryptionKey = "996196AFE9828EE0BB0397E1405CBA9A";
-        string APIKey = "MTc4NGQwN2ItM2E2ZS00MWZiLWE5MTYtMDQ4YTVhMmJhZmFl";
+        string UserCode = "1610137579779";
+        string WSEncryptionKey = "4451B4A2EBA9E3D49E7981FD2464C361";
+        string APIKey = "ZDMxYzc3MGItZjEyMS00OTRhLTkxNmQtYmE5Yjk0M2YzYzlm";
 
         public void ApiGenerarURL(decimal Ammount, string Currency, string EffectiveDate, string Id, string PaymentTypes, string Reference, string Station)
         {
