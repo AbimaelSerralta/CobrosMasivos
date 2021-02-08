@@ -243,6 +243,10 @@ namespace Franquicia.Bussiness
         {
             return pagosColegiaturasRepository.ObtenerPendientesPadresRLE(UidFechaColegiatura, UidAlumno);
         }
+        public Tuple<string, decimal> ObtenerDatosPagoRLE(Guid UidFechaColegiatura)
+        {
+            return pagosColegiaturasRepository.ObtenerDatosPagoRLE(UidFechaColegiatura);
+        }
         #endregion
         #endregion
 

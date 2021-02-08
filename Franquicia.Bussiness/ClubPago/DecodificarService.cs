@@ -10,8 +10,19 @@ namespace Franquicia.Bussiness.ClubPago
     {
         public string DecodeBase64ToString(string valor)
         {
-            byte[] myBase64ret = Convert.FromBase64String(valor);
-            string myStr = System.Text.Encoding.UTF8.GetString(myBase64ret);
+            string myStr = "";
+
+            try
+            {
+                byte[] myBase64ret = Convert.FromBase64String(valor);
+                myStr = System.Text.Encoding.UTF8.GetString(myBase64ret);
+            }
+            catch (Exception)
+            {
+
+
+            }
+
             return myStr;
         }
     }

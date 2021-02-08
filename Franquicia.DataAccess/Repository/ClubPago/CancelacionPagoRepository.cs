@@ -62,10 +62,11 @@ namespace Franquicia.DataAccess.Repository.ClubPago
 
                 if (DateTime.Parse(DtFechaOperacion) == DateTime.Parse(Fecha))
                 {
-                    CancelacionPagoClubPago(UidPago, UidPagoColegiatura);
-
-                    codigo = 0;
-                    mensaje = "Cancelación exitosa";
+                    if (CancelacionPagoClubPago(UidPago, UidPagoColegiatura))
+                    {
+                        codigo = 0;
+                        mensaje = "Cancelación exitosa";
+                    }
                 }
                 else
                 {
@@ -97,8 +98,8 @@ namespace Franquicia.DataAccess.Repository.ClubPago
                 comando.Parameters.Add("@UidPago", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidPago"].Value = UidPago;
 
-                comando.Parameters.Add("@VchEstatus", SqlDbType.VarChar);
-                comando.Parameters["@VchEstatus"].Value = "Cancelado";
+                comando.Parameters.Add("@UidPagoEstatus", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidPagoEstatus"].Value = Guid.Parse("40704C0D-515C-4985-B2A7-614917E8831A");
 
                 if (this.ManipulacionDeDatos(comando))
                 {

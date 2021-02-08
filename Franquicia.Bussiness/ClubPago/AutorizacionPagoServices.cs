@@ -21,5 +21,10 @@ namespace Franquicia.Bussiness.ClubPago
         {
             return autorizacionPagoRepository.AutorizacionPagoClubPago(IdReferencia, FechaRegistro, Fecha, Monto, Transaccion);
         }
+        
+        public bool RegistrarPagoClubPago(Guid UidPago, string IdReferencia, DateTime FechaRegistro, DateTime FechaOperacion, decimal Monto, string Transaccion, string Autorizacion, Guid UidPagoEstatus)
+        {
+            return autorizacionPagoRepository.RegistrarPagoClubPago(UidPago, IdReferencia, FechaRegistro, FechaOperacion, Monto, Transaccion, Autorizacion, UidPagoEstatus);
+        }
     }
 }

@@ -110,8 +110,11 @@ namespace PagaLaEscuela.Views
                 lblMensajeAlertPago.Text = "";
                 divAlertPago.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
 
-                rpEstatusPagos.DataSource = estatusFechasPagosServices.lsEstatusFechasPagos;
-                rpEstatusPagos.DataBind();
+                if (estatusFechasPagosServices != null)
+                {
+                    rpEstatusPagos.DataSource = estatusFechasPagosServices.lsEstatusFechasPagos;
+                    rpEstatusPagos.DataBind();
+                }
             }
         }
 

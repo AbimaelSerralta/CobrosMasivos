@@ -240,6 +240,7 @@
     <Content Include="Global.asax" />
     <Content Include="Images\BannerEvent.png" />
     <Content Include="Images\BannerEvent2.png" />
+    <Content Include="Images\ComerciosClubPago\comerciosDisponibles.png" />
     <Content Include="Images\EventoCerrado.png" />
     <Content Include="Images\face.png" />
     <Content Include="Images\FormasDePago\cheque.png" />
@@ -321,6 +322,7 @@
     <Content Include="Views\ReporteLigasEscuelas.aspx" />
     <Content Include="Views\ReporteLigasPadres.aspx" />
     <Content Include="Views\Reports\ReciboPagoEfectivo.aspx" />
+    <Content Include="Views\Reports\FormatoClubPago.aspx" />
     <Content Include="Views\Reports\ReciboPagoEfectivo2.aspx" />
     <Content Include="Views\Tarifas.aspx" />
     <Content Include="Views\UsuariosFinalesFranquicias.aspx" />
@@ -555,6 +557,13 @@
     </Compile>
     <Compile Include="Views\Reports\ReciboPagoEfectivo.aspx.designer.cs">
       <DependentUpon>ReciboPagoEfectivo.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Reports\FormatoClubPago.aspx.cs">
+      <DependentUpon>FormatoClubPago.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\Reports\FormatoClubPago.aspx.designer.cs">
+      <DependentUpon>FormatoClubPago.aspx</DependentUpon>
     </Compile>
     <Compile Include="Views\Reports\ReciboPagoEfectivo2.aspx.cs">
       <DependentUpon>ReciboPagoEfectivo2.aspx</DependentUpon>
@@ -811,6 +820,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Reports\FormatoClubPago.rdlc" />
     <EmbeddedResource Include="Reports\ReciboPagoEfectivoColegiatura.rdlc" />
   </ItemGroup>
   <ItemGroup>

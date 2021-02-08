@@ -159,6 +159,14 @@ namespace Franquicia.Bussiness
         {
             return clientesRepository.rdlcObtenerLogo(UidPagoColegiatura);
         }
+        public List<ClienteLogoViewModel> rdlcObtenerCodigoBarraClubPago(string CodigoBarra)
+        {
+            return clientesRepository.rdlcObtenerCodigoBarraClubPago(CodigoBarra);
+        }
+        public List<ClienteLogoViewModel> rdlcObtenerComerciosDisponibles()
+        {
+            return clientesRepository.rdlcObtenerComerciosDisponibles();
+        }
         #endregion
     }
 }

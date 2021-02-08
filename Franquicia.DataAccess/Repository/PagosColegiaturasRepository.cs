@@ -907,6 +907,25 @@ namespace Franquicia.DataAccess.Repository
             }
             return DcmImportePendiente;
         }
+        public Tuple<string, decimal> ObtenerDatosPagoRLE(Guid UidPagoColegiatura)
+        {
+            string IdReferencia = "";
+            decimal Monto = 0;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select * from ReferenciasClubPago where UidPagoColegiatura = '" + UidPagoColegiatura + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                IdReferencia = item["IdReferencia"].ToString();
+                Monto = decimal.Parse(item["DcmImporte"].ToString());
+            }
+            return Tuple.Create(IdReferencia, Monto);
+        }
         #endregion
         #endregion
 

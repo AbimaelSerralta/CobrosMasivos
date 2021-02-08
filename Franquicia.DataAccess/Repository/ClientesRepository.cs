@@ -6,8 +6,10 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Franquicia.DataAccess.Repository
 {
@@ -409,6 +411,34 @@ namespace Franquicia.DataAccess.Repository
                     ByLogo = (byte[])item["Imagen"]
                 });
             }
+
+            return lsClienteLogoViewModel;
+        }
+        public List<ClienteLogoViewModel> rdlcObtenerCodigoBarraClubPago(string CodigoBarra)
+        {
+            List<ClienteLogoViewModel> lsClienteLogoViewModel = new List<ClienteLogoViewModel>();
+
+            byte[] ByLogo;
+            using (var webClient = new WebClient())
+            {
+                ByLogo = webClient.DownloadData(CodigoBarra);
+            }
+
+            lsClienteLogoViewModel.Add(new ClienteLogoViewModel()
+            {
+                ByLogo = ByLogo
+            });
+
+            return lsClienteLogoViewModel;
+        }
+        public List<ClienteLogoViewModel> rdlcObtenerComerciosDisponibles()
+        {
+            List<ClienteLogoViewModel> lsClienteLogoViewModel = new List<ClienteLogoViewModel>();
+
+            lsClienteLogoViewModel.Add(new ClienteLogoViewModel()
+            {
+                ByLogo = System.IO.File.ReadAllBytes(HttpContext.Current.Server.MapPath("/Images/ComerciosClubPago/comerciosDisponibles.png"))
+            });
 
             return lsClienteLogoViewModel;
         }

@@ -131,8 +131,8 @@ namespace Franquicia.DataAccess.Repository.ClubPago
                 SqlCommand query = new SqlCommand();
                 query.CommandType = CommandType.Text;
 
-                //Consulta mas larga query.CommandText = "select rc.DcmImporte, CASE WHEN (select SUM(DcmMonto) from PagosClubPago pc where pc.VchEstatus = 'Aprovado' and pc.IdReferencia = rc.IdReferencia) IS NOT NULL THEN (select SUM(DcmMonto) from PagosClubPago pc where pc.VchEstatus = 'Aprovado' and pc.IdReferencia = rc.IdReferencia) ELSE 0 END MontoPagado from ReferenciasClubPago rc where rc.IdReferencia = '" + IdReferencia + "'";
-                query.CommandText = "select rc.DcmImporte, (select CASE WHEN SUM(DcmMonto) IS NULL THEN 0 else SUM(DcmMonto) end MontoPagado from PagosClubPago pc where pc.VchEstatus = 'Aprovado' and pc.IdReferencia = rc.IdReferencia) as MontoPagado from ReferenciasClubPago rc where rc.IdReferencia = '" + IdReferencia + "'";
+                //Consulta mas larga query.CommandText = "select rc.DcmImporte, CASE WHEN (select SUM(DcmMonto) from PagosClubPago pc where pc.VchEstatus = 'Aprobado' and pc.IdReferencia = rc.IdReferencia) IS NOT NULL THEN (select SUM(DcmMonto) from PagosClubPago pc where pc.VchEstatus = 'Aprobado' and pc.IdReferencia = rc.IdReferencia) ELSE 0 END MontoPagado from ReferenciasClubPago rc where rc.IdReferencia = '" + IdReferencia + "'";
+                query.CommandText = "select rc.DcmImporte, (select CASE WHEN SUM(DcmMonto) IS NULL THEN 0 else SUM(DcmMonto) end MontoPagado from PagosClubPago pc where pc.UidPagoEstatus = '9F512165-96A6-407F-925A-A27C2149F3B9' and pc.IdReferencia = rc.IdReferencia) as MontoPagado from ReferenciasClubPago rc where rc.IdReferencia = '" + IdReferencia + "'";
 
                 DataTable dt = this.Busquedas(query);
 

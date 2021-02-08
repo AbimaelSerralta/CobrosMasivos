@@ -88,7 +88,7 @@ namespace Franquicia.DataAccess.Repository.ClubPago
                             {
                                 autorizacion = correct.Item1.ToString();
 
-                                if (RegistrarPagoClubPago(Guid.NewGuid(), referencia, FechaRegistro, DateTime.Parse(Fecha), Monto, Transaccion, autorizacion, "Aprovado"))
+                                if (RegistrarPagoClubPago(Guid.NewGuid(), referencia, FechaRegistro, DateTime.Parse(Fecha), Monto, Transaccion, autorizacion, Guid.Parse("9F512165-96A6-407F-925A-A27C2149F3B9")))
                                 {
                                     if (pagosColegiaturasRepository.ActualizarEstatusFechaPago(UidPagoColegiatura, Guid.Parse("8720B2B9-5712-4E75-A981-932887AACDC9")))
                                     {
@@ -212,7 +212,7 @@ namespace Franquicia.DataAccess.Repository.ClubPago
                 colegiaturasRepository.ActualizarEstatusFeColegiaturaAlumno(UidFechaColegiatura, UidAlumno, Guid.Parse(UidEstatus.ToString()), false);
             }
         }
-        public bool RegistrarPagoClubPago(Guid UidPago, string IdReferencia, DateTime FechaRegistro, DateTime FechaOperacion, decimal Monto, string Transaccion, string Autorizacion, string Estatus)
+        public bool RegistrarPagoClubPago(Guid UidPago, string IdReferencia, DateTime FechaRegistro, DateTime FechaOperacion, decimal Monto, string Transaccion, string Autorizacion, Guid UidPagoEstatus)
         {
             bool result = false;
 
@@ -243,8 +243,8 @@ namespace Franquicia.DataAccess.Repository.ClubPago
                 comando.Parameters.Add("@VchAutorizacion", SqlDbType.VarChar);
                 comando.Parameters["@VchAutorizacion"].Value = Autorizacion;
 
-                comando.Parameters.Add("@VchEstatus", SqlDbType.VarChar);
-                comando.Parameters["@VchEstatus"].Value = Estatus;
+                comando.Parameters.Add("@UidPagoEstatus", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidPagoEstatus"].Value = UidPagoEstatus;
 
                 result = this.ManipulacionDeDatos(comando);
 
