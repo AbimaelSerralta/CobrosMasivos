@@ -101,6 +101,8 @@ namespace PagaLaEscuela.Views
                 estatusService = (EstatusServices)Session["estatusService"];
                 tiposTelefonosServices = (TiposTelefonosServices)Session["tiposTelefonosServices"];
 
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "Sh", "shot()", true);
+
                 pnlAlert.Visible = false;
                 lblMensajeAlert.Text = "";
                 divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade");

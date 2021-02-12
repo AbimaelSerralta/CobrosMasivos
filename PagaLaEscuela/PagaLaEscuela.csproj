@@ -337,7 +337,6 @@
     <Compile Include="Controllers\PagoReferenciaController.cs" />
     <Compile Include="Controllers\CancelaPagoController.cs" />
     <Compile Include="Controllers\ConsultaReferenciaController.cs" />
-    <Compile Include="Controllers\ContactoController.cs" />
     <Compile Include="Controllers\PayCardController.cs" />
     <Compile Include="Controllers\StatusColeController.cs" />
     <Compile Include="Default.aspx.cs">

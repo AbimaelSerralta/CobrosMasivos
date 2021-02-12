@@ -201,6 +201,15 @@ namespace Franquicia.Bussiness
             }
             return result;
         }
+        public bool RegistrarIdPago(Guid UidFechaColegiatura, Guid UidAlumno, int IdPago)
+        {
+            bool result = false;
+            if (pagosColegiaturasRepository.RegistrarIdPago(UidFechaColegiatura, UidAlumno, IdPago))
+            {
+                result = true;
+            }
+            return result;
+        }
         #endregion
 
         #region Metodos ReporteLigasPadres
@@ -251,7 +260,7 @@ namespace Franquicia.Bussiness
         #endregion
 
         #region GenerarReferencia
-        public Tuple<string, int, int, bool> GenerarReferencia(Guid UidFechaColegiatura, Guid UidAlumno)
+        public Tuple<string, int, int, bool, bool> GenerarReferencia(Guid UidFechaColegiatura, Guid UidAlumno)
         {
             return pagosColegiaturasRepository.GenerarReferencia(UidFechaColegiatura, UidAlumno);
         }

@@ -335,5 +335,16 @@ namespace Franquicia.Bussiness
             return colegiaturasRepository.ActualizarEstatusFechasPagosATM(UidFechaColegiaturaAlumno, UidEstatusFechaColegiatura);
         }
         #endregion
+
+        #region ValidarEstatusColegiatura
+        public bool ObtenerEstatusColegiatura(string IdReferencia)
+        {
+            return colegiaturasRepository.ObtenerEstatusColegiatura(IdReferencia);
+        }
+        public bool ObtenerEstatusColegiatura2(Guid UidFechaColegiatura)
+        {
+            return colegiaturasRepository.ObtenerEstatusColegiatura2(UidFechaColegiatura);
+        }
+        #endregion
     }
 }

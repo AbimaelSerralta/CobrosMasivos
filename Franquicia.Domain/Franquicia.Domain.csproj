@@ -53,6 +53,8 @@
     <Compile Include="Models\ClubPago\ObtenerRefereciaPago.cs" />
     <Compile Include="Models\ComisionesTarjetasClubPago.cs" />
     <Compile Include="Models\ComisionesTarjetasClientesTerminal.cs" />
+    <Compile Include="Models\PagosClubPago.cs" />
+    <Compile Include="Models\ParametrosClubPago.cs" />
     <Compile Include="Models\PromocionesClubPago.cs" />
     <Compile Include="Models\ReferenciasClubPago.cs" />
     <Compile Include="Models\PagosEfectivos.cs" />

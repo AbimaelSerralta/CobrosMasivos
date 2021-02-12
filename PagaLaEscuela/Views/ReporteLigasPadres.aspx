@@ -63,6 +63,7 @@
                                                         <ItemTemplate>
                                                             <asp:TextBox ID="txtGvIdentificador" ToolTip='<%#Eval("VchIdentificador")%>' Style="width: 100%; text-overflow: ellipsis;" Text='<%#Eval("VchIdentificador")%>' Enabled="false" BackColor="Transparent" BorderStyle="None" runat="server" />
                                                             <asp:TextBox ID="txtGvUidCliente" Text='<%#Eval("UidCliente")%>' Visible="false" runat="server" />
+                                                            <asp:TextBox ID="txtGvUidAlumno" Text='<%#Eval("UidAlumno")%>' Visible="false"  runat="server" />
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                     <asp:BoundField SortExpression="VchMatricula" DataField="VchMatricula" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" HeaderText="MATRICULA" />
@@ -104,7 +105,7 @@
                                                                                 </asp:Label>
                                                                             </asp:LinkButton>
                                                                         </td>
-                                                                        <td style="display:none; border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
+                                                                        <td style="display: none; border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
                                                                             <asp:LinkButton ID="btnReportePagos" ToolTip="Reporte de pagos" CommandArgument="<%# ((GridViewRow)Container).RowIndex %>" CommandName="btnReportePagos" Style="margin-left: 5px;" runat="server">
                                                                                 <asp:Label class="btn btn-sm btn-warning btn-fab btn-fab-mini btn-round" runat="server">
                                                                                         <i class="material-icons">description</i>
@@ -384,8 +385,8 @@
                         <div class="modal-header">
                             <h5 class="modal-title" runat="server">
                                 <asp:Label ID="Label1" Text="Pago(s) de la colegiatura" runat="server" /></h5>
-                            <asp:LinkButton ID="LinkButton3" data-dismiss="modal" aria-label="Close" CssClass="btn btn-danger btn-round" Style="padding-bottom: 5px; padding-top: 5px; padding-left: 5px; padding-right: 5px;" runat="server">
-                            <i class="material-icons">close</i>
+                            <asp:LinkButton ID="LinkButton3" data-dismiss="modal" aria-label="Close" CssClass="close" runat="server">
+                            <span aria-hidden="true">&times;</span>
                             </asp:LinkButton>
                         </div>
                     </ContentTemplate>
@@ -394,9 +395,9 @@
                     <div class="tab-content">
                         <asp:UpdatePanel runat="server">
                             <ContentTemplate>
-                                <asp:Panel ID="Panel1" Visible="false" runat="server">
-                                    <div id="div1" role="alert" runat="server">
-                                        <asp:Label ID="Label2" runat="server" />
+                                <asp:Panel ID="pnlAlertModalPagos" Visible="false" runat="server">
+                                    <div id="divAlertModalPagos" class="alert alert-danger alert-dismissible fade" role="alert" runat="server">
+                                        <asp:Label ID="lblMensajeAlertModalPagos" runat="server" />
                                         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                     </div>
                                 </asp:Panel>
@@ -433,6 +434,24 @@
                                                                                 </asp:Label>
                                                                                         </asp:LinkButton>
                                                                                     </td>
+                                                                                    <td style="border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
+                                                                                        <asp:Panel Visible='<%#Eval("blMostrarRefClub")%>' runat="server">
+                                                                                            <asp:LinkButton ID="btnReferenciaCP" ToolTip="Imprimir referencia" CommandArgument="<%# ((GridViewRow)Container).RowIndex %>" CommandName="btnReferenciaCP" Style="margin-left: 5px;" runat="server">
+                                                                                <asp:Label class="btn btn-sm btn-fab btn-fab-mini btn-round" style="background-color:black;" runat="server">
+                                                                                        <i class="material-icons">picture_as_pdf</i>
+                                                                                </asp:Label>
+                                                                                            </asp:LinkButton>
+                                                                                        </asp:Panel>
+                                                                                    </td>
+                                                                                    <td style="border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
+                                                                                        <asp:Panel Visible='<%#Eval("blCancelRefClub")%>' runat="server">
+                                                                                            <asp:LinkButton ID="btnCancelarRef" ToolTip="Cancelar Referencia" CommandArgument="<%# ((GridViewRow)Container).RowIndex %>" CommandName="btnCancelarRef" Style="margin-left: 5px;" runat="server">
+                                                                                <asp:Label class="btn btn-sm btn-danger btn-fab btn-fab-mini btn-round" runat="server">
+                                                                                        <i class="material-icons">cancel_presentation</i>
+                                                                                </asp:Label>
+                                                                                            </asp:LinkButton>
+                                                                                        </asp:Panel>
+                                                                                    </td>
                                                                                 </tr>
                                                                             </tbody>
                                                                         </table>
@@ -464,7 +483,7 @@
             </div>
         </div>
     </div>
-    
+
     <div id="ModalPagoDetalle" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -932,6 +951,220 @@
                                                 <td bgcolor="#ffffff" align="left" style="padding: 30px 30px 30px 30px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 25px;">
                                                 </td>
                                             </tr>--%>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td bgcolor="#b62322" align="center" style="padding: 30px 10px 0px 10px;"></td>
+                                                <%--#f4f4f4--%>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </ContentTemplate>
+                        </asp:UpdatePanel>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="ModalPagoDetalleClubPago" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <asp:UpdatePanel runat="server">
+                    <ContentTemplate>
+                        <div class="modal-header" style="padding-top: 0px; padding-bottom: 0px;">
+                            <h5 class="modal-title" runat="server">
+                                <asp:Label ID="Label2" Text="Detalle del pago" runat="server" /></h5>
+                            <asp:LinkButton ID="LinkButton4" data-dismiss="modal" aria-label="Close" CssClass="close" runat="server">
+                            <i class="material-icons">close</i>
+                            </asp:LinkButton>
+                        </div>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+                <div class="modal-body pt-0" style="padding-bottom: 0px; padding-left: 15px; padding-right: 15px;">
+                    <div class="tab-content">
+                        <asp:UpdatePanel runat="server">
+                            <ContentTemplate>
+                                <div class="row">
+                                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                        <tbody>
+                                            <tr>
+                                                <td bgcolor="#b62322" align="center">
+                                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td align="center" valign="top" style="padding-top: 20px;">
+                                                                    
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td bgcolor="#b62322" align="center" style="padding: 0px 10px 0px 10px;">
+                                                    <table bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td bgcolor="#ffffff" align="left" valign="top" style="border-radius: 4px 4px 0px 0px; padding-left: 10px; padding-right: 10px;"></td>
+                                                                                <td bgcolor="#ffffff" align="right" valign="top" style="border-radius: 4px 4px 0px 0px; padding-left: 10px; padding-right: 10px;">
+                                                                                    <img height="80" width="250" src="https://pagalaescuela.mx/images/logoCompetoPagaLaEscuela.png" alt="PagaLaEscuela" />
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td bgcolor="#ffffff" valign="top" style="border-radius: 4px 4px 0px 0px; padding-left: 10px; padding-right: 10px;">
+                                                                                    <br />
+                                                                                    <asp:Label ID="lblDetaAlumnoClubPago" Text="Alumno: " runat="server" />
+                                                                                    <br />
+                                                                                    <asp:Label ID="lblDetaMatriculaClubPago" Text="Matricula: " runat="server" />
+                                                                                    <br />
+                                                                                    <br />
+
+                                                                                </td>
+                                                                                <td bgcolor="#ffffff" valign="top" style="border-radius: 4px 4px 0px 0px; padding-left: 10px; padding-right: 10px;">
+                                                                                    <br />
+                                                                                    <asp:Label ID="lblDetaFHpagoClubPago" Text="Fecha de pago: " runat="server" />
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td bgcolor="#b62322" align="center" style="padding: 0px 10px 0px 10px;">
+                                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td bgcolor="#ffffff" align="left" style="padding: 10px 10px 10px 10px;">
+                                                                    <table border="0" cellpadding="5" cellspacing="0" width="100%">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;" align="center">N°</th>
+                                                                                <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;" align="left">CONCEPTO</th>
+                                                                                <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;" align="right">IMPORTE</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <asp:Repeater ID="rpDetalleClubPago" runat="server">
+                                                                                <ItemTemplate>
+                                                                                    <tr>
+                                                                                        <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="center"><%#Eval("IntNum")%></td>
+                                                                                        <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff"><%#Eval("VchDescripcion")%></td>
+                                                                                        <td style="border-bottom: 1px solid #ddd; color: <%#Eval("VchColor")%>;" bgcolor="#ffffff" align="right">$<%#Eval("DcmImporte")%> </td>
+                                                                                    </tr>
+                                                                                </ItemTemplate>
+                                                                            </asp:Repeater>
+
+                                                                            <tr id="trsubtotalClubPago" runat="server">
+                                                                                <td style="font-weight: bold; padding-top: 15px; padding-bottom: 0px;" bgcolor="#ffffff" align="center"></td>
+                                                                                <td style="font-weight: bold; padding-top: 15px; padding-bottom: 0px;" bgcolor="#ffffff" align="right">Subtotal:</td>
+                                                                                <td style="font-weight: bold; padding-top: 15px; padding-bottom: 0px;" bgcolor="#ffffff" align="right">
+                                                                                    <asp:Label ID="DcmSubtotalClubPago" runat="server" />
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr id="trvalidarimporteClubPago" runat="server">
+                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px;" bgcolor="#ffffff" align="center"></td>
+                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">Importe por validar:
+                                                                                </td>
+                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">
+                                                                                    <asp:Label ID="DcmValidarImporteClubPago" Style="color: #f55145;" runat="server" />
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px;" bgcolor="#ffffff" align="center"></td>
+                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">Importe pagado:</td>
+                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">
+                                                                                    <asp:Label ID="DcmTotalClubPago" runat="server" />
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr id="trcomicionClubPago" runat="server">
+                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px;" bgcolor="#ffffff" align="center"></td>
+                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">
+                                                                                    <asp:Label ID="VchComicionClubPago" runat="server" />
+                                                                                </td>
+                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">
+                                                                                    <asp:Label ID="DcmImpComisionClubPago" Style="color: #f55145;" runat="server" />
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px;" bgcolor="#ffffff" align="center"></td>
+                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">Abono pago:
+                                                                                </td>
+                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">
+                                                                                    <asp:Label ID="DcmImpAbonoClubPago" runat="server" />
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px;" bgcolor="#ffffff" align="center"></td>
+                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">Resta:
+                                                                                </td>
+                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">
+                                                                                    <asp:Label ID="DcmImpRestaClubPago" runat="server" />
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr id="trdetalleoperacionClubPago" runat="server">
+                                                <%--Detalle de la operacion--%>
+                                                <td bgcolor="#b62322" align="center" style="padding: 30px 10px 0px 10px;">
+                                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td bgcolor="#ffffff" align="left" style="padding: 10px 10px 10px 10px;">
+                                                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th colspan="3" style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px; padding-left: 8px;" align="left">DETALLE DE LA OPERACIÓN
+                                                                                </th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td bgcolor="#ffffff" align="left" style="padding: 10px 0px 30px 0px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 25px;">
+                                                                                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                                                                        <thead>
+                                                                                            <tr>
+                                                                                                <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;" align="left">REFERENCIA</th>
+                                                                                                <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;" align="left">FECHA</th>
+                                                                                                <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;" align="left">TRANSACCIÓN</th>
+                                                                                                <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;" align="right">MONTO</th>
+                                                                                            </tr>
+                                                                                        </thead>
+                                                                                        <tbody>
+                                                                                            <asp:Repeater ID="rptPagosRefClubPago" runat="server">
+                                                                                                <ItemTemplate>
+                                                                                                    <tr>
+                                                                                                        <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="left"><%#Eval("IdReferencia")%></td>
+                                                                                                        <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="left"><%#Eval("DtFechaRegistro", "{0:dd/MM/yyyy}")%></td>
+                                                                                                        <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="center"><%#Eval("VchTransaccion")%></td>
+                                                                                                        <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right">$<%#Eval("DcmMonto")%></td>
+                                                                                                    </tr>
+                                                                                                </ItemTemplate>
+                                                                                            </asp:Repeater>
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </td>
+                                                                            </tr>
                                                                         </tbody>
                                                                     </table>
                                                                 </td>
@@ -1572,7 +1805,14 @@ Panel tuotr
             $('#ModalPagoDetalleManual').modal('hide');
         }
     </script>
-
+    <script>
+        function showModalPagoDetalleClubPago() {
+            $('#ModalPagoDetalleClubPago').modal('show');
+        }
+        function hideModalPagoDetalleClubPago() {
+            $('#ModalPagoDetalleClubPago').modal('hide');
+        }
+    </script>
     <script>
         function showTabFormaPago() {
             let elm = document.getElementById('aFormaPago');

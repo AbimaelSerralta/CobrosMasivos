@@ -1,4 +1,5 @@
-﻿using Franquicia.Domain;
+﻿using Franquicia.DataAccess.Repository;
+using Franquicia.Domain;
 using Franquicia.Domain.Models.ClubPago;
 using Franquicia.Domain.Models.Praga;
 using Newtonsoft.Json;
@@ -15,14 +16,33 @@ namespace Franquicia.Bussiness
 {
     public class GenerarRefereciaClubPago
     {
+        private ParametrosClubPagoRepository _parametrosClubPagoRepository = new ParametrosClubPagoRepository();
+        public ParametrosClubPagoRepository parametrosClubPagoRepository
+        {
+            get { return _parametrosClubPagoRepository; }
+            set { _parametrosClubPagoRepository = value; }
+        }
+
         int BusinessId = 1802;
         string Url = $"https://qaag.mitec.com.mx/praga-ws/url/generateUrlV3";
         string UserCode = "1607022879421";
         string WSEncryptionKey = "996196AFE9828EE0BB0397E1405CBA9A";
         string APIKey = "MTc4NGQwN2ItM2E2ZS00MWZiLWE5MTYtMDQ4YTVhMmJhZmFl";
 
-        string User = "Pagalaescuela433";
-        string Pswd = "Pagalaescuela433$";
+        string VchUrlAuth = "";
+        string VchUrlGenerarRef = "";
+        string User = "";
+        string Pswd = "";
+
+        public GenerarRefereciaClubPago()
+        {
+            parametrosClubPagoRepository.ObtenerParametrosClubPago();
+
+            VchUrlAuth = parametrosClubPagoRepository.parametrosClubPago.VchUrlAuth;
+            VchUrlGenerarRef = parametrosClubPagoRepository.parametrosClubPago.VchUrlGenerarRef;
+            User = parametrosClubPagoRepository.parametrosClubPago.VchUser;
+            Pswd = parametrosClubPagoRepository.parametrosClubPago.VchPass;
+        }
 
         public void ApiGenerarURL(decimal Ammount, string Currency, string EffectiveDate, string Id, string PaymentTypes, string Reference, string Station)
         {
@@ -87,7 +107,7 @@ namespace Franquicia.Bussiness
         {
             List<AuthClub> lsAuthClub = new List<AuthClub>();
 
-            var client = new RestClient("https://qa.clubpago.site/auth/api/auth?=");
+            var client = new RestClient(VchUrlAuth);
             var request = new RestRequest(Method.POST);
             request.AddHeader("content-type", "application/json");
             request.AddParameter("application/json", "{\n\t\"user\":\"" + User + "\",\n\t\"pswd\":\"" + Pswd + "\"\n}", ParameterType.RequestBody);
@@ -95,12 +115,14 @@ namespace Franquicia.Bussiness
             IRestResponse response = client.Execute(request);
             var content = response.Content;
 
-            AuthClub authClub = JsonConvert.DeserializeObject<AuthClub>(content.ToString());
+            if (content != string.Empty)
+            {
+                AuthClub authClub = JsonConvert.DeserializeObject<AuthClub>(content.ToString());
 
-            lsAuthClub.Add(authClub);
+                lsAuthClub.Add(authClub);
+            }
 
             return lsAuthClub;
-            
         }
 
         public List<ObtenerRefereciaPago> GenerarReferencia(string Description, string Amount, string Account, string CustomerEmail, string CustomerName, string ExpirationDate)
@@ -123,8 +145,7 @@ namespace Franquicia.Bussiness
                 generarRefereciaPago.CustomerName = CustomerName;
                 generarRefereciaPago.ExpirationDate = ExpirationDate;
 
-                var client = new
-                RestClient("https://qa.clubpago.site/referencegenerator/svc/generator/payformat");
+                var client = new RestClient(VchUrlGenerarRef);
                 var request = new RestRequest(Method.POST);
                 string json = JsonConvert.SerializeObject(generarRefereciaPago);
                 request.AddHeader("content-type", "application/json");
@@ -138,14 +159,9 @@ namespace Franquicia.Bussiness
                     ObtenerRefereciaPago obtenerRefereciaPago = JsonConvert.DeserializeObject<ObtenerRefereciaPago>(content.ToString());
 
                     lsObtenerRefereciaPago.Add(obtenerRefereciaPago);
-
-                    return lsObtenerRefereciaPago;
                 }
-                else
-                {
-                    return lsObtenerRefereciaPago;
-                }
-
+                
+                return lsObtenerRefereciaPago;
             }
             catch (Exception ex)
             {

@@ -45,6 +45,7 @@ namespace Franquicia.DataAccess.Repository
                     UidEstatus = new Guid(item["UidEstatus"].ToString()),
                     VchEstatus = item["VchDescripcion"].ToString(),
                     VchIcono = item["VchIcono"].ToString(),
+                    VchIdCliente = int.Parse(item["IdCliente"].ToString()).ToString("D6"),
                     VchIdWAySMS = item["VchIdWAySMS"].ToString(),
                     VchZonaHoraria = item["VchZonaHoraria"].ToString(),
                     BitEscuela = bool.Parse(item["BitEscuela"].ToString())

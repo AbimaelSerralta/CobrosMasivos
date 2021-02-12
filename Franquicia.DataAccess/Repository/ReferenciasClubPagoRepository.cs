@@ -23,7 +23,7 @@ namespace Franquicia.DataAccess.Repository
         #region Metodos Escuela
 
         #region Pagos padres
-        public bool GenerarReferenciaPagosColegiatura(Guid UidReferencia, string VchFolio, string VchUrl, string VchConcepto, string IdReferencia, Guid UidUsuario, string VchIdentificador, DateTime DtRegistro, DateTime DtVencimiento, decimal DcmImporte, string VchAsunto, Guid UidPagoColegiatura, Guid UidPropietario)
+        public bool GenerarReferenciaPagosColegiatura(Guid UidReferencia, string VchFolio, string VchUrl, string VchCodigoBarra, string VchConcepto, string IdReferencia, Guid UidUsuario, string VchIdentificador, DateTime DtRegistro, DateTime DtVencimiento, decimal DcmImporte, decimal DcmPagado, decimal DcmTotal, string VchAsunto, Guid UidPagoColegiatura, Guid UidPropietario)
         {
             bool Resultado = false;
 
@@ -41,6 +41,9 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@VchUrl", SqlDbType.VarChar);
                 comando.Parameters["@VchUrl"].Value = VchUrl;
+
+                comando.Parameters.Add("@VchCodigoBarra", SqlDbType.VarChar);
+                comando.Parameters["@VchCodigoBarra"].Value = VchCodigoBarra;
 
                 comando.Parameters.Add("@VchConcepto", SqlDbType.VarChar);
                 comando.Parameters["@VchConcepto"].Value = VchConcepto;
@@ -62,6 +65,12 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@DcmImporte", SqlDbType.Decimal);
                 comando.Parameters["@DcmImporte"].Value = DcmImporte;
+                
+                comando.Parameters.Add("@DcmPagado", SqlDbType.Decimal);
+                comando.Parameters["@DcmPagado"].Value = DcmPagado;
+                
+                comando.Parameters.Add("@DcmTotal", SqlDbType.Decimal);
+                comando.Parameters["@DcmTotal"].Value = DcmTotal;
 
                 comando.Parameters.Add("@VchAsunto", SqlDbType.VarChar, 50);
                 comando.Parameters["@VchAsunto"].Value = VchAsunto;
@@ -80,23 +89,46 @@ namespace Franquicia.DataAccess.Repository
             }
             return Resultado;
         }
-        public string ReimprimirReferenciaPagoColegiatura(Guid UidPagoColegiatura)
+        public Tuple<List<ReferenciasClubPago>, string, bool> ReimprimirReferenciaPagoColegiatura(Guid UidPagoColegiatura)
         {
-            string result = "";
+            List<ReferenciasClubPago> lsReferenciasClubPago = new List<ReferenciasClubPago>();
 
-            SqlCommand query = new SqlCommand();
-            query.CommandType = CommandType.Text;
+            string Nombre = "";
+            bool Error = true;
 
-            query.CommandText = "select VchUrl from ReferenciasClubPago where UidPagoColegiatura = '" + UidPagoColegiatura + "'";
-
-            DataTable dt = this.Busquedas(query);
-
-            foreach (DataRow item in dt.Rows)
+            try
             {
-                result = item["VchUrl"].ToString();
-            };
+                SqlCommand query = new SqlCommand();
+                query.CommandType = CommandType.Text;
 
-            return result;
+                query.CommandText = "select rcp.*, cl.VchNombreComercial from ReferenciasClubPago rcp, Clientes cl where rcp.UidPropietario = cl.UidCliente and UidPagoColegiatura = '" + UidPagoColegiatura + "'";
+
+                DataTable dt = this.Busquedas(query);
+
+                foreach (DataRow item in dt.Rows)
+                {
+                    lsReferenciasClubPago.Add(new ReferenciasClubPago()
+                    {
+                        VchConcepto = item["VchConcepto"].ToString(),
+                        DtRegistro = DateTime.Parse(item["DtRegistro"].ToString()),
+                        DtVencimiento = DateTime.Parse(item["DtVencimiento"].ToString()),
+                        DcmImporte = Decimal.Parse(item["DcmImporte"].ToString()),
+                        VchUrl = item["VchUrl"].ToString(),
+                        IdReferencia = item["IdReferencia"].ToString(),
+                        UidPagoColegiatura = Guid.Parse(item["UidPagoColegiatura"].ToString()),
+                        VchCodigoBarra = item["VchCodigoBarra"].ToString()
+                    });
+                    Nombre = item["VchNombreComercial"].ToString();
+
+                    Error = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                string msnj = ex.Message;
+            }
+
+            return Tuple.Create(lsReferenciasClubPago, Nombre, Error);
         }
         #endregion
 

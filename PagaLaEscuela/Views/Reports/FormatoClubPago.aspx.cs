@@ -27,7 +27,7 @@ namespace PagaLaEscuela.Views.Reports
                 reports[1] = new ReportParameter("Escuela", Session["rdlcEscuela"].ToString());
                 reports[2] = new ReportParameter("FechaEmision", Session["rdlcFechaEmision"].ToString());
                 reports[3] = new ReportParameter("FechaVencimiento", Session["rdlcFechaVencimiento"].ToString());
-                reports[4] = new ReportParameter("ImportePago", "1500.00");
+                reports[4] = new ReportParameter("ImportePago", Session["rdlcImportePago"].ToString());
                 reports[5] = new ReportParameter("Referencia", Session["rdlcReferencia"].ToString());
 
                 rvFormatoClubPago.LocalReport.SetParameters(reports);

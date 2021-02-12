@@ -65,7 +65,7 @@ namespace Franquicia.DataAccess.Repository.ClubPago
 
                     foreach (DataRow item in dt.Rows)
                     {
-                        monto = decimal.Parse(item["DcmImporte"].ToString());
+                        monto = decimal.Parse(item["DcmTotal"].ToString());
                         referencia = item["IdReferencia"].ToString();
                         Vencimiento = item["DtVencimiento"].ToString();
                         UidPagoColegiatura = Guid.Parse(item["UidPagoColegiatura"].ToString());
@@ -80,19 +80,26 @@ namespace Franquicia.DataAccess.Repository.ClubPago
                     }
                     else
                     {
-                        if (monto == Monto)
+                        if (Monto <= monto)
                         {
                             var correct = ConsultarPagoClubPago();
 
                             if (correct.Item2)
                             {
                                 autorizacion = correct.Item1.ToString();
+                                Guid UidPago = Guid.NewGuid();
 
-                                if (RegistrarPagoClubPago(Guid.NewGuid(), referencia, FechaRegistro, DateTime.Parse(Fecha), Monto, Transaccion, autorizacion, Guid.Parse("9F512165-96A6-407F-925A-A27C2149F3B9")))
+                                if (RegistrarPagoClubPago(UidPago, referencia, FechaRegistro, DateTime.Parse(Fecha), Monto, Transaccion, autorizacion, Guid.Parse("E87E6D94-2B4E-4AEA-B5C4-2EAD3C4BC69B")))
                                 {
-                                    if (pagosColegiaturasRepository.ActualizarEstatusFechaPago(UidPagoColegiatura, Guid.Parse("8720B2B9-5712-4E75-A981-932887AACDC9")))
+                                    //Validar si el campo DcmTotal es igual a 0
+                                    if (ConsultarMontoAPagarClubPago(referencia))
                                     {
-                                        ValidarColegiatura(UidPagoColegiatura);
+                                        ActualizarEstatusPagoClubPago(UidPago, Guid.Parse("9F512165-96A6-407F-925A-A27C2149F3B9"));
+
+                                        if (pagosColegiaturasRepository.ActualizarEstatusFechaPago(UidPagoColegiatura, Guid.Parse("8720B2B9-5712-4E75-A981-932887AACDC9")))
+                                        {
+                                            ValidarColegiatura(UidPagoColegiatura);
+                                        }
                                     }
                                 }
                                 else
@@ -129,7 +136,7 @@ namespace Franquicia.DataAccess.Repository.ClubPago
                 autorizacionPago.fecha = Fecha;
                 autorizacionPago.notificacion_sms = "";
                 autorizacionPago.mensaje_sms = "";
-                autorizacionPago.mensaje_ticket = "Hola probando mnsj en sandbox, gracias por su pago.";
+                autorizacionPago.mensaje_ticket = "";
 
             }
             catch (Exception ex)
@@ -255,6 +262,60 @@ namespace Franquicia.DataAccess.Repository.ClubPago
             }
 
             return result;
+        }
+        public bool ActualizarEstatusPagoClubPago(Guid UidPago, Guid UidPagoEstatus)
+        {
+            bool result = false;
+
+            SqlCommand comando = new SqlCommand();
+            try
+            {
+                comando.CommandType = System.Data.CommandType.StoredProcedure;
+                comando.CommandText = "sp_PagosClubPagoActualizarEstatus";
+
+                comando.Parameters.Add("@UidPago", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidPago"].Value = UidPago;
+
+                comando.Parameters.Add("@UidPagoEstatus", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidPagoEstatus"].Value = UidPagoEstatus;
+
+                result = this.ManipulacionDeDatos(comando);
+
+            }
+            catch (Exception ex)
+            {
+                string mnsj = ex.Message;
+            }
+
+            return result;
+        }
+        public bool ConsultarMontoAPagarClubPago(string IdReferencia)
+        {
+            bool Pagado = false;
+            
+            try
+            {
+                SqlCommand query = new SqlCommand();
+                query.CommandType = CommandType.Text;
+
+                query.CommandText = "select DcmTotal from ReferenciasClubPago where IdReferencia = '" + IdReferencia + "'";
+
+                DataTable dt = this.Busquedas(query);
+
+                foreach (DataRow item in dt.Rows)
+                {
+                    if (decimal.Parse(item["DcmTotal"].ToString()) == 0)
+                    {
+                        Pagado = true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                string mns = ex.Message;
+            }
+
+            return Pagado;
         }
     }
 }

@@ -21,18 +21,18 @@ namespace Franquicia.Bussiness
         #region Metodos Escuela
 
         #region Pagos Padres
-        public bool GenerarReferenciaPagosColegiatura(string VchFolio, string VchUrl, string VchConcepto, string IdReferencia, Guid UidUsuario, string VchIdentificador, DateTime DtRegistro, DateTime DtVencimiento, decimal DcmImporte, string VchAsunto, Guid UidPagoColegiatura, Guid UidPropietario)
+        public bool GenerarReferenciaPagosColegiatura(string VchFolio, string VchUrl, string VchCodigoBarra, string VchConcepto, string IdReferencia, Guid UidUsuario, string VchIdentificador, DateTime DtRegistro, DateTime DtVencimiento, decimal DcmImporte, decimal DcmPagado, decimal DcmTotal, string VchAsunto, Guid UidPagoColegiatura, Guid UidPropietario)
         {
             Guid UidReferencia = Guid.NewGuid();
 
             bool result = false;
-            if (referenciasClubPagoRepository.GenerarReferenciaPagosColegiatura(UidReferencia, VchFolio, VchUrl, VchConcepto, IdReferencia, UidUsuario, VchIdentificador, DtRegistro, DtVencimiento, DcmImporte, VchAsunto, UidPagoColegiatura, UidPropietario))
+            if (referenciasClubPagoRepository.GenerarReferenciaPagosColegiatura(UidReferencia, VchFolio, VchUrl, VchCodigoBarra, VchConcepto, IdReferencia, UidUsuario, VchIdentificador, DtRegistro, DtVencimiento, DcmImporte, DcmPagado, DcmTotal, VchAsunto, UidPagoColegiatura, UidPropietario))
             {
                 result = true;
             }
             return result;
         }
-        public string ReimprimirReferenciaPagoColegiatura(Guid UidPagoColegiatura)
+        public Tuple<List<ReferenciasClubPago>, string, bool> ReimprimirReferenciaPagoColegiatura(Guid UidPagoColegiatura)
         {                       
             return referenciasClubPagoRepository.ReimprimirReferenciaPagoColegiatura(UidPagoColegiatura);
         }

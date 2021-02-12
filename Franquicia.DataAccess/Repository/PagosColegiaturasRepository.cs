@@ -657,14 +657,12 @@ namespace Franquicia.DataAccess.Repository
 
             foreach (DataRow item in dt.Rows)
             {
-
-
                 bool blCancelRefClub = false;
                 bool blMostrarRefClub = false;
 
                 if (Guid.Parse(item["UidFormaPago"].ToString()) == Guid.Parse("6BE13FFE-E567-4D4D-9CBC-37DA30EC23A5"))
                 {
-                    if (Guid.Parse(item["UidEstatusFechaPago"].ToString()) != Guid.Parse("408431CA-DB94-4BAA-AB9B-8FF468A77582"))
+                    if (Guid.Parse(item["UidEstatusFechaPago"].ToString()) == Guid.Parse("F25E4AAB-6044-46E9-A575-98DCBCCF7604"))
                     {
                         blCancelRefClub = true;
                     }
@@ -792,6 +790,34 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@DcmImporteResta", SqlDbType.Decimal);
                 comando.Parameters["@DcmImporteResta"].Value = DcmImporteResta;
+
+                Resultado = this.ManipulacionDeDatos(comando);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return Resultado;
+        }
+        public bool RegistrarIdPago(Guid UidFechaColegiatura, Guid UidAlumno, int IdPago)
+        {
+            bool Resultado = false;
+
+            SqlCommand comando = new SqlCommand();
+            try
+            {
+                comando.CommandType = System.Data.CommandType.StoredProcedure;
+                comando.CommandText = "sp_FechasColegiaturasAlumnosInsertarIdPago";
+
+                comando.Parameters.Add("@UidFechaColegiatura", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidFechaColegiatura"].Value = UidFechaColegiatura;
+
+                comando.Parameters.Add("@UidAlumno", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidAlumno"].Value = UidAlumno;
+
+                comando.Parameters.Add("@IdPago", SqlDbType.Int);
+                comando.Parameters["@IdPago"].Value = IdPago;
 
                 Resultado = this.ManipulacionDeDatos(comando);
             }
@@ -930,25 +956,34 @@ namespace Franquicia.DataAccess.Repository
         #endregion
 
         #region GenerarReferencia
-        public Tuple<string, int, int, bool> GenerarReferencia(Guid UidFechaColegiatura, Guid UidAlumno)
+        public Tuple<string, int, int, bool, bool> GenerarReferencia(Guid UidFechaColegiatura, Guid UidAlumno)
         {
             string Referencia = "";
             int IdPago = 0;
             int IdParcialidad = 0;
             bool Error = false;
+            bool RegIdPago = true;
 
             try
             {
                 SqlCommand query = new SqlCommand();
                 query.CommandType = CommandType.Text;
 
-                query.CommandText = "select cl.IdCliente, al.IdAlumno, fca.IdPago, (select CASE WHEN MAX(IdParcialidad) IS NULL THEN 0 ELSE MAX(IdParcialidad) END AS IdParcialidad from FechasPagos where UidFechaColegiatura = '" + UidFechaColegiatura + "' and UidAlumno = '" + UidAlumno + "') AS IdParcialidad from Clientes cl, Alumnos al, FechasColegiaturasAlumnos fca where cl.UidCliente = al.UidCliente and fca.UidAlumno = al.UidAlumno and fca.UidFechaColegiatura = '" + UidFechaColegiatura + "' and fca.UidAlumno = '" + UidAlumno + "'";
+                // => El IdPago era autoincremental query.CommandText = "select cl.IdCliente, al.IdAlumno, fca.IdPago, (select CASE WHEN MAX(IdParcialidad) IS NULL THEN 0 ELSE MAX(IdParcialidad) END AS IdParcialidad from FechasPagos where UidFechaColegiatura = '" + UidFechaColegiatura + "' and UidAlumno = '" + UidAlumno + "') AS IdParcialidad from Clientes cl, Alumnos al, FechasColegiaturasAlumnos fca where cl.UidCliente = al.UidCliente and fca.UidAlumno = al.UidAlumno and fca.UidFechaColegiatura = '" + UidFechaColegiatura + "' and fca.UidAlumno = '" + UidAlumno + "'";
+                query.CommandText = "select cl.IdCliente, al.IdAlumno, fca.IdPago, (select CASE WHEN MAX(fecoal.IdPago) IS NULL THEN 0 ELSE MAX(fecoal.IdPago) END AS SigIdPago from FechasColegiaturasAlumnos fecoal, Alumnos alu where fecoal.UidAlumno = alu.UidAlumno and alu.UidCliente = cl.UidCliente and alu.UidAlumno = '" + UidAlumno + "') AS SigIdPago, (select CASE WHEN MAX(IdParcialidad) IS NULL THEN 0 ELSE MAX(IdParcialidad) END AS IdParcialidad from FechasPagos where UidFechaColegiatura = '" + UidFechaColegiatura + "' and UidAlumno = '" + UidAlumno + "') AS IdParcialidad from Clientes cl, Alumnos al, FechasColegiaturasAlumnos fca where cl.UidCliente = al.UidCliente and fca.UidAlumno = al.UidAlumno and fca.UidFechaColegiatura = '" + UidFechaColegiatura + "' and fca.UidAlumno = '" + UidAlumno + "'";
 
                 DataTable dt = this.Busquedas(query);
 
                 foreach (DataRow item in dt.Rows)
                 {
-                    IdPago = int.Parse(item["IdPago"].ToString());
+                    IdPago = int.Parse(item["SigIdPago"].ToString()) + 1;
+
+                    if (!string.IsNullOrEmpty(item["IdPago"].ToString()))
+                    {
+                        IdPago = int.Parse(item["IdPago"].ToString());
+                        RegIdPago = false;
+                    }
+
                     IdParcialidad = int.Parse(item["IdParcialidad"].ToString()) + 1;
 
                     Referencia = int.Parse(item["IdAlumno"].ToString()).ToString("D6") + int.Parse(item["IdAlumno"].ToString()).ToString("D9") + IdPago.ToString("D4") + IdParcialidad.ToString("D3");
@@ -961,7 +996,7 @@ namespace Franquicia.DataAccess.Repository
                 string mnsj = ex.Message;
             }
 
-            return Tuple.Create(Referencia, IdPago, IdParcialidad, Error);
+            return Tuple.Create(Referencia, IdPago, IdParcialidad, Error, RegIdPago);
         }
         #endregion
     }

@@ -52,17 +52,21 @@ namespace Franquicia.DataAccess.Repository.ClubPago
                 Guid UidPago = Guid.Empty;
                 Guid UidPagoColegiatura = Guid.Empty;
                 string DtFechaOperacion = "";
+                string IdReferencia = "";
+                decimal DcmMonto = 0;
 
                 foreach (DataRow item in dt.Rows)
                 {
                     UidPago = Guid.Parse(item["UidPago"].ToString());
                     UidPagoColegiatura = Guid.Parse(item["UidPagoColegiatura"].ToString());
                     DtFechaOperacion = DateTime.Parse(item["DtFechaOperacion"].ToString()).ToString("dd/MM/yyyy");
+                    IdReferencia = item["IdReferencia"].ToString();
+                    DcmMonto = decimal.Parse(item["DcmMonto"].ToString());
                 }
 
                 if (DateTime.Parse(DtFechaOperacion) == DateTime.Parse(Fecha))
                 {
-                    if (CancelacionPagoClubPago(UidPago, UidPagoColegiatura))
+                    if (CancelacionPagoClubPago(UidPago, UidPagoColegiatura, IdReferencia, DcmMonto))
                     {
                         codigo = 0;
                         mensaje = "Cancelación exitosa";
@@ -85,7 +89,7 @@ namespace Franquicia.DataAccess.Repository.ClubPago
             return cancelacionPagoResp;
         }
 
-        public bool CancelacionPagoClubPago(Guid UidPago, Guid UidPagoColegiatura)
+        public bool CancelacionPagoClubPago(Guid UidPago, Guid UidPagoColegiatura, string IdReferencia, decimal DcmMonto)
         {
             bool result = false;
 
@@ -100,6 +104,12 @@ namespace Franquicia.DataAccess.Repository.ClubPago
 
                 comando.Parameters.Add("@UidPagoEstatus", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidPagoEstatus"].Value = Guid.Parse("40704C0D-515C-4985-B2A7-614917E8831A");
+                
+                comando.Parameters.Add("@IdReferencia", SqlDbType.VarChar);
+                comando.Parameters["@IdReferencia"].Value = IdReferencia;
+                
+                comando.Parameters.Add("@DcmMonto", SqlDbType.Decimal);
+                comando.Parameters["@DcmMonto"].Value = DcmMonto;
 
                 if (this.ManipulacionDeDatos(comando))
                 {

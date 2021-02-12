@@ -79,6 +79,8 @@
     <Compile Include="Repository\DetallesPagosColegiaturasRepository.cs" />
     <Compile Include="Repository\BancosRepository.cs" />
     <Compile Include="Repository\EstatusFechasPagosRepository.cs" />
+    <Compile Include="Repository\PagosClubPagoRepository.cs" />
+    <Compile Include="Repository\ParametrosClubPagoRepository.cs" />
     <Compile Include="Repository\PromocionesClubPagoRepository.cs" />
     <Compile Include="Repository\ReferenciasClubPagoRepository.cs" />
     <Compile Include="Repository\PagosEfectivosRepository.cs" />

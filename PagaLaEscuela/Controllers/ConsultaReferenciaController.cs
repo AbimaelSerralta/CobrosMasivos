@@ -1,4 +1,5 @@
-﻿using Franquicia.Bussiness.ClubPago;
+﻿using Franquicia.Bussiness;
+using Franquicia.Bussiness.ClubPago;
 using Franquicia.Domain.Models.ClubPago;
 using Newtonsoft.Json;
 using System;
@@ -15,10 +16,14 @@ namespace PagaLaEscuela.Controllers
         [HttpGet]
         public HttpResponseMessage ConsultarRef(string r)
         {
+            ColegiaturasServices colegiaturasServices = new ColegiaturasServices();
+
             DecodificarService decodificarService = new DecodificarService();
 
             HeaderClubPagoServices headerClubPagoServices = new HeaderClubPagoServices();
             HeaderClubPago headerClubPago = headerClubPagoServices.ObtenerHeaderClubPago();
+
+            #region ValidacionHeader
 
             if (Request.Headers.Contains("X-Origin"))
             {
@@ -51,14 +56,33 @@ namespace PagaLaEscuela.Controllers
                 ErrorHeader error = new ErrorHeader() { codigo = 2, mensaje = "Origen Desconocido" };
                 return Request.CreateResponse(System.Net.HttpStatusCode.Forbidden, error);
             }
+            #endregion
 
-            DateTime HoraDelServidor = DateTime.Now;
-            DateTime thisDay = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(HoraDelServidor, TimeZoneInfo.Local.Id, "Eastern Standard Time (Mexico)");
 
-            ConsultarReferenciasServices consultarReferenciasServices = new ConsultarReferenciasServices();
-            ConsultarReferencia consultarReferecia = consultarReferenciasServices.ConsultarReferenciaClubPago(r, thisDay);
 
-            return Request.CreateResponse(System.Net.HttpStatusCode.OK, consultarReferecia);
+            if (colegiaturasServices.ObtenerEstatusColegiatura(r))
+            {
+                DateTime HoraDelServidor = DateTime.Now;
+                DateTime thisDay = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(HoraDelServidor, TimeZoneInfo.Local.Id, "Eastern Standard Time (Mexico)");
+
+                ConsultarReferenciasServices consultarReferenciasServices = new ConsultarReferenciasServices();
+                ConsultarReferencia consultarReferecia = consultarReferenciasServices.ConsultarReferenciaClubPago(r, thisDay);
+
+                return Request.CreateResponse(System.Net.HttpStatusCode.OK, consultarReferecia);
+            }
+            else
+            {
+                ConsultarReferencia consultarReferencia = new ConsultarReferencia();
+
+                consultarReferencia.codigo = 50;
+                consultarReferencia.mensaje = "Error de sistema";
+                consultarReferencia.monto = "0";
+                consultarReferencia.referencia = r;
+                consultarReferencia.transaccion = "";
+                consultarReferencia.parcial = false;
+
+                return Request.CreateResponse(System.Net.HttpStatusCode.OK, consultarReferencia);
+            }
         }
     }
 }

@@ -31,14 +31,14 @@ namespace Franquicia.DataAccess.Repository.ClubPago
                 decimal monto = 0;
                 string referencia = "";
                 int transaccion = 0;
-                bool? parcial = false;
+                bool? parcial = true;
 
                 if (dt.Rows.Count == 0)
                 {
                     codigo = 40;
                     mnsj = "Adquiriente inválido";
                     monto = 0;
-                    parcial = null;
+                    parcial = false;
                 }
                 else
                 {
@@ -47,25 +47,27 @@ namespace Franquicia.DataAccess.Repository.ClubPago
 
                         if (Guid.Parse(item["UidEstatusFechaPago"].ToString()) != Guid.Parse("408431CA-DB94-4BAA-AB9B-8FF468A77582"))
                         {
-                            var pagado = ConsultarPagoReferenciaClubPago(IdReferencia);
+                            // ==>Lo quitariamos por que validaria el importe de la referencia<==
+                            //var pagado = ConsultarPagoReferenciaClubPago(IdReferencia);
 
-                            if (pagado.Item3)
-                            {
-                                codigo = 50;
-                                mnsj = "Error de sistema";
-                                monto = 0;
-                                referencia = item["IdReferencia"].ToString();
-                                parcial = null;
-                            }
-                            else
-                            {
-                                if (pagado.Item1 == pagado.Item2)
+                            //if (pagado.Item3)
+                            //{
+                            //    codigo = 50;
+                            //    mnsj = "Error de sistema";
+                            //    monto = 0;
+                            //    referencia = item["IdReferencia"].ToString();
+                            //    parcial = false;
+                            //}
+                            //else
+                            //{
+                                //if (pagado.Item1 == pagado.Item2)
+                                if (decimal.Parse(item["DcmImporte"].ToString()) == decimal.Parse(item["DcmPagado"].ToString()))
                                 {
                                     codigo = 13;
                                     mnsj = "Referencia sin adeudo";
                                     monto = 0;
                                     referencia = item["IdReferencia"].ToString();
-                                    parcial = null;
+                                    parcial = false;
                                 }
                                 else
                                 {
@@ -73,18 +75,18 @@ namespace Franquicia.DataAccess.Repository.ClubPago
                                     {
                                         codigo = 14;
                                         mnsj = "Referencia fuera de vigencia";
-                                        monto = decimal.Parse(item["DcmImporte"].ToString());
+                                        monto = decimal.Parse(item["DcmTotal"].ToString());
                                         referencia = item["IdReferencia"].ToString();
-                                        parcial = null;
+                                        parcial = false;
                                     }
                                     else
                                     {
-                                        monto = decimal.Parse(item["DcmImporte"].ToString());
+                                        monto = decimal.Parse(item["DcmTotal"].ToString());
                                         referencia = item["IdReferencia"].ToString();
                                         transaccion = int.Parse(item["IntFolio"].ToString());
                                     }
                                 }
-                            }
+                            //}
                         }
                         else
                         {
@@ -92,7 +94,7 @@ namespace Franquicia.DataAccess.Repository.ClubPago
                             mnsj = "Referencia sin adeudo";
                             monto = 0;
                             referencia = item["IdReferencia"].ToString();
-                            parcial = null;
+                            parcial = false;
                         }
                     }
                 }
@@ -115,7 +117,7 @@ namespace Franquicia.DataAccess.Repository.ClubPago
                 consultarReferencia.monto = "0";
                 consultarReferencia.referencia = IdReferencia;
                 consultarReferencia.transaccion = "";
-                consultarReferencia.parcial = null;
+                consultarReferencia.parcial = false;
 
                 return consultarReferencia;
             }

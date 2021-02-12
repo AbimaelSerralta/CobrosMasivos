@@ -211,7 +211,7 @@ namespace PagaLaEscuela.Views
 
                             manejoSesionServices.ObtenerFranquiciaClienteUsuario();
                             //lblNombreComercial.Text = "<b>FRANQUICIA:</b>&nbsp;" + manejoSesionServices.usuarioCompletoRepository.franquiciatarios.VchNombreComercial;
-                            lblDescripcionCliente.Text = "&nbsp;<b>" + manejoSesionServices.usuarioCompletoRepository.clientes.VchNombreComercial + "</b>&nbsp;";
+                            //lblDescripcionCliente.Text = "&nbsp;<b>" + manejoSesionServices.usuarioCompletoRepository.clientes.VchNombreComercial + "</b>&nbsp;";
                             Session["UidClienteMaster"] = manejoSesionServices.usuarioCompletoRepository.clientes.UidCliente;
                             Session["UidUsuarioMaster"] = manejoSesionServices.usuarioCompletoRepository.usuarioCompleto.UidUsuario;
 

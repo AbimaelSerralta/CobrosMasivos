@@ -19,6 +19,7 @@ namespace PagaLaEscuela.Controllers
             HeaderClubPagoServices headerClubPagoServices = new HeaderClubPagoServices();
             HeaderClubPago headerClubPago = headerClubPagoServices.ObtenerHeaderClubPago();
 
+            #region ValidacionHeader
             if (Request.Headers.Contains("X-Origin"))
             {
                 string XOrigin = decodificarService.DecodeBase64ToString(Request.Headers.GetValues("X-Origin").FirstOrDefault().ToString());
@@ -50,7 +51,7 @@ namespace PagaLaEscuela.Controllers
                 ErrorHeader error = new ErrorHeader() { codigo = 2, mensaje = "Origen Desconocido" };
                 return Request.CreateResponse(System.Net.HttpStatusCode.Forbidden, error);
             }
-
+            #endregion
 
             string para1 = solicitud.referencia;
             string para2 = solicitud.fecha;
