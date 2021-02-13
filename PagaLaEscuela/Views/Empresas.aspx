@@ -43,7 +43,7 @@
                                                 <asp:LinkButton ID="btnFiltros" ToolTip="Filtros de busqueda." BackColor="#4db6ac" class="btn btn-lg btn-fab btn-fab-mini btn-round" runat="server">
                                                         <i class="material-icons">search</i>
                                                 </asp:LinkButton>
-                                                <asp:Label Text="Listado de comercios" runat="server" />
+                                                <asp:Label Text="Listado de escuelas" runat="server" />
                                             </div>
                                         </div>
                                     </div>

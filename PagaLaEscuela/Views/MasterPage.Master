@@ -209,7 +209,7 @@
                                             <asp:Label ID="lblNombreComercial" Style="color: black;" CssClass="navbar-text" runat="server"></asp:Label>
                                         </li>
                                         <li class="dropdown" id="liMenuCliente" runat="server">
-                                            <a id="aMenuCliente" href="#" class="dropdown-toggle font-weight-bold" data-toggle="dropdown" runat="server">&nbsp; COMERCIOS </a>
+                                            <a id="aMenuCliente" href="#" class="dropdown-toggle font-weight-bold" data-toggle="dropdown" runat="server">&nbsp; ESCUELAS </a>
                                             <ul class="dropdown-menu">
                                                 <asp:DataList ID="dlSubMenuCliente" Style="width: 100%;" RepeatDirection="Vertical" runat="server">
                                                     <ItemTemplate>

@@ -27,7 +27,7 @@
                                         <div class="nav-tabs-wrapper">
                                             <div class="form-group">
 
-                                                <asp:Label Text="Listado de Comercio" runat="server" />
+                                                <asp:Label Text="Listado de Escuelas" runat="server" />
 
                                                 <div class="pull-right">
                                                     <asp:LinkButton ID="btnNuevo" OnClick="btnNuevo_Click" class="btn btn-lg btn-success btn-fab btn-fab-mini btn-round" runat="server">

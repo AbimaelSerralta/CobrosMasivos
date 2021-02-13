@@ -201,11 +201,11 @@
                                                         <asp:DropDownList ID="ddlZonaHoraria" CssClass="form-control" runat="server">
                                                         </asp:DropDownList>
                                                     </div>
-                                                    <div class="form-group col-md-3">
+                                                    <div visible="false" class="form-group col-md-3" runat="server">
                                                         <label for="ddlEscuela" style="font-weight:bold; color: black;">¿Es una escuela?</label>
                                                         <asp:DropDownList ID="ddlEscuela" CssClass="form-control" runat="server">
                                                             <asp:ListItem Text="NO" Value="false" />
-                                                            <asp:ListItem Text="SI" Value="true" />
+                                                            <%--<asp:ListItem Text="SI" Value="true" />--%>
                                                         </asp:DropDownList>
                                                     </div>
                                                     <div class="form-group col-md-3">

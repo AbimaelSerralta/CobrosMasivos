@@ -128,7 +128,7 @@ namespace PagaLaEscuela.Views
                             {
                                 Session["UidClienteMaster"] = Guid.Empty;
                                 aMenuCliente.Attributes.Add("class", "dropdown-toggle disabled");
-                                lblDescripcionCliente.Text = "&nbsp;seleccione un comercio";
+                                lblDescripcionCliente.Text = "&nbsp;seleccione una escuela";
                             }
                             else if (Session["NombreClienteMaster"] != null)
                             {
@@ -164,7 +164,7 @@ namespace PagaLaEscuela.Views
                             {
                                 Session["NombreComercial"] = lblNombreComercial.Text;
                                 Session["UidFranquiciaMaster"] = manejoSesionServices.usuarioCompletoRepository.franquiciatarios.UidFranquiciatarios;
-                                lblDescripcionCliente.Text = "&nbsp;seleccione un comercio";
+                                lblDescripcionCliente.Text = "&nbsp;seleccione una escuela";
                                 aMenuCliente.Attributes.Add("class", "dropdown-toggle disabled");
 
                                 Session["UidClienteMaster"] = Guid.Empty;

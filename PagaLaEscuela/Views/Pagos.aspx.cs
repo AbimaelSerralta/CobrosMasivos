@@ -1028,7 +1028,7 @@ namespace PagaLaEscuela.Views
                         string GenerarAccount = data.Item1;
                         int IdPago = data.Item2;
                         int IdParcialidad = data.Item3;
-                        bool RegIdPago = data.Item4;
+                        bool RegIdPago = data.Item5;
 
                         bool procesarPago = false;
                         string VchUrl = string.Empty;
