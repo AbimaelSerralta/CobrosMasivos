@@ -392,6 +392,8 @@ namespace PagaLaEscuela.Views
             DateTime HoraDelServidor = DateTime.Now;
             DateTime hoy = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(HoraDelServidor, TimeZoneInfo.Local.Id, "Eastern Standard Time (Mexico)");
 
+            hoy = DateTime.Parse(hoy.ToString("dd/MM/yyyy"));
+
             lblTitlePagar.Text = "Pago colegiatura";
             btnCerrar.Visible = true;
             colegiaturasServices.lsDesglosePagosGridViewModel.Clear();
@@ -878,121 +880,145 @@ namespace PagaLaEscuela.Views
 
                             usuariosCompletosServices.SelectUsuCliColegiatura(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()));
 
-                            foreach (var item in usuariosCompletosServices.lsPagoColegiaturaLiga)
+                            //Referencia, IdPago, IdParcialidad
+                            var data = pagosColegiaturasServices.GenerarReferencia(Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()));
+                            if (data.Item4)
                             {
-                                if (ddlFormasPago.SelectedValue != "contado")
+                                string IdReferencia = data.Item1;
+                                int IdPago = data.Item2;
+                                int IdParcialidad = data.Item3;
+                                bool RegIdPago = data.Item5;
+
+                                foreach (var item in usuariosCompletosServices.lsPagoColegiaturaLiga)
                                 {
-                                    DateTime HoraDelServidor = DateTime.Now;
-                                    DateTime thisDay = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(HoraDelServidor, TimeZoneInfo.Local.Id, "Eastern Standard Time (Mexico)");
-
-                                    string ReferenciaCobro = item.IdCliente.ToString() + item.IdUsuario.ToString() + thisDay.ToString("ddMMyyyyHHmmssfff");
-
-                                    string promocion = ddlFormasPago.SelectedValue.Replace(" MESES", "");
-
-                                    DateTime thisDay2 = DateTime.Now;
-                                    string Referencia = item.IdCliente.ToString() + item.IdUsuario.ToString() + thisDay2.ToString("ddMMyyyyHHmmssfff");
-
-                                    url = GenLigaPara(id_company, id_branch, user, pwd, Referencia, importeTotal, moneda, canal, promocion, intCorreo, vencimiento, item.StrCorreo, concepto, semillaAES, data0, urlGen);
-
-                                    if (url.Contains("https://"))
+                                    if (ddlFormasPago.SelectedValue != "contado")
                                     {
-                                        if (usuariosCompletosServices.GenerarLigasPagosColegiatura(url, concepto, importeTotal, Referencia, item.UidUsuario, identificador, thisDay, DateTime.Parse(vencimiento), "PAGO COLEGIATURA", UidLigaAsociado, Guid.Parse(ddlFormasPago.SelectedValue), Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), UidPagoColegiatura, Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString())))
+                                        DateTime HoraDelServidor = DateTime.Now;
+                                        DateTime thisDay = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(HoraDelServidor, TimeZoneInfo.Local.Id, "Eastern Standard Time (Mexico)");
+
+                                        string promocion = ddlFormasPago.SelectedValue.Replace(" MESES", "");
+
+                                        // =>Forma de generar referencia antigua
+                                        //DateTime thisDay2 = DateTime.Now;
+                                        //string Referencia = item.IdCliente.ToString() + item.IdUsuario.ToString() + thisDay2.ToString("ddMMyyyyHHmmssfff");
+                                        string Referencia = IdReferencia;
+
+                                        url = GenLigaPara(id_company, id_branch, user, pwd, Referencia, importeTotal, moneda, canal, promocion, intCorreo, vencimiento, item.StrCorreo, concepto, semillaAES, data0, urlGen);
+
+                                        if (url.Contains("https://"))
                                         {
-                                            ViewState["IdReferencia"] = Referencia;
+                                            if (usuariosCompletosServices.GenerarLigasPagosColegiatura(url, concepto, importeTotal, Referencia, item.UidUsuario, identificador, thisDay, DateTime.Parse(vencimiento), "PAGO COLEGIATURA", UidLigaAsociado, Guid.Parse(ddlFormasPago.SelectedValue), Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), UidPagoColegiatura, Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString())))
+                                            {
+                                                ViewState["IdReferencia"] = Referencia;
 
-                                            pnlPromociones.Visible = false;
-                                            pnlIframe.Visible = true;
+                                                pnlPromociones.Visible = false;
+                                                pnlIframe.Visible = true;
 
-                                            btnFinalizar.Visible = true;
-                                            btnCerrar.Visible = false;
+                                                btnFinalizar.Visible = true;
+                                                btnCerrar.Visible = false;
 
-                                            ifrLiga.Src = url;
+                                                ifrLiga.Src = url;
 
-                                            resu = true;
+                                                resu = true;
+                                            }
                                         }
+                                        else
+                                        {
+                                            resu = false;
+                                            break;
+                                        }
+                                    }
+                                    else if (ddlFormasPago.SelectedValue == "contado")
+                                    {
+                                        DateTime HoraDelServidor = DateTime.Now;
+                                        DateTime thisDay = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(HoraDelServidor, TimeZoneInfo.Local.Id, "Eastern Standard Time (Mexico)");
+                                        
+                                        //string ReferenciaCobro = item.IdCliente.ToString() + item.IdUsuario.ToString() + thisDay.ToString("ddMMyyyyHHmmssfff");
+                                        string ReferenciaCobro = IdReferencia;
+
+                                        string urlCobro = GenLigaPara(id_company, id_branch, user, pwd, ReferenciaCobro, importeTotal, moneda, canal, "C", intCorreo, vencimiento, item.StrCorreo, concepto, semillaAES, data0, urlGen);
+
+                                        if (urlCobro.Contains("https://"))
+                                        {
+                                            if (usuariosCompletosServices.GenerarLigasPagosColegiatura(urlCobro, concepto, importeTotal, ReferenciaCobro, item.UidUsuario, identificador, thisDay, DateTime.Parse(vencimiento), "PAGO COLEGIATURA", Guid.Empty, Guid.Empty, Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), UidPagoColegiatura, Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString())))
+                                            {
+                                                ViewState["IdReferencia"] = ReferenciaCobro;
+
+                                                pnlPromociones.Visible = false;
+                                                pnlIframe.Visible = true;
+
+                                                btnFinalizar.Visible = true;
+                                                btnCerrar.Visible = false;
+
+                                                ifrLiga.Src = urlCobro;
+
+                                                resu = true;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            resu = false;
+                                        }
+                                    }
+                                }
+
+                                if (resu)
+                                {
+                                    bool trSubtotal = bool.Parse(ViewState["booltrSubtotal"].ToString());
+                                    bool trComisionTarjeta = bool.Parse(ViewState["booltrComisionTarjeta"].ToString());
+                                    bool trPromociones = bool.Parse(ViewState["booltrPromociones"].ToString());
+
+                                    decimal DcmValidarImporte = decimal.Parse(ViewState["ValidarImporte"].ToString());
+                                    bool trValidarImporte = bool.Parse(ViewState["booltrValidarImporte"].ToString());
+
+                                    Guid EstatusPagoColegiatura = Guid.Parse("3B1517E9-6E32-43E8-9D9C-A11CD08F6F55");
+                                    Guid estatusFechaPago = Guid.Parse("F25E4AAB-6044-46E9-A575-98DCBCCF7604");
+
+                                    if (decimal.Parse(ViewState["ImporteResta"].ToString()) == 0)
+                                    {
+                                        colegiaturasServices.ActualizarEstatusColegiaturaAlumno(Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()), DateTime.Parse(headFPago.Text), Guid.Parse("5554CE57-1288-46D5-B36A-8AC69CB94B9A"));
+                                    }
+
+                                    int UltimoFolio = pagosColegiaturasServices.ObtenerUltimoFolio(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()));
+                                    if (pagosColegiaturasServices.RegistrarPagoColegiatura2(UidPagoColegiatura, UltimoFolio, DateTime.Parse(ViewState["headFPago"].ToString()), lblPromotb.Text, lblComisionTarjetatb.Text, trSubtotal, decimal.Parse(ViewState["ImpOtraSubTotal"].ToString()), trComisionTarjeta, decimal.Parse(ViewState["ImpOtraCantCCT"].ToString()), trPromociones, decimal.Parse(ViewState["ImpOtraCantCP"].ToString()), trValidarImporte, DcmValidarImporte, importeTotal, Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), EstatusPagoColegiatura,
+                                       IdParcialidad, Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()), Guid.Parse(ddlTipoPago.SelectedValue), decimal.Parse(lblSubtotaltb.Text.Replace("$", "")), decimal.Parse(ViewState["ImpOtraSubTotal"].ToString()), decimal.Parse(ViewState["ImporteResta"].ToString()), estatusFechaPago))
+                                    {
+                                        foreach (var item in colegiaturasServices.lsDesglosePagosGridViewModel)
+                                        {
+                                            detallesPagosColegiaturasServices.RegistrarDetallePagoColegiatura(item.IntNum, item.VchConcepto, item.DcmImporte, UidPagoColegiatura);
+                                        }
+
+                                        pagosColegiaturasServices.ActualizarImporteResta(Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()), decimal.Parse(ViewState["ImporteResta"].ToString()));
+
+                                        if (RegIdPago)
+                                        {
+                                            pagosColegiaturasServices.RegistrarIdPago(Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()), IdPago);
+                                        }
+
+                                        ValidarPago(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()));
+                                    }
+                                }
+                                else
+                                {
+                                    if (!string.IsNullOrEmpty(url))
+                                    {
+                                        pnlAlertPago.Visible = true;
+                                        lblMensajeAlertPago.Text = "<b>¡Lo sentimos! </b> " + url + "." + "<br /> Las credenciales proporcionadas no son correctos, por favor contacte a los administradores.";
+                                        divAlertPago.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                                     }
                                     else
                                     {
-                                        resu = false;
-                                        break;
+                                        pnlAlertPago.Visible = true;
+                                        lblMensajeAlertPago.Text = "<b>¡Lo sentimos! </b> Las credenciales proporcionadas no son correctos, por favor contacte a los administradores.";
+                                        divAlertPago.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                                     }
-                                }
-                                else if (ddlFormasPago.SelectedValue == "contado")
-                                {
-                                    DateTime thisDay = DateTime.Now;
-                                    string ReferenciaCobro = item.IdCliente.ToString() + item.IdUsuario.ToString() + thisDay.ToString("ddMMyyyyHHmmssfff");
-
-                                    string urlCobro = GenLigaPara(id_company, id_branch, user, pwd, ReferenciaCobro, importeTotal, moneda, canal, "C", intCorreo, vencimiento, item.StrCorreo, concepto, semillaAES, data0, urlGen);
-
-                                    if (urlCobro.Contains("https://"))
-                                    {
-                                        if (usuariosCompletosServices.GenerarLigasPagosColegiatura(urlCobro, concepto, importeTotal, ReferenciaCobro, item.UidUsuario, identificador, thisDay, DateTime.Parse(vencimiento), "PAGO COLEGIATURA", Guid.Empty, Guid.Empty, Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), UidPagoColegiatura, Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString())))
-                                        {
-                                            ViewState["IdReferencia"] = ReferenciaCobro;
-
-                                            pnlPromociones.Visible = false;
-                                            pnlIframe.Visible = true;
-
-                                            btnFinalizar.Visible = true;
-                                            btnCerrar.Visible = false;
-
-                                            ifrLiga.Src = urlCobro;
-
-                                            resu = true;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        resu = false;
-                                    }
-                                }
-                            }
-
-                            if (resu)
-                            {
-                                bool trSubtotal = bool.Parse(ViewState["booltrSubtotal"].ToString());
-                                bool trComisionTarjeta = bool.Parse(ViewState["booltrComisionTarjeta"].ToString());
-                                bool trPromociones = bool.Parse(ViewState["booltrPromociones"].ToString());
-
-                                decimal DcmValidarImporte = decimal.Parse(ViewState["ValidarImporte"].ToString());
-                                bool trValidarImporte = bool.Parse(ViewState["booltrValidarImporte"].ToString());
-
-                                Guid EstatusPagoColegiatura = Guid.Parse("3B1517E9-6E32-43E8-9D9C-A11CD08F6F55");
-                                Guid estatusFechaPago = Guid.Parse("F25E4AAB-6044-46E9-A575-98DCBCCF7604");
-
-                                if (decimal.Parse(ViewState["ImporteResta"].ToString()) == 0)
-                                {
-                                    colegiaturasServices.ActualizarEstatusColegiaturaAlumno(Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()), DateTime.Parse(headFPago.Text), Guid.Parse("5554CE57-1288-46D5-B36A-8AC69CB94B9A"));
-                                }
-
-                                int UltimoFolio = pagosColegiaturasServices.ObtenerUltimoFolio(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()));
-                                if (pagosColegiaturasServices.RegistrarPagoColegiatura(UidPagoColegiatura, UltimoFolio, DateTime.Parse(ViewState["headFPago"].ToString()), lblPromotb.Text, lblComisionTarjetatb.Text, trSubtotal, decimal.Parse(ViewState["ImpOtraSubTotal"].ToString()), trComisionTarjeta, decimal.Parse(ViewState["ImpOtraCantCCT"].ToString()), trPromociones, decimal.Parse(ViewState["ImpOtraCantCP"].ToString()), trValidarImporte, DcmValidarImporte, importeTotal, Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), EstatusPagoColegiatura,
-                                    Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()), Guid.Parse(ddlTipoPago.SelectedValue), decimal.Parse(lblSubtotaltb.Text.Replace("$", "")), decimal.Parse(ViewState["ImpOtraSubTotal"].ToString()), decimal.Parse(ViewState["ImporteResta"].ToString()), estatusFechaPago))
-                                {
-                                    foreach (var item in colegiaturasServices.lsDesglosePagosGridViewModel)
-                                    {
-                                        detallesPagosColegiaturasServices.RegistrarDetallePagoColegiatura(item.IntNum, item.VchConcepto, item.DcmImporte, UidPagoColegiatura);
-                                    }
-
-                                    pagosColegiaturasServices.ActualizarImporteResta(Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()), decimal.Parse(ViewState["ImporteResta"].ToString()));
-
-                                    ValidarPago(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()));
                                 }
                             }
                             else
                             {
-                                if (!string.IsNullOrEmpty(url))
-                                {
-                                    pnlAlertPago.Visible = true;
-                                    lblMensajeAlertPago.Text = "<b>¡Lo sentimos! </b> " + url + "." + "<br /> Las credenciales proporcionadas no son correctos, por favor contacte a los administradores.";
-                                    divAlertPago.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
-                                }
-                                else
-                                {
-                                    pnlAlertPago.Visible = true;
-                                    lblMensajeAlertPago.Text = "<b>¡Lo sentimos! </b> Las credenciales proporcionadas no son correctos, por favor contacte a los administradores.";
-                                    divAlertPago.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
-                                }
+                                pnlAlertPago.Visible = true;
+                                lblMensajeAlertPago.Text = "<b>¡Lo sentimos! </b> No se ha podido generar la liga de pago, por favor intentelo más tarde. Si el problema persiste por favor contacte a los administradores.";
+                                divAlertPago.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                             }
                         }
                         else
@@ -1006,7 +1032,7 @@ namespace PagaLaEscuela.Views
                     else
                     {
                         pnlAlertPago.Visible = true;
-                        lblMensajeAlertPago.Text = "<b>¡Lo sentimos! </b> Esta empresa no cuenta con credenciales para generar ligas, por favor contacte a los administradores.";
+                        lblMensajeAlertPago.Text = "<b>¡Lo sentimos! </b> Esta escuela no cuenta con credenciales para generar ligas, por favor contacte a los administradores.";
                         divAlertPago.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                     }
 

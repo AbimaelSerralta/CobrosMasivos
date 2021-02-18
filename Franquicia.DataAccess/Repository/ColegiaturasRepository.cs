@@ -1348,6 +1348,8 @@ namespace Franquicia.DataAccess.Repository
                 hoy = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(HoraDelServidor, TimeZoneInfo.Local.Id, "Eastern Standard Time (Mexico)");
             }
 
+            hoy = DateTime.Parse(hoy.ToString("dd/MM/yyyy"));
+
             decimal ImporteCole = DcmImporte;
             decimal recargoTotalLimite = 0;
             decimal recargoTotalPeriodo = 0;
@@ -2005,6 +2007,8 @@ namespace Franquicia.DataAccess.Repository
 
             foreach (DataRow item in dt.Rows)
             {
+                hoy = DateTime.Parse(hoy.ToString("dd/MM/yyyy"));
+
                 Guid EstatusFechaColegiatura = Guid.Parse("76C8793B-4493-44C8-B274-696A61358BDF");
                 string strEstatusFechaColegiatura = "VIGENTE";
 
@@ -2023,8 +2027,8 @@ namespace Franquicia.DataAccess.Repository
                     {
                         if (hoy > DateTime.Parse(item["DtFHVencimiento"].ToString()))
                         {
-                            strEstatusFechaColegiatura = "VENCIDO";
-                            EstatusFechaColegiatura = Guid.Parse("DB36D040-9E05-4E7B-83B4-DD4FF0D5AC3C");
+                            strEstatusFechaColegiatura = "BLOQUEADO";
+                            EstatusFechaColegiatura = Guid.Parse("1331D93D-EA53-487F-BF28-E72F5E7D19BF");
                         }
                     }
 
@@ -2032,8 +2036,8 @@ namespace Franquicia.DataAccess.Repository
                     {
                         if (hoy > DateTime.Parse(item["DtFHFinPeriodo"].ToString()))
                         {
-                            strEstatusFechaColegiatura = "BLOQUEADO";
-                            EstatusFechaColegiatura = Guid.Parse("1331D93D-EA53-487F-BF28-E72F5E7D19BF");
+                            strEstatusFechaColegiatura = "VENCIDO";
+                            EstatusFechaColegiatura = Guid.Parse("DB36D040-9E05-4E7B-83B4-DD4FF0D5AC3C");
                         }
                     }
 
@@ -2043,15 +2047,15 @@ namespace Franquicia.DataAccess.Repository
 
                     if (hoy > DateTime.Parse(item["DtFHVencimiento"].ToString()))
                     {
-                        strEstatusFechaColegiatura = "VENCIDO";
-                        EstatusFechaColegiatura = Guid.Parse("DB36D040-9E05-4E7B-83B4-DD4FF0D5AC3C");
+                        strEstatusFechaColegiatura = "BLOQUEADO";
+                        EstatusFechaColegiatura = Guid.Parse("1331D93D-EA53-487F-BF28-E72F5E7D19BF");
                     }
                     if (!string.IsNullOrEmpty(item["DtFHFinPeriodo"].ToString()))
                     {
                         if (hoy > DateTime.Parse(item["DtFHFinPeriodo"].ToString()))
                         {
-                            strEstatusFechaColegiatura = "BLOQUEADO";
-                            EstatusFechaColegiatura = Guid.Parse("1331D93D-EA53-487F-BF28-E72F5E7D19BF");
+                            strEstatusFechaColegiatura = "VENCIDO";
+                            EstatusFechaColegiatura = Guid.Parse("DB36D040-9E05-4E7B-83B4-DD4FF0D5AC3C");
                         }
                     }
 
@@ -2060,14 +2064,12 @@ namespace Franquicia.DataAccess.Repository
                 {
                     if (hoy > DateTime.Parse(item["DtFHFinPeriodo"].ToString()))
                     {
-                        strEstatusFechaColegiatura = "BLOQUEADO";
-                        EstatusFechaColegiatura = Guid.Parse("1331D93D-EA53-487F-BF28-E72F5E7D19BF");
+                        strEstatusFechaColegiatura = "VENCIDO";
+                        EstatusFechaColegiatura = Guid.Parse("DB36D040-9E05-4E7B-83B4-DD4FF0D5AC3C");
                     }
                 }
 
                 valor = EstatusFechaColegiatura.ToString();
-
-
             }
             return valor;
         }
@@ -2445,6 +2447,8 @@ namespace Franquicia.DataAccess.Repository
 
             foreach (DataRow item in dt.Rows)
             {
+                hoy = DateTime.Parse(hoy.ToString("dd/MM/yyyy"));
+
                 Guid EstatusFechaColegiatura = Guid.Parse("76C8793B-4493-44C8-B274-696A61358BDF");
                 string strEstatusFechaColegiatura = "VIGENTE";
 

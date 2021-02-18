@@ -467,7 +467,7 @@
                                                                     <tr>
                                                                         <th style="background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;" class="text-center">N°</th>
                                                                         <th style="background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">CONCEPTO</th>
-                                                                        <th style="background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;" class="text-right">PRECIO</th>
+                                                                        <th style="background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;" class="text-right">IMPORTE</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
@@ -480,17 +480,21 @@
                                                                             </tr>
                                                                         </ItemTemplate>
                                                                     </asp:Repeater>
-                                                                    <tr id="trSubtotal" runat="server">
+                                                                    <tr>
                                                                         <td style="padding-bottom: 0px;" class="text-center"></td>
-                                                                        <td style="font-weight: bold; padding-top: 0px; padding-bottom: 0px;" class="text-right">Subtotal:</td>
-                                                                        <td style="font-weight: bold; padding-top: 0px; padding-bottom: 0px;" class="text-right">
+                                                                        <td style="font-weight: bold; padding-top: 0px; padding-bottom: 0px;" class="text-right"></td>
+                                                                        <td style="font-weight: bold; padding-top: 0px; padding-bottom: 0px;" class="text-right"></td>
+                                                                    </tr>
+                                                                    <tr id="trSubtotal" runat="server">
+                                                                        <td style="border-color: white; padding-bottom: 0px;" class="text-center"></td>
+                                                                        <td style="border-color: white; font-weight: bold; padding-top: 0px; padding-bottom: 0px;" class="text-right">Subtotal:</td>
+                                                                        <td style="border-color: white; font-weight: bold; padding-top: 0px; padding-bottom: 0px;" class="text-right">
                                                                             <asp:Label ID="lblSubtotaltb" runat="server" />
                                                                         </td>
                                                                     </tr>
                                                                     <tr id="trValidarImporte" runat="server">
                                                                         <td style="border-color: white; padding-top: 0px; padding-bottom: 0px;" class="text-center"></td>
-                                                                        <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" class="text-right">Importe por validar:
-                                                                        </td>
+                                                                        <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" class="text-right">Importe por validar:</td>
                                                                         <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" class="text-right">
                                                                             <asp:Label ID="lblValidarImportetb" Style="color: #f55145;" runat="server" />
                                                                         </td>

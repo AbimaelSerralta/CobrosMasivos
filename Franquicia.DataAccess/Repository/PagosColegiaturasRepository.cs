@@ -986,7 +986,7 @@ namespace Franquicia.DataAccess.Repository
 
                     IdParcialidad = int.Parse(item["IdParcialidad"].ToString()) + 1;
 
-                    Referencia = int.Parse(item["IdAlumno"].ToString()).ToString("D6") + int.Parse(item["IdAlumno"].ToString()).ToString("D9") + IdPago.ToString("D4") + IdParcialidad.ToString("D3");
+                    Referencia = int.Parse(item["IdCliente"].ToString()).ToString("D6") + int.Parse(item["IdAlumno"].ToString()).ToString("D9") + IdPago.ToString("D4") + IdParcialidad.ToString("D3");
 
                     Error = true;
                 }

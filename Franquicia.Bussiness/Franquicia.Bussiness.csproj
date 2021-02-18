@@ -71,6 +71,7 @@
     <Compile Include="EstatusFechasPagosServices.cs" />
     <Compile Include="GenerarRefereciaClubPago.cs" />
     <Compile Include="GenerarLigaPraga.cs" />
+    <Compile Include="LandingPage\ContactoServices.cs" />
     <Compile Include="PagosClubPagoServices.cs" />
     <Compile Include="ParametrosClubPagoServices.cs" />
     <Compile Include="PromocionesClubPagoServices.cs" />
