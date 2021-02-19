@@ -367,6 +367,16 @@ namespace PagaLaEscuela.Views
                             colegiaturasServices.lsPagosReporteLigaEscuelaViewModels = colegiaturasServices.lsPagosReporteLigaEscuelaViewModels.OrderByDescending(x => x.DcmImporteCole).ToList();
                         }
                         break;
+                    case "DcmImporteSaldado":
+                        if (Orden == "ASC")
+                        {
+                            colegiaturasServices.lsPagosReporteLigaEscuelaViewModels = colegiaturasServices.lsPagosReporteLigaEscuelaViewModels.OrderBy(x => x.DcmImporteSaldado).ToList();
+                        }
+                        else
+                        {
+                            colegiaturasServices.lsPagosReporteLigaEscuelaViewModels = colegiaturasServices.lsPagosReporteLigaEscuelaViewModels.OrderByDescending(x => x.DcmImporteSaldado).ToList();
+                        }
+                        break;
                     case "DcmImportePagado":
                         if (Orden == "ASC")
                         {
@@ -2174,8 +2184,10 @@ namespace PagaLaEscuela.Views
 
 
             int UltimoFolio = pagosColegiaturasServices.ObtenerUltimoFolio(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+            decimal DcmImporteSaldado = pagosColegiaturasServices.ObtenerImporteSaldadoRLE(Guid.Parse(ViewState["Selected-UidAlumno"].ToString()), Guid.Parse(ViewState["Selected-UidFechaColegiatura"].ToString()));
+
             if (pagosColegiaturasServices.RegistrarPagoColegiatura(UidPagoColegiatura, UltimoFolio, DateTime.Parse(ViewState["headFPago"].ToString()), lblPromotb.Text, lblComisionTarjetatb.Text, trSubtotal, decimal.Parse(ViewState["ImpOtraSubTotalTT"].ToString()), trComisionTarjeta, decimal.Parse(ViewState["ImpOtraCantCTT"].ToString()), trPromociones, decimal.Parse(ViewState["ImpOtraCantCPTT"].ToString()), trValidarImporte, DcmValidarImporte, importeTotal, Guid.Parse(ddlTutorAlu.SelectedValue), EstatusPagoColegiatura,
-                Guid.Parse(ViewState["Selected-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["Selected-UidAlumno"].ToString()), Guid.Parse(ddlFormasPago.SelectedValue), decimal.Parse(lblSubtotaltb.Text.Replace("$", "")), decimal.Parse(ViewState["ImpOtraSubTotalTT"].ToString()), decimal.Parse(ViewState["ImporteResta"].ToString()), estatusFechaPago))
+                Guid.Parse(ViewState["Selected-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["Selected-UidAlumno"].ToString()), Guid.Parse(ddlFormasPago.SelectedValue), DcmImporteSaldado, decimal.Parse(lblSubtotaltb.Text.Replace("$", "")), decimal.Parse(ViewState["ImpOtraSubTotalTT"].ToString()), decimal.Parse(ViewState["ImporteResta"].ToString()), estatusFechaPago))
             {
                 foreach (var item in colegiaturasServices.lsDesglosePagosGridViewModel)
                 {

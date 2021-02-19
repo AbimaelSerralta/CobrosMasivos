@@ -22,6 +22,7 @@ namespace Franquicia.Domain.ViewModels
 
         public int IntNum { get; set; }
         public string VchNum { get; set; }
+        public decimal DcmImporteSaldado { get; set; }
         public decimal DcmImporteCole { get; set; }
         public decimal DcmImportePagado { get; set; }
         public decimal DcmImporteNuevo { get; set; }

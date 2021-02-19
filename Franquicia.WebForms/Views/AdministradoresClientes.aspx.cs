@@ -664,8 +664,8 @@ namespace Franquicia.WebForms.Views
             ViewState["UidCliente"] = UidCliente;
 
             FiltroRFC.Text = clientesServices.lsClientesGridViewModel[row.RowIndex].VchRFC;
-            FiltroRazonSocial.Text = clientesServices.lsClientesGridViewModel[row.RowIndex].VchRFC;
-            FiltroNombreComercial.Text = clientesServices.lsClientesGridViewModel[row.RowIndex].VchRFC;
+            FiltroRazonSocial.Text = clientesServices.lsClientesGridViewModel[row.RowIndex].VchRazonSocial;
+            FiltroNombreComercial.Text = clientesServices.lsClientesGridViewModel[row.RowIndex].VchNombreComercial;
             ViewState["BitEstatus"] = clientesServices.lsClientesGridViewModel[row.RowIndex].BitEscuela;
 
             //FiltroRFC.Text = HttpUtility.HtmlDecode(gvClientes.Rows[gvClientes.SelectedRow.RowIndex].Cells[1].Text);

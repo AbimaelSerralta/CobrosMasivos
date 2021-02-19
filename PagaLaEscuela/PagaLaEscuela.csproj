@@ -265,6 +265,7 @@
     <Content Include="Images\mountain.png" />
     <Content Include="Images\Multiple.PNG" />
     <Content Include="Images\porcientoEscuela.png" />
+    <Content Include="Images\recordatorio.png" />
     <Content Include="Images\SinLogo.png" />
     <Content Include="Images\SinLogo2.png" />
     <Content Include="Images\SinPagos.png" />
@@ -279,6 +280,7 @@
     <Content Include="Multiselect\js\jquery-3.3.1.min.js" />
     <Content Include="PlantillasHtml\CorreoEnvioPagoColegiaturaManual.html" />
     <Content Include="PlantillasHtml\CorreoEnvioPagoColegiatura.html" />
+    <Content Include="PlantillasHtml\CorreoEnvioRecordatorioPago.html" />
     <Content Include="PlantillasHtml\CorreoRecoveryPassword.html" />
     <Content Include="PlantillasHtml\CorreoEnvioCredenciales.html" />
     <Content Include="SqlServerTypes\readme.htm" />
@@ -333,14 +335,11 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-
     <Compile Include="Controllers\PagoReferenciaController.cs" />
     <Compile Include="Controllers\CancelaPagoController.cs" />
     <Compile Include="Controllers\ConsultaReferenciaController.cs" />
-
     <Compile Include="Controllers\CalendarioController.cs" />
     <Compile Include="Controllers\ContactoController.cs" />
-
     <Compile Include="Controllers\PayCardController.cs" />
     <Compile Include="Controllers\StatusColeController.cs" />
     <Compile Include="Default.aspx.cs">

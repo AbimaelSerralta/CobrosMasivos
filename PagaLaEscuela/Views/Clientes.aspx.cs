@@ -452,7 +452,7 @@ namespace PagaLaEscuela.Views
             txtCorreo.Text = string.Empty;
 
             ddlEstatus.SelectedIndex = -1;
-            ddlEscuela.SelectedIndex = 0;
+            ddlEscuela.SelectedIndex = 1;
 
             txtIdentificador.Text = string.Empty;
             ddlPais.SelectedIndex = -1;

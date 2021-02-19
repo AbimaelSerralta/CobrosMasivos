@@ -51,7 +51,7 @@ namespace Franquicia.Bussiness
             return pagosColegiaturasRepository.ObtenerUltimoFolio(UidCliente);
         }
         public bool RegistrarPagoColegiatura(Guid UidPagoColegiatura, int UltimoFolio, DateTime DtFHPago, string VchPromocionDePago, string VchComisionBancaria, bool BitSubtotal, decimal DcmSubtotal, bool BitComisionBancaria, decimal DcmComisionBancaria, bool BitPromocionDePago, decimal DcmPromocionDePago, bool BitValidarImporte, decimal DcmValidarImporte, decimal DcmTotal, Guid UidUsuario, Guid UidEstatusPagoColegiatura,
-                                             Guid UidFechaColegiatura, Guid UidAlumno, Guid UidFormaPago, decimal DcmImporteCole, decimal DcmImportePagado, decimal DcmImporteNuevo, Guid EstatusFechaPago)
+                                             Guid UidFechaColegiatura, Guid UidAlumno, Guid UidFormaPago, decimal DcmImporteSaldado, decimal DcmImporteCole, decimal DcmImportePagado, decimal DcmImporteNuevo, Guid EstatusFechaPago)
         {
             bool result = false;
             if (pagosColegiaturasRepository.RegistrarPagoColegiatura(
@@ -77,6 +77,7 @@ namespace Franquicia.Bussiness
                 UidFechaColegiatura,
                 UidAlumno,
                 UidFormaPago,
+                DcmImporteSaldado,
                 DcmImporteCole,
                 DcmImportePagado,
                 DcmImporteNuevo,
@@ -88,7 +89,7 @@ namespace Franquicia.Bussiness
             return result;
         }
         public bool RegistrarPagoColegiatura2(Guid UidPagoColegiatura, int UltimoFolio, DateTime DtFHPago, string VchPromocionDePago, string VchComisionBancaria, bool BitSubtotal, decimal DcmSubtotal, bool BitComisionBancaria, decimal DcmComisionBancaria, bool BitPromocionDePago, decimal DcmPromocionDePago, bool BitValidarImporte, decimal DcmValidarImporte, decimal DcmTotal, Guid UidUsuario, Guid UidEstatusPagoColegiatura,
-                                             int IdParcialidad, Guid UidFechaColegiatura, Guid UidAlumno, Guid UidFormaPago, decimal DcmImporteCole, decimal DcmImportePagado, decimal DcmImporteNuevo, Guid EstatusFechaPago)
+                                             int IdParcialidad, Guid UidFechaColegiatura, Guid UidAlumno, Guid UidFormaPago, decimal DcmImporteSaldado, decimal DcmImporteCole, decimal DcmImportePagado, decimal DcmImporteNuevo, Guid EstatusFechaPago)
         {
             bool result = false;
             if (pagosColegiaturasRepository.RegistrarPagoColegiatura2(
@@ -115,6 +116,7 @@ namespace Franquicia.Bussiness
                 UidFechaColegiatura,
                 UidAlumno,
                 UidFormaPago,
+                DcmImporteSaldado,
                 DcmImporteCole,
                 DcmImportePagado,
                 DcmImporteNuevo,
@@ -255,6 +257,11 @@ namespace Franquicia.Bussiness
         public Tuple<string, decimal> ObtenerDatosPagoRLE(Guid UidFechaColegiatura)
         {
             return pagosColegiaturasRepository.ObtenerDatosPagoRLE(UidFechaColegiatura);
+        }
+
+        public decimal ObtenerImporteSaldadoRLE(Guid UidAlumno, Guid UidFechaColegiatura)
+        {
+            return pagosColegiaturasRepository.ObtenerImporteSaldadoRLE(UidAlumno, UidFechaColegiatura);
         }
         #endregion
         #endregion

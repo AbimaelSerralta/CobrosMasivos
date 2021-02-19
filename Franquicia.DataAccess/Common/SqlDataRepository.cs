@@ -16,8 +16,8 @@ namespace Franquicia.DataAccess.Common
         //private SqlConnection _sqlConnection = new SqlConnection("Data Source=.;Initial Catalog = pagalaescuelaAzure; Integrated Security = True");
 
         //Servicio web
-        private SqlConnection _sqlConnection = new SqlConnection("Server=tcp:cobroscontarjeta.database.windows.net,1433;Initial Catalog=cobrosmasivos;Persist Security Info=False;User ID=cobroscontarjeta;Password=NZ#U%PzpHkGa;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30");
-        //private SqlConnection _sqlConnection = new SqlConnection("Server=tcp:cobroscontarjeta.database.windows.net,1433;Initial Catalog=Pagalaescuela;Persist Security Info=False;User ID=cobroscontarjeta;Password=NZ#U%PzpHkGa;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30");
+        //private SqlConnection _sqlConnection = new SqlConnection("Server=tcp:cobroscontarjeta.database.windows.net,1433;Initial Catalog=cobrosmasivos;Persist Security Info=False;User ID=cobroscontarjeta;Password=NZ#U%PzpHkGa;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30");
+        private SqlConnection _sqlConnection = new SqlConnection("Server=tcp:cobroscontarjeta.database.windows.net,1433;Initial Catalog=Pagalaescuela;Persist Security Info=False;User ID=cobroscontarjeta;Password=NZ#U%PzpHkGa;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30");
         //private SqlConnection _sqlConnection = new SqlConnection("Data Source=den1.mssql7.gear.host;Initial Catalog=cobrosmasivos;User ID=cobrosmasivos;Password=Dg64_t119_RE");
 
         public DataTable Busquedas(SqlCommand SentenciaSQL)

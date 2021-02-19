@@ -122,7 +122,7 @@ namespace Franquicia.DataAccess.Repository
 
             return UltimoFolio + 1;
         }
-        public bool RegistrarPagoColegiatura(PagosColegiaturas pagosColegiaturas, Guid UidFechaColegiatura, Guid UidAlumno, Guid UidFormaPago, decimal DcmImporteCole, decimal DcmImportePagado, decimal DcmImporteNuevo, Guid EstatusFechaPago)
+        public bool RegistrarPagoColegiatura(PagosColegiaturas pagosColegiaturas, Guid UidFechaColegiatura, Guid UidAlumno, Guid UidFormaPago, decimal DcmImporteSaldado, decimal DcmImporteCole, decimal DcmImportePagado, decimal DcmImporteNuevo, Guid EstatusFechaPago)
         {
             bool Resultado = false;
 
@@ -191,6 +191,9 @@ namespace Franquicia.DataAccess.Repository
                 comando.Parameters.Add("@UidFormaPago", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidFormaPago"].Value = UidFormaPago;
 
+                comando.Parameters.Add("@DcmImporteSaldado", SqlDbType.Decimal);
+                comando.Parameters["@DcmImporteSaldado"].Value = DcmImporteSaldado;
+                
                 comando.Parameters.Add("@DcmImporteCole", SqlDbType.Decimal);
                 comando.Parameters["@DcmImporteCole"].Value = DcmImporteCole;
 
@@ -212,7 +215,7 @@ namespace Franquicia.DataAccess.Repository
             }
             return Resultado;
         }
-        public bool RegistrarPagoColegiatura2(PagosColegiaturas pagosColegiaturas, int IdParcialidad, Guid UidFechaColegiatura, Guid UidAlumno, Guid UidFormaPago, decimal DcmImporteCole, decimal DcmImportePagado, decimal DcmImporteNuevo, Guid EstatusFechaPago)
+        public bool RegistrarPagoColegiatura2(PagosColegiaturas pagosColegiaturas, int IdParcialidad, Guid UidFechaColegiatura, Guid UidAlumno, Guid UidFormaPago, decimal DcmImporteSaldado, decimal DcmImporteCole, decimal DcmImportePagado, decimal DcmImporteNuevo, Guid EstatusFechaPago)
         {
             bool Resultado = false;
 
@@ -284,6 +287,9 @@ namespace Franquicia.DataAccess.Repository
                 comando.Parameters.Add("@UidFormaPago", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidFormaPago"].Value = UidFormaPago;
 
+                comando.Parameters.Add("@DcmImporteSaldado", SqlDbType.Decimal);
+                comando.Parameters["@DcmImporteSaldado"].Value = DcmImporteSaldado;
+                
                 comando.Parameters.Add("@DcmImporteCole", SqlDbType.Decimal);
                 comando.Parameters["@DcmImporteCole"].Value = DcmImporteCole;
 
@@ -951,6 +957,23 @@ namespace Franquicia.DataAccess.Repository
                 Monto = decimal.Parse(item["DcmImporte"].ToString());
             }
             return Tuple.Create(IdReferencia, Monto);
+        }
+        public decimal ObtenerImporteSaldadoRLE(Guid UidAlumno, Guid UidFechaColegiatura)
+        {
+            decimal ImporteSaldado = 0;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select CASE WHEN MAX(fp.DcmImporteSaldado + fp.DcmImportePagado) IS NULL THEN 0 ELSE MAX(fp.DcmImporteSaldado + fp.DcmImportePagado) END AS DcmImporteSaldado from FechasPagos fp, PagosColegiaturas pc where fp.UidPagoColegiatura = pc.UidPagoColegiatura and pc.UidEstatusPagoColegiatura = '51B85D66-866B-4BC2-B08F-FECE1A994053' and (fp.UidEstatusFechaPago = '8720B2B9-5712-4E75-A981-932887AACDC9' or fp.UidEstatusFechaPago = 'F25E4AAB-6044-46E9-A575-98DCBCCF7604') and fp.UidAlumno = '" + UidAlumno + "' and fp.UidFechaColegiatura = '" + UidFechaColegiatura + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                ImporteSaldado = decimal.Parse(item["DcmImporteSaldado"].ToString());
+            }
+            return ImporteSaldado;
         }
         #endregion
         #endregion
