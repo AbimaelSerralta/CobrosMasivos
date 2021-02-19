@@ -1125,7 +1125,7 @@ namespace PagaLaEscuela.Views
                                     ValidarPago(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()));
                                 }
 
-                                if (referenciasClubPagoServices.GenerarReferenciaPagosColegiatura(VchFolio, VchUrl, VchCodigoBarra, lblConcepto.Text, IdReferencia, Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), ViewState["RowCommand-Identificador"].ToString(), thisDay, DateTime.Parse(lblVencimiento.Text), decimal.Parse(txtTotaltb.Text), 0, decimal.Parse(txtTotaltb.Text), "PAGO COLEGIATURA", UidPagoColegiatura, Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString())))
+                                if (referenciasClubPagoServices.GenerarReferenciaPagosColegiatura(VchFolio, VchUrl, VchCodigoBarra, lblConcepto.Text, IdReferencia, Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), ViewState["RowCommand-Identificador"].ToString(), thisDay, DateTime.Parse(DtVencimiento.ToString("dd/MM/yyyy")), decimal.Parse(txtTotaltb.Text), 0, decimal.Parse(txtTotaltb.Text), "PAGO COLEGIATURA", UidPagoColegiatura, Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString())))
                                 {
                                     procesarPago = true;
                                 }
