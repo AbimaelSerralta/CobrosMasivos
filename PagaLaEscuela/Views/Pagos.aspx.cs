@@ -1193,6 +1193,16 @@ namespace PagaLaEscuela.Views
         {
             DateTime DtVencimiento = DateTime.Now;
 
+            if (FHLimite == "NO TIENE")
+            {
+                FHLimite = string.Empty;
+            }
+
+            if (FHVencimiento == "NO TIENE")
+            {
+                FHVencimiento = string.Empty;
+            }
+
             int n = 1;
 
             switch (n)
