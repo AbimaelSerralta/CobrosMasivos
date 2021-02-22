@@ -57,6 +57,23 @@
                                                 </EmptyDataTemplate>
                                                 <Columns>
                                                     <asp:ButtonField CommandName="Select" HeaderStyle-CssClass="hide" ItemStyle-CssClass="hide" />
+                                                    <asp:TemplateField HeaderText="IdEscuela">
+                                                        <ItemTemplate>
+                                                            <table>
+                                                                <tr>
+                                                                    <td>
+                                                                        <asp:TextBox ID="txtGvIdCliente" ReadOnly="true" ToolTip='<%#Eval("VchIdCliente")%>' Text='<%#Eval("VchIdCliente")%>' Enabled="false" BackColor="Transparent" BorderStyle="None" runat="server" /></td>
+                                                                    <td>
+                                                                        <asp:LinkButton ID="btnCopiar" data-text='<%#Eval("VchIdCliente")%>' CssClass="copyboard" ToolTip="Copiar" Style="margin-left: 5px;" runat="server">
+                                                                            <asp:Label ID="lblCopiar" class="btn btn-sm btn-dark btn-fab btn-fab-mini btn-round" runat="server">
+                                                                                        <i class="material-icons">content_copy</i>
+                                                                            </asp:Label>
+                                                                        </asp:LinkButton>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
                                                     <asp:BoundField SortExpression="VchRFC" DataField="VchRFC" HeaderText="RFC" />
                                                     <asp:BoundField SortExpression="VchRazonSocial" DataField="VchRazonSocial" HeaderText="RAZÓN SOCIAL" />
                                                     <asp:BoundField SortExpression="VchNombreComercial" DataField="VchNombreComercial" HeaderText="NOMBRE COMERCIAL" />

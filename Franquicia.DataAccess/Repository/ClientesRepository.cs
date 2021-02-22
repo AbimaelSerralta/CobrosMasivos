@@ -36,15 +36,16 @@ namespace Franquicia.DataAccess.Repository
             {
                 lsClientesGridViewModel.Add(new ClientesGridViewModel()
                 {
-                    UidCliente = new Guid(item["UidCliente"].ToString()),
+                    UidCliente = Guid.Parse(item["UidCliente"].ToString()),
                     VchRFC = item["VchRFC"].ToString(),
                     VchRazonSocial = item["VchRazonSocial"].ToString(),
                     VchNombreComercial = item["VchNombreComercial"].ToString(),
                     DtFechaAlta = (DateTime)item["DtFechaAlta"],
                     VchCorreoElectronico = item["VchCorreoElectronico"].ToString(),
-                    UidEstatus = new Guid(item["UidEstatus"].ToString()),
+                    UidEstatus = Guid.Parse(item["UidEstatus"].ToString()),
                     VchEstatus = item["VchDescripcion"].ToString(),
                     VchIcono = item["VchIcono"].ToString(),
+                    IdCliente = int.Parse(item["IdCliente"].ToString()),
                     VchIdCliente = int.Parse(item["IdCliente"].ToString()).ToString("D6"),
                     VchIdWAySMS = item["VchIdWAySMS"].ToString(),
                     VchZonaHoraria = item["VchZonaHoraria"].ToString(),
@@ -353,13 +354,15 @@ namespace Franquicia.DataAccess.Repository
             {
                 lsClientesGridViewEmpresasModel.Add(new ClientesGridViewEmpresasModel()
                 {
-                    UidCliente = new Guid(item["UidCliente"].ToString()),
+                    UidCliente = Guid.Parse(item["UidCliente"].ToString()),
+                    IdCliente = int.Parse(item["IdCliente"].ToString()),
+                    VchIdCliente = int.Parse(item["IdCliente"].ToString()).ToString("D6"),
                     VchRFC = item["VchRFC"].ToString(),
                     VchRazonSocial = item["VchRazonSocial"].ToString(),
                     VchNombreComercial = item["VchNombreComercial"].ToString(),
                     DtFechaAlta = (DateTime)item["DtFechaAlta"],
                     VchCorreoElectronico = item["VchCorreoElectronico"].ToString(),
-                    UidEstatus = new Guid(item["UidEstatus"].ToString()),
+                    UidEstatus = Guid.Parse(item["UidEstatus"].ToString()),
                     VchEstatus = item["VchDescripcion"].ToString(),
                     VchIcono = item["VchIcono"].ToString()
                 });
@@ -383,7 +386,7 @@ namespace Franquicia.DataAccess.Repository
             {
                 clientesGridViewModel = new ClientesGridViewModel()
                 {
-                    UidCliente = new Guid(item["UidCliente"].ToString()),
+                    UidCliente = Guid.Parse(item["UidCliente"].ToString()),
                     VchRFC = item["VchRFC"].ToString(),
                     VchRazonSocial = item["VchRazonSocial"].ToString(),
                     VchNombreComercial = item["VchNombreComercial"].ToString(),

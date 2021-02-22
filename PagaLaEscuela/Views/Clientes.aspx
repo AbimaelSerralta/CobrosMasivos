@@ -47,7 +47,7 @@
                                                 </EmptyDataTemplate>
                                                 <Columns>
                                                     <asp:ButtonField CommandName="Select" HeaderStyle-CssClass="hide" ItemStyle-CssClass="hide" />
-                                                    <asp:TemplateField HeaderText="IdCliente">
+                                                    <asp:TemplateField HeaderText="IdEscuela">
                                                         <ItemTemplate>
                                                             <table>
                                                                 <tr>

@@ -11,5 +11,6 @@ namespace Franquicia.Domain.ViewModels
     {
         public string VchEstatus { get; set; }
         public string VchIcono { get; set; }
+        public string VchIdCliente { get; set; }
     }
 }

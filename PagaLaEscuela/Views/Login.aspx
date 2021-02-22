@@ -108,9 +108,12 @@
                                     <asp:Label Style="padding-top: 15px;" Text="&nbsp;desarrollado por&nbsp;" runat="server" />
                                     <a href="https://compuandsoft.com/" style="padding-top: 15px;" target="_blank">
                                         <asp:Image Height="30" Width="130" src="../Images/logo-compuandsoft.png" runat="server" /></a>
-                                    <asp:Label Style="padding-top: 15px;" Text="&nbsp;en colaboracion con&nbsp;" runat="server" />
+                                    <asp:Label Style="padding-top: 15px;" Text="&nbsp;en colaboración con&nbsp;" runat="server" />
                                     <a href="https://www.mitec.com.mx/" style="padding-top: 15px;" target="_blank">
                                         <asp:Image Height="25" Width="90" src="../Images/logo-mit.png" runat="server" /></a>
+                                    <asp:Label Style="padding-top: 15px;" Text="&nbsp;y&nbsp;" runat="server" />
+                                    <a href="https://clubpago.mx/" style="padding-top: 0px;" target="_blank">
+                                        <asp:Image Height="60" Width="90" src="../Images/clubpago.png" runat="server" /></a>
                                 </div>
                             </div>
                         </div>
