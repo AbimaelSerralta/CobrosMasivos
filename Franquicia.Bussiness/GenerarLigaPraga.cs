@@ -13,16 +13,29 @@ namespace Franquicia.Bussiness
 {
     public class GenerarLigaPraga
     {
-        int BusinessId = 13131;
-        string Url = $"https://qaag.mitec.com.mx/praga-ws/url/generateUrlV3";
-        string UserCode = "1610137579779";
-        string WSEncryptionKey = "4451B4A2EBA9E3D49E7981FD2464C361";
-        string APIKey = "ZDMxYzc3MGItZjEyMS00OTRhLTkxNmQtYmE5Yjk0M2YzYzlm";
+        int BusinessId = 0;
+        string Url = $"";
+        string UserCode = "";
+        string WSEncryptionKey = "";
+        string APIKey = "";
+        string Currency = "";
 
-        public void ApiGenerarURL(decimal Ammount, string Currency, string EffectiveDate, string Id, string PaymentTypes, string Reference, string Station)
+        public GenerarLigaPraga()
+        {
+            BusinessId = 13131;
+            Url = $"https://qaag.mitec.com.mx/praga-ws/url/generateUrlV3";
+            UserCode = "1610137579779";
+            WSEncryptionKey = "4451B4A2EBA9E3D49E7981FD2464C361";
+            APIKey = "ZDMxYzc3MGItZjEyMS00OTRhLTkxNmQtYmE5Yjk0M2YzYzlm";
+            Currency = "MXN";
+        }
+
+        public List<UrlV3PaymentResponse> ApiGenerarURL(decimal Ammount, string EffectiveDate, string Id, string PaymentTypes, string Reference, string Station)
         {
             UrlV3PaymentRequest urlV3 = new UrlV3PaymentRequest();
             AESCryptoPraga aesCryptoPraga = new AESCryptoPraga();
+
+            List<UrlV3PaymentResponse> lsUrlV3PaymentResponse = new List<UrlV3PaymentResponse>();
 
             urlV3.ammount = Ammount;
             urlV3.businessId = BusinessId;
@@ -62,13 +75,20 @@ namespace Franquicia.Bussiness
                 {
                     using (Stream strReader = response.GetResponseStream())
                     {
-                        if (strReader == null) return;
-                        using (StreamReader objReader = new StreamReader(strReader))
+                        if (strReader != null) 
                         {
-                            string responseBody = objReader.ReadToEnd();
-                            // Do something with responseBody
-                            Mnsj = responseBody;
-                        }
+                            using (StreamReader objReader = new StreamReader(strReader))
+                            {
+                                string responseBody = objReader.ReadToEnd();
+                                
+                                if (responseBody != string.Empty)
+                                {
+                                    UrlV3PaymentResponse obtenerRefereciaPago = JsonConvert.DeserializeObject<UrlV3PaymentResponse>(responseBody);
+
+                                    lsUrlV3PaymentResponse.Add(obtenerRefereciaPago);
+                                }
+                            }
+                        };
                     }
                 }
             }
@@ -76,6 +96,8 @@ namespace Franquicia.Bussiness
             {
                 Mnsj = ex.Message;
             }
+
+            return lsUrlV3PaymentResponse;
         }
     }
 }

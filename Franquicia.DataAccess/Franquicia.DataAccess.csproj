@@ -74,6 +74,8 @@
     <Compile Include="Repository\ClubPago\AutorizacionPagoRepository.cs" />
     <Compile Include="Repository\ClubPago\CancelacionPagoRepository.cs" />
     <Compile Include="Repository\ClubPago\ConsultarReferenciasRepository.cs" />
+    <Compile Include="Repository\SuperComisionesTarjetasPragaRepository.cs" />
+    <Compile Include="Repository\ComisionesTarjetasPragaRepository.cs" />
     <Compile Include="Repository\ComisionesTarjetasClubPagoRepository.cs" />
     <Compile Include="Repository\ComisionesTarjetasClientesTerminalRepository.cs" />
     <Compile Include="Repository\DetallesPagosColegiaturasRepository.cs" />
@@ -82,9 +84,11 @@
     <Compile Include="Repository\LandingPage\ContactoRepository.cs" />
     <Compile Include="Repository\PagosClubPagoRepository.cs" />
     <Compile Include="Repository\ParametrosClubPagoRepository.cs" />
+    <Compile Include="Repository\PromocionesPragaRepository.cs" />
     <Compile Include="Repository\PromocionesClubPagoRepository.cs" />
     <Compile Include="Repository\ReferenciasClubPagoRepository.cs" />
     <Compile Include="Repository\PagosEfectivosRepository.cs" />
+    <Compile Include="Repository\TiposTarjetasPragaRepository.cs" />
     <Compile Include="Repository\TiposTarjetasClubPagoRepository.cs" />
     <Compile Include="Repository\TiposTarjetasRepository.cs" />
     <Compile Include="Repository\FormasPagosRepository.cs" />

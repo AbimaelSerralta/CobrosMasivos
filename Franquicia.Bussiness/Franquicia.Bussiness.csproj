@@ -64,6 +64,8 @@
     <Compile Include="ClubPago\AutorizacionPagoServices.cs" />
     <Compile Include="ClubPago\CancelacionPagoServices.cs" />
     <Compile Include="ClubPago\ConsultarReferenciasServices.cs" />
+    <Compile Include="SuperComisionesTarjetasPragaServices.cs" />
+    <Compile Include="ComisionesTarjetasPragaServices.cs" />
     <Compile Include="ComisionesTarjetasClubPagoServices.cs" />
     <Compile Include="ComisionesTarjetasClientesTerminalServices.cs" />
     <Compile Include="DetallesPagosColegiaturasServices.cs" />
@@ -74,9 +76,11 @@
     <Compile Include="LandingPage\ContactoServices.cs" />
     <Compile Include="PagosClubPagoServices.cs" />
     <Compile Include="ParametrosClubPagoServices.cs" />
+    <Compile Include="PromocionesPragaServices.cs" />
     <Compile Include="PromocionesClubPagoServices.cs" />
     <Compile Include="ReferenciasClubPagoServices.cs" />
     <Compile Include="PagosEfectivosServices.cs" />
+    <Compile Include="TiposTarjetasPragaServices.cs" />
     <Compile Include="TiposTarjetasClubPagoServices.cs" />
     <Compile Include="TiposTarjetasServices.cs" />
     <Compile Include="FormasPagosServices.cs" />

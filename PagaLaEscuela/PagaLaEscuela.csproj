@@ -239,6 +239,7 @@
     <Content Include="Global.asax" />
     <Content Include="Images\BannerEvent.png" />
     <Content Include="Images\BannerEvent2.png" />
+    <Content Include="Images\clubpago.png" />
     <Content Include="Images\ComerciosClubPago\comerciosDisponibles.png" />
     <Content Include="Images\EventoCerrado.png" />
     <Content Include="Images\face.png" />

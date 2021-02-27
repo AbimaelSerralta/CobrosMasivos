@@ -145,11 +145,11 @@
                                                     </asp:Label>
                                                 </asp:LinkButton>
 
-                                                <%--<asp:LinkButton ID="btnPraga" OnClick="btnPraga_Click" Style="padding-left: 10px; padding-right: 10px;" CssClass="btn btn-round" runat="server">
+                                                <asp:LinkButton ID="btnPraga" OnClick="btnPraga_Click" Style="padding-left: 10px; padding-right: 10px;" CssClass="btn btn-round" runat="server">
                                                     <asp:Label ForeColor="White" runat="server">
                                                         <i class="material-icons">arrow_back</i> Praga
                                                     </asp:Label>
-                                                </asp:LinkButton>--%>
+                                                </asp:LinkButton>
                                             </td>
                                             <td style="width: 15%; padding-right: 5px;">
                                                 <asp:Image ID="imgLogoSelect" Width="110" Height="60" class="img-fluid pull-right" alt="logoEscuela" runat="server" />
@@ -350,6 +350,32 @@
                                                                     </asp:DropDownList>
                                                                 </div>
                                                             </div>
+
+                                                            <div id="divTiposTarjetas" class="form-group col-md-4" runat="server">
+                                                                <label for="ddlTiposTarjetas" style="color: #ff9800;">Tipo de tarjeta</label>
+                                                                <div class="input-group">
+                                                                    <div class="input-group-prepend">
+                                                                        <span class="input-group-text" style="padding-left: 0px;">
+                                                                            <i class="material-icons">format_list_numbered</i>
+                                                                        </span>
+                                                                    </div>
+                                                                    <asp:DropDownList ID="ddlTiposTarjetas" OnSelectedIndexChanged="ddlTiposTarjetas_SelectedIndexChanged" AppendDataBoundItems="true" AutoPostBack="true" CssClass="form-control" runat="server">
+                                                                    </asp:DropDownList>
+                                                                </div>
+                                                            </div>
+                                                            <div id="divPromocionesTT" class="form-group col-md-4" runat="server">
+                                                                <label for="ddlPromocionesTT" style="color: #ff9800;">Promociones</label>
+                                                                <div class="input-group">
+                                                                    <div class="input-group-prepend">
+                                                                        <span class="input-group-text" style="padding-left: 0px;">
+                                                                            <i class="material-icons">format_list_numbered</i>
+                                                                        </span>
+                                                                    </div>
+                                                                    <asp:DropDownList ID="ddlPromocionesTT" OnSelectedIndexChanged="ddlPromocionesTT_SelectedIndexChanged" AppendDataBoundItems="true" AutoPostBack="true" CssClass="form-control" runat="server">
+                                                                    </asp:DropDownList>
+                                                                </div>
+                                                            </div>
+
                                                         </div>
 
                                                         <div class="row">
@@ -1639,9 +1665,7 @@
                                                     <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
                                                         <tbody>
                                                             <tr>
-                                                                <td align="center" valign="top" style="padding-top: 20px;">
-                                                                    
-                                                                </td>
+                                                                <td align="center" valign="top" style="padding-top: 20px;"></td>
                                                             </tr>
                                                         </tbody>
                                                     </table>

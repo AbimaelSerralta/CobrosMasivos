@@ -73,7 +73,7 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select * from FormasPagos where IntGerarquia = 3 or IntGerarquia = 5 order by IntGerarquia asc";
+            query.CommandText = "select * from FormasPagos where IntGerarquia = 3 or IntGerarquia = 5 or IntGerarquia = 8 order by IntGerarquia asc";
 
             DataTable dt = this.Busquedas(query);
 

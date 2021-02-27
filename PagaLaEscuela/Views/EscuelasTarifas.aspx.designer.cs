@@ -78,22 +78,22 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.Label lblMnsjEstatus;
 
         /// <summary>
-        /// Control gvTipoTarjetaPagoEnLinea.
+        /// Control gvTipoTarjetaPraga.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvTipoTarjetaPagoEnLinea;
+        protected global::System.Web.UI.WebControls.GridView gvTipoTarjetaPraga;
 
         /// <summary>
-        /// Control btnGuardarPromocionesPagoEnLinea.
+        /// Control btnGuardarPromocionesPraga.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton btnGuardarPromocionesPagoEnLinea;
+        protected global::System.Web.UI.WebControls.LinkButton btnGuardarPromocionesPraga;
 
         /// <summary>
         /// Control gvPromociones.

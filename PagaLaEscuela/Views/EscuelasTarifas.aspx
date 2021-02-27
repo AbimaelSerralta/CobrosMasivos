@@ -37,7 +37,7 @@
                             <div class="nav-tabs-wrapper">
                                 <ul class="nav nav-tabs" id="ulTabColegiatura" data-tabs="tabs">
                                     <li class="nav-item">
-                                        <a class="nav-link active show" href="#pagoenlinea" data-toggle="tab">
+                                        <a class="nav-link active show" href="#pagosEnlinea" data-toggle="tab">
                                             <i class="material-icons">payment</i>Pago en linea<div class="ripple-container"></div>
                                         </a>
                                     </li>
@@ -80,8 +80,8 @@
                                 </ContentTemplate>
                             </asp:UpdatePanel>
 
-                            <div class="tab-pane active show" id="pagoenlinea">
-                                <asp:GridView ID="gvTipoTarjetaPagoEnLinea" OnRowDataBound="gvTipoTarjeta_RowDataBound" Width="100%" ShowHeader="false" GridLines="None" AutoGenerateColumns="false" runat="server">
+                            <div class="tab-pane active show" id="pagosEnlinea">
+                                <asp:GridView ID="gvTipoTarjetaPraga" OnRowDataBound="gvTipoTarjetaPraga_RowDataBound" Width="100%" ShowHeader="false" GridLines="None" AutoGenerateColumns="false" runat="server">
                                     <Columns>
                                         <asp:BoundField DataField="UidTipoTarjeta" ItemStyle-CssClass="d-none" HeaderStyle-CssClass="d-none" />
                                         <asp:TemplateField>
@@ -98,13 +98,13 @@
                                                                             </div>
                                                                             <div class="col-sm-5">
                                                                                 <h5 class="card-title" style="padding-top: 15px;">
-                                                                                    <asp:CheckBox ID="cbComisionPagoEnLinea" Font-Bold="true" AutoPostBack="true" Text='<%#Eval("VchDescripcion")%>' runat="server" />
+                                                                                    <asp:CheckBox ID="cbComisionPraga" Font-Bold="true" AutoPostBack="true" Text='<%#Eval("VchDescripcion")%>' runat="server" />
                                                                                 </h5>
                                                                             </div>
                                                                             <div class="col-sm-5">
                                                                                 <div class="form-group col-md-12" style="padding-left: 0px;">
                                                                                     <div class="input-group">
-                                                                                        <asp:TextBox ID="txtComisionTipoTarjetaPagoEnLinea" Text="0.00" CssClass="form-control" TextMode="Phone" Font-Size="Large" runat="server" />
+                                                                                        <asp:TextBox ID="txtComisionTipoTarjetaPraga" Text="0.00" CssClass="form-control" TextMode="Phone" Font-Size="Large" runat="server" />
                                                                                         <div class="input-group-prepend">
                                                                                             <span class="input-group-text" style="padding-left: 0px; padding-right: 5px;">
                                                                                                 <i class="material-icons">%</i>
@@ -112,7 +112,7 @@
                                                                                         </div>
                                                                                     </div>
 
-                                                                                    <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtComisionTipoTarjetaPagoEnLinea" runat="server" />
+                                                                                    <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtComisionTipoTarjetaPraga" runat="server" />
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -120,7 +120,7 @@
                                                                 </div>
                                                             </ContentTemplate>
                                                             <Triggers>
-                                                                <asp:AsyncPostBackTrigger ControlID="cbComisionTerminalPagoEnLinea" EventName="CheckedChanged" />
+                                                                <asp:AsyncPostBackTrigger ControlID="cbComisionPraga" EventName="CheckedChanged" />
                                                             </Triggers>
                                                         </asp:UpdatePanel>
                                                     </div>
@@ -132,12 +132,12 @@
                                                                         <div class="card-body">
                                                                             <div class="row">
                                                                                 <div class="table-responsive">
-                                                                                    <asp:GridView ID="gvPromocionesTerminalPagoEnLinea" CssClass="table" GridLines="None" border="0" OnRowDataBound="gvPromocionesTerminal_RowDataBound" AutoGenerateColumns="false" DataKeyNames="UidPromocionTerminal" runat="server">
+                                                                                    <asp:GridView ID="gvPromocionesPraga" CssClass="table" GridLines="None" border="0" OnRowDataBound="gvPromocionesPraga_RowDataBound" AutoGenerateColumns="false" DataKeyNames="UidPromocion" runat="server">
                                                                                         <EmptyDataTemplate>
                                                                                             <div class="alert alert-info">No hay promociones disponibles</div>
                                                                                         </EmptyDataTemplate>
                                                                                         <Columns>
-                                                                                            <asp:BoundField DataField="UidPromocionTerminal" ItemStyle-CssClass="d-none" HeaderStyle-CssClass="d-none" />
+                                                                                            <asp:BoundField DataField="UidPromocion" ItemStyle-CssClass="d-none" HeaderStyle-CssClass="d-none" />
                                                                                             <asp:TemplateField HeaderStyle-CssClass="d-none">
                                                                                                 <ItemTemplate>
                                                                                                     <asp:UpdatePanel runat="server">
@@ -146,12 +146,12 @@
                                                                                                                 <tbody>
                                                                                                                     <tr>
                                                                                                                         <td style="width: 30%;">
-                                                                                                                            <asp:CheckBox ID="cbPromocionTerminalPagoEnLinea" Checked='<%#Eval("blChecked")%>' OnCheckedChanged="cbPromocionTerminal_CheckedChanged" AutoPostBack="true" Text='<%#Eval("VchDescripcion")%>' runat="server" />
+                                                                                                                            <asp:CheckBox ID="cbPromocionPraga" Checked='<%#Eval("blChecked")%>' OnCheckedChanged="cbPromocionPraga_CheckedChanged" AutoPostBack="true" Text='<%#Eval("VchDescripcion")%>' runat="server" />
                                                                                                                         </td>
                                                                                                                         <td style="width: 35%;">
                                                                                                                             <div class="input-group">
-                                                                                                                                <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtComisionTerminalPagoEnLinea" runat="server" />
-                                                                                                                                <asp:TextBox ID="txtComisionTerminalPagoEnLinea" Text='<%#Eval("DcmComicion")%>' Font-Size="Large" CssClass="form-control text-right" placeholder="123...100" runat="server" />
+                                                                                                                                <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtComisionPraga" runat="server" />
+                                                                                                                                <asp:TextBox ID="txtComisionPraga" Text='<%#Eval("DcmComicion")%>' Font-Size="Large" CssClass="form-control text-right" placeholder="123...100" runat="server" />
                                                                                                                                 <div class="input-group-prepend">
                                                                                                                                     <span class="input-group-text">
                                                                                                                                         <i class="material-icons">%</i>
@@ -166,8 +166,8 @@
                                                                                                                                         <i class="material-icons">$</i>
                                                                                                                                     </span>
                                                                                                                                 </div>
-                                                                                                                                <asp:TextBox ID="txtApartirDeTerminalPagoEnLinea" Text='<%#Eval("DcmApartirDe")%>' ToolTip="A partir del monto ingresado se activará esta promoción." Font-Size="Large" CssClass="form-control text-right" placeholder="A partir de" runat="server" />
-                                                                                                                                <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtApartirDeTerminalPagoEnLinea" runat="server" />
+                                                                                                                                <asp:TextBox ID="txtApartirDePraga" Text='<%#Eval("DcmApartirDe")%>' ToolTip="A partir del monto ingresado se activará esta promoción." Font-Size="Large" CssClass="form-control text-right" placeholder="A partir de" runat="server" />
+                                                                                                                                <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtApartirDePraga" runat="server" />
                                                                                                                             </div>
                                                                                                                         </td>
                                                                                                                     </tr>
@@ -175,7 +175,7 @@
                                                                                                             </table>
                                                                                                         </ContentTemplate>
                                                                                                         <Triggers>
-                                                                                                            <asp:AsyncPostBackTrigger ControlID="cbPromocionTerminalPagoEnLinea" EventName="CheckedChanged" />
+                                                                                                            <asp:AsyncPostBackTrigger ControlID="cbPromocionPraga" EventName="CheckedChanged" />
                                                                                                         </Triggers>
                                                                                                     </asp:UpdatePanel>
                                                                                                 </ItemTemplate>
@@ -199,7 +199,7 @@
                                 <asp:UpdatePanel runat="server">
                                     <ContentTemplate>
                                         <div class="modal-footer justify-content-center">
-                                            <asp:LinkButton ID="btnGuardarPromocionesPagoEnLinea" CssClass="btn btn-success btn-round" runat="server">
+                                            <asp:LinkButton ID="btnGuardarPromocionesPraga" CssClass="btn btn-success btn-round" runat="server">
                                                                 <i class="material-icons">check</i> Guardar
                                             </asp:LinkButton>
                                         </div>
@@ -585,6 +585,7 @@
                                     </ContentTemplate>
                                 </asp:UpdatePanel>
                             </div>
+
                         </div>
                     </div>
                 </div>
