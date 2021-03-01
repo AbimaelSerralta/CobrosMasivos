@@ -342,6 +342,7 @@
     <Compile Include="Controllers\CalendarioController.cs" />
     <Compile Include="Controllers\ContactoController.cs" />
     <Compile Include="Controllers\PayCardController.cs" />
+    <Compile Include="Controllers\PragPayCardController.cs" />
     <Compile Include="Controllers\StatusColeController.cs" />
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>

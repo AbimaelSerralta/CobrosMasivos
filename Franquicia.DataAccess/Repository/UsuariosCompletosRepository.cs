@@ -310,7 +310,7 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@UidSegPerfil", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidSegPerfil"].Value = usuariosCompletos.UidSegPerfil;
-                
+
                 comando.Parameters.Add("@UidSegPerfilEscuela", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidSegPerfilEscuela"].Value = UidSegPerfilEscuela;
 
@@ -507,7 +507,7 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@UidSegPerfil", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidSegPerfil"].Value = usuariosCompletos.UidSegPerfil;
-                
+
                 comando.Parameters.Add("@UidSegPerfilEscuela", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidSegPerfilEscuela"].Value = UidSegPerfilEscuela;
 
@@ -606,7 +606,7 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@UidSegPerfil", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidSegPerfil"].Value = usuariosCompletos.UidSegPerfil;
-                
+
                 comando.Parameters.Add("@UidSegPerfilEscuela", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidSegPerfilEscuela"].Value = UidSegPerfilEscuela;
 
@@ -791,7 +791,7 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@UidSegPerfil", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidSegPerfil"].Value = usuariosCompletos.UidSegPerfil;
-                
+
                 comando.Parameters.Add("@UidSegPerfilEscuela", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidSegPerfilEscuela"].Value = UidSegPerfilEscuela;
 
@@ -892,7 +892,7 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@UidSegPerfil", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidSegPerfil"].Value = usuariosCompletos.UidSegPerfil;
-                
+
                 comando.Parameters.Add("@UidSegPerfilEscuela", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidSegPerfilEscuela"].Value = UidSegPerfilEscuela;
 
@@ -4245,7 +4245,7 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@UidFechaColegiatura", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidFechaColegiatura"].Value = UidFechaColegiatura;
-                
+
                 comando.Parameters.Add("@UidPagoColegiatura", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidPagoColegiatura"].Value = UidPagoColegiatura;
 
@@ -4257,6 +4257,76 @@ namespace Franquicia.DataAccess.Repository
             catch (Exception)
             {
                 throw;
+            }
+            return Resultado;
+        }
+
+        public bool GenerarLigasPagosColegiaturaPraga(Guid UidLigaUrl, string VchUrl, string VchConcepto, string IdReferencia, Guid UidUsuario, string VchIdentificador, DateTime DtRegistro, DateTime DtVencimiento, decimal DcmImporte, string VchAsunto, Guid UidLigaAsociado, Guid UidTipoTarjeta, Guid UidPromocion, Guid UidFechaColegiatura, Guid UidPagoColegiatura, Guid UidPropietario)
+        {
+            bool Resultado = false;
+
+            SqlCommand comando = new SqlCommand();
+            try
+            {
+                comando.CommandType = System.Data.CommandType.StoredProcedure;
+                comando.CommandText = "sp_LigasPragaRegistrarPagosPadres";
+
+                comando.Parameters.Add("@UidLigaUrl", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidLigaUrl"].Value = UidLigaUrl;
+
+                comando.Parameters.Add("@VchUrl", SqlDbType.VarChar, 100);
+                comando.Parameters["@VchUrl"].Value = VchUrl;
+
+                comando.Parameters.Add("@VchConcepto", SqlDbType.VarChar, 100);
+                comando.Parameters["@VchConcepto"].Value = VchConcepto;
+
+                comando.Parameters.Add("@IdReferencia", SqlDbType.VarChar, 100);
+                comando.Parameters["@IdReferencia"].Value = IdReferencia;
+
+                comando.Parameters.Add("@UidUsuario", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidUsuario"].Value = UidUsuario;
+
+                comando.Parameters.Add("@VchIdentificador", SqlDbType.VarChar, 50);
+                comando.Parameters["@VchIdentificador"].Value = VchIdentificador;
+
+                comando.Parameters.Add("@DtRegistro", SqlDbType.DateTime);
+                comando.Parameters["@DtRegistro"].Value = DtRegistro;
+
+                comando.Parameters.Add("@DtVencimiento", SqlDbType.DateTime);
+                comando.Parameters["@DtVencimiento"].Value = DtVencimiento;
+
+                comando.Parameters.Add("@DcmImporte", SqlDbType.Decimal);
+                comando.Parameters["@DcmImporte"].Value = DcmImporte;
+
+                comando.Parameters.Add("@VchAsunto", SqlDbType.VarChar, 50);
+                comando.Parameters["@VchAsunto"].Value = VchAsunto;
+
+                if (UidLigaAsociado != Guid.Empty)
+                {
+                    comando.Parameters.Add("@UidLigaAsociado", SqlDbType.UniqueIdentifier);
+                    comando.Parameters["@UidLigaAsociado"].Value = UidLigaAsociado;
+                }
+
+                comando.Parameters.Add("@UidTipoTarjeta", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidTipoTarjeta"].Value = UidTipoTarjeta;
+                
+                comando.Parameters.Add("@UidPromocion", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidPromocion"].Value = UidPromocion;
+
+                comando.Parameters.Add("@UidFechaColegiatura", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidFechaColegiatura"].Value = UidFechaColegiatura;
+
+                comando.Parameters.Add("@UidPagoColegiatura", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidPagoColegiatura"].Value = UidPagoColegiatura;
+
+                comando.Parameters.Add("@UidPropietario", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidPropietario"].Value = UidPropietario;
+
+                Resultado = this.ManipulacionDeDatos(comando);
+            }
+            catch (Exception ex)
+            {
+                string mnsj = ex.Message;
             }
             return Resultado;
         }

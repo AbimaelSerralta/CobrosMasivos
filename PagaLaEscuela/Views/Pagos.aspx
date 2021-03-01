@@ -144,12 +144,6 @@
                                                         <i class="material-icons">arrow_back</i> Regresar
                                                     </asp:Label>
                                                 </asp:LinkButton>
-
-                                                <asp:LinkButton ID="btnPraga" OnClick="btnPraga_Click" Style="padding-left: 10px; padding-right: 10px;" CssClass="btn btn-round" runat="server">
-                                                    <asp:Label ForeColor="White" runat="server">
-                                                        <i class="material-icons">arrow_back</i> Praga
-                                                    </asp:Label>
-                                                </asp:LinkButton>
                                             </td>
                                             <td style="width: 15%; padding-right: 5px;">
                                                 <asp:Image ID="imgLogoSelect" Width="110" Height="60" class="img-fluid pull-right" alt="logoEscuela" runat="server" />

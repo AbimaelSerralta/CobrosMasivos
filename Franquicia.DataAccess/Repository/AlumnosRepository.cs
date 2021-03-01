@@ -21,6 +21,26 @@ namespace Franquicia.DataAccess.Repository
             set { _alumnosGridViewModel = value; }
         }
 
+
+        public string ObtenerIdAlumno(Guid UidAlumno)
+        {
+            string IdAlumno = "";
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select IdAlumno from Alumnos where UidAlumno = '" + UidAlumno + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                IdAlumno = item["IdAlumno"].ToString();
+            }
+
+            return IdAlumno;
+        }
+
         #region Metodos Alumnos
         public List<AlumnosGridViewModel> CargarAlumnos(Guid UidCliente)
         {

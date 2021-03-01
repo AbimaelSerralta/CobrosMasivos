@@ -1733,6 +1733,20 @@ namespace Franquicia.Bussiness
             }
             return result;
         }
+
+        public bool GenerarLigasPagosColegiaturaPraga(string VchUrl, string VchConcepto, string IdReferencia, Guid UidUsuario, string VchIdentificador, DateTime DtRegistro, DateTime DtVencimiento, decimal DcmImporte, string VchAsunto, Guid UidLigaAsociado, Guid UidTipoTarjeta, Guid UidPromocion, Guid UidFechaColegiatura, Guid UidPagoColegiatura, Guid UidPropietario)
+        {
+            Guid UidLigaUrl = Guid.NewGuid();
+
+            bool result = false;
+            if (usuariosCompletosRepository.GenerarLigasPagosColegiaturaPraga(
+               UidLigaUrl, VchUrl, VchConcepto, IdReferencia, UidUsuario, VchIdentificador, DtRegistro, DtVencimiento, DcmImporte, VchAsunto, UidLigaAsociado, UidTipoTarjeta, UidPromocion, UidFechaColegiatura, UidPagoColegiatura, UidPropietario
+                ))
+            {
+                result = true;
+            }
+            return result;
+        }
         #endregion
 
         #endregion

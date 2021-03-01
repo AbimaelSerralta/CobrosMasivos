@@ -44,6 +44,11 @@ namespace Franquicia.Bussiness
 
         public List<AlumnosRLEGridViewModel> lsAlumnosRLEGridViewModel = new List<AlumnosRLEGridViewModel>();
 
+        public string ObtenerIdAlumno(Guid UidAlumno)
+        {
+            return alumnosRepository.ObtenerIdAlumno(UidAlumno);
+        }
+
         #region Metodos Alumnos
         public void CargarAlumnos(Guid UidCliente)
         {

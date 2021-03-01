@@ -36,6 +36,25 @@ namespace Franquicia.DataAccess.Repository
             return lsPromocionesPraga;
         }
 
+        public string ObtenerIdPromocion(Guid UidTipoTarjeta, Guid UidPromocion)
+        {
+            string VchCodigo = "";
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select cpp.* from PromocionesPraga pp, CodigoPromocionesPraga cpp, TiposTarjetasPraga ttp where pp.UidPromocion = cpp.UidPromocion and ttp.UidTipoTarjeta = cpp.UidTipoTarjeta and ttp.UidTipoTarjeta = '" + UidTipoTarjeta + "' and pp.UidPromocion = '" + UidPromocion + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                VchCodigo = item["VchCodigo"].ToString();                
+            }
+
+            return VchCodigo;
+        }
+
         #region Metodos Panel Administrativo
 
         #region Escuela

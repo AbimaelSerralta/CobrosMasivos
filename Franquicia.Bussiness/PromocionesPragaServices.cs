@@ -26,6 +26,10 @@ namespace Franquicia.Bussiness
 
             lsPromocionesPraga = promocionesPragaRepository.CargarPromociones();
         }
+        public string ObtenerIdPromocion(Guid UidTipoTarjeta, Guid UidPromocion)
+        {
+            return promocionesPragaRepository.ObtenerIdPromocion(UidTipoTarjeta, UidPromocion);
+        }
 
         #region Metodos Panel Administrativo
 
