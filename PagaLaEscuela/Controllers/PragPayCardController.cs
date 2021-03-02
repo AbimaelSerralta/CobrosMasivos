@@ -49,8 +49,8 @@ namespace PagaLaEscuela.Controllers
             {
                 Respuesta respues = JsonConvert.DeserializeObject<Respuesta>(decryptedString);
 
-                //Simular datos (datos manuales)
-                respues.reference = "0000040000000010002001";
+                ////Simular datos (datos manuales)
+                //respues.reference = "0000040000000010002001";
 
                 if (pagosTarjetaPragaServices.AgregarInformacionTarjeta(RellenarDatos(respues, thisDay)))
                 {
