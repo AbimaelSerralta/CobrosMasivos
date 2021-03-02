@@ -78,10 +78,10 @@ namespace Franquicia.DataAccess.Repository
                 
                 Comando.Parameters.Add("@amount", SqlDbType.Decimal);
                 Comando.Parameters["@amount"].Value = pagosTarjetaPraga.amount;
-                
-                Comando.Parameters.Add("@emv_key_date", SqlDbType.Decimal);
+
+                Comando.Parameters.Add("@emv_key_date", SqlDbType.VarChar);
                 Comando.Parameters["@emv_key_date"].Value = pagosTarjetaPraga.emv_key_date;
-                
+
                 Comando.Parameters.Add("@id_url", SqlDbType.VarChar);
                 Comando.Parameters["@id_url"].Value = pagosTarjetaPraga.id_url;
                 

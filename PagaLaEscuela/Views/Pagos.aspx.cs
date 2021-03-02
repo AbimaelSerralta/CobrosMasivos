@@ -1844,6 +1844,7 @@ namespace PagaLaEscuela.Views
             else if (ViewState["ddlTipoPago_Selected"].ToString() == "Praga")
             {
                 btnGenerarPago2.Enabled = false;
+                btnGenerarLiga.Enabled = false;
 
                 ValidacionesServices validacionesServices = new ValidacionesServices();
                 if (!validacionesServices.IsNumeric(txtTotaltb.Text))
@@ -1883,6 +1884,7 @@ namespace PagaLaEscuela.Views
 
                     lblTotalPago.Text = "Generar pago $" + decimal.Parse(txtTotaltb.Text).ToString("N2");
                     btnGenerarPago2.Enabled = true;
+                    btnGenerarLiga.Enabled = true;
 
                     decimal SubTotal = 0;
                     ViewState["ImpOtraSubTotalTT"] = 0;
