@@ -21,6 +21,7 @@ namespace PagaLaEscuela.Controllers
             PagosTarjetaPragaServices pagosTarjetaPragaServices = new PagosTarjetaPragaServices();
             ColegiaturasServices colegiaturasServices = new ColegiaturasServices();
             PagosColegiaturasServices pagosColegiaturasServices = new PagosColegiaturasServices();
+            CorreosServices correosServices = new CorreosServices();
 
             strResponse.StrResponse = HttpUtility.HtmlEncode(strResponse.StrResponse);
             var respuesta = new ResponseHelpers();
@@ -33,15 +34,15 @@ namespace PagaLaEscuela.Controllers
 
             try
             {
-                //correosServices.CorreoCadena(thisDay + " finalString " + cadena, "serralta2008@gmail.com");
+                correosServices.CorreoCadena(thisDay + " finalString " + cadena, "serralta2008@gmail.com");
             }
             catch (Exception ex)
             {
                 string mnsj = ex.Message;
             }
 
-            string key = "E166173C2B870BDC3F62A67A77442FE1"; //Credenciales sanbox 
-            //string key = "4451B4A2EBA9E3D49E7981FD2464C361";
+            //string key = "E166173C2B870BDC3F62A67A77442FE1"; //Credenciales sanbox 
+            string key = "4451B4A2EBA9E3D49E7981FD2464C361";
             AESCryptoPraga aesCryptoPraga = new AESCryptoPraga();
             string decryptedString = aesCryptoPraga.decrypt(key, cadena);
 
