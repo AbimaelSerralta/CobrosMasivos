@@ -279,6 +279,7 @@
     <Content Include="Multiselect\css\bootstrap-multiselect.css" />
     <Content Include="Multiselect\js\bootstrap-multiselect.min.js" />
     <Content Include="Multiselect\js\jquery-3.3.1.min.js" />
+    <Content Include="PlantillasHtml\CorreoCadena.html" />
     <Content Include="PlantillasHtml\CorreoEnvioPagoColegiaturaManual.html" />
     <Content Include="PlantillasHtml\CorreoEnvioPagoColegiatura.html" />
     <Content Include="PlantillasHtml\CorreoEnvioRecordatorioPago.html" />
