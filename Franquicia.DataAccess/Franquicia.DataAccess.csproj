@@ -74,6 +74,7 @@
     <Compile Include="Repository\ClubPago\AutorizacionPagoRepository.cs" />
     <Compile Include="Repository\ClubPago\CancelacionPagoRepository.cs" />
     <Compile Include="Repository\ClubPago\ConsultarReferenciasRepository.cs" />
+    <Compile Include="Repository\PagosTarjetaPragaRepository.cs" />
     <Compile Include="Repository\SuperComisionesTarjetasPragaRepository.cs" />
     <Compile Include="Repository\ComisionesTarjetasPragaRepository.cs" />
     <Compile Include="Repository\ComisionesTarjetasClubPagoRepository.cs" />

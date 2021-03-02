@@ -261,6 +261,16 @@ namespace Franquicia.Bussiness
             return result;
         }
 
+        public bool EliminarLigaPragaColegiatura(string IdReferencia)
+        {
+            bool result = false;
+            if (colegiaturasRepository.EliminarLigaPragaColegiatura(IdReferencia))
+            {
+                result = true;
+            }
+            return result;
+        }
+
         public List<DesglosePagosGridViewModel> FormarDesgloseCole(int IntNum, string VchConcepto, decimal DcmImporte, string VchCoResta = "")
         {
             lsDesglosePagosGridViewModel.Add(new DesglosePagosGridViewModel

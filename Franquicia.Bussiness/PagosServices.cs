@@ -23,6 +23,8 @@ namespace Franquicia.Bussiness
         
         public List<PagosTarjetaColeDetalleGridViewModel> lsPagosTarjetaColeDetalleGridViewModel = new List<PagosTarjetaColeDetalleGridViewModel>();
         
+        public List<PagosTarjetaPragaColeDetalleGridViewModel> lsPagosTarjetaPragaColeDetalleGridViewModel = new List<PagosTarjetaPragaColeDetalleGridViewModel>();
+        
         
         public List<PagosColegiaturas> lsPagosColegiaturas = new List<PagosColegiaturas>();
         
@@ -81,6 +83,12 @@ namespace Franquicia.Bussiness
             lsPagosTarjetaColeDetalleGridViewModel = new List<PagosTarjetaColeDetalleGridViewModel>();
 
             return lsPagosTarjetaColeDetalleGridViewModel = pagosRepository.ConsultarDetallePagoColegiatura(UidPagoColegiatura);
+        }
+        public List<PagosTarjetaPragaColeDetalleGridViewModel> ConsultarDetallePagoColegiaturaPraga(Guid UidPagoColegiatura)
+        {
+            lsPagosTarjetaPragaColeDetalleGridViewModel = new List<PagosTarjetaPragaColeDetalleGridViewModel>();
+
+            return lsPagosTarjetaPragaColeDetalleGridViewModel = pagosRepository.ConsultarDetallePagoColegiaturaPraga(UidPagoColegiatura);
         }
         #endregion
 

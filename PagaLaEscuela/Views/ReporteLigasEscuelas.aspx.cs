@@ -541,6 +541,11 @@ namespace PagaLaEscuela.Views
                     FormaPago = "COMERCIOS";
                     trdetalleoperacionClubPago.Style.Add("display", "");
                 }
+                else if (Guid.Parse(lblGvUidFormaPago.Text) == Guid.Parse("310F3557-682A-4144-9433-E47E48805D28"))
+                {
+                    FormaPago = "PRAGA";
+                    trdetalleoperacion.Style.Add("display", "");
+                }
                 else
                 {
                     FormaPago = "MANUAL";
@@ -571,6 +576,11 @@ namespace PagaLaEscuela.Views
 
                         DetallePagoClubPago(list.Item1, list.Item2, dataKey);
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalPagoDetalleClubPago()", true);
+                        break;
+
+                    case "PRAGA":
+                        DetallePagoColegiaturaPraga(list.Item1, list.Item2, dataKey);
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalPagoDetalle()", true);
                         break;
 
                     case "MANUAL":
@@ -878,6 +888,16 @@ namespace PagaLaEscuela.Views
                     trDetalleOperacionManual.Style.Add("display", "none");
                     btnImprimirManual.Visible = true;
                 }
+                else if (Guid.Parse(lblGvUidFormaPago.Text) == Guid.Parse("6BE13FFE-E567-4D4D-9CBC-37DA30EC23A5"))
+                {
+                    FormaPago = "COMERCIOS";
+                    trdetalleoperacionClubPago.Style.Add("display", "");
+                }
+                else if (Guid.Parse(lblGvUidFormaPago.Text) == Guid.Parse("310F3557-682A-4144-9433-E47E48805D28"))
+                {
+                    FormaPago = "PRAGA";
+                    trdetalleoperacion.Style.Add("display", "");
+                }
                 else
                 {
                     FormaPago = "MANUAL";
@@ -902,6 +922,17 @@ namespace PagaLaEscuela.Views
 
                         DetallePagoColegiaturaManual(list.Item1, list.Item2, dataKey);
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalPagoDetalleManual()", true);
+                        break;
+
+                    case "COMERCIOS":
+
+                        DetallePagoClubPago(list.Item1, list.Item2, dataKey);
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalPagoDetalleClubPago()", true);
+                        break;
+
+                    case "PRAGA":
+                        DetallePagoColegiaturaPraga(list.Item1, list.Item2, dataKey);
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalPagoDetalle()", true);
                         break;
 
                     case "MANUAL":
@@ -1113,6 +1144,93 @@ namespace PagaLaEscuela.Views
 
             rptPagosRefClubPago.DataSource = pagosClubPagoServices.lsPagosClubPago;
             rptPagosRefClubPago.DataBind();
+        }
+        private void DetallePagoColegiaturaPraga(List<PagosColegiaturasViewModels> lsPagosColegiaturas, List<DetallePagosColeGridViewModel> lsDetallePagosColeGridViewModel, Guid UidPagoColegiatura)
+        {
+            //Resumen del pago
+            foreach (var item in lsPagosColegiaturas)
+            {
+                //Asigancion de parametros
+
+                //Encabezado del pago
+                lblDetaAlumno.Text = "Alumno: " + item.VchAlumno;
+                lblDetaMatricula.Text = "Matricula: " + item.VchMatricula;
+                lblDetaFHpago.Text = "Fecha de pago: " + item.DtFHPago.ToString("dd/MM/yyyy");
+
+                if (item.BitSubtotal)
+                {
+                    DcmSubtotal.Text = "$" + item.DcmImporteCole.ToString("N2");
+                    trsubtotall.Style.Add("display", "");
+                }
+                else
+                {
+                    trsubtotall.Style.Add("display", "none");
+                    DcmSubtotal.Text = "$0.00";
+                }
+
+                if (item.BitValidarImporte)
+                {
+                    DcmValidarImporte.Text = "$-" + item.DcmValidarImporte.ToString("N2");
+                    trvalidarimporte.Style.Add("display", "");
+                }
+                else
+                {
+                    trvalidarimporte.Style.Add("display", "none");
+                    DcmValidarImporte.Text = "$0.00";
+                }
+
+                DcmTotal.Text = item.DcmTotal.ToString("N2");
+
+                if (item.BitComisionBancaria)
+                {
+                    VchComicionBancaria.Text = item.VchComisionBancaria;
+                    DcmImpComisionBancaria.Text = "$-" + item.DcmComisionBancaria.ToString("N2");
+                    trcomicion.Style.Add("display", "");
+                }
+                else
+                {
+                    trcomicion.Style.Add("display", "none");
+                    DcmImpComisionBancaria.Text = "$0.00";
+                }
+
+                if (item.BitPromocionDePago)
+                {
+                    VchPromocion.Text = item.VchPromocionDePago;
+                    DcmImpPromocion.Text = "$-" + item.DcmPromocionDePago.ToString("N2");
+                    trpromocion.Style.Add("display", "");
+
+                    string dPromo = item.VchPromocionDePago.Replace("COMISIÓN ", "").Replace(" MESES:", "");
+
+                    VchDetallePromocion.Text = dPromo.Trim() + " pagos mensuales de:";
+                    DcmImpDetallePromocion.Text = (item.DcmTotal / decimal.Parse(dPromo.Trim())).ToString("N2");
+                    trdetallepromociones.Style.Add("display", "");
+                }
+                else
+                {
+                    trpromocion.Style.Add("display", "none");
+                    trdetallepromociones.Style.Add("display", "none");
+                    DcmImpPromocion.Text = "$0.00";
+                }
+
+                DcmImpAbono.Text = "$" + item.DcmSubtotal.ToString("N2");
+                DcmImpResta.Text = "$" + (item.DcmImporteCole - item.DcmSubtotal).ToString("N2");
+
+            }
+
+            rpDetalleLiga.DataSource = lsDetallePagosColeGridViewModel;
+            rpDetalleLiga.DataBind();
+
+            //Desglose del pago Liga
+            pagosServices.ConsultarDetallePagoColegiaturaPraga(UidPagoColegiatura);
+            foreach (var item in pagosServices.lsPagosTarjetaPragaColeDetalleGridViewModel)
+            {
+                //Detalle de la operacion
+                VchIdreferencia.Text = item.IdReferencia;
+                DtmFechaDeRegistro.Text = item.DtmFechaDeRegistro.ToLongDateString();
+                DtmHoraDeRegistro.Text = item.DtmFechaDeRegistro.ToString("HH:mm:ss");
+                VchTarjeta.Text = "************" + item.cc_number;
+                VchFolioPago.Text = item.foliocpagos;
+            }
         }
         protected void gvDatosPagos_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {

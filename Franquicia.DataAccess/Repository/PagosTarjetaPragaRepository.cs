@@ -11,77 +11,92 @@ using System.Threading.Tasks;
 
 namespace Franquicia.DataAccess.Repository
 {
-    public class PagosRepository : SqlDataRepository
+    public class PagosTarjetaPragaRepository : SqlDataRepository
     {
-        public bool AgregarInformacionTarjeta(string Autorizacion, string reference, DateTime HoraTransaccion, string response, string cc_type, string tp_operation, string nb_company, string nb_merchant, string id_url, string cd_error, string nb_error, string cc_number, string cc_mask, string FolioPago, decimal Monto, DateTime DtFechaOperacion)
+        public bool AgregarInformacionTarjeta(PagosTarjetaPraga pagosTarjetaPraga)
         {
             SqlCommand Comando = new SqlCommand();
             bool resultado = false;
             try
             {
                 Comando.CommandType = CommandType.StoredProcedure;
-                Comando.CommandText = "sp_AgregaInformacionPagoConTarjeta";
+                Comando.CommandText = "sp_AgregarInformacionPagoTarjetaPraga";
 
-                Comando.Parameters.Add("@FolioPago", SqlDbType.VarChar, 50);
-                Comando.Parameters["@FolioPago"].Value = FolioPago;
+                Comando.Parameters.Add("@UidPagoTarjeta", SqlDbType.UniqueIdentifier);
+                Comando.Parameters["@UidPagoTarjeta"].Value = Guid.NewGuid();
 
-                Comando.Parameters.Add("@cc_number", SqlDbType.VarChar, 50);
-                Comando.Parameters["@cc_number"].Value = cc_number;
-
-                Comando.Parameters.Add("@cc_mask", SqlDbType.VarChar, 50);
-                Comando.Parameters["@cc_mask"].Value = cc_mask;
-
-                Comando.Parameters.Add("@nb_company", SqlDbType.VarChar, 50);
-                Comando.Parameters["@nb_company"].Value = nb_company;
-
-                Comando.Parameters.Add("@nb_merchant", SqlDbType.VarChar, 50);
-                Comando.Parameters["@nb_merchant"].Value = nb_merchant;
-
-                Comando.Parameters.Add("@id_url", SqlDbType.VarChar, 50);
-                Comando.Parameters["@id_url"].Value = id_url;
-
-                Comando.Parameters.Add("@cd_error", SqlDbType.VarChar, 200);
-                Comando.Parameters["@cd_error"].Value = cd_error;
-
-                Comando.Parameters.Add("@nb_error", SqlDbType.VarChar, 200);
-                Comando.Parameters["@nb_error"].Value = nb_error;
-
-                Comando.Parameters.Add("@IdReferencia", SqlDbType.VarChar, 100);
-                Comando.Parameters["@IdReferencia"].Value = reference;
-
-                Comando.Parameters.Add("@UidPago", SqlDbType.UniqueIdentifier);
-                Comando.Parameters["@UidPago"].Value = Guid.NewGuid();
-
-                Comando.Parameters.Add("@FechaRegistro", SqlDbType.DateTime);
-                Comando.Parameters["@FechaRegistro"].Value = HoraTransaccion;
-
-                Comando.Parameters.Add("@VchReferencia", SqlDbType.Text);
-                Comando.Parameters["@VchReferencia"].Value = reference;
-
-                Comando.Parameters.Add("@VchEstatusPago", SqlDbType.VarChar, 50);
-                Comando.Parameters["@VchEstatusPago"].Value = response;
-
-                Comando.Parameters.Add("@VchTipoDeTarjeta", SqlDbType.VarChar, 200);
-                Comando.Parameters["@VchTipoDeTarjeta"].Value = cc_type;
-
-                Comando.Parameters.Add("@VchTipoDeOperacion", SqlDbType.VarChar, 100);
-                Comando.Parameters["@VchTipoDeOperacion"].Value = tp_operation;
-
-                Comando.Parameters.Add("@MMonto", SqlDbType.Money);
-                Comando.Parameters["@MMonto"].Value = Monto;
-
-                Comando.Parameters.Add("@Autorizacion", SqlDbType.VarChar, 10);
-                Comando.Parameters["@Autorizacion"].Value = Autorizacion;
-
+                Comando.Parameters.Add("@IdReferencia", SqlDbType.VarChar);
+                Comando.Parameters["@IdReferencia"].Value = pagosTarjetaPraga.IdReferencia;
+                
+                Comando.Parameters.Add("@VchEstatus", SqlDbType.VarChar);
+                Comando.Parameters["@VchEstatus"].Value = pagosTarjetaPraga.VchEstatus;
+                
+                Comando.Parameters.Add("@foliocpagos", SqlDbType.VarChar);
+                Comando.Parameters["@foliocpagos"].Value = pagosTarjetaPraga.foliocpagos;
+                
+                Comando.Parameters.Add("@auth", SqlDbType.VarChar);
+                Comando.Parameters["@auth"].Value = pagosTarjetaPraga.auth;
+                
+                Comando.Parameters.Add("@cd_response", SqlDbType.VarChar);
+                Comando.Parameters["@cd_response"].Value = pagosTarjetaPraga.cd_response;
+                
+                Comando.Parameters.Add("@cd_error", SqlDbType.VarChar);
+                Comando.Parameters["@cd_error"].Value = pagosTarjetaPraga.cd_error;
+                
+                Comando.Parameters.Add("@nb_error", SqlDbType.VarChar);
+                Comando.Parameters["@nb_error"].Value = pagosTarjetaPraga.nb_error;
+                
+                Comando.Parameters.Add("@DtmFechaDeRegistro", SqlDbType.DateTime);
+                Comando.Parameters["@DtmFechaDeRegistro"].Value = pagosTarjetaPraga.DtmFechaDeRegistro;
+                
                 Comando.Parameters.Add("@DtFechaOperacion", SqlDbType.DateTime);
-                Comando.Parameters["@DtFechaOperacion"].Value = DtFechaOperacion;
+                Comando.Parameters["@DtFechaOperacion"].Value = pagosTarjetaPraga.DtFechaOperacion;
+                
+                Comando.Parameters.Add("@nb_company", SqlDbType.VarChar);
+                Comando.Parameters["@nb_company"].Value = pagosTarjetaPraga.nb_company;
+                
+                Comando.Parameters.Add("@nb_merchant", SqlDbType.VarChar);
+                Comando.Parameters["@nb_merchant"].Value = pagosTarjetaPraga.nb_merchant;
+                
+                Comando.Parameters.Add("@cc_type", SqlDbType.VarChar);
+                Comando.Parameters["@cc_type"].Value = pagosTarjetaPraga.cc_type;
+                
+                Comando.Parameters.Add("@tp_operation", SqlDbType.VarChar);
+                Comando.Parameters["@tp_operation"].Value = pagosTarjetaPraga.tp_operation;
+                
+                Comando.Parameters.Add("@cc_name", SqlDbType.VarChar);
+                Comando.Parameters["@cc_name"].Value = pagosTarjetaPraga.cc_name;
+                
+                Comando.Parameters.Add("@cc_number", SqlDbType.VarChar);
+                Comando.Parameters["@cc_number"].Value = pagosTarjetaPraga.cc_number;
+                
+                Comando.Parameters.Add("@cc_expmonth", SqlDbType.VarChar);
+                Comando.Parameters["@cc_expmonth"].Value = pagosTarjetaPraga.cc_expmonth;
+                
+                Comando.Parameters.Add("@cc_expyear", SqlDbType.VarChar);
+                Comando.Parameters["@cc_expyear"].Value = pagosTarjetaPraga.cc_expyear;
+                
+                Comando.Parameters.Add("@amount", SqlDbType.Decimal);
+                Comando.Parameters["@amount"].Value = pagosTarjetaPraga.amount;
+                
+                Comando.Parameters.Add("@emv_key_date", SqlDbType.Decimal);
+                Comando.Parameters["@emv_key_date"].Value = pagosTarjetaPraga.emv_key_date;
+                
+                Comando.Parameters.Add("@id_url", SqlDbType.VarChar);
+                Comando.Parameters["@id_url"].Value = pagosTarjetaPraga.id_url;
+                
+                Comando.Parameters.Add("@email", SqlDbType.VarChar);
+                Comando.Parameters["@email"].Value = pagosTarjetaPraga.email;
+                
+                Comando.Parameters.Add("@payment_type", SqlDbType.VarChar);
+                Comando.Parameters["@payment_type"].Value = pagosTarjetaPraga.payment_type;
 
                 resultado = this.ManipulacionDeDatos(Comando);
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                string mnsj = ex.Message;
             }
             return resultado;
         }
@@ -172,25 +187,6 @@ namespace Franquicia.DataAccess.Repository
             return lsLigasEventoPayCardModel;
         }
         
-        public string ObtenerCorreoAuxiliar(string IdReferencia)
-        {
-            string Resultado = string.Empty;
-
-            SqlCommand query = new SqlCommand();
-            query.CommandType = CommandType.Text;
-
-            query.CommandText = "select * from AuxiliarCorreos where IdReferencia = '" + IdReferencia + "'";
-
-            DataTable dt = this.Busquedas(query);
-
-            foreach (DataRow item in dt.Rows)
-            {
-                Resultado = item["VchCorreo"].ToString();
-            }
-
-            return Resultado;
-        }
-
         #region Metodos Escuela
         #region Pagos
         public Tuple<string, string, string> ConsultarPagoColegiatura(string IdReferencia)
@@ -202,7 +198,7 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select lu.UidPropietario, lu.UidPagoColegiatura, us.VchCorreo from LigasUrls lu, PagosTarjeta pt, Usuarios us where lu.UidPagoColegiatura is not null and pt.VchEstatus = 'approved' and us.UidUsuario = lu.UidUsuario and lu.IdReferencia = pt.IdReferencia and lu.IdReferencia = '" + IdReferencia + "'";
+            query.CommandText = "select lup.UidPagoColegiatura, us.VchCorreo, lup.UidPropietario from LigasUrlsPraga lup, PagosTarjetaPraga ptp, Usuarios us where us.UidUsuario = lup.UidUsuario and lup.IdReferencia = ptp.IdReferencia and ptp.VchEstatus = 'approved' and lup.IdReferencia = '" + IdReferencia + "'";
 
             DataTable dt = this.Busquedas(query);
 
@@ -223,7 +219,6 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            //query.CommandText = "select pc.*, al.VchMatricula, al.VchNombres, al.VchApePaterno, VchApeMaterno from PagosColegiaturas pc, FechasPagos fg, Alumnos al where pc.UidPagoColegiatura = fg.UidPagoColegiatura and fg.UidAlumno = al.UidAlumno and pc.UidPagoColegiatura = '" + UidPagoColegiatura + "'";
             query.CommandText = "select pc.*, al.VchMatricula, al.VchNombres, al.VchApePaterno, VchApeMaterno, fp.DcmImporteCole from PagosColegiaturas pc, FechasPagos fg, Alumnos al, FechasPagos fp where fp.UidPagoColegiatura = pc.UidPagoColegiatura and pc.UidPagoColegiatura = fg.UidPagoColegiatura and fg.UidAlumno = al.UidAlumno and pc.UidPagoColegiatura = '" + UidPagoColegiatura + "'";
 
             DataTable dt = this.Busquedas(query);
@@ -319,12 +314,31 @@ namespace Franquicia.DataAccess.Repository
 
             return Tuple.Create(UidCliente, UidUsuario, UidFechaColegiatura, UidAlumno);
         }
+
+        public bool ValidarPagoPadre(string IdReferencia)
+        {
+            bool result = false;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select * from PagosTarjetaPraga where VchEstatus = 'approved' and IdReferencia = '" + IdReferencia + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            if (dt.Rows.Count >= 1)
+            {
+                result = true;
+            }
+
+            return result;
+        }
         #endregion
 
         #region ReporteLigasPadres
         public List<PagosTarjetaColeDetalleGridViewModel> ConsultarDetallePagoColegiatura(Guid UidPagoColegiatura)
         {
-            List<PagosTarjetaColeDetalleGridViewModel> lsPagosTarjetaColeDetalleGridViewModel = new List<PagosTarjetaColeDetalleGridViewModel>();
+            List<PagosTarjetaColeDetalleGridViewModel> lsPagosTarjetaColeDetalleGridViewModel = new List<PagosTarjetaColeDetalleGridViewModel>(); ;
 
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
@@ -345,30 +359,6 @@ namespace Franquicia.DataAccess.Repository
             }
 
             return lsPagosTarjetaColeDetalleGridViewModel;
-        }
-        public List<PagosTarjetaPragaColeDetalleGridViewModel> ConsultarDetallePagoColegiaturaPraga(Guid UidPagoColegiatura)
-        {
-            List<PagosTarjetaPragaColeDetalleGridViewModel> lsPagosTarjetaPragaColeDetalleGridViewModel = new List<PagosTarjetaPragaColeDetalleGridViewModel>();
-
-            SqlCommand query = new SqlCommand();
-            query.CommandType = CommandType.Text;
-
-            query.CommandText = "select lup.IdReferencia, ptp.foliocpagos, ptp.DtmFechaDeRegistro, ptp.cc_number from LigasUrlsPraga lup, PagosTarjetaPraga ptp where ptp.VchEstatus = 'approved'and lup.IdReferencia = ptp.IdReferencia and lup.UidPagoColegiatura = '" + UidPagoColegiatura + "'";
-
-            DataTable dt = this.Busquedas(query);
-
-            foreach (DataRow item in dt.Rows)
-            {
-                lsPagosTarjetaPragaColeDetalleGridViewModel.Add(new PagosTarjetaPragaColeDetalleGridViewModel()
-                {
-                    IdReferencia = item["IdReferencia"].ToString(),
-                    foliocpagos = item["foliocpagos"].ToString(),
-                    DtmFechaDeRegistro = DateTime.Parse(item["DtmFechaDeRegistro"].ToString()),
-                    cc_number = item["cc_number"].ToString()
-                });
-            }
-
-            return lsPagosTarjetaPragaColeDetalleGridViewModel;
         }
         #endregion
         #endregion
