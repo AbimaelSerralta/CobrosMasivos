@@ -73,7 +73,7 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query2 = new SqlCommand();
             query2.CommandType = CommandType.Text;
 
-            query2.CommandText = "select * from PromocionesPraga order by IntGerarquia asc";
+            query2.CommandText = "select pp.*, cpp.VchCodigo from TiposTarjetasPraga ttp, CodigoPromocionesPraga cpp, PromocionesPraga pp where ttp.UidTipoTarjeta = cpp.UidTipoTarjeta and cpp.UidPromocion = pp.UidPromocion and ttp.UidTipoTarjeta = '" + UidTipoTarjeta + "' order by pp.IntGerarquia asc";
 
             DataTable dtPT = this.Busquedas(query2);
 
@@ -171,7 +171,7 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select * from ClientesPromocionesPraga where UidTipoTarjeta = '" + UidTipoTarjeta + "'";
+            query.CommandText = "select * from SuperPromocionesPraga where UidTipoTarjeta = '" + UidTipoTarjeta + "'";
 
             DataTable dt = this.Busquedas(query);
 

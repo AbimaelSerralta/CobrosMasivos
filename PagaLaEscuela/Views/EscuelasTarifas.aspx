@@ -57,8 +57,8 @@
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" href="#pagoenefectivo" data-toggle="tab">
-                                            <i class="material-icons">attach_money</i>Pago en efectivo<div class="ripple-container"></div>
+                                        <a class="nav-link" href="#clubPago" data-toggle="tab">
+                                            <i class="material-icons">store</i>ClubPago<div class="ripple-container"></div>
                                         </a>
                                     </li>
                                 </ul>
@@ -199,7 +199,7 @@
                                 <asp:UpdatePanel runat="server">
                                     <ContentTemplate>
                                         <div class="modal-footer justify-content-center">
-                                            <asp:LinkButton ID="btnGuardarPromocionesPraga" CssClass="btn btn-success btn-round" runat="server">
+                                            <asp:LinkButton ID="btnGuardarPromocionesPraga" OnClick="btnGuardarPromocionesPraga_Click" CssClass="btn btn-success btn-round" runat="server">
                                                                 <i class="material-icons">check</i> Guardar
                                             </asp:LinkButton>
                                         </div>
@@ -459,7 +459,7 @@
                                 </asp:UpdatePanel>
                             </div>
 
-                            <div class="tab-pane" id="pagoenefectivo">
+                            <div class="tab-pane" id="clubPago">
                                 <asp:GridView ID="gvTipoTarjetaClubPago" OnRowDataBound="gvTipoTarjetaClubPago_RowDataBound" Width="100%" ShowHeader="false" GridLines="None" AutoGenerateColumns="false" runat="server">
                                     <Columns>
                                         <asp:BoundField DataField="UidTipoTarjeta" ItemStyle-CssClass="d-none" HeaderStyle-CssClass="d-none" />

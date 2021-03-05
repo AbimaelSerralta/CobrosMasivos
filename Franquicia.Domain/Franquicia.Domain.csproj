@@ -52,6 +52,7 @@
     <Compile Include="Models\ClubPago\GenerarRefereciaPago.cs" />
     <Compile Include="Models\ClubPago\ObtenerRefereciaPago.cs" />
     <Compile Include="Models\PagosTarjetaPraga.cs" />
+    <Compile Include="Models\ParametrosPraga.cs" />
     <Compile Include="Models\Praga\UrlV3PaymentResponse.cs" />
     <Compile Include="Models\SuperComisionesTarjetasPraga.cs" />
     <Compile Include="Models\ComisionesTarjetasPraga.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="Models\ReferenciasClubPago.cs" />
     <Compile Include="Models\PagosEfectivos.cs" />
     <Compile Include="Models\Praga\UrlV3PaymentRequest.cs" />
+    <Compile Include="Models\SuperPromocionesPraga.cs" />
     <Compile Include="Models\TiposTarjetasPraga.cs" />
     <Compile Include="Models\TiposTarjetasClubPago.cs" />
     <Compile Include="Models\TiposTarjetas.cs" />
@@ -181,6 +183,7 @@
     <Compile Include="ViewModels\PagosTarjeta\PagosTarjetaDetalleGridViewModel.cs" />
     <Compile Include="ViewModels\Perfiles\PerfilesDropDownListModel.cs" />
     <Compile Include="ViewModels\Perfiles\PerfilesGridViewModel.cs" />
+    <Compile Include="ViewModels\SuperPromocionesPraga\SuperPromocionesPragaDisponiblesViewModel.cs" />
     <Compile Include="ViewModels\SuperPromociones\SuperPromocionesDisponiblesViewModel.cs" />
     <Compile Include="ViewModels\Tarifas\TarifasGridViewModel.cs" />
     <Compile Include="ViewModels\Usuarios\LigasMultiplesUsuariosGridViewModel.cs" />

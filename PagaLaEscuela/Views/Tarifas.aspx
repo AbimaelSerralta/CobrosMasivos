@@ -43,7 +43,7 @@
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link" href="#pagosEnlinea" data-toggle="tab">
-                                            <i class="material-icons">list</i>Pagos En linea<div class="ripple-container"></div>
+                                            <i class="material-icons">payment</i>Pagos En linea<div class="ripple-container"></div>
                                         </a>
                                     </li>
                                     <li class="nav-item">
@@ -420,7 +420,7 @@
                                                                                             <div class="alert alert-info">No hay promociones disponibles</div>
                                                                                         </EmptyDataTemplate>
                                                                                         <Columns>
-                                                                                            <asp:BoundField DataField="UidSuperPromocion" ItemStyle-CssClass="d-none" HeaderStyle-CssClass="d-none" />
+                                                                                            <asp:BoundField DataField="UidPromocion" ItemStyle-CssClass="d-none" HeaderStyle-CssClass="d-none" />
                                                                                             <asp:TemplateField HeaderStyle-CssClass="d-none">
                                                                                                 <ItemTemplate>
                                                                                                     <asp:UpdatePanel runat="server">
@@ -492,7 +492,7 @@
                                 <asp:UpdatePanel runat="server">
                                     <ContentTemplate>
                                         <div class="modal-footer justify-content-center">
-                                            <asp:LinkButton ID="btnGuardarPromocionesPraga" CssClass="btn btn-success btn-round" runat="server">
+                                            <asp:LinkButton ID="btnGuardarPromocionesPraga" OnClick="btnGuardarPromocionesPraga_Click" CssClass="btn btn-success btn-round" runat="server">
                                                                 <i class="material-icons">check</i> Guardar
                                             </asp:LinkButton>
                                         </div>

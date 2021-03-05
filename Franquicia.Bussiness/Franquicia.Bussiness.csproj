@@ -81,6 +81,7 @@
     <Compile Include="PromocionesClubPagoServices.cs" />
     <Compile Include="ReferenciasClubPagoServices.cs" />
     <Compile Include="PagosEfectivosServices.cs" />
+    <Compile Include="SuperPromocionesPragaServices.cs" />
     <Compile Include="TiposTarjetasPragaServices.cs" />
     <Compile Include="TiposTarjetasClubPagoServices.cs" />
     <Compile Include="TiposTarjetasServices.cs" />

@@ -96,6 +96,69 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.Label lblMnsjAlertCredenciales;
 
         /// <summary>
+        /// Control pnlCredencialesPraga.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlCredencialesPraga;
+
+        /// <summary>
+        /// Control txtIdBusinesPartner.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtIdBusinesPartner;
+
+        /// <summary>
+        /// Control txtClaveUsuarioWSREST.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtClaveUsuarioWSREST;
+
+        /// <summary>
+        /// Control txtMonedaPraga.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtMonedaPraga;
+
+        /// <summary>
+        /// Control txtUrlPraga.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtUrlPraga;
+
+        /// <summary>
+        /// Control txtClaveEncripcionWSREST.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtClaveEncripcionWSREST;
+
+        /// <summary>
+        /// Control txtAPIKey.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtAPIKey;
+
+        /// <summary>
         /// Control pnlCredenciales.
         /// </summary>
         /// <remarks>

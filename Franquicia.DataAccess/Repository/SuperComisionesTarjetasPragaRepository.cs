@@ -76,7 +76,7 @@ namespace Franquicia.DataAccess.Repository
             try
             {
                 comando.CommandType = System.Data.CommandType.StoredProcedure;
-                comando.CommandText = "sp_ComisionesTarjetaClubPagoRegistrar";
+                comando.CommandText = "sp_SuperComisionesTarjetasPragaRegistrar";
 
                 comando.Parameters.Add("@BitComision", SqlDbType.Bit);
                 comando.Parameters["@BitComision"].Value = SuperComisionesTarjetasPraga.BitComision;
@@ -124,7 +124,7 @@ namespace Franquicia.DataAccess.Repository
             }
             return Resultado;
         }
-        public bool EliminarComisionesTarjeta(Guid UidCliente)
+        public bool EliminarComisionesTarjeta()
         {
             bool Resultado = false;
 
@@ -132,10 +132,7 @@ namespace Franquicia.DataAccess.Repository
             try
             {
                 comando.CommandType = System.Data.CommandType.StoredProcedure;
-                comando.CommandText = "sp_ComisionesTarjetaClubPagoEliminar";
-
-                comando.Parameters.Add("@UidCliente", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidCliente"].Value = UidCliente;
+                comando.CommandText = "sp_SuperComisionesTarjetasPragaEliminar";
 
                 Resultado = this.ManipulacionDeDatos(comando);
             }

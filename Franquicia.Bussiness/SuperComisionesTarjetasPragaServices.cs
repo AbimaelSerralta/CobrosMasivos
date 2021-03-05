@@ -59,10 +59,10 @@ namespace Franquicia.Bussiness
             }
             return result;
         }
-        public bool EliminarComisionesTarjeta(Guid UidCliente)
+        public bool EliminarComisionesTarjeta()
         {
             bool result = false;
-            if (superComisionesTarjetasPragaRepository.EliminarComisionesTarjeta(UidCliente))
+            if (superComisionesTarjetasPragaRepository.EliminarComisionesTarjeta())
             {
                 result = true;
             }

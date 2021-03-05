@@ -78,7 +78,7 @@ namespace Franquicia.DataAccess.Repository
             try
             {
                 comando.CommandType = System.Data.CommandType.StoredProcedure;
-                comando.CommandText = "sp_ComisionesTarjetaClubPagoRegistrar";
+                comando.CommandText = "sp_ComisionesTarjetasPragaRegistrar";
 
                 comando.Parameters.Add("@BitComision", SqlDbType.Bit);
                 comando.Parameters["@BitComision"].Value = comisionesTarjetasPraga.BitComision;
@@ -137,7 +137,7 @@ namespace Franquicia.DataAccess.Repository
             try
             {
                 comando.CommandType = System.Data.CommandType.StoredProcedure;
-                comando.CommandText = "sp_ComisionesTarjetaClubPagoEliminar";
+                comando.CommandText = "sp_ComisionesTarjetasPragaEliminar";
 
                 comando.Parameters.Add("@UidCliente", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidCliente"].Value = UidCliente;

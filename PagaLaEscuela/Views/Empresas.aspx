@@ -151,67 +151,145 @@
                     </asp:UpdateProgress>
                 </div>
                 <div class="modal-body pt-0" style="padding-bottom: 0px;">
-                    <div class="tab-content">
-                        <asp:UpdatePanel runat="server">
-                            <ContentTemplate>
-                                <asp:Panel ID="pnlAlertCredenciales" runat="server">
-                                    <div id="divAlertCredenciales" class="alert alert-danger alert-dismissible fade" role="alert" runat="server">
-                                        <asp:Label ID="lblMnsjAlertCredenciales" runat="server" />
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <div class="row">
+                        <div class="card card-nav-tabs">
+                            <div class="card-header card-header-primary" style="background: #b9504c;">
+                                <!-- colors: "header-primary", "header-info", "header-success", "header-warning", "header-danger" -->
+                                <div class="nav-tabs-navigation">
+                                    <div class="nav-tabs-wrapper">
+                                        <ul id="ulTabPadres" class="nav nav-tabs" data-tabs="tabs">
+                                            <li class="nav-item">
+                                                <a class="nav-link active show" href="#praga" data-toggle="tab">
+                                                    <i class="material-icons">account_tree</i>Praga<div class="ripple-container"></div>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#centrosPago" data-toggle="tab">
+                                                    <i class="material-icons">login</i>Centros de pago<div class="ripple-container"></div>
+                                                </a>
+                                            </li>
+                                        </ul>
                                     </div>
-                                </asp:Panel>
-                                <asp:Panel ID="pnlCredenciales" runat="server">
-                                    <div class="card" style="margin-top: 0px;">
-                                        <div class="card-header card-header-tabs card-header" style="padding-top: 0px; padding-bottom: 0px;">
-                                            <div class="nav-tabs-navigation">
-                                                <div class="nav-tabs-wrapper">
-                                                    <div class="form-group">
-                                                        <div class="row">
-                                                            <div class="form-group col-md-4">
-                                                                <label for="txtIdCompany" style="color: black;">Id_company *</label>
-                                                                <asp:TextBox ID="txtIdCompany" CssClass="form-control" required="required" runat="server" />
-                                                            </div>
-                                                            <div class="form-group col-md-4">
-                                                                <label for="txtIdBranch" style="color: black;">Id_branch *</label>
-                                                                <asp:TextBox ID="txtIdBranch" CssClass="form-control" required="required" runat="server" />
-                                                            </div>
-                                                            <div class="form-group col-md-4">
-                                                                <label for="txtMoneda" style="color: black;">Moneda *</label>
-                                                                <asp:TextBox ID="txtMoneda" Text="MXN" Enabled="false" CssClass="form-control" required="required" runat="server" />
-                                                            </div>
-                                                            <div class="form-group col-md-4">
-                                                                <label for="txtUsuario" style="color: black;">User *</label>
-                                                                <asp:TextBox ID="txtUsuario" CssClass="form-control" required="required" runat="server" />
-                                                            </div>
-                                                            <div class="form-group col-md-4">
-                                                                <label for="txtPassword" style="color: black;">Password *</label>
-                                                                <asp:TextBox ID="txtPassword" CssClass="form-control" required="required" runat="server" />
-                                                            </div>
-                                                            <div class="form-group col-md-4">
-                                                                <label for="txtCanal" style="color: black;">Canal *</label>
-                                                                <asp:TextBox ID="txtCanal" Text="W" Enabled="false" CssClass="form-control" required="required" runat="server" />
-                                                            </div>
-                                                            <div class="form-group col-md-6">
-                                                                <label for="txtData" style="color: black;">Data0 *</label>
-                                                                <asp:TextBox ID="txtData" Text="9265655113" Enabled="false" CssClass="form-control" required="required" runat="server" />
-                                                            </div>
-                                                            <div class="form-group col-md-6">
-                                                                <label for="txtUrl" style="color: black;">Url *</label>
-                                                                <asp:TextBox ID="txtUrl" Text="https://bc.mitec.com.mx/p/gen" Enabled="false" CssClass="form-control" required="required" runat="server" />
-                                                            </div>
-                                                            <div class="form-group col-md-6">
-                                                                <label for="txtSemillaAES" style="color: black;">Semilla AES *</label>
-                                                                <asp:TextBox ID="txtSemillaAES" Text="7AACFE849FABD796F6DCB947FD4D5268" Enabled="false" CssClass="form-control" required="required" runat="server" />
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="tab-content">
+                                    <asp:UpdatePanel runat="server">
+                                        <ContentTemplate>
+                                            <asp:Panel ID="pnlAlertCredenciales" runat="server">
+                                                <div id="divAlertCredenciales" class="alert alert-danger alert-dismissible fade" role="alert" runat="server">
+                                                    <asp:Label ID="lblMnsjAlertCredenciales" runat="server" />
+                                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                </div>
+                                            </asp:Panel>
+                                        </ContentTemplate>
+                                    </asp:UpdatePanel>
+
+                                    <div class="tab-pane active show" id="praga">
+                                        <asp:UpdatePanel runat="server">
+                                            <ContentTemplate>
+                                                <asp:Panel ID="pnlCredencialesPraga" runat="server">
+                                                    <div class="card" style="margin-top: 0px;">
+                                                        <div class="card-header card-header-tabs card-header">
+                                                            <div class="nav-tabs-navigation">
+                                                                <div class="nav-tabs-wrapper">
+                                                                    <div class="form-group">
+                                                                        <div class="row">
+                                                                            <div class="form-group col-md-4">
+                                                                                <label for="txtIdBusinesPartner" style="color: black;">ID Business Partner *</label>
+                                                                                <asp:TextBox ID="txtIdBusinesPartner" CssClass="form-control" required="required" runat="server" />
+                                                                            </div>
+                                                                            <div class="form-group col-md-4">
+                                                                                <label for="txtClaveUsuarioWSREST" style="color: black;">Clave de Usuario WS REST *</label>
+                                                                                <asp:TextBox ID="txtClaveUsuarioWSREST" Text="1614725165055" Enabled="false" CssClass="form-control" required="required" runat="server" />
+                                                                            </div>
+                                                                            <div class="form-group col-md-4">
+                                                                                <label for="txtMonedaPraga" style="color: black;">Moneda *</label>
+                                                                                <asp:TextBox ID="txtMonedaPraga" Text="MXN" Enabled="false" CssClass="form-control" required="required" runat="server" />
+                                                                            </div>
+                                                                            <div class="form-group col-md-6">
+                                                                                <label for="txtUrlPraga" style="color: black;">Url *</label>
+                                                                                <asp:TextBox ID="txtUrlPraga" Text="https://www.praga.io/praga-ws/url/generateUrlV3" Enabled="false" CssClass="form-control" required="required" runat="server" />
+                                                                            </div>
+                                                                            <div class="form-group col-md-6">
+                                                                                <label for="txtClaveEncripcionWSREST" style="color: black;">Clave de Encripción WS REST En base 64 *</label>
+                                                                                <asp:TextBox ID="txtClaveEncripcionWSREST" Text="EFD881A116694CA63F9D33CD2F5B8FDB" Enabled="false" CssClass="form-control" required="required" runat="server" />
+                                                                            </div>
+                                                                            <div visible="false" class="form-group col-md-12" runat="server">
+                                                                                <label for="txtAPIKey" style="color: black;">API Key *</label>
+                                                                                <asp:TextBox ID="txtAPIKey" Text="NGY0MmE4MzUtZWVjMS00ZTc5LTkwYWYtYWIzYWJhNzEwYjhj" Enabled="false" CssClass="form-control" required="required" runat="server" />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                                </asp:Panel>
+                                            </ContentTemplate>
+                                        </asp:UpdatePanel>
+
                                     </div>
-                                </asp:Panel>
-                            </ContentTemplate>
-                        </asp:UpdatePanel>
+
+                                    <div class="tab-pane" id="centrosPago">
+                                        <asp:UpdatePanel runat="server">
+                                            <ContentTemplate>
+                                                <asp:Panel ID="pnlCredenciales" runat="server">
+                                                    <div class="card" style="margin-top: 0px;">
+                                                        <div class="card-header card-header-tabs card-header">
+                                                            <div class="nav-tabs-navigation">
+                                                                <div class="nav-tabs-wrapper">
+                                                                    <div class="form-group">
+                                                                        <div class="row">
+                                                                            <div class="form-group col-md-4">
+                                                                                <label for="txtIdCompany" style="color: black;">Id_company *</label>
+                                                                                <asp:TextBox ID="txtIdCompany" CssClass="form-control" required="required" runat="server" />
+                                                                            </div>
+                                                                            <div class="form-group col-md-4">
+                                                                                <label for="txtIdBranch" style="color: black;">Id_branch *</label>
+                                                                                <asp:TextBox ID="txtIdBranch" CssClass="form-control" required="required" runat="server" />
+                                                                            </div>
+                                                                            <div class="form-group col-md-4">
+                                                                                <label for="txtMoneda" style="color: black;">Moneda *</label>
+                                                                                <asp:TextBox ID="txtMoneda" Text="MXN" Enabled="false" CssClass="form-control" required="required" runat="server" />
+                                                                            </div>
+                                                                            <div class="form-group col-md-4">
+                                                                                <label for="txtUsuario" style="color: black;">User *</label>
+                                                                                <asp:TextBox ID="txtUsuario" CssClass="form-control" required="required" runat="server" />
+                                                                            </div>
+                                                                            <div class="form-group col-md-4">
+                                                                                <label for="txtPassword" style="color: black;">Password *</label>
+                                                                                <asp:TextBox ID="txtPassword" CssClass="form-control" required="required" runat="server" />
+                                                                            </div>
+                                                                            <div class="form-group col-md-4">
+                                                                                <label for="txtCanal" style="color: black;">Canal *</label>
+                                                                                <asp:TextBox ID="txtCanal" Text="W" Enabled="false" CssClass="form-control" required="required" runat="server" />
+                                                                            </div>
+                                                                            <div class="form-group col-md-6">
+                                                                                <label for="txtData" style="color: black;">Data0 *</label>
+                                                                                <asp:TextBox ID="txtData" Text="9265655113" Enabled="false" CssClass="form-control" required="required" runat="server" />
+                                                                            </div>
+                                                                            <div class="form-group col-md-6">
+                                                                                <label for="txtUrl" style="color: black;">Url *</label>
+                                                                                <asp:TextBox ID="txtUrl" Text="https://bc.mitec.com.mx/p/gen" Enabled="false" CssClass="form-control" required="required" runat="server" />
+                                                                            </div>
+                                                                            <div class="form-group col-md-6">
+                                                                                <label for="txtSemillaAES" style="color: black;">Semilla AES *</label>
+                                                                                <asp:TextBox ID="txtSemillaAES" Text="7AACFE849FABD796F6DCB947FD4D5268" Enabled="false" CssClass="form-control" required="required" runat="server" />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </asp:Panel>
+                                            </ContentTemplate>
+                                        </asp:UpdatePanel>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <asp:UpdatePanel runat="server" ID="upCredenciales">

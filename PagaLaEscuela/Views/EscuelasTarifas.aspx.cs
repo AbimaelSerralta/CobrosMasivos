@@ -642,7 +642,7 @@ namespace PagaLaEscuela.Views
             gvTipoTarjetaPraga.DataBind();
         }
 
-        #region GridViewTipoTarjeta
+        #region GridViewTipoTarjetaPraga
         protected void gvTipoTarjetaPraga_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
@@ -680,13 +680,13 @@ namespace PagaLaEscuela.Views
                 //}
                 //else
                 //{
-                //    ViewState["AccionPromocionesTerminal"] = "GuardarPromocionesTerminal";
+                //    ViewState["AccionPromocionesPraga"] = "GuardarPromocionesTerminal";
                 //    btnGuardarPromocionesTerminal.Text = "<i class=" + "material-icons>" + "check </i> Guardar";
                 //}
 
                 foreach (var itemTT in tiposTarjetasPragaServices.lsTiposTarjetasPraga)
                 {
-                    if (itemTT.BitPromociones && Guid.Parse(e.Row.Cells[0].Text) == itemTT.UidTipoTarjeta)
+                    if (Guid.Parse(e.Row.Cells[0].Text) == itemTT.UidTipoTarjeta)
                     {
                         promocionesPragaServices.lsCBLPromocionesPragaViewModel.Clear();
                         promocionesPragaServices.CargarPromocionesCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()), itemTT.UidTipoTarjeta);
@@ -698,27 +698,12 @@ namespace PagaLaEscuela.Views
         }
         #endregion
 
-        #region GridViewPromocionesTerminal
+        #region GridViewPromocionesPraga
         protected void gvPromocionesPraga_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
                 //e.Row.Attributes["onclick"] = Page.ClientScript.GetPostBackClientHyperlink(DGVCajas, "Select$" + e.Row.RowIndex);
-
-                //CheckBox cbPromocionTerminal = e.Row.FindControl("cbPromocionTerminal") as CheckBox;
-                //TextBox txtComisionTerminal = e.Row.FindControl("txtComisionTerminal") as TextBox;
-                //TextBox txtApartirDeTerminal = e.Row.FindControl("txtApartirDeTerminal") as TextBox;
-
-
-                //foreach (var item in promocionesTerminalServices.lsCBLPromocionesTerminalViewModel)
-                //{
-                //    if (Guid.Parse(e.Row.Cells[0].Text) == item.UidPromocionTerminal)
-                //    {
-                //        cbPromocionTerminal.Checked = true;
-                //        txtComisionTerminal.Text = item.DcmComicion.ToString();
-                //        txtApartirDeTerminal.Text = item.DcmApartirDe.ToString("N2");
-                //    }
-                //}
             }
         }
 
@@ -729,84 +714,84 @@ namespace PagaLaEscuela.Views
         #endregion
         protected void btnGuardarPromocionesPraga_Click(object sender, EventArgs e)
         {
-            //comisionesTarjetasTerminalServices.EliminarComisionesTarjetaTerminal(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
-            //promocionesTerminalServices.EliminarPromocionesTerminalCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+            comisionesTarjetasPragaServices.EliminarComisionesTarjeta(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+            promocionesPragaServices.EliminarPromocionesCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
 
-            //foreach (GridViewRow row in gvTipoTarjeta.Rows)
-            //{
-            //    Guid UidTipoTarjeta = Guid.Parse(row.Cells[0].Text);
-            //    CheckBox cbComisionTerminal = row.FindControl("cbComisionTerminal") as CheckBox;
-            //    TextBox txtComisionTipoTarjeta = row.FindControl("txtComisionTipoTarjeta") as TextBox;
-            //    GridView gvPromocionesTerminal = row.FindControl("gvPromocionesTerminal") as GridView;
+            foreach (GridViewRow row in gvTipoTarjetaPraga.Rows)
+            {
+                Guid UidTipoTarjeta = Guid.Parse(row.Cells[0].Text);
+                CheckBox cbComisionPraga = row.FindControl("cbComisionPraga") as CheckBox;
+                TextBox txtComisionTipoTarjetaPraga = row.FindControl("txtComisionTipoTarjetaPraga") as TextBox;
+                GridView gvPromocionesPraga = row.FindControl("gvPromocionesPraga") as GridView;
 
-            //    if (cbComisionTerminal.Checked)
-            //    {
-            //        if (txtComisionTipoTarjeta.EmptyTextBox())
-            //        {
-            //            pnlAlert.Visible = true;
-            //            lblMensajeAlert.Text = "El campo comisión es obligatorio.";
-            //            divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
-            //            return;
-            //        }
+                if (cbComisionPraga.Checked)
+                {
+                    if (txtComisionTipoTarjetaPraga.EmptyTextBox())
+                    {
+                        pnlAlert.Visible = true;
+                        lblMensajeAlert.Text = "El campo comisión es obligatorio.";
+                        divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                        return;
+                    }
 
-            //        ValidacionesServices validacionesServices = new ValidacionesServices();
-            //        if (!validacionesServices.IsNumeric(txtComisionTipoTarjeta.Text))
-            //        {
-            //            pnlAlert.Visible = true;
-            //            lblMensajeAlert.Text = "La comisión no es un formato correcto.";
-            //            divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
-            //            return;
-            //        }
-            //    }
-            //    else
-            //    {
-            //        txtComisionTipoTarjeta.Text = "0";
-            //    }
-            //    comisionesTarjetasTerminalServices.RegistrarComisionesTarjetaTerminal(cbComisionTerminal.Checked, decimal.Parse(txtComisionTipoTarjeta.Text), UidTipoTarjeta, Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+                    ValidacionesServices validacionesServices = new ValidacionesServices();
+                    if (!validacionesServices.IsNumeric(txtComisionTipoTarjetaPraga.Text))
+                    {
+                        pnlAlert.Visible = true;
+                        lblMensajeAlert.Text = "La comisión no es un formato correcto.";
+                        divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                        return;
+                    }
+                }
+                else
+                {
+                    txtComisionTipoTarjetaPraga.Text = "0";
+                }
+                comisionesTarjetasPragaServices.RegistrarComisionesTarjeta(cbComisionPraga.Checked, decimal.Parse(txtComisionTipoTarjetaPraga.Text), UidTipoTarjeta, Guid.Parse(ViewState["UidClienteLocal"].ToString()));
 
-            //    foreach (GridViewRow rowPT in gvPromocionesTerminal.Rows)
-            //    {
-            //        Guid UidPromocionTerminal = Guid.Parse(rowPT.Cells[0].Text);
-            //        CheckBox cbPromocionTerminal = rowPT.FindControl("cbPromocionTerminal") as CheckBox;
-            //        TextBox txtComisionTerminal = rowPT.FindControl("txtComisionTerminal") as TextBox;
-            //        TextBox txtApartirDeTerminal = rowPT.FindControl("txtApartirDeTerminal") as TextBox;
+                foreach (GridViewRow rowPT in gvPromocionesPraga.Rows)
+                {
+                    Guid UidPromocion = Guid.Parse(rowPT.Cells[0].Text);
+                    CheckBox cbPromocionPraga = rowPT.FindControl("cbPromocionPraga") as CheckBox;
+                    TextBox txtComisionPraga = rowPT.FindControl("txtComisionPraga") as TextBox;
+                    TextBox txtApartirDePraga = rowPT.FindControl("txtApartirDePraga") as TextBox;
 
-            //        if (cbPromocionTerminal.Checked)
-            //        {
-            //            decimal DcmComicion = 0;
-            //            decimal DcmApartirDe = 0;
+                    if (cbPromocionPraga.Checked)
+                    {
+                        decimal DcmComicion = 0;
+                        decimal DcmApartirDe = 0;
 
-            //            if (!string.IsNullOrEmpty(txtComisionTerminal.Text.Trim()))
-            //            {
-            //                DcmComicion = decimal.Parse(txtComisionTerminal.Text.Trim());
-            //            }
+                        if (!string.IsNullOrEmpty(txtComisionPraga.Text.Trim()))
+                        {
+                            DcmComicion = decimal.Parse(txtComisionPraga.Text.Trim());
+                        }
 
-            //            if (!string.IsNullOrEmpty(txtApartirDeTerminal.Text.Trim()))
-            //            {
-            //                DcmApartirDe = decimal.Parse(txtApartirDeTerminal.Text.Trim());
-            //            }
+                        if (!string.IsNullOrEmpty(txtApartirDePraga.Text.Trim()))
+                        {
+                            DcmApartirDe = decimal.Parse(txtApartirDePraga.Text.Trim());
+                        }
 
-            //            promocionesTerminalServices.RegistrarPromocionesTerminalCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()), UidPromocionTerminal, DcmComicion, DcmApartirDe, UidTipoTarjeta);
-            //        }
-            //    }
+                        promocionesPragaServices.RegistrarPromocionesCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()), UidPromocion, DcmComicion, DcmApartirDe, UidTipoTarjeta);
+                    }
+                }
 
-            //    switch (ViewState["AccionPromocionesTerminal"].ToString())
-            //    {
-            //        case "ActualizarPromocionesTerminal":
-            //            pnlAlert.Visible = true;
-            //            lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha actualizado exitosamente.";
-            //            divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
-            //            break;
+                switch (ViewState["AccionPromocionesPraga"].ToString())
+                {
+                    case "ActualizarPromocionesPraga":
+                        pnlAlert.Visible = true;
+                        lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha actualizado exitosamente.";
+                        divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                        break;
 
-            //        case "GuardarPromocionesTerminal":
-            //            pnlAlert.Visible = true;
-            //            lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
-            //            divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
-            //            break;
-            //    }
-            //}
+                    case "GuardarPromocionesPraga":
+                        pnlAlert.Visible = true;
+                        lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
+                        divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                        break;
+                }
+            }
 
-            //CargarTipoTarjeta();
+            CargarTipoTarjetaPraga();
         }
         #endregion
 

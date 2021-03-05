@@ -1,4 +1,5 @@
-﻿using Franquicia.Domain;
+﻿using Franquicia.DataAccess.Repository;
+using Franquicia.Domain;
 using Franquicia.Domain.Models.Praga;
 using Newtonsoft.Json;
 using System;
@@ -13,6 +14,13 @@ namespace Franquicia.Bussiness
 {
     public class GenerarLigaPraga
     {
+        private ParametrosPragaRepository _parametrosPragaRepository = new ParametrosPragaRepository();
+        public ParametrosPragaRepository parametrosPragaRepository
+        {
+            get { return _parametrosPragaRepository; }
+            set { _parametrosPragaRepository = value; }
+        }
+
         int BusinessId = 0;
         string Url = $"";
         string UserCode = "";
@@ -22,12 +30,14 @@ namespace Franquicia.Bussiness
 
         public GenerarLigaPraga()
         {
-            BusinessId = 13131;
-            Url = $"https://qaag.mitec.com.mx/praga-ws/url/generateUrlV3";
-            UserCode = "1610137579779";
-            WSEncryptionKey = "4451B4A2EBA9E3D49E7981FD2464C361";
-            APIKey = "ZDMxYzc3MGItZjEyMS00OTRhLTkxNmQtYmE5Yjk0M2YzYzlm";
-            Currency = "MXN";
+            parametrosPragaRepository.ObtenerParametrosPraga();
+
+            BusinessId = parametrosPragaRepository.parametrosPraga.BusinessId;
+            Url = $"" + parametrosPragaRepository.parametrosPraga.VchUrl;
+            UserCode = parametrosPragaRepository.parametrosPraga.UserCode;
+            WSEncryptionKey = parametrosPragaRepository.parametrosPraga.WSEncryptionKey;
+            APIKey = parametrosPragaRepository.parametrosPraga.APIKey;
+            Currency = parametrosPragaRepository.parametrosPraga.Currency;
         }
 
         public List<UrlV3PaymentResponse> ApiGenerarURL(decimal Ammount, string EffectiveDate, string Id, string PaymentTypes, string Reference, string Station)
