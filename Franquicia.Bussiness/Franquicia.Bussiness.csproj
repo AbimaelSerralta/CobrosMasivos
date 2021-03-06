@@ -65,6 +65,7 @@
     <Compile Include="ClubPago\CancelacionPagoServices.cs" />
     <Compile Include="ClubPago\ConsultarReferenciasServices.cs" />
     <Compile Include="PagosTarjetaPragaServices.cs" />
+    <Compile Include="ParametrosPragaServices.cs" />
     <Compile Include="SuperComisionesTarjetasPragaServices.cs" />
     <Compile Include="ComisionesTarjetasPragaServices.cs" />
     <Compile Include="ComisionesTarjetasClubPagoServices.cs" />

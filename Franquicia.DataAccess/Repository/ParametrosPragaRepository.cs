@@ -22,21 +22,49 @@ namespace Franquicia.DataAccess.Repository
 
 
         #region MetodosFranquicias
-        public void ObtenerParametrosPraga()
+        public bool ObtenerParametrosPragaBl(Guid UidPropietario)
         {
             parametrosPraga = new ParametrosPraga();
+            bool Accion = false;
 
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select * from ParametrosPraga";
+            query.CommandText = "select * from ParametrosPraga where UidPropietario = '"+ UidPropietario + "'";
 
             DataTable dt = this.Busquedas(query);
 
             foreach (DataRow item in dt.Rows)
             {
                 parametrosPraga.UidParametro = Guid.Parse(item["UidParametro"].ToString());
-                parametrosPraga.BusinessId = int.Parse(item["BusinessId"].ToString());
+                parametrosPraga.BusinessId = item["BusinessId"].ToString();
+                parametrosPraga.VchUrl = item["VchUrl"].ToString();
+                parametrosPraga.UserCode = item["UserCode"].ToString();
+                parametrosPraga.WSEncryptionKey = item["WSEncryptionKey"].ToString();
+                parametrosPraga.APIKey = item["APIKey"].ToString();
+                parametrosPraga.Currency = item["Currency"].ToString();
+                parametrosPraga.UidPropietario = Guid.Parse(item["UidPropietario"].ToString());
+
+                Accion = true;
+            }
+
+            return Accion;
+        }
+        public void ObtenerParametrosPraga(Guid UidPropietario)
+        {
+            parametrosPraga = new ParametrosPraga();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select * from ParametrosPraga where UidPropietario = '"+ UidPropietario + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                parametrosPraga.UidParametro = Guid.Parse(item["UidParametro"].ToString());
+                parametrosPraga.BusinessId = item["BusinessId"].ToString();
                 parametrosPraga.VchUrl = item["VchUrl"].ToString();
                 parametrosPraga.UserCode = item["UserCode"].ToString();
                 parametrosPraga.WSEncryptionKey = item["WSEncryptionKey"].ToString();
@@ -60,11 +88,11 @@ namespace Franquicia.DataAccess.Repository
                 comando.Parameters.Add("@UidParametro", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidParametro"].Value = parametrosPraga.UidParametro;
                 
-                comando.Parameters.Add("@BusinessId", SqlDbType.Int);
+                comando.Parameters.Add("@BusinessId", SqlDbType.VarChar);
                 comando.Parameters["@BusinessId"].Value = parametrosPraga.BusinessId;
                 
-                comando.Parameters.Add("@Url", SqlDbType.VarChar);
-                comando.Parameters["@Url"].Value = parametrosPraga.VchUrl;
+                comando.Parameters.Add("@VchUrl", SqlDbType.VarChar);
+                comando.Parameters["@VchUrl"].Value = parametrosPraga.VchUrl;
                 
                 comando.Parameters.Add("@UserCode", SqlDbType.VarChar);
                 comando.Parameters["@UserCode"].Value = parametrosPraga.UserCode;
@@ -99,11 +127,11 @@ namespace Franquicia.DataAccess.Repository
                 comando.CommandType = System.Data.CommandType.StoredProcedure;
                 comando.CommandText = "sp_ParametrosPragaActualizar";
 
-                comando.Parameters.Add("@BusinessId", SqlDbType.Int);
+                comando.Parameters.Add("@BusinessId", SqlDbType.VarChar);
                 comando.Parameters["@BusinessId"].Value = parametrosPraga.BusinessId;
 
-                comando.Parameters.Add("@Url", SqlDbType.VarChar);
-                comando.Parameters["@Url"].Value = parametrosPraga.VchUrl;
+                comando.Parameters.Add("@VchUrl", SqlDbType.VarChar);
+                comando.Parameters["@VchUrl"].Value = parametrosPraga.VchUrl;
 
                 comando.Parameters.Add("@UserCode", SqlDbType.VarChar);
                 comando.Parameters["@UserCode"].Value = parametrosPraga.UserCode;

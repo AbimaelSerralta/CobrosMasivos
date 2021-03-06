@@ -9,7 +9,7 @@ namespace Franquicia.Domain.Models.Praga
     public class UrlV3PaymentRequest
     {
         public decimal ammount { get; set; }
-        public int businessId { get; set; }
+        public string businessId { get; set; }
         public string currency { get; set; }
         public string effectiveDate { get; set; }
         public string id { get; set; }

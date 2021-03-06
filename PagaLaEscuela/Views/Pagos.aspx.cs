@@ -49,8 +49,6 @@ namespace PagaLaEscuela.Views
         PromocionesPragaServices promocionesPragaServices = new PromocionesPragaServices();
         PagosTarjetaPragaServices pagosTarjetaPragaServices = new PagosTarjetaPragaServices();
 
-        GenerarLigaPraga generarLigaPraga = new GenerarLigaPraga();
-
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Session["UidUsuarioMaster"] != null)
@@ -1247,7 +1245,8 @@ namespace PagaLaEscuela.Views
 
                             string VchCodigo = promocionesPragaServices.ObtenerIdPromocion(Guid.Parse(ddlTiposTarjetas.SelectedValue), Guid.Parse(ddlPromocionesTT.SelectedValue));
                             string IdAlumno = alumnosServices.ObtenerIdAlumno(Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()));
-
+                            
+                            GenerarLigaPraga generarLigaPraga = new GenerarLigaPraga(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()));
                             List<UrlV3PaymentResponse> lsUrlV3PaymentResponse = generarLigaPraga.ApiGenerarURL(importeTotal, vencimiento, IdAlumno, VchCodigo, IdReferencia, "PagaLaEscuela");
 
                             if (lsUrlV3PaymentResponse.Count != 0 && lsUrlV3PaymentResponse != null)

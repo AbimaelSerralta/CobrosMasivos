@@ -21,19 +21,26 @@ namespace Franquicia.Bussiness
             set { _parametrosPragaRepository = value; }
         }
 
-        int BusinessId = 0;
+        string BusinessId = "";
         string Url = $"";
         string UserCode = "";
         string WSEncryptionKey = "";
         string APIKey = "";
         string Currency = "";
 
-        public GenerarLigaPraga()
+        public GenerarLigaPraga(Guid UidPropietario)
         {
-            parametrosPragaRepository.ObtenerParametrosPraga();
+            parametrosPragaRepository.ObtenerParametrosPraga(UidPropietario);
 
             BusinessId = parametrosPragaRepository.parametrosPraga.BusinessId;
-            Url = $"" + parametrosPragaRepository.parametrosPraga.VchUrl;
+            if (string.IsNullOrEmpty(parametrosPragaRepository.parametrosPraga.VchUrl))
+            {
+                Url = $"" + "https://www.praga.io/praga-ws/url/generateUrlV3";
+            }
+            else
+            {
+                Url = $"" + parametrosPragaRepository.parametrosPraga.VchUrl;
+            }
             UserCode = parametrosPragaRepository.parametrosPraga.UserCode;
             WSEncryptionKey = parametrosPragaRepository.parametrosPraga.WSEncryptionKey;
             APIKey = parametrosPragaRepository.parametrosPraga.APIKey;

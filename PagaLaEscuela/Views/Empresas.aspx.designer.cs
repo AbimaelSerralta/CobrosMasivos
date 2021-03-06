@@ -159,6 +159,24 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.TextBox txtAPIKey;
 
         /// <summary>
+        /// Control btnGuardarCredencialesPraga.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnGuardarCredencialesPraga;
+
+        /// <summary>
+        /// Control btnCancelarCredencialesPraga.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnCancelarCredencialesPraga;
+
+        /// <summary>
         /// Control pnlCredenciales.
         /// </summary>
         /// <remarks>
@@ -247,15 +265,6 @@ namespace PagaLaEscuela.Views
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtSemillaAES;
-
-        /// <summary>
-        /// Control upCredenciales.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upCredenciales;
 
         /// <summary>
         /// Control btnGuardarCredenciales.

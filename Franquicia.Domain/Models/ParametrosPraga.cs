@@ -9,7 +9,7 @@ namespace Franquicia.Domain.Models
     public class ParametrosPraga
     {
         public Guid UidParametro { get; set; }
-        public int BusinessId { get; set; }
+        public string BusinessId { get; set; }
         public string VchUrl { get; set; }
         public string UserCode { get; set; }
         public string WSEncryptionKey { get; set; }

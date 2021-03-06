@@ -14,6 +14,8 @@ namespace PagaLaEscuela.Views
         ParametrosEntradaServices parametrosEntradaServices = new ParametrosEntradaServices();
         ValidacionesServices validacionesServices = new ValidacionesServices();
         PromocionesServices promocionesServices = new PromocionesServices();
+
+        ParametrosPragaServices parametrosPragaServices = new ParametrosPragaServices();
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -55,15 +57,12 @@ namespace PagaLaEscuela.Views
                 {
                     switch (ViewState["AccionParametros"].ToString())
                     {
-
                         case "ActualizarParametros":
                             if (parametrosEntradaServices.ActualizarParametrosEntradaCliente(txtIdCompany.Text, txtIdBranch.Text, txtMoneda.Text, txtUsuario.Text, txtPassword.Text, txtCanal.Text, txtData.Text, txtUrl.Text, txtSemillaAES.Text, Guid.Parse(ViewState["UidCliente"].ToString())))
                             {
-                                pnlAlert.Visible = true;
-                                lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha actualizado exitosamente.";
-                                divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
-
-                                ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModalCredenciales()", true);
+                                pnlAlertCredenciales.Visible = true;
+                                lblMnsjAlertCredenciales.Text = "<b>¡Felicidades! </b> se ha actualizado exitosamente.";
+                                divAlertCredenciales.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
                             }
                             else
                             {
@@ -75,11 +74,9 @@ namespace PagaLaEscuela.Views
                         case "GuardarParametros":
                             if (parametrosEntradaServices.RegistrarParametrosEntradaCliente(txtIdCompany.Text, txtIdBranch.Text, txtMoneda.Text, txtUsuario.Text, txtPassword.Text, txtCanal.Text, txtData.Text, txtUrl.Text, txtSemillaAES.Text, Guid.Parse(ViewState["UidCliente"].ToString())))
                             {
-                                pnlAlert.Visible = true;
-                                lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
-                                divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
-
-                                ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModalCredenciales()", true);
+                                pnlAlertCredenciales.Visible = true;
+                                lblMnsjAlertCredenciales.Text = "<b>¡Felicidades! </b> se ha actualizado exitosamente.";
+                                divAlertCredenciales.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
                             }
                             else
                             {
@@ -95,6 +92,7 @@ namespace PagaLaEscuela.Views
                     pnlAlertCredenciales.Visible = true;
                     lblMnsjAlertCredenciales.Text = "Lo sentimos el campo URL no tiene el formato correcto. <br/>=> http(s)://www.cobroscontarjeta.com";
                     divAlertCredenciales.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                    return;
                 }
             }
             else
@@ -102,6 +100,62 @@ namespace PagaLaEscuela.Views
                 pnlAlertCredenciales.Visible = true;
                 lblMnsjAlertCredenciales.Text = "Los campos con * son obligatorios.";
                 divAlertCredenciales.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                return;
+            }
+        }
+        protected void btnGuardarCredencialesPraga_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(txtIdBusinesPartner.Text) && !string.IsNullOrEmpty(txtClaveUsuarioWSREST.Text) && !string.IsNullOrEmpty(txtMonedaPraga.Text) && !string.IsNullOrEmpty(txtUrlPraga.Text) && !string.IsNullOrEmpty(txtClaveEncripcionWSREST.Text) && !string.IsNullOrEmpty(txtAPIKey.Text))
+            {
+                if (validacionesServices.isUrl(txtUrlPraga.Text))
+                {
+                    switch (ViewState["AccionParametrosPraga"].ToString())
+                    {
+
+                        case "ActualizarParametrosPraga":
+                            if (parametrosPragaServices.ActualizarParametrosPraga(txtIdBusinesPartner.Text, txtUrlPraga.Text, txtClaveUsuarioWSREST.Text, txtClaveEncripcionWSREST.Text, txtAPIKey.Text, txtMonedaPraga.Text, Guid.Parse(ViewState["UidCliente"].ToString())))
+                            {
+                                pnlAlertCredenciales.Visible = true;
+                                lblMnsjAlertCredenciales.Text = "<b>¡Felicidades! </b> se ha actualizado exitosamente.";
+                                divAlertCredenciales.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                            }
+                            else
+                            {
+                                pnlAlertCredenciales.Visible = true;
+                                lblMnsjAlertCredenciales.Text = "<b>¡Lo sentimos! </b> ha ocurrido un error inesperado, por favor intentelo más tarde.";
+                                divAlertCredenciales.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                            }
+                            break;
+                        case "GuardarParametrosPraga":
+                            if (parametrosPragaServices.RegistrarParametrosPraga(txtIdBusinesPartner.Text, txtUrlPraga.Text, txtClaveUsuarioWSREST.Text, txtClaveEncripcionWSREST.Text, txtAPIKey.Text, txtMonedaPraga.Text, Guid.Parse(ViewState["UidCliente"].ToString())))
+                            {
+                                pnlAlertCredenciales.Visible = true;
+                                lblMnsjAlertCredenciales.Text = "<b>¡Felicidades! </b> se ha actualizado exitosamente.";
+                                divAlertCredenciales.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                            }
+                            else
+                            {
+                                pnlAlertCredenciales.Visible = true;
+                                lblMnsjAlertCredenciales.Text = "<b>¡Lo sentimos! </b> ha ocurrido un error inesperado, por favor intentelo más tarde.";
+                                divAlertCredenciales.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                            }
+                            break;
+                    }
+                }
+                else
+                {
+                    pnlAlertCredenciales.Visible = true;
+                    lblMnsjAlertCredenciales.Text = "Lo sentimos el campo URL no tiene el formato correcto. <br/>=> http(s)://www.cobroscontarjeta.com";
+                    divAlertCredenciales.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                    return;
+                }
+            }
+            else
+            {
+                pnlAlertCredenciales.Visible = true;
+                lblMnsjAlertCredenciales.Text = "Los campos con * son obligatorios.";
+                divAlertCredenciales.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                return;
             }
         }
 
@@ -138,6 +192,27 @@ namespace PagaLaEscuela.Views
                 {
                     ViewState["AccionParametros"] = "GuardarParametros";
                     btnGuardarCredenciales.Text = "<i class=" + "material-icons>" + "check </i> Guardar";
+                }
+
+                bool Accion = parametrosPragaServices.ObtenerParametrosPragaBl(dataKeys);
+                txtIdBusinesPartner.Text = "";
+
+                if (Accion)
+                {
+                    txtIdBusinesPartner.Text = parametrosPragaServices.parametrosPragaRepository.parametrosPraga.BusinessId.ToString();
+                    txtClaveUsuarioWSREST.Text = parametrosPragaServices.parametrosPragaRepository.parametrosPraga.UserCode.ToString();
+                    txtMonedaPraga.Text = parametrosPragaServices.parametrosPragaRepository.parametrosPraga.Currency.ToString();
+                    txtUrlPraga.Text = parametrosPragaServices.parametrosPragaRepository.parametrosPraga.VchUrl.ToString();
+                    txtClaveEncripcionWSREST.Text = parametrosPragaServices.parametrosPragaRepository.parametrosPraga.WSEncryptionKey.ToString();
+                    txtAPIKey.Text = parametrosPragaServices.parametrosPragaRepository.parametrosPraga.APIKey.ToString();
+
+                    ViewState["AccionParametrosPraga"] = "ActualizarParametrosPraga";
+                    btnGuardarCredencialesPraga.Text = "<i class=" + "material-icons>" + "refresh </i> Actualizar";
+                }
+                else
+                {
+                    ViewState["AccionParametrosPraga"] = "GuardarParametrosPraga";
+                    btnGuardarCredencialesPraga.Text = "<i class=" + "material-icons>" + "check </i> Guardar";
                 }
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalCredenciales()", true);

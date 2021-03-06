@@ -141,15 +141,6 @@
                         </div>
                     </ContentTemplate>
                 </asp:UpdatePanel>
-                <div class="col-12 pt-3">
-                    <asp:UpdateProgress runat="server" AssociatedUpdatePanelID="upCredenciales">
-                        <ProgressTemplate>
-                            <div class="progress">
-                                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
-                            </div>
-                        </ProgressTemplate>
-                    </asp:UpdateProgress>
-                </div>
                 <div class="modal-body pt-0" style="padding-bottom: 0px;">
                     <div class="row">
                         <div class="card card-nav-tabs">
@@ -226,6 +217,15 @@
                                                         </div>
                                                     </div>
                                                 </asp:Panel>
+
+                                                <div class="modal-footer justify-content-center">
+                                                    <asp:LinkButton ID="btnGuardarCredencialesPraga" OnClick="btnGuardarCredencialesPraga_Click" CssClass="btn btn-success btn-round" runat="server">
+                            <i class="material-icons">check</i> Guardar
+                                                    </asp:LinkButton>
+                                                    <asp:LinkButton ID="btnCancelarCredencialesPraga" class="close" data-dismiss="modal" aria-label="Close" CssClass="btn btn-danger btn-round" runat="server">
+                            <i class="material-icons">close</i> Cerrar
+                                                    </asp:LinkButton>
+                                                </div>
                                             </ContentTemplate>
                                         </asp:UpdatePanel>
 
@@ -284,6 +284,15 @@
                                                         </div>
                                                     </div>
                                                 </asp:Panel>
+
+                                                <div class="modal-footer justify-content-center">
+                                                    <asp:LinkButton ID="btnGuardarCredenciales" OnClick="btnGuardarCredenciales_Click" CssClass="btn btn-success btn-round" runat="server">
+                            <i class="material-icons">check</i> Guardar
+                                                    </asp:LinkButton>
+                                                    <asp:LinkButton ID="btnCancelarCredenciales" class="close" data-dismiss="modal" aria-label="Close" CssClass="btn btn-danger btn-round" runat="server">
+                            <i class="material-icons">close</i> Cerrar
+                                                    </asp:LinkButton>
+                                                </div>
                                             </ContentTemplate>
                                         </asp:UpdatePanel>
                                     </div>
@@ -292,21 +301,6 @@
                         </div>
                     </div>
                 </div>
-                <asp:UpdatePanel runat="server" ID="upCredenciales">
-                    <ContentTemplate>
-                        <div class="modal-footer justify-content-center">
-                            <asp:LinkButton ID="btnGuardarCredenciales" OnClick="btnGuardarCredenciales_Click" CssClass="btn btn-success btn-round" runat="server">
-                            <i class="material-icons">check</i> Guardar
-                            </asp:LinkButton>
-                            <asp:LinkButton ID="btnCancelarCredenciales" class="close" data-dismiss="modal" aria-label="Close" CssClass="btn btn-danger btn-round" runat="server">
-                            <i class="material-icons">close</i> Cancelar
-                            </asp:LinkButton>
-                        </div>
-                    </ContentTemplate>
-                    <Triggers>
-                        <asp:AsyncPostBackTrigger ControlID="btnGuardarCredenciales" EventName="Click" />
-                    </Triggers>
-                </asp:UpdatePanel>
             </div>
         </div>
     </div>
