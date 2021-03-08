@@ -236,6 +236,10 @@ namespace Franquicia.Bussiness
         {
             usuarioCompletoRepository.ObtenerFranquiciaUsuario(usuarioCompletoRepository.usuarioCompleto.UidUsuario);
         }
+        public string ObtenerIDFranquiciaUsuario()
+        {
+            return usuarioCompletoRepository.ObtenerIDFranquiciaUsuario(usuarioCompletoRepository.usuarioCompleto.UidUsuario);
+        }
         public void ObtenerFranquiciaClienteUsuario()
         {
             usuarioCompletoRepository.ObtenerFranquiciaClienteUsuario(usuarioCompletoRepository.usuarioCompleto.UidUsuario);

@@ -727,6 +727,24 @@ namespace Franquicia.DataAccess.Repository
             return resultado;
 
         }
+        public string ObtenerIDFranquiciaUsuario(Guid UidUsuario)
+        {
+            string IdFranquicia = "";
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select fr.IdFranquicia from Usuarios us, Franquiciatarios fr, FranquiciasUsuarios fu where fu.UidUsuario = us.UidUsuario and fu.UidFranquicia = fr.UidFranquiciatarios and us.UidUsuario = '" + UidUsuario + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                IdFranquicia = item["IdFranquicia"].ToString();
+            }
+
+            return IdFranquicia;
+        }
         public List<UsuariosCompletos> CargarAdministradoresFranquicia(Guid UidFranquiciatario, Guid UidTipoPerfilFranquicia)
         {
             List<UsuariosCompletos> lsUsuariosCompletos = new List<UsuariosCompletos>();

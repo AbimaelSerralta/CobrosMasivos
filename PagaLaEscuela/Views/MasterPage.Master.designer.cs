@@ -159,6 +159,15 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.DataList dlSubMenuFranquicia;
 
         /// <summary>
+        /// Control lblIdFranquicia.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblIdFranquicia;
+
+        /// <summary>
         /// Control lblNombreComercial.
         /// </summary>
         /// <remarks>

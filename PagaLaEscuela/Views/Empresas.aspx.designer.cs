@@ -321,6 +321,24 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.Label lblMnsjAlertPromociones;
 
         /// <summary>
+        /// Control gvTipoTarjetaPraga.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gvTipoTarjetaPraga;
+
+        /// <summary>
+        /// Control btnGuardarPromocionesPraga.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnGuardarPromocionesPraga;
+
+        /// <summary>
         /// Control gvPromociones.
         /// </summary>
         /// <remarks>
@@ -328,15 +346,6 @@ namespace PagaLaEscuela.Views
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView gvPromociones;
-
-        /// <summary>
-        /// Control upPromociones.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upPromociones;
 
         /// <summary>
         /// Control btnGuardarPromociones.

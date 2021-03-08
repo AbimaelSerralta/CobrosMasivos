@@ -31,6 +31,12 @@ namespace PagaLaEscuela.Views
         ComisionesTarjetasClientesServices comisionesTarjetasClServices = new ComisionesTarjetasClientesServices();
         ComisionesTarjetasServices comisionesTarjetasServices = new ComisionesTarjetasServices();
 
+        SuperPromocionesPragaServices superPromocionesPragaServices = new SuperPromocionesPragaServices();
+        SuperComisionesTarjetasPragaServices superComisionesTarjetasPragaServices = new SuperComisionesTarjetasPragaServices();
+
+        PromocionesPragaServices promocionesPragaServices = new PromocionesPragaServices();
+        ComisionesTarjetasPragaServices comisionesTarjetasPragaServices = new ComisionesTarjetasPragaServices();
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -308,6 +314,31 @@ namespace PagaLaEscuela.Views
                                 }
                             }
 
+                            superPromocionesPragaServices.CargarSuperPromocionesPraga();
+                            foreach (var itemPromoPraga in superPromocionesPragaServices.lsCBLSuperPromocionesPraga)
+                            {
+                                try
+                                {
+                                    promocionesPragaServices.RegistrarPromocionesCliente(UidCliente, itemPromoPraga.UidPromocion, itemPromoPraga.DcmComicion, itemPromoPraga.DcmApartirDe, itemPromoPraga.UidTipoTarjeta);
+                                }
+                                catch (Exception ex)
+                                {
+                                    var s = ex.Message;
+                                }
+                            }
+
+                            superComisionesTarjetasPragaServices.CargarComisionesTarjeta();
+                            foreach (var itemComiPraga in superComisionesTarjetasPragaServices.lsSuperComisionesTarjetasPraga)
+                            {
+                                try
+                                {
+                                    comisionesTarjetasPragaServices.RegistrarComisionesTarjeta(itemComiPraga.BitComision, itemComiPraga.DcmComision, itemComiPraga.UidTipoTarjeta, UidCliente);
+                                }
+                                catch (Exception ex)
+                                {
+                                    var s = ex.Message;
+                                }
+                            }
 
                             clientesServices.CargarClientes(Guid.Parse(ViewState["UidFranquiciaLocal"].ToString()));
                             gvClientes.DataSource = clientesServices.lsClientesGridViewModel;

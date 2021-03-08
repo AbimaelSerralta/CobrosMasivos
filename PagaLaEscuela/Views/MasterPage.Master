@@ -206,6 +206,9 @@
                                             </ul>
                                         </li>
                                         <li>
+                                            <asp:Label ID="lblIdFranquicia" Visible="false" Style="color: #4caf50;" CssClass="navbar-text" runat="server"></asp:Label>
+                                        </li>
+                                        <li>
                                             <asp:Label ID="lblNombreComercial" Style="color: black;" CssClass="navbar-text" runat="server"></asp:Label>
                                         </li>
                                         <li class="dropdown" id="liMenuCliente" runat="server">

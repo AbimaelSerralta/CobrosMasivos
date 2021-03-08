@@ -28,7 +28,7 @@ namespace Franquicia.DataAccess.Repository
             {
                 lsPromocionesPraga.Add(new PromocionesPraga()
                 {
-                    UidPromocion = new Guid(item["UidPromocion"].ToString()),
+                    UidPromocion = Guid.Parse(item["UidPromocion"].ToString()),
                     VchDescripcion = item["VchDescripcion"].ToString()
                 });
             }
@@ -52,7 +52,7 @@ namespace Franquicia.DataAccess.Repository
             {
                 lsSuperPromocionesPragaDisponiblesViewModel.Add(new SuperPromocionesPragaDisponiblesViewModel()
                 {
-                    UidPromocion = new Guid(item["UidPromocion"].ToString()),
+                    UidPromocion = Guid.Parse(item["UidPromocion"].ToString()),
                     VchDescripcion = item["VchDescripcion"].ToString()
                 });
             }
@@ -74,10 +74,11 @@ namespace Franquicia.DataAccess.Repository
             {
                 lsSuperPromocionesPraga.Add(new SuperPromocionesPraga()
                 {
-                    UidSuperPromocion = new Guid(item["UidSuperPromocion"].ToString()),
-                    UidPromocion = new Guid(item["UidPromocion"].ToString()),
+                    UidSuperPromocion = Guid.Parse(item["UidSuperPromocion"].ToString()),
+                    UidPromocion = Guid.Parse(item["UidPromocion"].ToString()),
                     DcmComicion = decimal.Parse(item["DcmComicion"].ToString()),
-                    DcmApartirDe = decimal.Parse(item["DcmApartirDe"].ToString())
+                    DcmApartirDe = decimal.Parse(item["DcmApartirDe"].ToString()),
+                    UidTipoTarjeta = Guid.Parse(item["UidTipoTarjeta"].ToString())
                 });
             }
 
