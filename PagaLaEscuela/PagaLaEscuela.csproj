@@ -226,6 +226,7 @@
     <Content Include="CSSPropio\BasicEventos.css" />
     <Content Include="CSSPropio\BtnPaginacion.css" />
     <Content Include="CSSPropio\EfectosCards.css" />
+    <Content Include="CSSPropio\HiddenHeaderGridView.css" />
     <Content Include="CSSPropio\Loader.css" />
     <Content Include="CSSPropio\loader.gif" />
     <Content Include="CSSPropio\Login2.css" />

@@ -139,10 +139,13 @@
                                     <table style="width: 100%;">
                                         <tr>
                                             <td style="width: 20%; padding-left: 5px;">
-                                                <asp:LinkButton ID="btnRegresar" OnClick="btnRegresar_Click" Style="padding-left: 10px; padding-right: 10px;" CssClass="btn btn-round" runat="server">
+                                                <asp:LinkButton ID="btnRegresar" OnClick="btnRegresar_Click" ToolTip="Regresar" Style="padding-left: 10px; padding-right: 10px;" CssClass="btn btn-round" runat="server">
                                                     <asp:Label ForeColor="White" runat="server">
-                                                        <i class="material-icons">arrow_back</i> Regresar
+                                                        <i class="material-icons">arrow_back</i>
                                                     </asp:Label>
+                                                </asp:LinkButton>
+                                                <asp:LinkButton ID="btnFiltros" OnClick="btnFiltros_Click" ToolTip="Filtros de busqueda." BackColor="#4db6ac" class="btn btn-lg btn-fab btn-fab-mini btn-round" runat="server">
+                                                        <i class="material-icons">search</i>
                                                 </asp:LinkButton>
                                             </td>
                                             <td style="width: 15%; padding-right: 5px;">
@@ -179,18 +182,40 @@
                                                         <asp:TextBox ID="txtGvUidCliente" Text='<%#Eval("UidCliente")%>' Visible="false" runat="server" />
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                <asp:BoundField SortExpression="VchMatricula" DataField="VchMatricula" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" HeaderText="MATRICULA" />
-                                                <asp:BoundField SortExpression="NombreCompleto" DataField="NombreCompleto" HeaderStyle-CssClass="text-center" HeaderText="ALUMNO" />
-                                                <asp:BoundField SortExpression="VchNum" DataField="VchNum" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" HeaderText="# DE PAGOS" />
+                                                <asp:BoundField DataField="VchMatricula" HeaderStyle-CssClass="hiddenHeaderGrid" ItemStyle-CssClass="hiddenHeaderGrid" />
+                                                <asp:TemplateField SortExpression="VchNum" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" HeaderText="# DE PAGOS">
+                                                    <ItemTemplate>
+                                                        <table style="width: 100%;">
+                                                            <tbody>
+                                                                <tr style="background: transparent;">
+                                                                    <td style="width: 70%; vertical-align: middle; border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
+                                                                        <asp:Label Text='<%#Eval("VchNum")%>' runat="server" />
+                                                                    </td>
+                                                                    <td style="width: 30%; border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
+                                                                        <asp:LinkButton ID="btnInfoCole" ToolTip="Detalle de la colegiatura" CommandArgument="<%# ((GridViewRow)Container).RowIndex %>" CommandName="btnInfoCole" Style="margin-left: 5px;" runat="server">
+                                                                                <asp:Label class="btn btn-sm btn-info btn-fab btn-fab-mini btn-round" runat="server">
+                                                                                        <i class="material-icons">info_outline</i>
+                                                                                </asp:Label>
+                                                                        </asp:LinkButton>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+
                                                 <asp:BoundField SortExpression="DcmImporte" DataField="DcmImporte" ItemStyle-CssClass="text-right" HeaderStyle-CssClass="text-right" DataFormatString="{0:C}" HeaderText="IMPORTE" />
                                                 <asp:BoundField SortExpression="ImpPagado" DataField="ImpPagado" ItemStyle-CssClass="text-right" HeaderStyle-CssClass="text-right" DataFormatString="{0:C}" HeaderText="ABONADO" />
                                                 <asp:BoundField SortExpression="ImpTotal" DataField="ImpTotal" ItemStyle-CssClass="text-right" HeaderStyle-CssClass="text-right" DataFormatString="{0:C}" HeaderText="SALDO" />
                                                 <asp:BoundField SortExpression="DtFHInicio" DataField="DtFHInicio" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" DataFormatString="{0:dd/MM/yyyy}" HeaderText="INICIO" />
-                                                <asp:BoundField SortExpression="VchFHLimite" DataField="VchFHLimite" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" HeaderText="LIMITE" />
-                                                <asp:BoundField SortExpression="VchFHVencimiento" DataField="VchFHVencimiento" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" HeaderText="VENCIMIENTO" />
                                                 <asp:TemplateField SortExpression="VchEstatusFechas" HeaderText="ESTATUS">
                                                     <ItemTemplate>
                                                         <asp:Label Text='<%#Eval("VchEstatusFechas")%>' ForeColor='<%# System.Drawing.ColorTranslator.FromHtml(Eval("VchColor").ToString()) %>' Font-Names="Comic Sans MS" Font-Bold="true" runat="server"></asp:Label>
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
+                                                <asp:TemplateField SortExpression="EstatusPago" HeaderText="PAGO">
+                                                    <ItemTemplate>
+                                                        <asp:Label Text='<%#Eval("EstatusPago")%>' ForeColor='<%# System.Drawing.ColorTranslator.FromHtml(Eval("ColorEstatusPago").ToString()) %>' Font-Names="Comic Sans MS" Font-Bold="true" runat="server"></asp:Label>
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:TemplateField>
@@ -1846,6 +1871,203 @@
         </div>
     </div>
 
+    <div id="ModalDetalleCole" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <asp:UpdatePanel runat="server">
+                    <ContentTemplate>
+                        <div class="modal-header">
+                            <h5 class="modal-title" runat="server">
+                                <asp:Label ID="Label5" Text="Detalle de la colegiatura" runat="server" />
+                            </h5>
+                            <asp:LinkButton ID="LinkButton5" OnClientClick="hideModalDetalleCole();" aria-label="Close" CssClass="close" runat="server">
+                            <span aria-hidden="true">&times;</span>
+                            </asp:LinkButton>
+                        </div>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+                <div class="modal-body pt-0" style="padding-bottom: 0px;">
+                    <div class="tab-content">
+                        <asp:UpdatePanel runat="server">
+                            <ContentTemplate>
+                                <asp:Panel ID="Panel2" Visible="false" runat="server">
+                                    <div id="div1" class="alert alert-danger alert-dismissible fade" role="alert" runat="server">
+                                        <asp:Label ID="Label6" runat="server" />
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    </div>
+                                </asp:Panel>
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="card" style="margin-top: 15px; margin-bottom: 15px;">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-hover">
+                                                            <tr>
+                                                                <td style="padding-bottom: 0px;" class="text-center"></td>
+                                                                <td style="font-weight: bold; padding-top: 0px; padding-bottom: 0px;" class="text-right"></td>
+                                                                <td style="font-weight: bold; padding-top: 0px; padding-bottom: 0px;" class="text-right"></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th style="padding-left: 5px;" class="text-right"># DE PAGO:</th>
+                                                                <td class="text-left">
+                                                                    <asp:Label ID="lblNoPagoDetalleCole" runat="server" /></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th style="padding-left: 5px;" class="text-right">MATRICULA:</th>
+                                                                <td class="text-left">
+                                                                    <asp:Label ID="lblMatriculaDetalleCole" runat="server" /></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th style="padding-left: 5px;" class="text-right">ALUMNO:</th>
+                                                                <td class="text-left">
+                                                                    <asp:Label ID="lblAlumnoDetalleCole" runat="server" /></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th style="padding-left: 5px;" class="text-right">FECHA LIMITE:</th>
+                                                                <td class="text-left">
+                                                                    <asp:Label ID="lblFLDetalleCole" runat="server" /></td>
+                                                            </tr>
+
+                                                            <tr>
+                                                                <th style="width: 35%; padding-left: 5px;" class="text-right">FECHA VENCIMIENTO:</th>
+                                                                <td class="text-left">
+                                                                    <asp:Label ID="lblFVDetalleCole" runat="server" /></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="padding-bottom: 0px;" class="text-center"></td>
+                                                                <td style="font-weight: bold; padding-top: 0px; padding-bottom: 0px;" class="text-right"></td>
+                                                                <td style="font-weight: bold; padding-top: 0px; padding-bottom: 0px;" class="text-right"></td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ContentTemplate>
+                        </asp:UpdatePanel>
+                    </div>
+                </div>
+                <asp:UpdatePanel runat="server">
+                    <ContentTemplate>
+                        <%--<div class="modal-footer justify-content-center">
+                            <asp:LinkButton ID="LinkButton2" data-dismiss="modal" aria-label="Close" CssClass="btn btn-info btn-round" runat="server">
+                            <i class="material-icons">close</i> Cerrar
+                            </asp:LinkButton>
+                        </div>--%>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+            </div>
+        </div>
+    </div>
+
+    <div id="ModalBusqueda" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <asp:UpdatePanel runat="server">
+                    <ContentTemplate>
+                        <div class="modal-header" style="padding-bottom: 0px; padding-top: 5px; margin-bottom: 5px;">
+                            <h5 class="modal-title" runat="server">
+                                <asp:Label ID="lblTittleLigas" Text="Filtro de busqueda" runat="server" /></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+
+                <div class="modal-body pt-0" style="padding-bottom: 0px;">
+                    <asp:Label Text="Despliegue una sección para mostrar los campos de busqueda." runat="server" />
+                    <asp:Panel ID="pnlFiltrosBusqueda" runat="server">
+                        <div class="accordionCard" style="margin-top: 15px; margin-bottom: 0px; border-left: 8px solid black;">
+                            <label style="font-size: 1.0625rem; font-weight: bold; color: black;">Datos colegiatura</label>
+                        </div>
+                        <div class="panelFiltro">
+                            <div class="row">
+                                <div class="card" style="margin-top: 0px; margin-bottom: 0px; border-left: 8px solid black;">
+                                    <div class="card-body">
+                                        <asp:UpdatePanel runat="server">
+                                            <ContentTemplate>
+                                                <div class="row">
+                                                    <div class="form-group col-md-9">
+                                                        <label for="txtColegiatura" style="margin-left: 15px; color: black;">Colegiatura</label>
+                                                        <asp:TextBox ID="txtColegiatura" CssClass="form-control" aria-label="Search" runat="server" />
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="txtNumPago" style="margin-left: 15px; color: black;"># de pago</label>
+                                                        <asp:TextBox ID="txtNumPago" CssClass="form-control" TextMode="Number" aria-label="Search" runat="server" />
+                                                        <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" TargetControlID="txtNumPago" runat="server" />
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="ddlEstatusCole" style="color: black;">Estatus</label>
+                                                        <asp:DropDownList ID="ddlEstatusCole" AppendDataBoundItems="true" CssClass="form-control" Style="margin-top: 6px;" runat="server">
+                                                        </asp:DropDownList>
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="ddlEstatusPago" style="color: black;">Pago</label>
+                                                        <asp:DropDownList ID="ddlEstatusPago" AppendDataBoundItems="true" CssClass="form-control" Style="margin-top: 6px;" runat="server">
+                                                        </asp:DropDownList>
+                                                    </div>
+                                                </div>
+                                            </ContentTemplate>
+                                        </asp:UpdatePanel>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordionCard" style="margin-top: 15px; margin-bottom: 0px; border-left: 8px solid #326497;">
+                            <label style="font-size: 1.0625rem; font-weight: bold; color: black;">Datos alumno</label>
+                        </div>
+                        <div class="panelFiltro">
+                            <div class="row">
+                                <div class="card" style="margin-top: 0px; margin-bottom: 0px; border-left: 8px solid #326497;">
+                                    <div class="card-body">
+                                        <asp:UpdatePanel runat="server">
+                                            <ContentTemplate>
+                                                <div class="row">
+                                                    <div class="form-group col-md-3">
+                                                        <label for="txtMatricula" style="margin-left: 15px; color: black;">Matricula</label>
+                                                        <asp:TextBox ID="txtMatricula" CssClass="form-control" aria-label="Search" runat="server" />
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="txtAlNombre" style="margin-left: 15px; color: black;">Nombre</label>
+                                                        <asp:TextBox ID="txtAlNombre" CssClass="form-control" aria-label="Search" runat="server" />
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="txtAlApPaterno" style="margin-left: 15px; color: black;">Apellido Paterno</label>
+                                                        <asp:TextBox ID="txtAlApPaterno" CssClass="form-control" aria-label="Search" runat="server" />
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="txtAlApMaterno" style="margin-left: 15px; color: black;">Apellido Materno</label>
+                                                        <asp:TextBox ID="txtAlApMaterno" CssClass="form-control" aria-label="Search" runat="server" />
+                                                    </div>
+                                                </div>
+                                            </ContentTemplate>
+                                        </asp:UpdatePanel>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </asp:Panel>
+                </div>
+                <div class="modal-footer justify-content-center" style="padding-top: 5px; padding-bottom: 5px;">
+                    <asp:UpdatePanel runat="server">
+                        <ContentTemplate>
+                            <asp:LinkButton ID="btnBuscar" OnClick="btnBuscar_Click" CssClass="btn btn-primary btn-round" runat="server">
+                            <i class="material-icons">search</i> Buscar
+                            </asp:LinkButton>
+                            <asp:LinkButton ID="btnLimpiar" OnClick="btnLimpiar_Click" CssClass="btn btn-warning btn-round" runat="server">
+                            <i class="material-icons">clear_all</i> Limpiar
+                            </asp:LinkButton>
+                        </ContentTemplate>
+                    </asp:UpdatePanel>
+                </div>
+            </div>
+        </div>
+    </div>
     <!--END MODAL-->
 
     <script>
@@ -1890,8 +2112,23 @@
         function hideModalPagos() {
             $('#ModalPagos').modal('hide');
         }
+
+        function showModalDetalleCole() {
+            $('#ModalDetalleCole').modal('show');
+        }
+        function hideModalDetalleCole() {
+            $('#ModalDetalleCole').modal('hide');
+        }
     </script>
 
+    <script>
+        function showModalBusqueda() {
+            $('#ModalBusqueda').modal('show');
+        }
+        function hideModalBusqueda() {
+            $('#ModalBusqueda').modal('hide');
+        }
+    </script>
     <script>
         function showModalPagoDetalle() {
             $('#ModalPagoDetalle').modal('show');
@@ -1934,6 +2171,22 @@
             elm2.className = 'nav-link';
 
             $('#ulTabAgregarPago a[href="#pago"]').tab('show')
+        }
+    </script>
+    <script>
+        var acc = document.getElementsByClassName("accordionCard");
+        var i;
+
+        for (i = 0; i < acc.length; i++) {
+            acc[i].addEventListener("click", function () {
+                this.classList.toggle("activeAccordion");
+                var panel = this.nextElementSibling;
+                if (panel.style.maxHeight) {
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                }
+            });
         }
     </script>
 </asp:Content>

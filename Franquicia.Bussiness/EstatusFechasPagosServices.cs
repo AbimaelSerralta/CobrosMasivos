@@ -36,5 +36,15 @@ namespace Franquicia.Bussiness
         }
         #endregion
         #endregion
+
+        #region PanelTutor
+        #region ReporteLigasPadre
+        public void CargarEstatusFechasPagosBusquedaRLP()
+        {
+            lsEstatusFechasPagos = new List<EstatusFechasPagos>();
+            lsEstatusFechasPagos = estatusFechasPagosRepository.CargarEstatusFechasPagosBusquedaRLP();
+        }
+        #endregion
+        #endregion
     }
 }

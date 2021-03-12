@@ -32,7 +32,10 @@ namespace Franquicia.Domain.ViewModels
         
         public string VchEstatusFechas { get; set; }
         public string VchColor { get; set; }
-        
+
+        public string EstatusPago { get; set; }
+        public string ColorEstatusPago { get; set; }
+
         public bool blPagar { get; set; }
         public string VchPeriodicidad { get; set; }
         

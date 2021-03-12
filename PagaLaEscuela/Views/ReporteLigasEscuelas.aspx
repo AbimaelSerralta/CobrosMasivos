@@ -1013,7 +1013,7 @@
                                                     </div>
                                                     <div class="form-group col-md-3">
                                                         <label for="txtImporte" style="color: black;"></label>
-                                                        <asp:TextBox ID="txtImporteMayor" CssClass="form-control" placeholder="Mayor" aria-label="Search" Style="margin-top: 33px;" runat="server" />
+                                                        <asp:TextBox ID="txtImporteMayor" CssClass="form-control" placeholder="Mayor" aria-label="Search" Style="margin-top: 12px;" runat="server" />
                                                         <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtImporteMayor" runat="server" />
                                                     </div>
                                                     <div class="form-group col-md-3">
@@ -1025,7 +1025,7 @@
                                                     </div>
                                                     <div class="form-group col-md-3">
                                                         <label for="txtImporte" style="color: black;"></label>
-                                                        <asp:TextBox ID="txtImporteMenor" CssClass="form-control" placeholder="Menor" aria-label="Search" Style="margin-top: 33px;" runat="server" />
+                                                        <asp:TextBox ID="txtImporteMenor" CssClass="form-control" placeholder="Menor" aria-label="Search" Style="margin-top: 12px;" runat="server" />
                                                         <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtImporteMenor" runat="server" />
                                                     </div>
                                                     <div class="form-group col-md-3">

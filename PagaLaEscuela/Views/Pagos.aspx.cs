@@ -49,6 +49,9 @@ namespace PagaLaEscuela.Views
         PromocionesPragaServices promocionesPragaServices = new PromocionesPragaServices();
         PagosTarjetaPragaServices pagosTarjetaPragaServices = new PagosTarjetaPragaServices();
 
+        EstatusFechasColegiaturasServices estatusFechasColegiaturasServices = new EstatusFechasColegiaturasServices();
+        EstatusColegiaturasAlumnosServices estatusColegiaturasAlumnosServices = new EstatusColegiaturasAlumnosServices();
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Session["UidUsuarioMaster"] != null)
@@ -81,20 +84,21 @@ namespace PagaLaEscuela.Views
 
                 Session["promocionesPragaServices"] = promocionesPragaServices;
 
-                pagosPadresServices.CargarComercios(Guid.Parse(ViewState["UidUsuarioLocal"].ToString()));
-                rpComercios.DataSource = pagosPadresServices.lsPadresComerciosViewModels;
-                rpComercios.DataBind();
+                CargarComercios();
 
-                if (pagosPadresServices.lsPadresComerciosViewModels.Count >= 1)
-                {
-                    pnlComercios.Visible = true;
-                    pnlSinEscuelas.Visible = false;
-                }
-                else
-                {
-                    pnlComercios.Visible = false;
-                    pnlSinEscuelas.Visible = true;
-                }
+                estatusFechasColegiaturasServices.CargarEstatusFechasColegiaturas();
+                ddlEstatusCole.DataSource = estatusFechasColegiaturasServices.lsEstatusFechasColegiaturas;
+                ddlEstatusCole.Items.Insert(0, new ListItem("TODOS", Guid.Empty.ToString()));
+                ddlEstatusCole.DataTextField = "VchDescripcion";
+                ddlEstatusCole.DataValueField = "UidEstatusFechaColegiatura";
+                ddlEstatusCole.DataBind();
+
+                estatusColegiaturasAlumnosServices.CargarEstatusColegiaturasAlumnos();
+                ddlEstatusPago.DataSource = estatusColegiaturasAlumnosServices.lsEstatusColegiaturasAlumnos;
+                ddlEstatusPago.Items.Insert(0, new ListItem("TODOS", Guid.Empty.ToString()));
+                ddlEstatusPago.DataTextField = "VchDescripcion";
+                ddlEstatusPago.DataValueField = "UidEstatusColeAlumnos";
+                ddlEstatusPago.DataBind();
             }
             else
             {
@@ -137,6 +141,24 @@ namespace PagaLaEscuela.Views
                     rpFormasPago.DataSource = formasPagosServices.lsFormasPagos;
                     rpFormasPago.DataBind();
                 }
+            }
+        }
+
+        private void CargarComercios()
+        {
+            pagosPadresServices.CargarComercios(Guid.Parse(ViewState["UidUsuarioLocal"].ToString()));
+            rpComercios.DataSource = pagosPadresServices.lsPadresComerciosViewModels;
+            rpComercios.DataBind();
+
+            if (pagosPadresServices.lsPadresComerciosViewModels.Count >= 1)
+            {
+                pnlComercios.Visible = true;
+                pnlSinEscuelas.Visible = false;
+            }
+            else
+            {
+                pnlComercios.Visible = false;
+                pnlSinEscuelas.Visible = true;
             }
         }
 
@@ -189,6 +211,8 @@ namespace PagaLaEscuela.Views
         {
             pnlComercios.Visible = true;
             pnlPagos.Visible = false;
+
+            CargarComercios();
         }
         protected void btnActualizarLista_Click(object sender, EventArgs e)
         {
@@ -236,26 +260,6 @@ namespace PagaLaEscuela.Views
                             colegiaturasServices.lsPagosColegiaturasViewModel = colegiaturasServices.lsPagosColegiaturasViewModel.OrderByDescending(x => x.VchIdentificador).ToList();
                         }
                         break;
-                    case "VchMatricula":
-                        if (Orden == "ASC")
-                        {
-                            colegiaturasServices.lsPagosColegiaturasViewModel = colegiaturasServices.lsPagosColegiaturasViewModel.OrderBy(x => x.VchMatricula).ToList();
-                        }
-                        else
-                        {
-                            colegiaturasServices.lsPagosColegiaturasViewModel = colegiaturasServices.lsPagosColegiaturasViewModel.OrderByDescending(x => x.VchMatricula).ToList();
-                        }
-                        break;
-                    case "NombreCompleto":
-                        if (Orden == "ASC")
-                        {
-                            colegiaturasServices.lsPagosColegiaturasViewModel = colegiaturasServices.lsPagosColegiaturasViewModel.OrderBy(x => x.NombreCompleto).ToList();
-                        }
-                        else
-                        {
-                            colegiaturasServices.lsPagosColegiaturasViewModel = colegiaturasServices.lsPagosColegiaturasViewModel.OrderByDescending(x => x.NombreCompleto).ToList();
-                        }
-                        break;
                     case "VchNum":
                         if (Orden == "ASC")
                         {
@@ -276,6 +280,26 @@ namespace PagaLaEscuela.Views
                             colegiaturasServices.lsPagosColegiaturasViewModel = colegiaturasServices.lsPagosColegiaturasViewModel.OrderByDescending(x => x.DcmImporte).ToList();
                         }
                         break;
+                    case "ImpPagado":
+                        if (Orden == "ASC")
+                        {
+                            colegiaturasServices.lsPagosColegiaturasViewModel = colegiaturasServices.lsPagosColegiaturasViewModel.OrderBy(x => x.ImpPagado).ToList();
+                        }
+                        else
+                        {
+                            colegiaturasServices.lsPagosColegiaturasViewModel = colegiaturasServices.lsPagosColegiaturasViewModel.OrderByDescending(x => x.ImpPagado).ToList();
+                        }
+                        break;
+                    case "ImpTotal":
+                        if (Orden == "ASC")
+                        {
+                            colegiaturasServices.lsPagosColegiaturasViewModel = colegiaturasServices.lsPagosColegiaturasViewModel.OrderBy(x => x.ImpTotal).ToList();
+                        }
+                        else
+                        {
+                            colegiaturasServices.lsPagosColegiaturasViewModel = colegiaturasServices.lsPagosColegiaturasViewModel.OrderByDescending(x => x.ImpTotal).ToList();
+                        }
+                        break;
                     case "DtFHInicio":
                         if (Orden == "ASC")
                         {
@@ -284,26 +308,6 @@ namespace PagaLaEscuela.Views
                         else
                         {
                             colegiaturasServices.lsPagosColegiaturasViewModel = colegiaturasServices.lsPagosColegiaturasViewModel.OrderByDescending(x => x.DtFHInicio).ToList();
-                        }
-                        break;
-                    case "VchFHLimite":
-                        if (Orden == "ASC")
-                        {
-                            colegiaturasServices.lsPagosColegiaturasViewModel = colegiaturasServices.lsPagosColegiaturasViewModel.OrderBy(x => x.VchFHLimite).ToList();
-                        }
-                        else
-                        {
-                            colegiaturasServices.lsPagosColegiaturasViewModel = colegiaturasServices.lsPagosColegiaturasViewModel.OrderByDescending(x => x.VchFHLimite).ToList();
-                        }
-                        break;
-                    case "VchFHVencimiento":
-                        if (Orden == "ASC")
-                        {
-                            colegiaturasServices.lsPagosColegiaturasViewModel = colegiaturasServices.lsPagosColegiaturasViewModel.OrderBy(x => x.VchFHVencimiento).ToList();
-                        }
-                        else
-                        {
-                            colegiaturasServices.lsPagosColegiaturasViewModel = colegiaturasServices.lsPagosColegiaturasViewModel.OrderByDescending(x => x.VchFHVencimiento).ToList();
                         }
                         break;
                     case "VchEstatusFechas":
@@ -316,6 +320,16 @@ namespace PagaLaEscuela.Views
                             colegiaturasServices.lsPagosColegiaturasViewModel = colegiaturasServices.lsPagosColegiaturasViewModel.OrderByDescending(x => x.VchEstatusFechas).ToList();
                         }
                         break;
+                    case "EstatusPago":
+                        if (Orden == "ASC")
+                        {
+                            colegiaturasServices.lsPagosColegiaturasViewModel = colegiaturasServices.lsPagosColegiaturasViewModel.OrderBy(x => x.EstatusPago).ToList();
+                        }
+                        else
+                        {
+                            colegiaturasServices.lsPagosColegiaturasViewModel = colegiaturasServices.lsPagosColegiaturasViewModel.OrderByDescending(x => x.EstatusPago).ToList();
+                        }
+                        break;
                 }
 
                 gvPagos.DataSource = colegiaturasServices.lsPagosColegiaturasViewModel;
@@ -324,6 +338,30 @@ namespace PagaLaEscuela.Views
         }
         protected void gvPagos_RowCommand(object sender, GridViewCommandEventArgs e)
         {
+            if (e.CommandName == "btnInfoCole")
+            {
+                int index = Convert.ToInt32(e.CommandArgument.ToString());
+                GridViewRow Seleccionado = gvPagos.Rows[index];
+                GridView valor = (GridView)sender;
+                Guid dataKey = Guid.Parse(valor.DataKeys[Seleccionado.RowIndex].Value.ToString());
+
+                ViewState["gvPagos_Index"] = index;
+                ViewState["gvPagos_dataKey"] = dataKey;
+
+                string Matri = gvPagos.Rows[index].Cells[1].Text;
+                ViewState["RowCommand-Matricula"] = Matri;
+
+                int inde = colegiaturasServices.lsPagosColegiaturasViewModel.FindIndex(x=> x.UidFechaColegiatura == dataKey && x.VchMatricula == Matri);
+
+                lblNoPagoDetalleCole.Text = colegiaturasServices.lsPagosColegiaturasViewModel[inde].VchNum;
+                lblMatriculaDetalleCole.Text = colegiaturasServices.lsPagosColegiaturasViewModel[inde].VchMatricula;
+                lblAlumnoDetalleCole.Text = colegiaturasServices.lsPagosColegiaturasViewModel[inde].NombreCompleto;
+                lblFLDetalleCole.Text = colegiaturasServices.lsPagosColegiaturasViewModel[inde].VchFHLimite;
+                lblFVDetalleCole.Text = colegiaturasServices.lsPagosColegiaturasViewModel[inde].VchFHVencimiento;
+
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalDetalleCole()", true);
+            }
+
             if (e.CommandName == "btnPagar")
             {
                 int index = Convert.ToInt32(e.CommandArgument.ToString());
@@ -1245,7 +1283,7 @@ namespace PagaLaEscuela.Views
 
                             string VchCodigo = promocionesPragaServices.ObtenerIdPromocion(Guid.Parse(ddlTiposTarjetas.SelectedValue), Guid.Parse(ddlPromocionesTT.SelectedValue));
                             string IdAlumno = alumnosServices.ObtenerIdAlumno(Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()));
-                            
+
                             GenerarLigaPraga generarLigaPraga = new GenerarLigaPraga(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()));
                             List<UrlV3PaymentResponse> lsUrlV3PaymentResponse = generarLigaPraga.ApiGenerarURL(importeTotal, vencimiento, IdAlumno, VchCodigo, IdReferencia, "PagaLaEscuela");
 
@@ -1939,6 +1977,64 @@ namespace PagaLaEscuela.Views
         }
 
         #region GridViewPagosColegiatura
+        protected void btnFiltros_Click(object sender, EventArgs e)
+        {
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalBusqueda()", true);
+        }
+        protected void btnBuscar_Click(object sender, EventArgs e)
+        {
+            DateTime HoraDelServidor = DateTime.Now;
+            DateTime hoy = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(HoraDelServidor, TimeZoneInfo.Local.Id, "Eastern Standard Time (Mexico)");
+
+            decimal ImporteMayor = 0;
+            decimal ImporteMenor = 0;
+
+            //if (txtImporteMayor.Text != string.Empty)
+            //{
+            //    switch (ddlImporteMayor.SelectedValue)
+            //    {
+            //        case ">":
+            //            ImporteMayor = Convert.ToDecimal(txtImporteMayor.Text) + 1;
+            //            break;
+            //        case ">=":
+            //            ImporteMayor = Convert.ToDecimal(txtImporteMayor.Text);
+            //            break;
+            //    }
+            //}
+            //if (txtImporteMenor.Text != string.Empty)
+            //{
+            //    switch (ddlImporteMenor.SelectedValue)
+            //    {
+            //        case "<":
+            //            ImporteMenor = Convert.ToDecimal(txtImporteMenor.Text) - 1;
+            //            break;
+            //        case "<=":
+            //            ImporteMenor = Convert.ToDecimal(txtImporteMenor.Text);
+            //            break;
+            //    }
+            //}
+
+            ViewState["NewPageIndex"] = null;
+
+            colegiaturasServices.BuscarColegiaturaPadre(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), hoy, txtColegiatura.Text, txtNumPago.Text, Guid.Parse(ddlEstatusCole.SelectedValue), Guid.Parse(ddlEstatusPago.SelectedValue), txtMatricula.Text, txtAlNombre.Text, txtAlApPaterno.Text, txtAlApMaterno.Text);
+            gvPagos.DataSource = colegiaturasServices.lsPagosColegiaturasViewModel;
+            gvPagos.DataBind();
+
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModalBusqueda()", true);
+        }
+        protected void btnLimpiar_Click(object sender, EventArgs e)
+        {
+            txtColegiatura.Text = string.Empty;
+            txtNumPago.Text = string.Empty;
+            ddlEstatusCole.SelectedIndex = -1;
+            ddlEstatusPago.SelectedIndex = -1;
+
+            txtMatricula.Text = string.Empty;
+            txtAlNombre.Text = string.Empty;
+            txtAlApPaterno.Text = string.Empty;
+            txtAlApMaterno.Text = string.Empty;      
+        }
+
         protected void gvPagosColegiaturas_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandName == "btnInfoMovimiento")

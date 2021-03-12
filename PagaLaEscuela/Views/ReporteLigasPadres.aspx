@@ -53,6 +53,122 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
+                                        <div class="col-6" style="padding-right: 2px;">
+                                            <asp:LinkButton ID="btnDatosAlumnos" OnClick="btnDatosAlumnos_Click" CssClass="btn btn-primary pull-right" runat="server">
+                                            <i class="material-icons">wc</i> Alumnos
+                                            </asp:LinkButton>
+                                        </div>
+                                        <div class="col-6" style="padding-left: 2px;">
+                                            <asp:LinkButton ID="btnDatosPagos" OnClick="btnDatosPagos_Click" CssClass="btn btn-secondary pull-left" runat="server">
+                                            <i class="material-icons">attach_money</i> PAGOS
+                                            </asp:LinkButton>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <asp:Panel ID="pnlDatosAlumnos" runat="server">
+                                                <asp:GridView ID="gvDatosAlumnos" OnPageIndexChanging="gvDatosAlumnos_PageIndexChanging" OnSorting="gvDatosAlumnos_Sorting" OnRowCommand="gvDatosAlumnos_RowCommand" OnRowDataBound="gvDatosAlumnos_RowDataBound" DataKeyNames="UidPagoColegiatura" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" GridLines="None" border="0" AllowPaging="true" PageSize="10" ShowFooter="true" runat="server">
+                                                    <EmptyDataTemplate>
+                                                        <div class="alert alert-info">No hay pagos realizados</div>
+                                                    </EmptyDataTemplate>
+                                                    <Columns>
+                                                        <asp:BoundField SortExpression="IntFolio" DataField="IntFolio" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" HeaderText="FOLIO" />
+                                                        <asp:TemplateField SortExpression="VchIdentificador" HeaderText="COLEGIATURA">
+                                                            <ItemTemplate>
+                                                                <asp:TextBox ID="txtGvIdentificador" ToolTip='<%#Eval("VchIdentificador")%>' Style="width: 100%; text-overflow: ellipsis;" Text='<%#Eval("VchIdentificador")%>' Enabled="false" BackColor="Transparent" BorderStyle="None" runat="server" />
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                        <asp:TemplateField SortExpression="VchAlumno" HeaderStyle-CssClass="text-center" HeaderText="ALUMNO">
+                                                            <ItemTemplate>
+                                                                <asp:TextBox ID="txtGvAlumno" ToolTip='<%#Eval("VchAlumno")%>' Style="width: 100%; text-overflow: ellipsis;" Text='<%#Eval("VchAlumno")%>' Enabled="false" BackColor="Transparent" BorderStyle="None" runat="server" />
+                                                                <asp:Label ID="lblGvUidAlumno" Visible="false" Text='<%#Eval("UidAlumno")%>' runat="server" />
+                                                                <asp:Label ID="lblGvUidFechaColegiatura" Visible="false" Text='<%#Eval("UidFechaColegiatura")%>' runat="server" />
+                                                                <asp:Label ID="lblGvUidUsuario" Visible="false" Text='<%#Eval("UidUsuario")%>' runat="server" />
+                                                                <asp:Label ID="lblGvUidFormaPago" Text='<%#Eval("UidFormaPago")%>' Visible="false" runat="server" />
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                        <asp:BoundField SortExpression="VchNum" DataField="VchNum" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" HeaderText="# DE PAGOS" />
+                                                        <asp:BoundField SortExpression="DtFHPago" DataField="DtFHPago" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" DataFormatString="{0:dd/MM/yyyy}" HeaderText="FECHA PAGO" />
+                                                        <asp:BoundField SortExpression="DcmImporteCole" DataField="DcmImporteCole" ItemStyle-CssClass="text-right" HeaderStyle-CssClass="text-right" DataFormatString="{0:C}" HeaderText="IMPORTE COLEGIATURA" />
+                                                        <asp:BoundField SortExpression="DcmImporteSaldado" DataField="DcmImporteSaldado" ItemStyle-CssClass="text-right" HeaderStyle-CssClass="text-right" DataFormatString="{0:C}" HeaderText="IMPORTE SALDADO" />
+                                                        <asp:BoundField SortExpression="DcmImportePagado" DataField="DcmImportePagado" ItemStyle-CssClass="text-right" HeaderStyle-CssClass="text-right" DataFormatString="{0:C}" HeaderText="IMPORTE PAGADO" />
+                                                        <asp:BoundField SortExpression="DcmImporteNuevo" DataField="DcmImporteNuevo" ItemStyle-CssClass="text-right" HeaderStyle-CssClass="text-right" DataFormatString="{0:C}" HeaderText="RESTA" />
+                                                        <asp:BoundField SortExpression="VchFormaPago" DataField="VchFormaPago" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" HeaderText="FORMA PAGO" />
+                                                        <asp:TemplateField SortExpression="VchEstatus" HeaderText="ESTATUS">
+                                                            <ItemTemplate>
+                                                                <asp:Label Text='<%#Eval("VchEstatus")%>' ForeColor='<%# System.Drawing.ColorTranslator.FromHtml(Eval("VchColor").ToString()) %>' Font-Names="Comic Sans MS" Font-Bold="true" runat="server"></asp:Label>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                        <asp:TemplateField ItemStyle-Width="160">
+                                                            <ItemTemplate>
+                                                                <table>
+                                                                    <tbody>
+                                                                        <tr style="background: transparent;">
+                                                                            <td style="border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
+                                                                                <asp:LinkButton ID="btnInfoMovimiento" ToolTip="Detalle" CommandArgument="<%# ((GridViewRow)Container).RowIndex %>" CommandName="btnInfoMovimiento" Style="margin-left: 5px;" runat="server">
+                                                                                <asp:Label class="btn btn-sm btn-info btn-fab btn-fab-mini btn-round" runat="server">
+                                                                                        <i class="material-icons">info_outline</i>
+                                                                                </asp:Label>
+                                                                                </asp:LinkButton>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </ItemTemplate>
+                                                            <FooterTemplate>
+                                                                <asp:Label ID="lblPaginado" Font-Bold="true" runat="server" />
+                                                            </FooterTemplate>
+                                                        </asp:TemplateField>
+                                                    </Columns>
+                                                    <PagerStyle HorizontalAlign="Center" CssClass="pagination-ys" />
+                                                </asp:GridView>
+                                            </asp:Panel>
+
+                                            <asp:Panel ID="pnlDatosPagos" Visible="false" runat="server">
+                                                <asp:GridView ID="gvDatosPagos" OnPageIndexChanging="gvDatosPagos_PageIndexChanging" OnSorting="gvDatosPagos_Sorting" OnRowCommand="gvDatosPagos_RowCommand" OnRowDataBound="gvDatosPagos_RowDataBound" DataKeyNames="UidPagoColegiatura" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" GridLines="None" border="0" AllowPaging="true" PageSize="10" ShowFooter="true" runat="server">
+                                                    <EmptyDataTemplate>
+                                                        <div class="alert alert-info">No hay pagos realizados</div>
+                                                    </EmptyDataTemplate>
+                                                    <Columns>
+                                                        <asp:BoundField SortExpression="DtFHPago" DataField="DtFHPago" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" DataFormatString="{0:dd/MM/yyyy}" HeaderText="FECHA PAGO" />
+                                                        <asp:BoundField SortExpression="IntFolio" DataField="IntFolio" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" HeaderText="FOLIO" />
+                                                        <asp:BoundField SortExpression="VchFolio" DataField="VchFolio" HeaderText="FOLIO" />
+                                                        <asp:BoundField SortExpression="DcmImportePagado" DataField="DcmImportePagado" ItemStyle-CssClass="text-right" HeaderStyle-CssClass="text-right" DataFormatString="{0:C}" HeaderText="IMPORTE PAGADO" />
+                                                        <asp:BoundField SortExpression="VchFormaPago" DataField="VchFormaPago" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" HeaderText="FORMA PAGO" />
+                                                        <asp:BoundField SortExpression="VchBanco" DataField="VchBanco" HeaderText="BANCO" />
+                                                        <asp:BoundField SortExpression="VchCuenta" DataField="VchCuenta" HeaderText="CUENTA" />
+                                                        <asp:TemplateField SortExpression="VchEstatus" HeaderText="ESTATUS">
+                                                            <ItemTemplate>
+                                                                <asp:Label Text='<%#Eval("VchEstatus")%>' ForeColor='<%# System.Drawing.ColorTranslator.FromHtml(Eval("VchColor").ToString()) %>' Font-Names="Comic Sans MS" Font-Bold="true" runat="server"></asp:Label>
+                                                                <asp:Label ID="lblGvUidAlumno" Visible="false" Text='<%#Eval("UidAlumno")%>' runat="server" />
+                                                                <asp:Label ID="lblGvUidFechaColegiatura" Visible="false" Text='<%#Eval("UidFechaColegiatura")%>' runat="server" />
+                                                                <asp:Label ID="lblGvUidUsuario" Visible="false" Text='<%#Eval("UidUsuario")%>' runat="server" />
+                                                                <asp:Label ID="lblGvUidFormaPago" Text='<%#Eval("UidFormaPago")%>' Visible="false" runat="server" />
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                        <asp:TemplateField ItemStyle-Width="160">
+                                                            <ItemTemplate>
+                                                                <table>
+                                                                    <tbody>
+                                                                        <tr style="background: transparent;">
+                                                                            <td style="border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
+                                                                                <asp:LinkButton ID="btnInfoMovimiento" ToolTip="Detalle" CommandArgument="<%# ((GridViewRow)Container).RowIndex %>" CommandName="btnInfoMovimiento" Style="margin-left: 5px;" runat="server">
+                                                                                <asp:Label class="btn btn-sm btn-info btn-fab btn-fab-mini btn-round" runat="server">
+                                                                                        <i class="material-icons">info_outline</i>
+                                                                                </asp:Label>
+                                                                                </asp:LinkButton>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </ItemTemplate>
+                                                            <FooterTemplate>
+                                                                <asp:Label ID="lblPaginado" Font-Bold="true" runat="server" />
+                                                            </FooterTemplate>
+                                                        </asp:TemplateField>
+                                                    </Columns>
+                                                    <PagerStyle HorizontalAlign="Center" CssClass="pagination-ys" />
+                                                </asp:GridView>
+                                            </asp:Panel>
+                                        </div>
                                         <div class="table-responsive">
                                             <asp:GridView ID="gvPagos" OnPageIndexChanging="gvPagos_PageIndexChanging" OnSorting="gvPagos_Sorting" OnRowCommand="gvPagos_RowCommand" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidFechaColegiatura" GridLines="None" border="0" AllowPaging="true" PageSize="10" runat="server">
                                                 <EmptyDataTemplate>
@@ -63,7 +179,7 @@
                                                         <ItemTemplate>
                                                             <asp:TextBox ID="txtGvIdentificador" ToolTip='<%#Eval("VchIdentificador")%>' Style="width: 100%; text-overflow: ellipsis;" Text='<%#Eval("VchIdentificador")%>' Enabled="false" BackColor="Transparent" BorderStyle="None" runat="server" />
                                                             <asp:TextBox ID="txtGvUidCliente" Text='<%#Eval("UidCliente")%>' Visible="false" runat="server" />
-                                                            <asp:TextBox ID="txtGvUidAlumno" Text='<%#Eval("UidAlumno")%>' Visible="false"  runat="server" />
+                                                            <asp:TextBox ID="txtGvUidAlumno" Text='<%#Eval("UidAlumno")%>' Visible="false" runat="server" />
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                     <asp:BoundField SortExpression="VchMatricula" DataField="VchMatricula" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" HeaderText="MATRICULA" />
@@ -255,7 +371,7 @@
             <div class="modal-content">
                 <asp:UpdatePanel runat="server">
                     <ContentTemplate>
-                        <div class="modal-header">
+                        <div class="modal-header" style="padding-bottom: 0px; padding-top: 5px; margin-bottom: 5px;">
                             <h5 class="modal-title" runat="server">
                                 <asp:Label ID="lblTittleLigas" Text="Filtro de busqueda" runat="server" /></h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -264,115 +380,186 @@
                         </div>
                     </ContentTemplate>
                 </asp:UpdatePanel>
-                <div class="col-12 pt-3">
-                    <asp:UpdateProgress runat="server" AssociatedUpdatePanelID="upBusqueda">
-                        <ProgressTemplate>
-                            <div class="progress">
-                                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%"></div>
-                            </div>
-                        </ProgressTemplate>
-                    </asp:UpdateProgress>
-                </div>
+
                 <div class="modal-body pt-0" style="padding-bottom: 0px;">
-                    <div class="tab-content">
-                        <asp:UpdatePanel runat="server">
-                            <ContentTemplate>
-                                <asp:Panel ID="pnlFiltrosBusqueda" runat="server">
-                                    <div class="card" style="margin-top: 0px;">
-                                        <div class="card-header card-header-tabs card-header" style="padding-top: 0px; padding-bottom: 0px;">
-                                            <div class="nav-tabs-navigation">
-                                                <div class="nav-tabs-wrapper">
-                                                    <div class="form-group">
-                                                        <asp:Label Text="Busqueda" runat="server" />
-                                                        <div class="row">
-                                                            <div class="form-group col-md-4">
-                                                                <label for="txtIdentificador" style="color: black;">Identificador</label>
-                                                                <asp:TextBox ID="txtIdentificador" CssClass="form-control" aria-label="Search" runat="server" />
-                                                            </div>
-                                                            <div class="form-group col-md-4">
-                                                                <label for="txtAsunto" style="color: black;">Asunto</label>
-                                                                <asp:TextBox ID="txtAsunto" CssClass="form-control" aria-label="Search" runat="server" />
-                                                            </div>
-                                                            <div class="form-group col-md-4">
-                                                                <label for="txtConcepto" style="color: black;">Concepto</label>
-                                                                <asp:TextBox ID="txtConcepto" CssClass="form-control" aria-label="Search" runat="server" />
-                                                            </div>
-                                                            <div class="form-group col-md-3">
-                                                                <label for="ddlImporteMayor" style="color: black;">Importe</label>
-                                                                <asp:DropDownList ID="ddlImporteMayor" CssClass="form-control" runat="server">
-                                                                    <asp:ListItem Text="(>=) Mayor o igual que" Value=">=" />
-                                                                    <asp:ListItem Text="(>) Mayor que" Value=">" />
-                                                                </asp:DropDownList>
-                                                            </div>
-                                                            <div class="form-group col-md-3">
-                                                                <label for="txtImporte" style="color: black;"></label>
-                                                                <asp:TextBox ID="txtImporteMayor" CssClass="form-control" placeholder="Mayor" aria-label="Search" Style="margin-top: 12px;" runat="server" />
-                                                                <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtImporteMayor" runat="server" />
-                                                            </div>
-                                                            <div class="form-group col-md-3">
-                                                                <label for="ddlImporteMenor" style="color: black;"></label>
-                                                                <asp:DropDownList ID="ddlImporteMenor" CssClass="form-control" Style="margin-top: 6px;" runat="server">
-                                                                    <asp:ListItem Text="(<=) Menor o igual que" Value="<=" />
-                                                                    <asp:ListItem Text="(<) Menor que" Value="<" />
-                                                                </asp:DropDownList>
-                                                            </div>
-                                                            <div class="form-group col-md-3">
-                                                                <label for="txtImporte" style="color: black;"></label>
-                                                                <asp:TextBox ID="txtImporteMenor" CssClass="form-control" placeholder="Menor" aria-label="Search" Style="margin-top: 12px;" runat="server" />
-                                                                <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtImporteMenor" runat="server" />
-                                                            </div>
-                                                            <div class="form-group col-md-6">
-                                                                <label for="txtRegistroDesde" style="color: black;">Fecha Registro</label>
-                                                                <asp:TextBox ID="txtRegistroDesde" CssClass="form-control" TextMode="Date" aria-label="Search" runat="server" />
-                                                            </div>
-                                                            <div class="form-group col-md-6">
-                                                                <label for="txtRegistroHasta" style="color: black;"></label>
-                                                                <asp:TextBox ID="txtRegistroHasta" CssClass="form-control" TextMode="Date" aria-label="Search" runat="server" />
-                                                            </div>
-                                                            <div class="form-group col-md-6">
-                                                                <label for="txtVencimientoDesde" style="color: black;">Fecha Vencimiento</label>
-                                                                <asp:TextBox ID="txtVencimientoDesde" CssClass="form-control" TextMode="Date" aria-label="Search" runat="server" />
-                                                            </div>
-                                                            <div class="form-group col-md-6">
-                                                                <label for="txtVencimientoHasta" style="color: black;"></label>
-                                                                <asp:TextBox ID="txtVencimientoHasta" CssClass="form-control" TextMode="Date" aria-label="Search" runat="server" />
-                                                            </div>
-                                                            <div class="form-group col-md-3">
-                                                                <label for="ddlEstatus" style="color: black;">Estatus</label>
-                                                                <asp:DropDownList ID="ddlEstatus" CssClass="form-control" Style="margin-top: 6px;" runat="server">
-                                                                    <asp:ListItem Text="Todos" Value="" />
-                                                                    <asp:ListItem Text="approved" Value="approved" />
-                                                                    <asp:ListItem Text="denied" Value="denied" />
-                                                                    <asp:ListItem Text="error" Value="error" />
-                                                                    <asp:ListItem Text="Pendiente" Value="Pendiente" />
-                                                                </asp:DropDownList>
-                                                            </div>
-                                                        </div>
+                    <asp:Label Text="Despliegue una sección para mostrar los campos de busqueda." runat="server" />
+                    <asp:Panel ID="pnlFiltrosBusqueda" runat="server">
+                        <div class="accordionCard" style="margin-top: 15px; margin-bottom: 0px; border-left: 8px solid black;">
+                            <label style="font-size: 1.0625rem; font-weight: bold; color: black;">Datos colegiatura</label>
+                        </div>
+                        <div class="panelFiltro">
+                            <div class="row">
+                                <div class="card" style="margin-top: 0px; margin-bottom: 0px; border-left: 8px solid black;">
+                                    <div class="card-body">
+                                        <asp:UpdatePanel runat="server">
+                                            <ContentTemplate>
+                                                <div class="row">
+                                                    <div class="form-group col-md-6">
+                                                        <label for="txtColegiatura" style="margin-left: 15px; color: black;">Colegiatura</label>
+                                                        <asp:TextBox ID="txtColegiatura" CssClass="form-control" aria-label="Search" runat="server" />
+                                                    </div>
+                                                    <div class="form-group col-md-2">
+                                                        <label for="txtNumPago" style="margin-left: 15px; color: black;"># de pago</label>
+                                                        <asp:TextBox ID="txtNumPago" CssClass="form-control" TextMode="Number" aria-label="Search" runat="server" />
+                                                        <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" TargetControlID="txtNumPago" runat="server" />
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
+                                            </ContentTemplate>
+                                        </asp:UpdatePanel>
                                     </div>
-                                </asp:Panel>
-                            </ContentTemplate>
-                        </asp:UpdatePanel>
-                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordionCard" style="margin-top: 15px; margin-bottom: 0px; border-left: 8px solid #326497;">
+                            <label style="font-size: 1.0625rem; font-weight: bold; color: black;">Datos alumno</label>
+                        </div>
+                        <div class="panelFiltro">
+                            <div class="row">
+                                <div class="card" style="margin-top: 0px; margin-bottom: 0px; border-left: 8px solid #326497;">
+                                    <div class="card-body">
+                                        <asp:UpdatePanel runat="server">
+                                            <ContentTemplate>
+                                                <div class="row">
+                                                    <div class="form-group col-md-3">
+                                                        <label for="txtMatricula" style="margin-left: 15px; color: black;">Matricula</label>
+                                                        <asp:TextBox ID="txtMatricula" CssClass="form-control" aria-label="Search" runat="server" />
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="txtAlNombre" style="margin-left: 15px; color: black;">Nombre</label>
+                                                        <asp:TextBox ID="txtAlNombre" CssClass="form-control" aria-label="Search" runat="server" />
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="txtAlApPaterno" style="margin-left: 15px; color: black;">Apellido Paterno</label>
+                                                        <asp:TextBox ID="txtAlApPaterno" CssClass="form-control" aria-label="Search" runat="server" />
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="txtAlApMaterno" style="margin-left: 15px; color: black;">Apellido Materno</label>
+                                                        <asp:TextBox ID="txtAlApMaterno" CssClass="form-control" aria-label="Search" runat="server" />
+                                                    </div>
+                                                </div>
+                                            </ContentTemplate>
+                                        </asp:UpdatePanel>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordionCard" style="display:none; margin-top: 15px; margin-bottom: 0px; border-left: 8px solid #ff9800;">
+                            <label style="font-size: 1.0625rem; font-weight: bold; color: black;">Datos tutor</label>
+                        </div>
+                        <div class="panelFiltro" style="display:none;">
+                            <div class="row">
+                                <div class="card" style="margin-top: 0px; margin-bottom: 0px; border-left: 8px solid #ff9800;">
+                                    <div class="card-body">
+                                        <asp:UpdatePanel runat="server">
+                                            <ContentTemplate>
+                                                <div class="row">
+                                                    <div class="form-group col-md-4">
+                                                        <label for="txtTuNombre" style="margin-left: 15px; color: black;">Nombre</label>
+                                                        <asp:TextBox ID="txtTuNombre" CssClass="form-control" aria-label="Search" runat="server" />
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label for="txtTuApPaterno" style="margin-left: 15px; color: black;">Apellido Paterno</label>
+                                                        <asp:TextBox ID="txtTuApPaterno" CssClass="form-control" aria-label="Search" runat="server" />
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label for="txtTuApMaterno" style="margin-left: 15px; color: black;">Apellido Materno</label>
+                                                        <asp:TextBox ID="txtTuApMaterno" CssClass="form-control" aria-label="Search" runat="server" />
+                                                    </div>
+                                                </div>
+                                            </ContentTemplate>
+                                        </asp:UpdatePanel>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordionCard" style="margin-top: 15px; margin-bottom: 0px; border-left: 8px solid #0094ff;">
+                            <label style="font-size: 1.0625rem; font-weight: bold; color: black;">Datos pago</label>
+                        </div>
+                        <div class="panelFiltro">
+                            <div class="row">
+                                <div class="card" style="margin-top: 0px; margin-bottom: 0px; border-left: 8px solid #0094ff;">
+                                    <div class="card-body">
+                                        <asp:UpdatePanel runat="server">
+                                            <ContentTemplate>
+                                                <div class="row">
+                                                    <div class="form-group col-md-4">
+                                                        <label for="txtFolio" style="margin-left: 15px; color: black;">Folio</label>
+                                                        <asp:TextBox ID="txtFolio" CssClass="form-control" aria-label="Search" runat="server" />
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label for="txtCuenta" style="margin-left: 15px; color: black;">Cuenta</label>
+                                                        <asp:TextBox ID="TextBox1" CssClass="form-control" MaxLength="4" aria-label="Search" runat="server" />
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label for="txtBanco" style="margin-left: 15px; color: black;">Banco</label>
+                                                        <asp:TextBox ID="txtBanco" CssClass="form-control" aria-label="Search" runat="server" />
+                                                    </div>
+                                                    <div class="form-group col-md-6">
+                                                        <label for="txtRegistroDesde" style="margin-left: 15px; color: black;">Fecha Pago(desde)</label>
+                                                        <asp:TextBox ID="txtRegistroDesde" CssClass="form-control" TextMode="Date" aria-label="Search" runat="server" />
+                                                    </div>
+                                                    <div class="form-group col-md-6">
+                                                        <label for="txtRegistroHasta" style="color: black;">Fecha Pago(hasta)</label>
+                                                        <asp:TextBox ID="txtRegistroHasta" CssClass="form-control" TextMode="Date" aria-label="Search" runat="server" />
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="ddlImporteMayor" style="color: black;">Importe</label>
+                                                        <asp:DropDownList ID="ddlImporteMayor" CssClass="form-control" runat="server">
+                                                            <asp:ListItem Text="(>=) Mayor o igual que" Value=">=" />
+                                                            <asp:ListItem Text="(>) Mayor que" Value=">" />
+                                                        </asp:DropDownList>
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="txtImporte" style="color: black;"></label>
+                                                        <asp:TextBox ID="txtImporteMayor" CssClass="form-control" placeholder="Mayor" aria-label="Search" Style="margin-top: 12px;" runat="server" />
+                                                        <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtImporteMayor" runat="server" />
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="ddlImporteMenor" style="color: black;"></label>
+                                                        <asp:DropDownList ID="ddlImporteMenor" CssClass="form-control" Style="margin-top: 6px;" runat="server">
+                                                            <asp:ListItem Text="(<=) Menor o igual que" Value="<=" />
+                                                            <asp:ListItem Text="(<) Menor que" Value="<" />
+                                                        </asp:DropDownList>
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="txtImporte" style="color: black;"></label>
+                                                        <asp:TextBox ID="txtImporteMenor" CssClass="form-control" placeholder="Menor" aria-label="Search" Style="margin-top: 12px;" runat="server" />
+                                                        <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtImporteMenor" runat="server" />
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="ddlFormaPago" style="color: black;">Forma pago</label>
+                                                        <asp:DropDownList ID="ddlFormaPago" AppendDataBoundItems="true" CssClass="form-control" Style="margin-top: 6px;" runat="server">
+                                                        </asp:DropDownList>
+                                                    </div>
+                                                    <div class="form-group col-md-3">
+                                                        <label for="ddlEstatus" style="color: black;">Estatus</label>
+                                                        <asp:DropDownList ID="ddlEstatus" AppendDataBoundItems="true" CssClass="form-control" Style="margin-top: 6px;" runat="server">
+                                                        </asp:DropDownList>
+                                                    </div>
+                                                </div>
+                                            </ContentTemplate>
+                                        </asp:UpdatePanel>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </asp:Panel>
                 </div>
-                <asp:UpdatePanel runat="server" ID="upBusqueda">
-                    <ContentTemplate>
-                        <div class="modal-footer justify-content-center">
+                <div class="modal-footer justify-content-center" style="padding-top: 5px; padding-bottom: 5px;">
+                    <asp:UpdatePanel runat="server">
+                        <ContentTemplate>
                             <asp:LinkButton ID="btnBuscar" OnClick="btnBuscar_Click" CssClass="btn btn-primary btn-round" runat="server">
                             <i class="material-icons">search</i> Buscar
                             </asp:LinkButton>
                             <asp:LinkButton ID="btnLimpiar" OnClick="btnLimpiar_Click" CssClass="btn btn-warning btn-round" runat="server">
                             <i class="material-icons">clear_all</i> Limpiar
                             </asp:LinkButton>
-                        </div>
-                    </ContentTemplate>
-                    <Triggers>
-                        <asp:AsyncPostBackTrigger ControlID="btnBuscar" EventName="Click" />
-                    </Triggers>
-                </asp:UpdatePanel>
+                        </ContentTemplate>
+                    </asp:UpdatePanel>
+                </div>
             </div>
         </div>
     </div>
@@ -999,9 +1186,7 @@
                                                     <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
                                                         <tbody>
                                                             <tr>
-                                                                <td align="center" valign="top" style="padding-top: 20px;">
-                                                                    
-                                                                </td>
+                                                                <td align="center" valign="top" style="padding-top: 20px;"></td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
@@ -1831,6 +2016,22 @@ Panel tuotr
             elm2.className = 'nav-link';
 
             $('#ulTabAgregarPago a[href="#pago"]').tab('show')
+        }
+    </script>
+    <script>
+        var acc = document.getElementsByClassName("accordionCard");
+        var i;
+
+        for (i = 0; i < acc.length; i++) {
+            acc[i].addEventListener("click", function () {
+                this.classList.toggle("activeAccordion");
+                var panel = this.nextElementSibling;
+                if (panel.style.maxHeight) {
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                }
+            });
         }
     </script>
 </asp:Content>
