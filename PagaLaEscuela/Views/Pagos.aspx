@@ -183,6 +183,11 @@
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
                                                 <asp:BoundField DataField="VchMatricula" HeaderStyle-CssClass="hiddenHeaderGrid" ItemStyle-CssClass="hiddenHeaderGrid" />
+                                                <asp:TemplateField SortExpression="NombreCompleto" HeaderStyle-CssClass="text-center" HeaderText="ALUMNO">
+                                                    <ItemTemplate>
+                                                        <asp:TextBox ID="txtGvAlumno" ToolTip='<%#Eval("NombreCompleto")%>' Style="width: 100%; text-overflow: ellipsis;" Text='<%#Eval("NombreCompleto")%>' Enabled="false" BackColor="Transparent" BorderStyle="None" runat="server" />
+                                                    </ItemTemplate>
+                                                </asp:TemplateField>
                                                 <asp:TemplateField SortExpression="VchNum" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" HeaderText="# DE PAGOS">
                                                     <ItemTemplate>
                                                         <table style="width: 100%;">
@@ -225,19 +230,19 @@
                                                                 <tr style="background: transparent;">
                                                                     <td style="border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
                                                                         <asp:Panel Visible='<%#Eval("blPagar")%>' runat="server">
-                                                                            <asp:LinkButton ID="btnFormasPago" ToolTip="Pagar por otro medio" CommandArgument="<%# ((GridViewRow)Container).RowIndex %>" CommandName="btnFormasPago" Style="margin-left: 5px;" runat="server">
-                                                                                <asp:Label class="btn btn-sm btn-success btn-fab btn-fab-mini btn-round" runat="server">
-                                                                                        <i class="material-icons">add</i>
-                                                                                </asp:Label>
+                                                                            <asp:LinkButton ID="btnPagar" ToolTip="Pagar" CommandArgument="<%# ((GridViewRow)Container).RowIndex %>" CommandName="btnPagar" Style="margin-left: 5px;" runat="server">
+                                                                            <asp:Label class="btn btn-sm btn-success btn-fab btn-fab-mini btn-round" runat="server">
+                                                                                        <i class="material-icons">attach_money</i>
+                                                                            </asp:Label>
                                                                             </asp:LinkButton>
                                                                         </asp:Panel>
                                                                     </td>
                                                                     <td style="border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
                                                                         <asp:Panel Visible='<%#Eval("blPagar")%>' runat="server">
-                                                                            <asp:LinkButton ID="btnPagar" ToolTip="Pagar" CommandArgument="<%# ((GridViewRow)Container).RowIndex %>" CommandName="btnPagar" Style="margin-left: 5px;" runat="server">
-                                                                            <asp:Label class="btn btn-sm btn-warning btn-fab btn-fab-mini btn-round" runat="server">
-                                                                                        <i class="material-icons">attach_money</i>
-                                                                            </asp:Label>
+                                                                            <asp:LinkButton ID="btnFormasPago" ToolTip="Pagar por otro medio" CommandArgument="<%# ((GridViewRow)Container).RowIndex %>" CommandName="btnFormasPago" Style="margin-left: 5px;" runat="server">
+                                                                                <asp:Label class="btn btn-sm btn-warning btn-fab btn-fab-mini btn-round" runat="server">
+                                                                                        <i class="material-icons">add</i>
+                                                                                </asp:Label>
                                                                             </asp:LinkButton>
                                                                         </asp:Panel>
                                                                     </td>

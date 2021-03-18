@@ -132,6 +132,7 @@
     <Compile Include="Models\TiposTelefonos.cs" />
     <Compile Include="Models\UsuariosCompletos.cs" />
     <Compile Include="Models\Usuarios.cs" />
+    <Compile Include="ViewModels\Alumnos\AlumnosFiltrosGridViewModel.cs" />
     <Compile Include="ViewModels\PagosColegiaturas\PagosReporteLigaPadreViewModels.cs" />
     <Compile Include="ViewModels\PagosTarjetaPraga\PagosTarjetaPragaColeDetalleGridViewModel.cs" />
     <Compile Include="ViewModels\PromocionesClubPago\CBLPromocionesClubPagoViewModel.cs" />

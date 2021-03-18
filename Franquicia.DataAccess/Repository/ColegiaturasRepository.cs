@@ -2005,7 +2005,7 @@ namespace Franquicia.DataAccess.Repository
 
             return lsPagosReporteLigaPadreViewModels.OrderByDescending(x => x.DtFHPago).ToList();
         }
-        public List<PagosReporteLigaPadreViewModels> BuscarPagosColeReportePadre(Guid UidUsuario, string Colegiatura, string NumPago, string Matricula, string AlNombre, string AlApePaterno, string AlApeMaterno, string TuNombre, string TuApePaterno, string TuApeMaterno, string Folio, string Cuenta, string Banco, decimal ImporteMayor, decimal ImporteMenor, string RegistroDesde, string RegistroHasta, Guid FormaPago, Guid Estatus)
+        public List<PagosReporteLigaPadreViewModels> BuscarPagosColeReportePadre(Guid UidUsuario, string UidAlumno, string Colegiatura, string NumPago, string Folio, string Cuenta, string Banco, decimal ImporteMayor, decimal ImporteMenor, string RegistroDesde, string RegistroHasta, string FormaPago, Guid Estatus)
         {
             List<PagosReporteLigaPadreViewModels> lsPagosReporteLigaPadreViewModels = new List<PagosReporteLigaPadreViewModels>();
 
@@ -2019,6 +2019,12 @@ namespace Franquicia.DataAccess.Repository
                     comando.Parameters.Add("@UidUsuario", SqlDbType.UniqueIdentifier);
                     comando.Parameters["@UidUsuario"].Value = UidUsuario;
                 }
+                
+                if (UidAlumno != string.Empty)
+                {
+                    comando.Parameters.Add("@UidAlumno", SqlDbType.VarChar);
+                    comando.Parameters["@UidAlumno"].Value = UidAlumno;
+                }
 
                 if (Colegiatura != string.Empty)
                 {
@@ -2029,43 +2035,6 @@ namespace Franquicia.DataAccess.Repository
                 {
                     comando.Parameters.Add("@NumPago", SqlDbType.Int);
                     comando.Parameters["@NumPago"].Value = int.Parse(NumPago);
-                }
-
-                if (Matricula != string.Empty)
-                {
-                    comando.Parameters.Add("@Matricula", SqlDbType.VarChar, 50);
-                    comando.Parameters["@Matricula"].Value = Matricula;
-                }
-                if (AlNombre != string.Empty)
-                {
-                    comando.Parameters.Add("@AlNombre", SqlDbType.VarChar, 50);
-                    comando.Parameters["@AlNombre"].Value = AlNombre;
-                }
-                if (AlApePaterno != string.Empty)
-                {
-                    comando.Parameters.Add("@AlApePaterno", SqlDbType.VarChar, 50);
-                    comando.Parameters["@AlApePaterno"].Value = AlApePaterno;
-                }
-                if (AlApeMaterno != string.Empty)
-                {
-                    comando.Parameters.Add("@AlApeMaterno", SqlDbType.VarChar, 50);
-                    comando.Parameters["@AlApeMaterno"].Value = AlApeMaterno;
-                }
-
-                if (TuNombre != string.Empty)
-                {
-                    comando.Parameters.Add("@TuNombre", SqlDbType.VarChar, 50);
-                    comando.Parameters["@TuNombre"].Value = TuNombre;
-                }
-                if (TuApePaterno != string.Empty)
-                {
-                    comando.Parameters.Add("@TuApePaterno", SqlDbType.VarChar, 50);
-                    comando.Parameters["@TuApePaterno"].Value = TuApePaterno;
-                }
-                if (TuApeMaterno != string.Empty)
-                {
-                    comando.Parameters.Add("@TuApeMaterno", SqlDbType.VarChar, 50);
-                    comando.Parameters["@TuApeMaterno"].Value = TuApeMaterno;
                 }
 
                 if (Folio != string.Empty)
@@ -2103,9 +2072,9 @@ namespace Franquicia.DataAccess.Repository
                     comando.Parameters.Add("@ImporteMenor", SqlDbType.Decimal);
                     comando.Parameters["@ImporteMenor"].Value = ImporteMenor;
                 }
-                if (FormaPago != Guid.Empty)
+                if (FormaPago != string.Empty)
                 {
-                    comando.Parameters.Add("@FormaPago", SqlDbType.UniqueIdentifier);
+                    comando.Parameters.Add("@FormaPago", SqlDbType.VarChar);
                     comando.Parameters["@FormaPago"].Value = FormaPago;
                 }
                 if (Estatus != Guid.Empty)

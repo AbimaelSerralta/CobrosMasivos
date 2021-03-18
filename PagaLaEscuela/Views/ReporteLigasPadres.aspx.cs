@@ -30,6 +30,7 @@ namespace PagaLaEscuela.Views
         ReferenciasClubPagoServices referenciasClubPagoServices = new ReferenciasClubPagoServices();
         PagosClubPagoServices pagosClubPagoServices = new PagosClubPagoServices();
         EstatusFechasPagosServices estatusFechasPagosServices = new EstatusFechasPagosServices();
+        AlumnosServices alumnosServices = new AlumnosServices();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -60,14 +61,20 @@ namespace PagaLaEscuela.Views
                 //gvLigasGeneradas.DataBind();
 
                 ActualizarDatosPrincipal();
+                
+                alumnosServices.CargarFiltroAlumnosRLP(Guid.Parse(ViewState["UidUsuarioLocal"].ToString()));
+                ListBoxAlumnos.DataSource = alumnosServices.lsAlumnosFiltrosGridViewModel;
+                ListBoxAlumnos.DataTextField = "Alumno";
+                ListBoxAlumnos.DataValueField = "UidAlumno";
+                ListBoxAlumnos.DataBind();
 
                 formasPagosServices.CargarFormasPagos();
-                ddlFormaPago.DataSource = formasPagosServices.lsFormasPagos;
-                ddlFormaPago.Items.Insert(0, new ListItem("TODOS", Guid.Empty.ToString()));
-                ddlFormaPago.DataTextField = "VchDescripcion";
-                ddlFormaPago.DataValueField = "UidFormaPago";
-                ddlFormaPago.DataBind();
-
+                ListBoxFormaPago.DataSource = formasPagosServices.lsFormasPagos;
+                ListBoxFormaPago.Items.Insert(0, new ListItem("TODOS", Guid.Empty.ToString()));
+                ListBoxFormaPago.DataTextField = "VchDescripcion";
+                ListBoxFormaPago.DataValueField = "UidFormaPago";
+                ListBoxFormaPago.DataBind();
+                
                 estatusFechasPagosServices.CargarEstatusFechasPagosBusquedaRLP();
                 ddlEstatus.DataSource = estatusFechasPagosServices.lsEstatusFechasPagos;
                 ddlEstatus.Items.Insert(0, new ListItem("TODOS", Guid.Empty.ToString()));
@@ -83,6 +90,8 @@ namespace PagaLaEscuela.Views
                 pagosColegiaturasServices = (PagosColegiaturasServices)Session["ReporteLigasUsuariospagosColegiaturasServices"];
                 formasPagosServices = (FormasPagosServices)Session["ReporteLigasUsuariosformasPagosServices"];
                 bancosServices = (BancosServices)Session["ReporteLigasUsuariosbancosServices"];
+
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "Mult", "multi()", true);
 
                 pnlAlert.Visible = false;
                 lblMensajeAlert.Text = "";
@@ -181,7 +190,7 @@ namespace PagaLaEscuela.Views
             ViewState["NewPageIndex"] = null;
             ViewState["NewPageIndex2"] = null;
 
-            colegiaturasServices.BuscarPagosColeReportePadre(Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), txtColegiatura.Text, txtNumPago.Text, txtMatricula.Text, txtAlNombre.Text, txtAlApPaterno.Text, txtAlApMaterno.Text, txtTuNombre.Text, txtTuApPaterno.Text, txtTuApMaterno.Text, txtFolio.Text, txtCuenta.Text, txtBanco.Text, ImporteMayor, ImporteMenor, txtRegistroDesde.Text, txtRegistroHasta.Text, Guid.Parse(ddlFormaPago.SelectedValue), Guid.Parse(ddlEstatus.SelectedValue));
+            colegiaturasServices.BuscarPagosColeReportePadre(Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), GetItemListBox(ListBoxAlumnos), txtColegiatura.Text, txtNumPago.Text, txtFolio.Text, txtCuenta.Text, txtBanco.Text, ImporteMayor, ImporteMenor, txtRegistroDesde.Text, txtRegistroHasta.Text, GetItemListBox(ListBoxFormaPago), Guid.Parse(ddlEstatus.SelectedValue));
 
             gvDatosAlumnos.DataSource = colegiaturasServices.lsPagosReporteLigaPadreViewModels;
             gvDatosAlumnos.DataBind();
@@ -191,19 +200,28 @@ namespace PagaLaEscuela.Views
 
             ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModalBusqueda()", true);
         }
+
+        private string GetItemListBox(ListBox listBox)
+        {
+            string Values = string.Empty;
+            foreach (ListItem item in listBox.Items)
+            {
+                if (item.Selected)
+                {
+                    if (Values == string.Empty)
+                        Values = item.Value;
+                    else
+                        Values += "," + item.Value;
+                }
+            }
+            return Values;
+        }
+
         protected void btnLimpiar_Click(object sender, EventArgs e)
         {
+            ListBoxFormaPago.SelectedIndex = -1;
             txtColegiatura.Text = string.Empty;
             txtNumPago.Text = string.Empty;
-
-            txtMatricula.Text = string.Empty;
-            txtAlNombre.Text = string.Empty;
-            txtAlApPaterno.Text = string.Empty;
-            txtAlApMaterno.Text = string.Empty;
-
-            txtTuNombre.Text = string.Empty;
-            txtTuApPaterno.Text = string.Empty;
-            txtTuApMaterno.Text = string.Empty;
 
             txtFolio.Text = string.Empty;
             txtCuenta.Text = string.Empty;
@@ -214,7 +232,7 @@ namespace PagaLaEscuela.Views
             ddlImporteMenor.SelectedIndex = -1;
             txtRegistroDesde.Text = string.Empty;
             txtRegistroHasta.Text = string.Empty;
-            ddlFormaPago.SelectedIndex = -1;
+            ListBoxFormaPago.SelectedIndex = -1;
             ddlEstatus.SelectedIndex = -1;
         }
 

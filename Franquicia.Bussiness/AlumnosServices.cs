@@ -43,6 +43,8 @@ namespace Franquicia.Bussiness
         public List<AlumnosGridViewModel> lsExcelErrores = new List<AlumnosGridViewModel>();
 
         public List<AlumnosRLEGridViewModel> lsAlumnosRLEGridViewModel = new List<AlumnosRLEGridViewModel>();
+        
+        public List<AlumnosFiltrosGridViewModel> lsAlumnosFiltrosGridViewModel = new List<AlumnosFiltrosGridViewModel>();
 
         public string ObtenerIdAlumno(Guid UidAlumno)
         {
@@ -671,6 +673,14 @@ namespace Franquicia.Bussiness
         public void BuscarAlumnosRLE(Guid UidCliente, string Identificador, string Nombre, string ApePaterno, string ApeMaterno, string Matricula)
         {
             lsAlumnosRLEGridViewModel = alumnosRepository.BuscarAlumnosRLE(UidCliente, Identificador, Nombre, ApePaterno, ApeMaterno, Matricula);
+        }
+        #endregion
+
+        #region ReporteLigasPadre
+        public List<AlumnosFiltrosGridViewModel> CargarFiltroAlumnosRLP(Guid UidUsuario)
+        {
+            lsAlumnosFiltrosGridViewModel = new List<AlumnosFiltrosGridViewModel>();
+            return lsAlumnosFiltrosGridViewModel = alumnosRepository.CargarFiltroAlumnosRLP(UidUsuario);
         }
         #endregion
     }

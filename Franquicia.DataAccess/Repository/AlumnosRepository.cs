@@ -99,7 +99,7 @@ namespace Franquicia.DataAccess.Repository
 
                 lsAlumnosGridViewModel.Add(new AlumnosGridViewModel()
                 {
-                    UidAlumno = new Guid(item["UidAlumno"].ToString()),
+                    UidAlumno = Guid.Parse(item["UidAlumno"].ToString()),
                     VchIdentificador = item["VchIdentificador"].ToString(),
                     VchNombres = item["VchNombres"].ToString(),
                     VchApePaterno = item["VchApePaterno"].ToString(),
@@ -111,7 +111,7 @@ namespace Franquicia.DataAccess.Repository
                     BitBeca = bool.Parse(item["BitBeca"].ToString()),
                     VchTipoBeca = item["VchTipoBeca"].ToString(),
                     DcmBeca = item.IsNull("DcmBeca") ? 0 : decimal.Parse(item["DcmBeca"].ToString()),
-                    UidEstatus = new Guid(item["UidEstatus"].ToString()),
+                    UidEstatus = Guid.Parse(item["UidEstatus"].ToString()),
                     VchDescripcion = item["VchDescripcion"].ToString(),
                     VchIcono = item["VchIcono"].ToString(),
                     blVisibleDesasociar = blVisibleDesasociar,
@@ -385,7 +385,7 @@ namespace Franquicia.DataAccess.Repository
 
                     lsAlumnosGridViewModel.Add(new AlumnosGridViewModel()
                     {
-                        UidAlumno = new Guid(item["UidAlumno"].ToString()),
+                        UidAlumno = Guid.Parse(item["UidAlumno"].ToString()),
                         VchIdentificador = item["VchIdentificador"].ToString(),
                         VchNombres = item["VchNombres"].ToString(),
                         VchApePaterno = item["VchApePaterno"].ToString(),
@@ -397,7 +397,7 @@ namespace Franquicia.DataAccess.Repository
                         BitBeca = bool.Parse(item["BitBeca"].ToString()),
                         VchTipoBeca = item["VchTipoBeca"].ToString(),
                         DcmBeca = item.IsNull("DcmBeca") ? 0 : decimal.Parse(item["DcmBeca"].ToString()),
-                        UidEstatus = new Guid(item["UidEstatus"].ToString()),
+                        UidEstatus = Guid.Parse(item["UidEstatus"].ToString()),
                         VchDescripcion = item["VchDescripcion"].ToString(),
                         VchIcono = item["VchIcono"].ToString(),
                         blVisibleDesasociar = blVisibleDesasociar,
@@ -515,7 +515,7 @@ namespace Franquicia.DataAccess.Repository
             {
                 lsAlumnosGridViewModel.Add(new AlumnosGridViewModel()
                 {
-                    UidAlumno = new Guid(item["UidAlumno"].ToString()),
+                    UidAlumno = Guid.Parse(item["UidAlumno"].ToString()),
                     VchIdentificador = item["VchIdentificador"].ToString(),
                     VchNombres = item["VchNombres"].ToString(),
                     VchApePaterno = item["VchApePaterno"].ToString(),
@@ -589,7 +589,7 @@ namespace Franquicia.DataAccess.Repository
 
                     lsAlumnosGridViewModel.Add(new AlumnosGridViewModel()
                     {
-                        UidAlumno = new Guid(item["UidAlumno"].ToString()),
+                        UidAlumno = Guid.Parse(item["UidAlumno"].ToString()),
                         VchIdentificador = item["VchIdentificador"].ToString(),
                         VchNombres = item["VchNombres"].ToString(),
                         VchApePaterno = item["VchApePaterno"].ToString(),
@@ -670,7 +670,7 @@ namespace Franquicia.DataAccess.Repository
             {
                 lsAlumnosGridViewModel.Add(new AlumnosGridViewModel()
                 {
-                    UidAlumno = new Guid(item["UidAlumno"].ToString()),
+                    UidAlumno = Guid.Parse(item["UidAlumno"].ToString()),
                     VchNombres = item["VchNombres"].ToString(),
                     VchApePaterno = item["VchApePaterno"].ToString(),
                     VchApeMaterno = item["VchApeMaterno"].ToString(),
@@ -745,7 +745,7 @@ namespace Franquicia.DataAccess.Repository
 
                     lsAlumnosGridViewModel.Add(new AlumnosGridViewModel()
                     {
-                        UidAlumno = new Guid(item["UidAlumno"].ToString()),
+                        UidAlumno = Guid.Parse(item["UidAlumno"].ToString()),
                         VchIdentificador = item["VchIdentificador"].ToString(),
                         VchNombres = item["VchNombres"].ToString(),
                         VchApePaterno = item["VchApePaterno"].ToString(),
@@ -904,7 +904,7 @@ namespace Franquicia.DataAccess.Repository
                 {
                     lsAlumnosRLEGridViewModel.Add(new AlumnosRLEGridViewModel()
                     {
-                        UidAlumno = new Guid(item["UidAlumno"].ToString()),
+                        UidAlumno = Guid.Parse(item["UidAlumno"].ToString()),
                         VchIdentificador = item["VchIdentificador"].ToString(),
                         VchNombres = item["VchNombres"].ToString(),
                         VchApePaterno = item["VchApePaterno"].ToString(),
@@ -920,6 +920,36 @@ namespace Franquicia.DataAccess.Repository
                 throw;
             }
         }
+        #endregion
+
+        #region ReporteLigasPadre
+
+        public List<AlumnosFiltrosGridViewModel> CargarFiltroAlumnosRLP(Guid UidUsuario)
+        {
+            List<AlumnosFiltrosGridViewModel> lsAlumnosFiltrosGridViewModel = new List<AlumnosFiltrosGridViewModel>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select * from Alumnos al, Clientes cl, UsuariosAlumnos ua, Usuarios us where al.UidAlumno = ua.UidAlumno and us.UidUsuario = ua.UidUsuario and cl.UidCliente = al.UidCliente and us.UidUsuario = '" + UidUsuario + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                lsAlumnosFiltrosGridViewModel.Add(new AlumnosFiltrosGridViewModel()
+                {
+                    UidAlumno = Guid.Parse(item["UidAlumno"].ToString()),
+                    VchNombres = item["VchNombres"].ToString(),
+                    VchApePaterno = item["VchApePaterno"].ToString(),
+                    VchApeMaterno = item["VchApeMaterno"].ToString(),
+                    VchMatricula = item["VchMatricula"].ToString()
+                });
+            }
+
+            return lsAlumnosFiltrosGridViewModel.OrderBy(x => x.Alumno).ToList();
+        }
+
         #endregion
     }
 }

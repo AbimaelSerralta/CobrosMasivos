@@ -93,6 +93,8 @@ namespace PagaLaEscuela.Views
                 ddlEstatusCole.DataValueField = "UidEstatusFechaColegiatura";
                 ddlEstatusCole.DataBind();
 
+                ddlEstatusCole.SelectedIndex = ddlEstatusCole.Items.IndexOf(ddlEstatusCole.Items.FindByValue("76c8793b-4493-44c8-b274-696a61358bdf"));
+
                 estatusColegiaturasAlumnosServices.CargarEstatusColegiaturasAlumnos();
                 ddlEstatusPago.DataSource = estatusColegiaturasAlumnosServices.lsEstatusColegiaturasAlumnos;
                 ddlEstatusPago.Items.Insert(0, new ListItem("TODOS", Guid.Empty.ToString()));
