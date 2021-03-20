@@ -56,6 +56,11 @@
                                                 <asp:LinkButton ID="btnActualizarLista" OnClick="btnActualizarLista_Click" ToolTip="Actualizar tabla." class="btn btn-lg btn-success btn-fab btn-fab-mini btn-round pull-right" runat="server">
                                                         <i class="material-icons">sync</i>
                                                 </asp:LinkButton>
+
+                                                <asp:LinkButton ID="btnExportarLista" OnClick="btnExportarLista_Click" ToolTip="Exportar lista a excel." class="btn btn-lg btn-warning btn-fab btn-fab-mini btn-round pull-right" runat="server">
+                                                        <i class="material-icons">file_download</i>
+                                                    </asp:LinkButton>
+                                                    
                                                 <%--<asp:LinkButton ID="btnExportarLista" OnClick="btnExportarLista_Click" ToolTip="Exportar tabla a excel." class="btn btn-lg btn-warning btn-fab btn-fab-mini btn-round pull-right" runat="server">
                                                         <i class="material-icons">file_download</i>
                                                 </asp:LinkButton>--%>
@@ -103,7 +108,9 @@
                                                         <asp:BoundField SortExpression="VchNum" DataField="VchNum" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" HeaderText="# DE PAGOS" />
                                                         <asp:BoundField SortExpression="DtFHPago" DataField="DtFHPago" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" DataFormatString="{0:dd/MM/yyyy}" HeaderText="FECHA PAGO" />
                                                         <asp:BoundField SortExpression="DcmImporteCole" DataField="DcmImporteCole" ItemStyle-CssClass="text-right" HeaderStyle-CssClass="text-right" DataFormatString="{0:C}" HeaderText="IMPORTE COLEGIATURA" />
+                                                        <asp:BoundField SortExpression="DcmImporteRecargos" DataField="DcmImporteRecargos" ItemStyle-CssClass="text-right" HeaderStyle-CssClass="text-right" DataFormatString="{0:C}" HeaderText="IMPORTE RECARGOS" />
                                                         <asp:BoundField SortExpression="DcmImporteSaldado" DataField="DcmImporteSaldado" ItemStyle-CssClass="text-right" HeaderStyle-CssClass="text-right" DataFormatString="{0:C}" HeaderText="IMPORTE SALDADO" />
+                                                        <asp:BoundField SortExpression="DcmImporteAPagar" DataField="DcmImporteAPagar" ItemStyle-CssClass="text-right" HeaderStyle-CssClass="text-right" DataFormatString="{0:C}" HeaderText="IMPORTE A PAGAR" />
                                                         <asp:BoundField SortExpression="DcmImportePagado" DataField="DcmImportePagado" ItemStyle-CssClass="text-right" HeaderStyle-CssClass="text-right" DataFormatString="{0:C}" HeaderText="IMPORTE PAGADO" />
                                                         <asp:BoundField SortExpression="DcmImporteNuevo" DataField="DcmImporteNuevo" ItemStyle-CssClass="text-right" HeaderStyle-CssClass="text-right" DataFormatString="{0:C}" HeaderText="RESTA" />
                                                         <asp:BoundField SortExpression="VchFormaPago" DataField="VchFormaPago" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" HeaderText="FORMA PAGO" />
@@ -409,12 +416,12 @@
                                                     <asp:ListBox ID="ListBoxAlumnos" runat="server" SelectionMode="Multiple"></asp:ListBox>
                                                 </div>
                                                 <div class="form-group col-md-3">
-                                                    <label for="txtColegiatura" style="margin-top: 8px;color: black;">Colegiatura</label>
-                                                    <asp:TextBox ID="txtColegiatura" CssClass="form-control" aria-label="Search" runat="server" />
+                                                    <label for="txtColegiatura" style="color: black;">Colegiatura</label>
+                                                    <asp:TextBox ID="txtColegiatura" style="margin-top: 8px;" CssClass="form-control" aria-label="Search" runat="server" />
                                                 </div>
                                                 <div class="form-group col-md-3">
-                                                    <label for="txtNumPago" style="margin-top: 8px;color: black;"># de pago</label>
-                                                    <asp:TextBox ID="txtNumPago" CssClass="form-control" TextMode="Number" aria-label="Search" runat="server" />
+                                                    <label for="txtNumPago" style="color: black;"># de pago</label>
+                                                    <asp:TextBox ID="txtNumPago" style="margin-top: 8px;" CssClass="form-control" TextMode="Number" aria-label="Search" runat="server" />
                                                     <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" TargetControlID="txtNumPago" runat="server" />
                                                 </div>
                                             </div>
@@ -479,10 +486,9 @@
                                                     <label for="ListBoxFormaPago" style="color: black; padding-left: 0px;">Forma pago</label>
                                                     <asp:ListBox ID="ListBoxFormaPago" runat="server" SelectionMode="Multiple"></asp:ListBox>
                                                 </div>
-                                                <div class="form-group col-md-3">
-                                                    <label for="ddlEstatus" style="color: black;">Estatus</label>
-                                                    <asp:DropDownList ID="ddlEstatus" AppendDataBoundItems="true" CssClass="form-control" Style="margin-top: 6px;" runat="server">
-                                                    </asp:DropDownList>
+                                                <div class="form-group col-md-4">
+                                                    <label for="ListBoxEstatus" style="color: black; padding-left: 0px;">Estatus</label>
+                                                    <asp:ListBox ID="ListBoxEstatus" runat="server" SelectionMode="Multiple"></asp:ListBox>
                                                 </div>
                                             </div>
                                         </ContentTemplate>

@@ -922,6 +922,34 @@ namespace Franquicia.DataAccess.Repository
         }
         #endregion
 
+
+        #region Pagos
+        public List<AlumnosFiltrosGridViewModel> CargarFiltroAlumnosPA(Guid UidCliente, Guid UidUsuario)
+        {
+            List<AlumnosFiltrosGridViewModel> lsAlumnosFiltrosGridViewModel = new List<AlumnosFiltrosGridViewModel>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select * from Alumnos al, Clientes cl, UsuariosAlumnos ua, Usuarios us where al.UidAlumno = ua.UidAlumno and us.UidUsuario = ua.UidUsuario and cl.UidCliente = al.UidCliente and cl.UidCliente = '" + UidCliente + "' and us.UidUsuario = '" + UidUsuario + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                lsAlumnosFiltrosGridViewModel.Add(new AlumnosFiltrosGridViewModel()
+                {
+                    UidAlumno = Guid.Parse(item["UidAlumno"].ToString()),
+                    VchNombres = item["VchNombres"].ToString(),
+                    VchApePaterno = item["VchApePaterno"].ToString(),
+                    VchApeMaterno = item["VchApeMaterno"].ToString(),
+                    VchMatricula = item["VchMatricula"].ToString()
+                });
+            }
+
+            return lsAlumnosFiltrosGridViewModel.OrderBy(x => x.Alumno).ToList();
+        }
+        #endregion
         #region ReporteLigasPadre
 
         public List<AlumnosFiltrosGridViewModel> CargarFiltroAlumnosRLP(Guid UidUsuario)

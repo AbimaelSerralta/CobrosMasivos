@@ -676,6 +676,13 @@ namespace Franquicia.Bussiness
         }
         #endregion
 
+        #region Pagos
+        public List<AlumnosFiltrosGridViewModel> CargarFiltroAlumnosPA(Guid UidCliente, Guid UidUsuario)
+        {
+            lsAlumnosFiltrosGridViewModel = new List<AlumnosFiltrosGridViewModel>();
+            return lsAlumnosFiltrosGridViewModel = alumnosRepository.CargarFiltroAlumnosPA(UidCliente, UidUsuario);
+        }
+        #endregion
         #region ReporteLigasPadre
         public List<AlumnosFiltrosGridViewModel> CargarFiltroAlumnosRLP(Guid UidUsuario)
         {

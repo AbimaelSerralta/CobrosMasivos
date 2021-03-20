@@ -10,7 +10,7 @@ namespace Franquicia.Domain.ViewModels
     public class PagosReporteLigaPadreViewModels : PagosColegiaturas
     {
         public string VchIdentificador { get; set; }
-        
+
         public Guid UidAlumno { get; set; }
         public string VchMatricula { get; set; }
         public string VchNombres { get; set; }
@@ -22,8 +22,10 @@ namespace Franquicia.Domain.ViewModels
 
         public int IntNum { get; set; }
         public string VchNum { get; set; }
-        public decimal DcmImporteSaldado { get; set; }
         public decimal DcmImporteCole { get; set; }
+        public decimal DcmImporteRecargos { get; set; }
+        public decimal DcmImporteSaldado { get; set; }
+        public decimal DcmImporteAPagar { get; set; }
         public decimal DcmImportePagado { get; set; }
         public decimal DcmImporteNuevo { get; set; }
 
@@ -43,7 +45,7 @@ namespace Franquicia.Domain.ViewModels
 
         public string VchEstatus { get; set; }
         public string VchColor { get; set; }
-        
+
         public string VchBanco { get; set; }
         public string VchCuenta { get; set; }
         public string VchFolio { get; set; }

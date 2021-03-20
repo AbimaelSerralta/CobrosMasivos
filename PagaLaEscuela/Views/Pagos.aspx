@@ -25,6 +25,17 @@
             }
         }
     </script>
+    <style>
+        .form-check, label {
+            font-size: 14px;
+            line-height: 1.42857;
+            color: #333333;
+            font-weight: 400;
+            padding-left: 5px;
+            padding-right: 20px;
+            /*width: 100%;*/
+        }
+    </style>
 
     <asp:UpdatePanel runat="server">
         <ContentTemplate>
@@ -162,6 +173,9 @@
                                             <td style="width: 20%; padding-right: 5;">
                                                 <asp:LinkButton ID="btnActualizarLista" OnClick="btnActualizarLista_Click" ToolTip="Actualizar tabla." class="btn btn-lg btn-success btn-fab btn-fab-mini btn-round pull-right" runat="server">
                                                         <i class="material-icons">sync</i>
+                                                </asp:LinkButton>
+                                                <asp:LinkButton ID="btnExportarLista" OnClick="btnExportarLista_Click" ToolTip="Exportar lista a excel." class="btn btn-lg btn-warning btn-fab btn-fab-mini btn-round pull-right" runat="server">
+                                                        <i class="material-icons">file_download</i>
                                                 </asp:LinkButton>
                                             </td>
                                         </tr>
@@ -1984,75 +1998,40 @@
                 </asp:UpdatePanel>
 
                 <div class="modal-body pt-0" style="padding-bottom: 0px;">
-                    <asp:Label Text="Despliegue una sección para mostrar los campos de busqueda." runat="server" />
                     <asp:Panel ID="pnlFiltrosBusqueda" runat="server">
-                        <div class="accordionCard" style="margin-top: 15px; margin-bottom: 0px; border-left: 8px solid black;">
-                            <label style="font-size: 1.0625rem; font-weight: bold; color: black;">Datos colegiatura</label>
-                        </div>
-                        <div class="panelFiltro">
-                            <div class="row">
-                                <div class="card" style="margin-top: 0px; margin-bottom: 0px; border-left: 8px solid black;">
-                                    <div class="card-body">
-                                        <asp:UpdatePanel runat="server">
-                                            <ContentTemplate>
-                                                <div class="row">
-                                                    <div class="form-group col-md-9">
-                                                        <label for="txtColegiatura" style="margin-left: 15px; color: black;">Colegiatura</label>
-                                                        <asp:TextBox ID="txtColegiatura" CssClass="form-control" aria-label="Search" runat="server" />
-                                                    </div>
-                                                    <div class="form-group col-md-3">
-                                                        <label for="txtNumPago" style="margin-left: 15px; color: black;"># de pago</label>
-                                                        <asp:TextBox ID="txtNumPago" CssClass="form-control" TextMode="Number" aria-label="Search" runat="server" />
-                                                        <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" TargetControlID="txtNumPago" runat="server" />
-                                                    </div>
-                                                    <div class="form-group col-md-3">
-                                                        <label for="ddlEstatusCole" style="color: black;">Estatus</label>
-                                                        <asp:DropDownList ID="ddlEstatusCole" AppendDataBoundItems="true" CssClass="form-control" Style="margin-top: 6px;" runat="server">
-                                                        </asp:DropDownList>
-                                                    </div>
-                                                    <div class="form-group col-md-3">
-                                                        <label for="ddlEstatusPago" style="color: black;">Pago</label>
-                                                        <asp:DropDownList ID="ddlEstatusPago" AppendDataBoundItems="true" CssClass="form-control" Style="margin-top: 6px;" runat="server">
-                                                        </asp:DropDownList>
-                                                    </div>
-                                                </div>
-                                            </ContentTemplate>
-                                        </asp:UpdatePanel>
+                        <div class="row" style="margin-left: 0px; margin-right: 0px;">
+                            <div class="card" style="margin-top: 0px; margin-bottom: 0px; border-left: 8px solid black;">
+                                <div class="card-body" style="padding-top: 0px;">
+                                    <div style="margin-top: 7px; margin-bottom: 0px;">
+                                        <label style="font-size: 1.0625rem; font-weight: bold; color: black; padding-left: 0px;">Datos colegiatura</label>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="accordionCard" style="margin-top: 15px; margin-bottom: 0px; border-left: 8px solid #326497;">
-                            <label style="font-size: 1.0625rem; font-weight: bold; color: black;">Datos alumno</label>
-                        </div>
-                        <div class="panelFiltro">
-                            <div class="row">
-                                <div class="card" style="margin-top: 0px; margin-bottom: 0px; border-left: 8px solid #326497;">
-                                    <div class="card-body">
-                                        <asp:UpdatePanel runat="server">
-                                            <ContentTemplate>
-                                                <div class="row">
-                                                    <div class="form-group col-md-3">
-                                                        <label for="txtMatricula" style="margin-left: 15px; color: black;">Matricula</label>
-                                                        <asp:TextBox ID="txtMatricula" CssClass="form-control" aria-label="Search" runat="server" />
-                                                    </div>
-                                                    <div class="form-group col-md-3">
-                                                        <label for="txtAlNombre" style="margin-left: 15px; color: black;">Nombre</label>
-                                                        <asp:TextBox ID="txtAlNombre" CssClass="form-control" aria-label="Search" runat="server" />
-                                                    </div>
-                                                    <div class="form-group col-md-3">
-                                                        <label for="txtAlApPaterno" style="margin-left: 15px; color: black;">Apellido Paterno</label>
-                                                        <asp:TextBox ID="txtAlApPaterno" CssClass="form-control" aria-label="Search" runat="server" />
-                                                    </div>
-                                                    <div class="form-group col-md-3">
-                                                        <label for="txtAlApMaterno" style="margin-left: 15px; color: black;">Apellido Materno</label>
-                                                        <asp:TextBox ID="txtAlApMaterno" CssClass="form-control" aria-label="Search" runat="server" />
-                                                    </div>
+                                    <asp:UpdatePanel runat="server">
+                                        <ContentTemplate>
+                                            <div class="row">
+                                                <div class="form-group col-md-6">
+                                                    <label for="ListBoxAlumnos" style="color: black; padding-left: 0px;">Alumno(es)</label>
+                                                    <asp:ListBox ID="ListBoxAlumnos" runat="server" SelectionMode="Multiple"></asp:ListBox>
                                                 </div>
-                                            </ContentTemplate>
-                                        </asp:UpdatePanel>
-                                    </div>
+                                                <div class="form-group col-md-3">
+                                                    <label for="txtColegiatura" style="color: black;">Colegiatura</label>
+                                                    <asp:TextBox ID="txtColegiatura" style="margin-top: 8px;" CssClass="form-control" aria-label="Search" runat="server" />
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <label for="txtNumPago" style="color: black;"># de pago</label>
+                                                    <asp:TextBox ID="txtNumPago" style="margin-top: 8px;" CssClass="form-control" TextMode="Number" aria-label="Search" runat="server" />
+                                                    <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" TargetControlID="txtNumPago" runat="server" />
+                                                </div>
+                                                <div class="form-group col-md-4">
+                                                    <label for="ListBoxEstatusCole" style="color: black; padding-left: 0px;">Estatus</label>
+                                                    <asp:ListBox ID="ListBoxEstatusCole" runat="server" SelectionMode="Multiple"></asp:ListBox>
+                                                </div>
+                                                <div class="form-group col-md-4">
+                                                    <label for="ListBoxEstatusPago" style="color: black; padding-left: 0px;">Pago</label>
+                                                    <asp:ListBox ID="ListBoxEstatusPago" runat="server" SelectionMode="Multiple"></asp:ListBox>
+                                                </div>
+                                            </div>
+                                        </ContentTemplate>
+                                    </asp:UpdatePanel>
                                 </div>
                             </div>
                         </div>
@@ -2191,6 +2170,13 @@
                 } else {
                     panel.style.maxHeight = panel.scrollHeight + "px";
                 }
+            });
+        }
+    </script>
+    <script>
+        function multi() {
+            $('[id*=ListBox]').multiselect({
+                includeSelectAllOption: true
             });
         }
     </script>

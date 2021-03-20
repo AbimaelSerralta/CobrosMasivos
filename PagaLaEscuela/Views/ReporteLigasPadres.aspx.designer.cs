@@ -60,6 +60,15 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.LinkButton btnActualizarLista;
 
         /// <summary>
+        /// Control btnExportarLista.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnExportarLista;
+
+        /// <summary>
         /// Control btnDatosAlumnos.
         /// </summary>
         /// <remarks>
@@ -330,13 +339,13 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.ListBox ListBoxFormaPago;
 
         /// <summary>
-        /// Control ddlEstatus.
+        /// Control ListBoxEstatus.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlEstatus;
+        protected global::System.Web.UI.WebControls.ListBox ListBoxEstatus;
 
         /// <summary>
         /// Control btnBuscar.

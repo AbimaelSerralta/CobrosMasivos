@@ -61,12 +61,17 @@ namespace PagaLaEscuela.Views
                 //gvLigasGeneradas.DataBind();
 
                 ActualizarDatosPrincipal();
-                
+
                 alumnosServices.CargarFiltroAlumnosRLP(Guid.Parse(ViewState["UidUsuarioLocal"].ToString()));
                 ListBoxAlumnos.DataSource = alumnosServices.lsAlumnosFiltrosGridViewModel;
                 ListBoxAlumnos.DataTextField = "Alumno";
                 ListBoxAlumnos.DataValueField = "UidAlumno";
                 ListBoxAlumnos.DataBind();
+
+                foreach (ListItem item in ListBoxAlumnos.Items)
+                {
+                    item.Selected = true;
+                }
 
                 formasPagosServices.CargarFormasPagos();
                 ListBoxFormaPago.DataSource = formasPagosServices.lsFormasPagos;
@@ -74,13 +79,23 @@ namespace PagaLaEscuela.Views
                 ListBoxFormaPago.DataTextField = "VchDescripcion";
                 ListBoxFormaPago.DataValueField = "UidFormaPago";
                 ListBoxFormaPago.DataBind();
-                
+
+                foreach (ListItem item in ListBoxFormaPago.Items)
+                {
+                    item.Selected = true;
+                }
+
                 estatusFechasPagosServices.CargarEstatusFechasPagosBusquedaRLP();
-                ddlEstatus.DataSource = estatusFechasPagosServices.lsEstatusFechasPagos;
-                ddlEstatus.Items.Insert(0, new ListItem("TODOS", Guid.Empty.ToString()));
-                ddlEstatus.DataTextField = "VchDescripcion";
-                ddlEstatus.DataValueField = "UidEstatusFechaPago";
-                ddlEstatus.DataBind();
+                ListBoxEstatus.DataSource = estatusFechasPagosServices.lsEstatusFechasPagos;
+                ListBoxEstatus.Items.Insert(0, new ListItem("TODOS", Guid.Empty.ToString()));
+                ListBoxEstatus.DataTextField = "VchDescripcion";
+                ListBoxEstatus.DataValueField = "UidEstatusFechaPago";
+                ListBoxEstatus.DataBind();
+
+                foreach (ListItem item in ListBoxEstatus.Items)
+                {
+                    item.Selected = true;
+                }
             }
             else
             {
@@ -190,7 +205,7 @@ namespace PagaLaEscuela.Views
             ViewState["NewPageIndex"] = null;
             ViewState["NewPageIndex2"] = null;
 
-            colegiaturasServices.BuscarPagosColeReportePadre(Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), GetItemListBox(ListBoxAlumnos), txtColegiatura.Text, txtNumPago.Text, txtFolio.Text, txtCuenta.Text, txtBanco.Text, ImporteMayor, ImporteMenor, txtRegistroDesde.Text, txtRegistroHasta.Text, GetItemListBox(ListBoxFormaPago), Guid.Parse(ddlEstatus.SelectedValue));
+            colegiaturasServices.BuscarPagosColeReportePadre(Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), GetItemListBox(ListBoxAlumnos), txtColegiatura.Text, txtNumPago.Text, txtFolio.Text, txtCuenta.Text, txtBanco.Text, ImporteMayor, ImporteMenor, txtRegistroDesde.Text, txtRegistroHasta.Text, GetItemListBox(ListBoxFormaPago), GetItemListBox(ListBoxEstatus));
 
             gvDatosAlumnos.DataSource = colegiaturasServices.lsPagosReporteLigaPadreViewModels;
             gvDatosAlumnos.DataBind();
@@ -219,7 +234,7 @@ namespace PagaLaEscuela.Views
 
         protected void btnLimpiar_Click(object sender, EventArgs e)
         {
-            ListBoxFormaPago.SelectedIndex = -1;
+            foreach (ListItem item in ListBoxAlumnos.Items) { item.Selected = true; }
             txtColegiatura.Text = string.Empty;
             txtNumPago.Text = string.Empty;
 
@@ -232,8 +247,9 @@ namespace PagaLaEscuela.Views
             ddlImporteMenor.SelectedIndex = -1;
             txtRegistroDesde.Text = string.Empty;
             txtRegistroHasta.Text = string.Empty;
-            ListBoxFormaPago.SelectedIndex = -1;
-            ddlEstatus.SelectedIndex = -1;
+            foreach (ListItem item in ListBoxFormaPago.Items) { item.Selected = true; }
+            foreach (ListItem item in ListBoxEstatus.Items) { item.Selected = true; }
+
         }
 
         protected void gvDetalleLiga_PageIndexChanging(object sender, GridViewPageEventArgs e)
@@ -365,8 +381,8 @@ namespace PagaLaEscuela.Views
 
         protected void btnExportarLista_Click(object sender, EventArgs e)
         {
-            Session["lsLigasUrlsGridViewModel"] = ligasUrlsServices.lsLigasUrlsGridViewModel;
-            string _open = "window.open('ExportarAExcelReporteLigas.aspx', '_blank');";
+            Session["lsPagosReporteLigaPadreViewModels"] = colegiaturasServices.lsPagosReporteLigaPadreViewModels;
+            string _open = "window.open('Excel/ExportarAExcelReportePagosPadre.aspx', '_blank');";
             ScriptManager.RegisterStartupScript(this, this.GetType(), Guid.NewGuid().ToString(), _open, true);
         }
 
@@ -1440,7 +1456,7 @@ namespace PagaLaEscuela.Views
 
                 TextBox txtGvUidCliente = (TextBox)Seleccionado.FindControl("txtGvUidCliente");
                 ViewState["RowCommand-UidCliente"] = txtGvUidCliente.Text;
-                
+
                 TextBox txtGvUidAlumno = (TextBox)Seleccionado.FindControl("txtGvUidAlumno");
                 ViewState["RowCommand-UidAlumno"] = txtGvUidAlumno.Text;
 

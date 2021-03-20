@@ -123,6 +123,15 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.LinkButton btnActualizarLista;
 
         /// <summary>
+        /// Control btnExportarLista.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnExportarLista;
+
+        /// <summary>
         /// Control gvPagos.
         /// </summary>
         /// <remarks>
@@ -1707,6 +1716,15 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.Panel pnlFiltrosBusqueda;
 
         /// <summary>
+        /// Control ListBoxAlumnos.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListBox ListBoxAlumnos;
+
+        /// <summary>
         /// Control txtColegiatura.
         /// </summary>
         /// <remarks>
@@ -1725,58 +1743,22 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.TextBox txtNumPago;
 
         /// <summary>
-        /// Control ddlEstatusCole.
+        /// Control ListBoxEstatusCole.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlEstatusCole;
+        protected global::System.Web.UI.WebControls.ListBox ListBoxEstatusCole;
 
         /// <summary>
-        /// Control ddlEstatusPago.
+        /// Control ListBoxEstatusPago.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlEstatusPago;
-
-        /// <summary>
-        /// Control txtMatricula.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtMatricula;
-
-        /// <summary>
-        /// Control txtAlNombre.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtAlNombre;
-
-        /// <summary>
-        /// Control txtAlApPaterno.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtAlApPaterno;
-
-        /// <summary>
-        /// Control txtAlApMaterno.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtAlApMaterno;
+        protected global::System.Web.UI.WebControls.ListBox ListBoxEstatusPago;
 
         /// <summary>
         /// Control btnBuscar.

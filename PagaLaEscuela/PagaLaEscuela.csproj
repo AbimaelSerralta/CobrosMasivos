@@ -309,6 +309,8 @@
     <Content Include="Views\Colegiatura.aspx" />
     <Content Include="Views\Empresas.aspx" />
     <Content Include="Views\EscuelasTarifas.aspx" />
+    <Content Include="Views\Excel\ExportarAExcelPagosColegiaturas.aspx" />
+    <Content Include="Views\Excel\ExportarAExcelReportePagosPadre.aspx" />
     <Content Include="Views\Excel\ExportarAExcelReportePagosEscuela.aspx" />
     <Content Include="Views\Excel\ExportarExcelPadres.aspx" />
     <Content Include="Views\Excel\ExportarExcelAlumnos.aspx" />
@@ -430,6 +432,20 @@
     </Compile>
     <Compile Include="Views\EscuelasTarifas.aspx.designer.cs">
       <DependentUpon>EscuelasTarifas.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Excel\ExportarAExcelPagosColegiaturas.aspx.cs">
+      <DependentUpon>ExportarAExcelPagosColegiaturas.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\Excel\ExportarAExcelPagosColegiaturas.aspx.designer.cs">
+      <DependentUpon>ExportarAExcelPagosColegiaturas.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Excel\ExportarAExcelReportePagosPadre.aspx.cs">
+      <DependentUpon>ExportarAExcelReportePagosPadre.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\Excel\ExportarAExcelReportePagosPadre.aspx.designer.cs">
+      <DependentUpon>ExportarAExcelReportePagosPadre.aspx</DependentUpon>
     </Compile>
     <Compile Include="Views\Excel\ExportarAExcelReportePagosEscuela.aspx.cs">
       <DependentUpon>ExportarAExcelReportePagosEscuela.aspx</DependentUpon>

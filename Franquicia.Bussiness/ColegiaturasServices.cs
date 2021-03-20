@@ -290,10 +290,10 @@ namespace Franquicia.Bussiness
             return colegiaturasRepository.ActualizarEstatusColegiaturaAlumno(UidFechaColegiatura, UidAlumno, DtFechaPago, UidEstatus);
         }
 
-        public List<PagosColegiaturasViewModel> BuscarColegiaturaPadre(Guid UidCliente, Guid UidUsuario, DateTime FechaInicio, string Colegiatura, string NumPago, Guid EstatusCole, Guid EstatusPago, string Matricula, string AlNombre, string AlApePaterno, string AlApeMaterno)
+        public List<PagosColegiaturasViewModel> BuscarColegiaturaPadre(Guid UidCliente, Guid UidUsuario, DateTime FechaInicio, string UidAlumno, string Colegiatura, string NumPago, string EstatusCole, string EstatusPago)
         {
             lsPagosColegiaturasViewModel = new List<PagosColegiaturasViewModel>();
-            return lsPagosColegiaturasViewModel = colegiaturasRepository.BuscarColegiaturaPadre(UidCliente, UidUsuario, FechaInicio, Colegiatura, NumPago, EstatusCole, EstatusPago, Matricula, AlNombre, AlApePaterno, AlApeMaterno);
+            return lsPagosColegiaturasViewModel = colegiaturasRepository.BuscarColegiaturaPadre(UidCliente, UidUsuario, FechaInicio, UidAlumno, Colegiatura, NumPago, EstatusCole, EstatusPago);
         }
 
         #endregion
@@ -309,7 +309,7 @@ namespace Franquicia.Bussiness
             lsPagosReporteLigaPadreViewModels = new List<PagosReporteLigaPadreViewModels>();
             return lsPagosReporteLigaPadreViewModels = colegiaturasRepository.CargarPagosColeReportePadre(UidUsuario);
         }
-        public List<PagosReporteLigaPadreViewModels> BuscarPagosColeReportePadre(Guid UidUsuario, string UidAlumno, string Colegiatura, string NumPago, string Folio, string Cuenta, string Banco, decimal ImporteMayor, decimal ImporteMenor, string RegistroDesde, string RegistroHasta, string FormaPago, Guid Estatus)
+        public List<PagosReporteLigaPadreViewModels> BuscarPagosColeReportePadre(Guid UidUsuario, string UidAlumno, string Colegiatura, string NumPago, string Folio, string Cuenta, string Banco, decimal ImporteMayor, decimal ImporteMenor, string RegistroDesde, string RegistroHasta, string FormaPago, string Estatus)
         {
             lsPagosReporteLigaPadreViewModels = new List<PagosReporteLigaPadreViewModels>();
             return lsPagosReporteLigaPadreViewModels = colegiaturasRepository.BuscarPagosColeReportePadre(UidUsuario, UidAlumno, Colegiatura, NumPago, Folio, Cuenta, Banco, ImporteMayor, ImporteMenor, RegistroDesde, RegistroHasta, FormaPago, Estatus);
