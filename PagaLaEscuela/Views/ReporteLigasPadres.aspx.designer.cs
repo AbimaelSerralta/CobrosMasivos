@@ -591,6 +591,33 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.Label DcmImpResta;
 
         /// <summary>
+        /// Control lblRestaPagoDetalle.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblRestaPagoDetalle;
+
+        /// <summary>
+        /// Control lblRecargoPagoDetalle.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblRecargoPagoDetalle;
+
+        /// <summary>
+        /// Control lblNuevaRestaPagoDetalle.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblNuevaRestaPagoDetalle;
+
+        /// <summary>
         /// Control trdetallepromociones.
         /// </summary>
         /// <remarks>
@@ -789,6 +816,33 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.Label DcmImpRestaManual;
 
         /// <summary>
+        /// Control lblRestaPagoDetalleManual.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblRestaPagoDetalleManual;
+
+        /// <summary>
+        /// Control lblRecargoPagoDetalleManual.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblRecargoPagoDetalleManual;
+
+        /// <summary>
+        /// Control lblNuevaRestaPagoDetalleManual.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblNuevaRestaPagoDetalleManual;
+
+        /// <summary>
         /// Control trDetalleOperacionManual.
         /// </summary>
         /// <remarks>
@@ -985,6 +1039,33 @@ namespace PagaLaEscuela.Views
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label DcmImpRestaClubPago;
+
+        /// <summary>
+        /// Control lblRestaPagoDetalleClubPago.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblRestaPagoDetalleClubPago;
+
+        /// <summary>
+        /// Control lblRecargoPagoDetalleClubPago.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblRecargoPagoDetalleClubPago;
+
+        /// <summary>
+        /// Control lblNuevaRestaPagoDetalleClubPago.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblNuevaRestaPagoDetalleClubPago;
 
         /// <summary>
         /// Control trdetalleoperacionClubPago.

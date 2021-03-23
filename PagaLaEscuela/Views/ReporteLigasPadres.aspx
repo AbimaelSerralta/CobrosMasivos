@@ -59,8 +59,8 @@
 
                                                 <asp:LinkButton ID="btnExportarLista" OnClick="btnExportarLista_Click" ToolTip="Exportar lista a excel." class="btn btn-lg btn-warning btn-fab btn-fab-mini btn-round pull-right" runat="server">
                                                         <i class="material-icons">file_download</i>
-                                                    </asp:LinkButton>
-                                                    
+                                                </asp:LinkButton>
+
                                                 <%--<asp:LinkButton ID="btnExportarLista" OnClick="btnExportarLista_Click" ToolTip="Exportar tabla a excel." class="btn btn-lg btn-warning btn-fab btn-fab-mini btn-round pull-right" runat="server">
                                                         <i class="material-icons">file_download</i>
                                                 </asp:LinkButton>--%>
@@ -417,11 +417,11 @@
                                                 </div>
                                                 <div class="form-group col-md-3">
                                                     <label for="txtColegiatura" style="color: black;">Colegiatura</label>
-                                                    <asp:TextBox ID="txtColegiatura" style="margin-top: 8px;" CssClass="form-control" aria-label="Search" runat="server" />
+                                                    <asp:TextBox ID="txtColegiatura" Style="margin-top: 8px;" CssClass="form-control" aria-label="Search" runat="server" />
                                                 </div>
                                                 <div class="form-group col-md-3">
                                                     <label for="txtNumPago" style="color: black;"># de pago</label>
-                                                    <asp:TextBox ID="txtNumPago" style="margin-top: 8px;" CssClass="form-control" TextMode="Number" aria-label="Search" runat="server" />
+                                                    <asp:TextBox ID="txtNumPago" Style="margin-top: 8px;" CssClass="form-control" TextMode="Number" aria-label="Search" runat="server" />
                                                     <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" TargetControlID="txtNumPago" runat="server" />
                                                 </div>
                                             </div>
@@ -433,7 +433,7 @@
                             <div class="card" style="margin-top: 0px; margin-bottom: 0px; border-left: 8px solid #0094ff;">
                                 <div class="card-body">
                                     <div style="margin-top: 7px; margin-bottom: 0px;">
-                                        <label style="font-size: 1.0625rem; font-weight: bold; color: black;padding-left: 0px;">Datos pago</label>
+                                        <label style="font-size: 1.0625rem; font-weight: bold; color: black; padding-left: 0px;">Datos pago</label>
                                     </div>
                                     <asp:UpdatePanel runat="server">
                                         <ContentTemplate>
@@ -700,9 +700,9 @@
                                                                     <table border="0" cellpadding="5" cellspacing="0" width="100%">
                                                                         <thead>
                                                                             <tr>
-                                                                                <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;" align="center">N°</th>
-                                                                                <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;" align="left">CONCEPTO</th>
-                                                                                <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;" align="right">PRECIO</th>
+                                                                                <th style="text-align: center; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">N°</th>
+                                                                                <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">CONCEPTO</th>
+                                                                                <th style="text-align: right; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">PRECIO</th>
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
@@ -770,6 +770,49 @@
                                                                                 </td>
                                                                                 <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">
                                                                                     <asp:Label ID="DcmImpResta" runat="server" />
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <%--Nuevos recargos--%>
+                                                <td bgcolor="#b62322" align="center" style="padding: 30px 10px 0px 10px;">
+                                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td bgcolor="#ffffff" align="left" style="padding: 10px 10px 10px 10px;">
+                                                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th colspan="3" style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px; padding-left: 8px;" align="left">NUEVOS RECARGOS
+                                                                                </th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td bgcolor="#ffffff" align="left" style="padding: 10px 0px 30px 0px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 25px;">
+                                                                                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                                                                        <thead>
+                                                                                            <tr>
+                                                                                                <th style="text-align: right; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">RESTA</th>
+                                                                                                <th style="text-align: right; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">RECARGO</th>
+                                                                                                <th style="text-align: right; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">NUEVA RESTA</th>
+                                                                                            </tr>
+                                                                                        </thead>
+                                                                                        <tbody>
+                                                                                            <tr>
+                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right"><asp:Label ID="lblRestaPagoDetalle" runat="server" /></td>
+                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right"><asp:Label ID="lblRecargoPagoDetalle" runat="server" /></td>
+                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right"><asp:Label ID="lblNuevaRestaPagoDetalle" runat="server" /></td>
+                                                                                            </tr>
+                                                                                        </tbody>
+                                                                                    </table>
                                                                                 </td>
                                                                             </tr>
                                                                         </tbody>
@@ -1025,6 +1068,49 @@
                                                     </table>
                                                 </td>
                                             </tr>
+                                            <tr>
+                                                <%--Nuevos recargos--%>
+                                                <td bgcolor="#b62322" align="center" style="padding: 30px 10px 0px 10px;">
+                                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td bgcolor="#ffffff" align="left" style="padding: 10px 10px 10px 10px;">
+                                                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th colspan="3" style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px; padding-left: 8px;" align="left">NUEVOS RECARGOS
+                                                                                </th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td bgcolor="#ffffff" align="left" style="padding: 10px 0px 30px 0px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 25px;">
+                                                                                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                                                                        <thead>
+                                                                                            <tr>
+                                                                                                <th style="text-align: right; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">RESTA</th>
+                                                                                                <th style="text-align: right; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">RECARGO</th>
+                                                                                                <th style="text-align: right; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">NUEVA RESTA</th>
+                                                                                            </tr>
+                                                                                        </thead>
+                                                                                        <tbody>
+                                                                                            <tr>
+                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right"><asp:Label ID="lblRestaPagoDetalleManual" runat="server" /></td>
+                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right"><asp:Label ID="lblRecargoPagoDetalleManual" runat="server" /></td>
+                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right"><asp:Label ID="lblNuevaRestaPagoDetalleManual" runat="server" /></td>
+                                                                                            </tr>
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
                                             <tr id="trDetalleOperacionManual" runat="server">
                                                 <%--Detalle de la operacion--%>
                                                 <td bgcolor="#b62322" align="center" style="padding: 30px 10px 0px 10px;">
@@ -1189,9 +1275,9 @@
                                                                     <table border="0" cellpadding="5" cellspacing="0" width="100%">
                                                                         <thead>
                                                                             <tr>
-                                                                                <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;" align="center">N°</th>
-                                                                                <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;" align="left">CONCEPTO</th>
-                                                                                <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;" align="right">IMPORTE</th>
+                                                                                <th style="text-align: center; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">N°</th>
+                                                                                <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">CONCEPTO</th>
+                                                                                <th style="text-align: right; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">IMPORTE</th>
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
@@ -1260,6 +1346,49 @@
                                                     </table>
                                                 </td>
                                             </tr>
+                                            <tr>
+                                                <%--Nuevos recargos--%>
+                                                <td bgcolor="#b62322" align="center" style="padding: 30px 10px 0px 10px;">
+                                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td bgcolor="#ffffff" align="left" style="padding: 10px 10px 10px 10px;">
+                                                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th colspan="3" style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px; padding-left: 8px;" align="left">NUEVOS RECARGOS
+                                                                                </th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td bgcolor="#ffffff" align="left" style="padding: 10px 0px 30px 0px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 25px;">
+                                                                                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                                                                        <thead>
+                                                                                            <tr>
+                                                                                                <th style="text-align: right; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">RESTA</th>
+                                                                                                <th style="text-align: right; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">RECARGO</th>
+                                                                                                <th style="text-align: right; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">NUEVA RESTA</th>
+                                                                                            </tr>
+                                                                                        </thead>
+                                                                                        <tbody>
+                                                                                            <tr>
+                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right"><asp:Label ID="lblRestaPagoDetalleClubPago" runat="server" /></td>
+                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right"><asp:Label ID="lblRecargoPagoDetalleClubPago" runat="server" /></td>
+                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right"><asp:Label ID="lblNuevaRestaPagoDetalleClubPago" runat="server" /></td>
+                                                                                            </tr>
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
                                             <tr id="trdetalleoperacionClubPago" runat="server">
                                                 <%--Detalle de la operacion--%>
                                                 <td bgcolor="#b62322" align="center" style="padding: 30px 10px 0px 10px;">
@@ -1280,10 +1409,10 @@
                                                                                     <table border="0" cellpadding="0" cellspacing="0" width="100%">
                                                                                         <thead>
                                                                                             <tr>
-                                                                                                <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;" align="left">REFERENCIA</th>
-                                                                                                <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;" align="left">FECHA</th>
-                                                                                                <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;" align="left">TRANSACCIÓN</th>
-                                                                                                <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;" align="right">MONTO</th>
+                                                                                                <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">REFERENCIA</th>
+                                                                                                <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">FECHA</th>
+                                                                                                <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">TRANSACCIÓN</th>
+                                                                                                <th style="text-align: right; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">MONTO</th>
                                                                                             </tr>
                                                                                         </thead>
                                                                                         <tbody>

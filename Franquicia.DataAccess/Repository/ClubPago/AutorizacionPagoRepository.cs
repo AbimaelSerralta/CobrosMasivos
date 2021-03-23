@@ -203,20 +203,27 @@ namespace Franquicia.DataAccess.Repository.ClubPago
             if (ImporteCole == ImportePagado) //el importeColegiatura es igual al importe de todos los pagos con estatus aprobado
             {
                 //Se cambia el estatus de la colegiatura a pagado.
-                colegiaturasRepository.ActualizarEstatusFeColegiaturaAlumno(UidFechaColegiatura, UidAlumno, Guid.Parse("605A7881-54E0-47DF-8398-EDE080F4E0AA"), true);
+                colegiaturasRepository.ActualizarEstatusFeColegiaturaAlumno(UidFechaColegiatura, UidAlumno, Guid.Parse("605A7881-54E0-47DF-8398-EDE080F4E0AA"), Guid.Parse("80EAC55B-8363-4FA3-86A5-430971F0E0E6"), true);
             }
             else if (ImporteCole == (ImportePagado + ImportePendiente)) //el importe de los pagos aprobado y pendiente es igual al importe la colegiatura
             {
                 // La colegiatura mantiene el estatus en proceso
-                colegiaturasRepository.ActualizarEstatusFeColegiaturaAlumno(UidFechaColegiatura, UidAlumno, Guid.Parse("5554CE57-1288-46D5-B36A-8AC69CB94B9A"), true);
+                colegiaturasRepository.ActualizarEstatusFeColegiaturaAlumno(UidFechaColegiatura, UidAlumno, Guid.Parse("5554CE57-1288-46D5-B36A-8AC69CB94B9A"), Guid.Parse("80EAC55B-8363-4FA3-86A5-430971F0E0E6"), true);
             }
             else
             {
+                Guid UidEstatusColeAlumnos = Guid.Parse("CEB03962-B62D-42F4-A299-582EB59E0D75");
+
+                if ((ImportePagado + ImportePendiente) != 0)
+                {
+                    UidEstatusColeAlumnos = Guid.Parse("2545BF35-F4D4-4D18-8234-8AB9D8A4ECB8");
+                }
+
                 // La colegiatura regresa al ultimo estatus
                 DateTime HoraServidor = DateTime.Now;
                 DateTime hoy = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(HoraServidor, TimeZoneInfo.Local.Id, "Eastern Standard Time (Mexico)");
                 string UidEstatus = colegiaturasRepository.ObtenerEstatusColegiaturasRLE(hoy, UidFechaColegiatura, UidAlumno);
-                colegiaturasRepository.ActualizarEstatusFeColegiaturaAlumno(UidFechaColegiatura, UidAlumno, Guid.Parse(UidEstatus.ToString()), false);
+                colegiaturasRepository.ActualizarEstatusFeColegiaturaAlumno(UidFechaColegiatura, UidAlumno, Guid.Parse(UidEstatus.ToString()), UidEstatusColeAlumnos, false);
             }
         }
         public bool RegistrarPagoClubPago(Guid UidPago, string IdReferencia, DateTime FechaRegistro, DateTime FechaOperacion, decimal Monto, string Transaccion, string Autorizacion, Guid UidPagoEstatus)

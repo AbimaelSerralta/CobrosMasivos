@@ -438,6 +438,12 @@ namespace PagaLaEscuela.Views
                 Guid dataKey = Guid.Parse(valor.DataKeys[Seleccionado.RowIndex].Value.ToString());
                 ViewState["RowCommand-UidFechaColegiatura"] = dataKey;
 
+                TextBox txtGvUidCliente = (TextBox)Seleccionado.FindControl("txtGvUidCliente");
+                ViewState["RowCommand-UidCliente"] = txtGvUidCliente.Text;
+                
+                TextBox txtGvUidAlumno = (TextBox)Seleccionado.FindControl("txtGvUidAlumno");
+                ViewState["RowCommand-UidAlumno"] = txtGvUidAlumno.Text;
+
                 string Matri = gvPagos.Rows[index].Cells[1].Text;
                 ViewState["RowCommand-Matricula"] = Matri;
 
@@ -1584,20 +1590,27 @@ namespace PagaLaEscuela.Views
             if (ImporteCole == ImportePagado) //el importeColegiatura es igual al importe de todos los pagos con estatus aprobado
             {
                 //Se cambia el estatus de la colegiatura a pagado.
-                colegiaturasServices.ActualizarEstatusFeColegiaturaAlumno(UidFechaColegiatura, UidAlumno, Guid.Parse("605A7881-54E0-47DF-8398-EDE080F4E0AA"), true);
+                colegiaturasServices.ActualizarEstatusFeColegiaturaAlumno(UidFechaColegiatura, UidAlumno, Guid.Parse("605A7881-54E0-47DF-8398-EDE080F4E0AA"), Guid.Parse("80EAC55B-8363-4FA3-86A5-430971F0E0E6"), true);
             }
             else if (ImporteCole == (ImportePagado + ImportePendiente)) //el importe de los pagos aprobado y pendiente es igual al importe la colegiatura
             {
                 // La colegiatura mantiene el estatus en proceso
-                colegiaturasServices.ActualizarEstatusFeColegiaturaAlumno(UidFechaColegiatura, UidAlumno, Guid.Parse("5554CE57-1288-46D5-B36A-8AC69CB94B9A"), true);
+                colegiaturasServices.ActualizarEstatusFeColegiaturaAlumno(UidFechaColegiatura, UidAlumno, Guid.Parse("5554CE57-1288-46D5-B36A-8AC69CB94B9A"), Guid.Parse("80EAC55B-8363-4FA3-86A5-430971F0E0E6"), true);
             }
             else
             {
+                Guid UidEstatusColeAlumnos = Guid.Parse("CEB03962-B62D-42F4-A299-582EB59E0D75");
+
+                if ((ImportePagado + ImportePendiente) != 0)
+                {
+                    UidEstatusColeAlumnos = Guid.Parse("2545BF35-F4D4-4D18-8234-8AB9D8A4ECB8");
+                }
+                
                 // La colegiatura regresa al ultimo estatus
                 DateTime HoraDelServidor = DateTime.Now;
                 DateTime hoy = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(HoraDelServidor, TimeZoneInfo.Local.Id, "Eastern Standard Time (Mexico)");
                 string UidEstatus = colegiaturasServices.ObtenerEstatusColegiaturasRLE(hoy, UidFechaColegiatura, UidAlumno);
-                colegiaturasServices.ActualizarEstatusFeColegiaturaAlumno(UidFechaColegiatura, UidAlumno, Guid.Parse(UidEstatus.ToString()), false);
+                colegiaturasServices.ActualizarEstatusFeColegiaturaAlumno(UidFechaColegiatura, UidAlumno, Guid.Parse(UidEstatus.ToString()), UidEstatusColeAlumnos, false);
             }
         }
         protected void tmValidar_Tick(object sender, EventArgs e)
@@ -2176,6 +2189,8 @@ namespace PagaLaEscuela.Views
                     var datoPago = pagosColegiaturasServices.ObtenerDatosPagoRLE(dataKey);
 
                     autorizacionPagoServices.RegistrarPagoClubPago(Guid.NewGuid(), datoPago.Item1, hoy, hoy, datoPago.Item2, "", "", Guid.Parse("A90B996E-A78E-44B2-AB9A-37B961D4FB27"));
+
+                    ValidarPago(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()));
 
                     pagosColegiaturasServices.ObtenerPagosReportePadres(Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), ViewState["RowCommand-Matricula"].ToString());
                     gvPagosColegiaturas.DataSource = pagosColegiaturasServices.lsReportePadresFechasPagosColeViewModel;

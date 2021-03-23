@@ -326,9 +326,9 @@ namespace Franquicia.Bussiness
         {
             return colegiaturasRepository.ObtenerDatosFechaColegiatura(UidCliente, UidUsuario, UidFechaColegiatura, UidAlumno);
         }
-        public bool ActualizarEstatusFeColegiaturaAlumno(Guid UidFechaColegiatura, Guid UidAlumno, Guid UidEstatus, bool BitUsarFecha)
+        public bool ActualizarEstatusFeColegiaturaAlumno(Guid UidFechaColegiatura, Guid UidAlumno, Guid UidEstatus, Guid UidEstatusColeAlumnos, bool BitUsarFecha)
         {
-            return colegiaturasRepository.ActualizarEstatusFeColegiaturaAlumno(UidFechaColegiatura, UidAlumno, UidEstatus, BitUsarFecha);
+            return colegiaturasRepository.ActualizarEstatusFeColegiaturaAlumno(UidFechaColegiatura, UidAlumno, UidEstatus, UidEstatusColeAlumnos, BitUsarFecha);
         }
 
         public string ObtenerEstatusColegiaturasRLE(DateTime hoy, Guid UidFechaColegiatura, Guid UidAlumno)
