@@ -9,7 +9,7 @@ namespace Franquicia.Domain.ViewModels
 {
     public class AlumnosFiltrosGridViewModel : Alumnos
     {
-        public string Alumno { get { return VchNombres + " " + VchApePaterno + " " + VchApeMaterno + " MATRI:" + VchMatricula; } }
+        public string Alumno { get { return VchMatricula + ": " + VchNombres + " " + VchApePaterno + " " + VchApeMaterno; } }
 
     }
 }

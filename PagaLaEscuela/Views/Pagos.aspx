@@ -122,7 +122,7 @@
                                         </p>
                                     </div>
                                     <div class="card-footer">
-                                        <asp:LinkButton ID="btnIrPagos" CssClass="pull-center" ToolTip="Editar" CommandArgument='<%#Eval("UidCliente")%>' CommandName="Pagos" runat="server">
+                                        <asp:LinkButton ID="btnIrPagos" CssClass="pull-center" CommandArgument='<%#Eval("UidCliente")%>' CommandName="Pagos" runat="server">
                                             <asp:Label ID="Label1" class="btn btn-success btn-round" runat="server">
                                         <i class="material-icons">list</i> Seleccionar
                                             </asp:Label>
@@ -185,17 +185,20 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="table-responsive">
-                                        <asp:GridView ID="gvPagos" OnPageIndexChanging="gvPagos_PageIndexChanging" OnSorting="gvPagos_Sorting" OnRowCommand="gvPagos_RowCommand" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidFechaColegiatura" GridLines="None" border="0" AllowPaging="true" PageSize="10" runat="server">
+                                        <asp:GridView ID="gvPagos" OnPageIndexChanging="gvPagos_PageIndexChanging" OnSorting="gvPagos_Sorting" OnRowCommand="gvPagos_RowCommand" OnRowDataBound="gvPagos_RowDataBound" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidFechaColegiatura" GridLines="None" border="0" AllowPaging="true" PageSize="10" ShowFooter="true" runat="server">
                                             <EmptyDataTemplate>
                                                 <div class="alert alert-info"><strong>Felicidades</strong> no tiene pagos disponibles.</div>
                                             </EmptyDataTemplate>
                                             <Columns>
-                                                <asp:TemplateField SortExpression="VchIdentificador" HeaderText="COLEGIATURA">
+                                                <asp:TemplateField ItemStyle-Width="160" SortExpression="VchIdentificador" HeaderText="COLEGIATURA">
                                                     <ItemTemplate>
                                                         <asp:TextBox ID="txtGvIdentificador" ToolTip='<%#Eval("VchIdentificador")%>' Style="width: 100%; text-overflow: ellipsis;" Text='<%#Eval("VchIdentificador")%>' Enabled="false" BackColor="Transparent" BorderStyle="None" runat="server" />
                                                         <asp:TextBox ID="txtGvUidCliente" Text='<%#Eval("UidCliente")%>' Visible="false" runat="server" />
                                                         <asp:TextBox ID="txtGvUidAlumno" Text='<%#Eval("UidAlumno")%>' Visible="false" runat="server" />
                                                     </ItemTemplate>
+                                                    <FooterTemplate>
+                                                        <asp:Label ID="lblPaginado" Font-Bold="true" runat="server" />
+                                                    </FooterTemplate>
                                                 </asp:TemplateField>
                                                 <asp:BoundField DataField="VchMatricula" HeaderStyle-CssClass="hiddenHeaderGrid" ItemStyle-CssClass="hiddenHeaderGrid" />
                                                 <asp:TemplateField SortExpression="NombreCompleto" HeaderStyle-CssClass="text-center" HeaderText="ALUMNO">
@@ -213,9 +216,7 @@
                                                                     </td>
                                                                     <td style="width: 30%; border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
                                                                         <asp:LinkButton ID="btnInfoCole" ToolTip="Detalle de la colegiatura" CommandArgument="<%# ((GridViewRow)Container).RowIndex %>" CommandName="btnInfoCole" Style="margin-left: 5px;" runat="server">
-                                                                                <asp:Label class="btn btn-sm btn-info btn-fab btn-fab-mini btn-round" runat="server">
-                                                                                        <i class="material-icons">info_outline</i>
-                                                                                </asp:Label>
+                                                                                        <i class="material-icons" style="color:black;">info_outline</i>
                                                                         </asp:LinkButton>
                                                                     </td>
                                                                 </tr>
@@ -2010,25 +2011,25 @@
                                         <ContentTemplate>
                                             <div class="row">
                                                 <div class="form-group col-md-6">
-                                                    <label for="ListBoxAlumnos" style="color: black; padding-left: 0px;">Alumno(es)</label>
-                                                    <asp:ListBox ID="ListBoxAlumnos" runat="server" SelectionMode="Multiple"></asp:ListBox>
+                                                    <label for="LBFiltroAlumnos" style="color: black; padding-left: 0px;">Alumno(es)</label>
+                                                    <asp:ListBox ID="LBFiltroAlumnos" runat="server" SelectionMode="Multiple"></asp:ListBox>
                                                 </div>
                                                 <div class="form-group col-md-3">
                                                     <label for="txtColegiatura" style="color: black;">Colegiatura</label>
-                                                    <asp:TextBox ID="txtColegiatura" style="margin-top: 8px;" CssClass="form-control" aria-label="Search" runat="server" />
+                                                    <asp:TextBox ID="txtColegiatura" Style="margin-top: 8px;" CssClass="form-control" aria-label="Search" runat="server" />
                                                 </div>
                                                 <div class="form-group col-md-3">
                                                     <label for="txtNumPago" style="color: black;"># de pago</label>
-                                                    <asp:TextBox ID="txtNumPago" style="margin-top: 8px;" CssClass="form-control" TextMode="Number" aria-label="Search" runat="server" />
+                                                    <asp:TextBox ID="txtNumPago" Style="margin-top: 8px;" CssClass="form-control" TextMode="Number" aria-label="Search" runat="server" />
                                                     <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" TargetControlID="txtNumPago" runat="server" />
                                                 </div>
                                                 <div class="form-group col-md-4">
-                                                    <label for="ListBoxEstatusCole" style="color: black; padding-left: 0px;">Estatus</label>
-                                                    <asp:ListBox ID="ListBoxEstatusCole" runat="server" SelectionMode="Multiple"></asp:ListBox>
+                                                    <label for="LBFiltroEstatusCole" style="color: black; padding-left: 0px;">Estatus</label>
+                                                    <asp:ListBox ID="LBFiltroEstatusCole" runat="server" SelectionMode="Multiple"></asp:ListBox>
                                                 </div>
                                                 <div class="form-group col-md-4">
-                                                    <label for="ListBoxEstatusPago" style="color: black; padding-left: 0px;">Pago</label>
-                                                    <asp:ListBox ID="ListBoxEstatusPago" runat="server" SelectionMode="Multiple"></asp:ListBox>
+                                                    <label for="LBFiltroEstatusPago" style="color: black; padding-left: 0px;">Pago</label>
+                                                    <asp:ListBox ID="LBFiltroEstatusPago" runat="server" SelectionMode="Multiple"></asp:ListBox>
                                                 </div>
                                             </div>
                                         </ContentTemplate>
@@ -2109,6 +2110,7 @@
     <script>
         function showModalBusqueda() {
             $('#ModalBusqueda').modal('show');
+            multiFiltro();
         }
         function hideModalBusqueda() {
             $('#ModalBusqueda').modal('hide');
@@ -2175,9 +2177,10 @@
         }
     </script>
     <script>
-        function multi() {
-            $('[id*=ListBox]').multiselect({
-                includeSelectAllOption: true
+        function multiFiltro() {
+            $('[id*=LBFiltro]').multiselect({
+                includeSelectAllOption: false,
+                nonSelectedText: "TODOS"
             });
         }
     </script>

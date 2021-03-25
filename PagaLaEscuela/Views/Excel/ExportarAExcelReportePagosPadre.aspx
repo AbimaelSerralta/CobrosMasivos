@@ -24,7 +24,7 @@
                 <asp:BoundField SortExpression="DcmImporteNuevo" DataField="DcmImporteNuevo" ItemStyle-CssClass="text-right" HeaderStyle-CssClass="text-right" DataFormatString="{0:C}" HeaderText="RESTA" />
 
                 <asp:BoundField DataField="DtFHPago" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" DataFormatString="{0:dd/MM/yyyy}" HeaderText="FECHA PAGO" />
-                <asp:BoundField DataField="VchFolio" HeaderText="FOLIO" />
+                <asp:BoundField DataField="VchFolio" HeaderText="FOLIO TICKET" />
                 <asp:BoundField DataField="DcmImportePagado" ItemStyle-CssClass="text-right" HeaderStyle-CssClass="text-right" DataFormatString="{0:C}" HeaderText="IMPORTE PAGO" />
                 <asp:BoundField DataField="VchFormaPago" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" HeaderText="FORMA PAGO" />
                 <asp:BoundField DataField="VchBanco" HeaderText="BANCO" />

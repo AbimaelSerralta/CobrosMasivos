@@ -147,9 +147,16 @@
                                                         <div class="alert alert-info">No hay pagos realizados</div>
                                                     </EmptyDataTemplate>
                                                     <Columns>
-                                                        <asp:BoundField SortExpression="DtFHPago" DataField="DtFHPago" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" DataFormatString="{0:dd/MM/yyyy}" HeaderText="FECHA PAGO" />
                                                         <asp:BoundField SortExpression="IntFolio" DataField="IntFolio" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" HeaderText="FOLIO" />
-                                                        <asp:BoundField SortExpression="VchFolio" DataField="VchFolio" HeaderText="FOLIO" />
+                                                        <asp:TemplateField ItemStyle-Width="160" SortExpression="DtFHPago" HeaderText="FECHA PAGO">
+                                                            <ItemTemplate>
+                                                                <asp:Label Text='<%#Eval("DtFHPago", "{0:dd/MM/yyyy}")%>' runat="server" />
+                                                            </ItemTemplate>
+                                                            <FooterTemplate>
+                                                                <asp:Label ID="lblPaginado" Font-Bold="true" runat="server" />
+                                                            </FooterTemplate>
+                                                        </asp:TemplateField>
+                                                        <asp:BoundField SortExpression="VchFolio" DataField="VchFolio" HeaderText="FOLIO TICKET" />
                                                         <asp:BoundField SortExpression="DcmImportePagado" DataField="DcmImportePagado" ItemStyle-CssClass="text-right" HeaderStyle-CssClass="text-right" DataFormatString="{0:C}" HeaderText="IMPORTE PAGADO" />
                                                         <asp:BoundField SortExpression="VchFormaPago" DataField="VchFormaPago" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" HeaderText="FORMA PAGO" />
                                                         <asp:BoundField SortExpression="VchBanco" DataField="VchBanco" HeaderText="BANCO" />
@@ -163,7 +170,7 @@
                                                                 <asp:Label ID="lblGvUidFormaPago" Text='<%#Eval("UidFormaPago")%>' Visible="false" runat="server" />
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
-                                                        <asp:TemplateField ItemStyle-Width="160">
+                                                        <asp:TemplateField>
                                                             <ItemTemplate>
                                                                 <table>
                                                                     <tbody>
@@ -179,9 +186,6 @@
                                                                     </tbody>
                                                                 </table>
                                                             </ItemTemplate>
-                                                            <FooterTemplate>
-                                                                <asp:Label ID="lblPaginado" Font-Bold="true" runat="server" />
-                                                            </FooterTemplate>
                                                         </asp:TemplateField>
                                                     </Columns>
                                                     <PagerStyle HorizontalAlign="Center" CssClass="pagination-ys" />
@@ -412,8 +416,8 @@
                                         <ContentTemplate>
                                             <div class="row">
                                                 <div class="form-group col-md-6">
-                                                    <label for="ListBoxAlumnos" style="color: black; padding-left: 0px;">Alumno(es)</label>
-                                                    <asp:ListBox ID="ListBoxAlumnos" runat="server" SelectionMode="Multiple"></asp:ListBox>
+                                                    <label for="LBFiltroAlumnos" style="color: black; padding-left: 0px;">Alumno(s)</label>
+                                                    <asp:ListBox ID="LBFiltroAlumnos" runat="server" SelectionMode="Multiple"></asp:ListBox>
                                                 </div>
                                                 <div class="form-group col-md-3">
                                                     <label for="txtColegiatura" style="color: black;">Colegiatura</label>
@@ -483,12 +487,12 @@
                                                     <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtImporteMenor" runat="server" />
                                                 </div>
                                                 <div class="form-group col-md-4">
-                                                    <label for="ListBoxFormaPago" style="color: black; padding-left: 0px;">Forma pago</label>
-                                                    <asp:ListBox ID="ListBoxFormaPago" runat="server" SelectionMode="Multiple"></asp:ListBox>
+                                                    <label for="LBFiltroFormaPago" style="color: black; padding-left: 0px;">Forma pago</label>
+                                                    <asp:ListBox ID="LBFiltroFormaPago" runat="server" SelectionMode="Multiple"></asp:ListBox>
                                                 </div>
                                                 <div class="form-group col-md-4">
-                                                    <label for="ListBoxEstatus" style="color: black; padding-left: 0px;">Estatus</label>
-                                                    <asp:ListBox ID="ListBoxEstatus" runat="server" SelectionMode="Multiple"></asp:ListBox>
+                                                    <label for="LBFiltroEstatus" style="color: black; padding-left: 0px;">Estatus</label>
+                                                    <asp:ListBox ID="LBFiltroEstatus" runat="server" SelectionMode="Multiple"></asp:ListBox>
                                                 </div>
                                             </div>
                                         </ContentTemplate>
@@ -807,9 +811,12 @@
                                                                                         </thead>
                                                                                         <tbody>
                                                                                             <tr>
-                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right"><asp:Label ID="lblRestaPagoDetalle" runat="server" /></td>
-                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right"><asp:Label ID="lblRecargoPagoDetalle" runat="server" /></td>
-                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right"><asp:Label ID="lblNuevaRestaPagoDetalle" runat="server" /></td>
+                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right">
+                                                                                                    <asp:Label ID="lblRestaPagoDetalle" runat="server" /></td>
+                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right">
+                                                                                                    <asp:Label ID="lblRecargoPagoDetalle" runat="server" /></td>
+                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right">
+                                                                                                    <asp:Label ID="lblNuevaRestaPagoDetalle" runat="server" /></td>
                                                                                             </tr>
                                                                                         </tbody>
                                                                                     </table>
@@ -1095,9 +1102,12 @@
                                                                                         </thead>
                                                                                         <tbody>
                                                                                             <tr>
-                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right"><asp:Label ID="lblRestaPagoDetalleManual" runat="server" /></td>
-                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right"><asp:Label ID="lblRecargoPagoDetalleManual" runat="server" /></td>
-                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right"><asp:Label ID="lblNuevaRestaPagoDetalleManual" runat="server" /></td>
+                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right">
+                                                                                                    <asp:Label ID="lblRestaPagoDetalleManual" runat="server" /></td>
+                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right">
+                                                                                                    <asp:Label ID="lblRecargoPagoDetalleManual" runat="server" /></td>
+                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right">
+                                                                                                    <asp:Label ID="lblNuevaRestaPagoDetalleManual" runat="server" /></td>
                                                                                             </tr>
                                                                                         </tbody>
                                                                                     </table>
@@ -1373,9 +1383,12 @@
                                                                                         </thead>
                                                                                         <tbody>
                                                                                             <tr>
-                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right"><asp:Label ID="lblRestaPagoDetalleClubPago" runat="server" /></td>
-                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right"><asp:Label ID="lblRecargoPagoDetalleClubPago" runat="server" /></td>
-                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right"><asp:Label ID="lblNuevaRestaPagoDetalleClubPago" runat="server" /></td>
+                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right">
+                                                                                                    <asp:Label ID="lblRestaPagoDetalleClubPago" runat="server" /></td>
+                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right">
+                                                                                                    <asp:Label ID="lblRecargoPagoDetalleClubPago" runat="server" /></td>
+                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right">
+                                                                                                    <asp:Label ID="lblNuevaRestaPagoDetalleClubPago" runat="server" /></td>
                                                                                             </tr>
                                                                                         </tbody>
                                                                                     </table>
@@ -2116,9 +2129,10 @@ Panel tuotr
     </script>
 
     <script>
-        function multi() {
-            $('[id*=ListBox]').multiselect({
-                includeSelectAllOption: true
+        function multiFiltro() {
+            $('[id*=LBFiltro]').multiselect({
+                includeSelectAllOption: false,
+                nonSelectedText: "TODOS"
             });
         }
     </script>

@@ -222,13 +222,13 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.Panel pnlFiltrosBusqueda;
 
         /// <summary>
-        /// Control ListBoxAlumnos.
+        /// Control LBFiltroAlumnos.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ListBox ListBoxAlumnos;
+        protected global::System.Web.UI.WebControls.ListBox LBFiltroAlumnos;
 
         /// <summary>
         /// Control txtColegiatura.
@@ -330,22 +330,22 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.TextBox txtImporteMenor;
 
         /// <summary>
-        /// Control ListBoxFormaPago.
+        /// Control LBFiltroFormaPago.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ListBox ListBoxFormaPago;
+        protected global::System.Web.UI.WebControls.ListBox LBFiltroFormaPago;
 
         /// <summary>
-        /// Control ListBoxEstatus.
+        /// Control LBFiltroEstatus.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ListBox ListBoxEstatus;
+        protected global::System.Web.UI.WebControls.ListBox LBFiltroEstatus;
 
         /// <summary>
         /// Control btnBuscar.

@@ -87,21 +87,17 @@ namespace PagaLaEscuela.Views
                 CargarComercios();
 
                 estatusFechasColegiaturasServices.CargarEstatusFechasColegiaturas();
-                ListBoxEstatusCole.DataSource = estatusFechasColegiaturasServices.lsEstatusFechasColegiaturas;
-                ListBoxEstatusCole.Items.Insert(0, new ListItem("TODOS", Guid.Empty.ToString()));
-                ListBoxEstatusCole.DataTextField = "VchDescripcion";
-                ListBoxEstatusCole.DataValueField = "UidEstatusFechaColegiatura";
-                ListBoxEstatusCole.DataBind();
-                foreach (ListItem item in ListBoxEstatusCole.Items) { if (item.Value == "76c8793b-4493-44c8-b274-696a61358bdf") { item.Selected = true; } }
+                LBFiltroEstatusCole.DataSource = estatusFechasColegiaturasServices.lsEstatusFechasColegiaturas;
+                LBFiltroEstatusCole.DataTextField = "VchDescripcion";
+                LBFiltroEstatusCole.DataValueField = "UidEstatusFechaColegiatura";
+                LBFiltroEstatusCole.DataBind();
+                foreach (ListItem item in LBFiltroEstatusCole.Items) { if (item.Value == "76c8793b-4493-44c8-b274-696a61358bdf") { item.Selected = true; } }
 
                 estatusColegiaturasAlumnosServices.CargarEstatusColegiaturasAlumnos();
-                ListBoxEstatusPago.DataSource = estatusColegiaturasAlumnosServices.lsEstatusColegiaturasAlumnos;
-                ListBoxEstatusPago.Items.Insert(0, new ListItem("TODOS", Guid.Empty.ToString()));
-                ListBoxEstatusPago.DataTextField = "VchDescripcion";
-                ListBoxEstatusPago.DataValueField = "UidEstatusColeAlumnos";
-                ListBoxEstatusPago.DataBind();
-                foreach (ListItem item in ListBoxEstatusPago.Items) { item.Selected = true; }
-
+                LBFiltroEstatusPago.DataSource = estatusColegiaturasAlumnosServices.lsEstatusColegiaturasAlumnos;
+                LBFiltroEstatusPago.DataTextField = "VchDescripcion";
+                LBFiltroEstatusPago.DataValueField = "UidEstatusColeAlumnos";
+                LBFiltroEstatusPago.DataBind();
             }
             else
             {
@@ -118,8 +114,6 @@ namespace PagaLaEscuela.Views
                 bancosServices = (BancosServices)Session["bancosServices"];
 
                 promocionesPragaServices = (PromocionesPragaServices)Session["promocionesPragaServices"];
-
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "Mult", "multi()", true);
 
                 pnlAlert.Visible = false;
                 lblMensajeAlert.Text = "";
@@ -213,12 +207,11 @@ namespace PagaLaEscuela.Views
 
                 alumnosServices.lsAlumnosFiltrosGridViewModel.Clear();
                 alumnosServices.CargarFiltroAlumnosPA(UidCliente, Guid.Parse(ViewState["UidUsuarioLocal"].ToString()));
-                ListBoxAlumnos.DataSource = alumnosServices.lsAlumnosFiltrosGridViewModel;
-                ListBoxAlumnos.DataTextField = "Alumno";
-                ListBoxAlumnos.DataValueField = "UidAlumno";
-                ListBoxAlumnos.DataBind();
+                LBFiltroAlumnos.DataSource = alumnosServices.lsAlumnosFiltrosGridViewModel;
+                LBFiltroAlumnos.DataTextField = "Alumno";
+                LBFiltroAlumnos.DataValueField = "UidAlumno";
+                LBFiltroAlumnos.DataBind();
 
-                foreach (ListItem item in ListBoxAlumnos.Items) { item.Selected = true; }
             }
         }
         protected void btnRegresar_Click(object sender, EventArgs e)
@@ -346,6 +339,7 @@ namespace PagaLaEscuela.Views
                         break;
                 }
 
+                ViewState["NewPageIndex"] = int.Parse(ViewState["NewPageIndex"].ToString()) - 1;
                 gvPagos.DataSource = colegiaturasServices.lsPagosColegiaturasViewModel;
                 gvPagos.DataBind();
             }
@@ -440,7 +434,7 @@ namespace PagaLaEscuela.Views
 
                 TextBox txtGvUidCliente = (TextBox)Seleccionado.FindControl("txtGvUidCliente");
                 ViewState["RowCommand-UidCliente"] = txtGvUidCliente.Text;
-                
+
                 TextBox txtGvUidAlumno = (TextBox)Seleccionado.FindControl("txtGvUidAlumno");
                 ViewState["RowCommand-UidAlumno"] = txtGvUidAlumno.Text;
 
@@ -689,8 +683,57 @@ namespace PagaLaEscuela.Views
         protected void gvPagos_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             gvPagos.PageIndex = e.NewPageIndex;
+            ViewState["NewPageIndex"] = e.NewPageIndex;
             gvPagos.DataSource = colegiaturasServices.lsPagosColegiaturasViewModel;
             gvPagos.DataBind();
+        }
+        protected void gvPagos_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.Footer)
+            {
+                Label lblPaginado = (Label)e.Row.FindControl("lblPaginado");
+
+                int PageSize = gvPagos.PageSize;
+                int antNum = 0;
+
+                int numTotal = colegiaturasServices.lsPagosColegiaturasViewModel.Count;
+
+                if (numTotal >= 1)
+                {
+                    if (ViewState["NewPageIndex"] != null)
+                    {
+                        int gh = int.Parse(ViewState["NewPageIndex"].ToString());
+                        ViewState["NewPageIndex"] = gh + 1;
+
+                        int r1 = int.Parse(ViewState["NewPageIndex"].ToString()) * PageSize;
+                        antNum = r1 - (PageSize - 1);
+                    }
+                    else
+                    {
+                        ViewState["NewPageIndex"] = 1;
+                        antNum = 1;
+                    }
+
+                    int NewPageIndex = int.Parse(ViewState["NewPageIndex"].ToString());
+
+                    int newNum = NewPageIndex * PageSize;
+
+                    if (numTotal >= newNum)
+                    {
+                        lblPaginado.Text = "Del " + antNum + " al " + newNum + " de " + numTotal;
+                    }
+                    else
+                    {
+                        lblPaginado.Text = "Del " + antNum + " al " + numTotal + " de " + numTotal;
+                    }
+
+                    ViewState["lblPaginado"] = lblPaginado.Text;
+                }
+                else
+                {
+                    lblPaginado.Text = ViewState["lblPaginado"].ToString();
+                }
+            }
         }
 
         protected void btnFinalizar_Click(object sender, EventArgs e)
@@ -1605,7 +1648,7 @@ namespace PagaLaEscuela.Views
                 {
                     UidEstatusColeAlumnos = Guid.Parse("2545BF35-F4D4-4D18-8234-8AB9D8A4ECB8");
                 }
-                
+
                 // La colegiatura regresa al ultimo estatus
                 DateTime HoraDelServidor = DateTime.Now;
                 DateTime hoy = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(HoraDelServidor, TimeZoneInfo.Local.Id, "Eastern Standard Time (Mexico)");
@@ -2056,7 +2099,7 @@ namespace PagaLaEscuela.Views
 
             ViewState["NewPageIndex"] = null;
 
-            colegiaturasServices.BuscarColegiaturaPadre(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), hoy, GetItemListBox(ListBoxAlumnos), txtColegiatura.Text, txtNumPago.Text, GetItemListBox(ListBoxEstatusCole), GetItemListBox(ListBoxEstatusPago));
+            colegiaturasServices.BuscarColegiaturaPadre(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), hoy, GetItemListBox(LBFiltroAlumnos), txtColegiatura.Text, txtNumPago.Text, GetItemListBox(LBFiltroEstatusCole), GetItemListBox(LBFiltroEstatusPago));
             gvPagos.DataSource = colegiaturasServices.lsPagosColegiaturasViewModel;
             gvPagos.DataBind();
 
@@ -2079,12 +2122,13 @@ namespace PagaLaEscuela.Views
         }
         protected void btnLimpiar_Click(object sender, EventArgs e)
         {
-            foreach (ListItem item in ListBoxAlumnos.Items) { item.Selected = true; }
+            LBFiltroAlumnos.SelectedIndex = -1;
             txtColegiatura.Text = string.Empty;
             txtNumPago.Text = string.Empty;
-            foreach (ListItem item in ListBoxEstatusCole.Items) { if (item.Value == "76c8793b-4493-44c8-b274-696a61358bdf") { item.Selected = true; } }
-            foreach (ListItem item in ListBoxEstatusPago.Items) { item.Selected = true; }
+            foreach (ListItem item in LBFiltroEstatusCole.Items) { if (item.Value == "76c8793b-4493-44c8-b274-696a61358bdf") { item.Selected = true; } else { item.Selected = false; } }
+            LBFiltroEstatusPago.SelectedIndex = -1;
 
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "MultFiltro", "multiFiltro()", true);
         }
 
         protected void gvPagosColegiaturas_RowCommand(object sender, GridViewCommandEventArgs e)
