@@ -1748,7 +1748,7 @@ namespace Franquicia.DataAccess.Repository
                     comando.Parameters["@UidCliente"].Value = UidCliente;
                 }
 
-                if (UidCliente != Guid.Empty)
+                if (UidUsuario != Guid.Empty)
                 {
                     comando.Parameters.Add("@UidUsuario", SqlDbType.UniqueIdentifier);
                     comando.Parameters["@UidUsuario"].Value = UidUsuario;
@@ -2828,6 +2828,221 @@ namespace Franquicia.DataAccess.Repository
         }
         #endregion
 
+        #region Metodos ReporteColegiaturas
+        public List<PagosColegiaturasViewModel> CargarReporteColegiaturas(Guid UidCliente)
+        {
+            List<PagosColegiaturasViewModel> lsPagosColegiaturasViewModel = new List<PagosColegiaturasViewModel>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select eca.UidEstatusColeAlumnos, eca.VchDescripcion as EstatusPago, eca.VchColor as ColorEstatusPago, fca.BitUsarFecha, fca.DtFechaPago, fc.UidFechaColegiatura, cl.VchNombreComercial, al.UidAlumno, al.VchMatricula, al.VchNombres, al.VchApePaterno, al.VchApeMaterno, al.BitBeca, al.VchTipoBeca, al.DcmBeca, co.*, fc.UidFechaColegiatura, fc.IntNum, fc.DtFHInicio as fcInicio, fc.DtFHLimite as fcLimite, fc.DtFHVencimiento as fcVencimiento, fc.DtFHFinPeriodo as fcFinPeriodo, efc.UidEstatusFechaColegiatura, efc.VchDescripcion as EstatusFechas, efc.VchColor, pe.VchDescripcion as Periodicidad, (select SUM(fepa.DcmImportePagado) from FechasColegiaturas feco, FechasPagos fepa, PagosColegiaturas paco where feco.UidFechaColegiatura = fepa.UidFechaColegiatura and fepa.UidPagoColegiatura = paco.UidPagoColegiatura and fepa.UidFechaColegiatura = fc.UidFechaColegiatura and fepa.UidAlumno = al.UidAlumno and (fepa.UidEstatusFechaPago = '8720B2B9-5712-4E75-A981-932887AACDC9' or fepa.UidEstatusFechaPago = 'F25E4AAB-6044-46E9-A575-98DCBCCF7604')) ImpPagado from clientes cl, Colegiaturas co, FechasColegiaturas fc, Alumnos al, Usuarios us, UsuariosAlumnos ua, EstatusFechasColegiaturas efc, Periodicidades pe, FechasColegiaturasAlumnos fca, EstatusColegiaturasAlumnos eca where eca.UidEstatusColeAlumnos = fca.UidEstatusColeAlumnos and  fca.UidEstatusFechaColegiatura = efc.UidEstatusFechaColegiatura and fca.UidAlumno = al.UidAlumno and fca.UidFechaColegiatura = fc.UidFechaColegiatura and pe.UidPeriodicidad = co.UidPeriodicidad and co.UidEstatus = '65E46BC9-1864-4145-AD1A-70F5B5F69739' and fca.UidEstatusFechaColegiatura = '76C8793B-4493-44C8-B274-696A61358BDF' and cl.UidCliente = co.UidCliente and co.UidColegiatura = fc.UidColegiatura and ua.UidUsuario = us.UidUsuario and ua.UidAlumno = al.UidAlumno and cl.UidCliente = '" + UidCliente + "' order by al.VchMatricula";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                string FHLimite = "NO TIENE";
+                string FHVencimiento = "NO TIENE";
+                bool FHVence = false;
+                bool blDatoFecha = false;
+
+                if (!string.IsNullOrEmpty(item["fcLimite"].ToString()))
+                {
+                    FHLimite = DateTime.Parse(item["fcLimite"].ToString()).ToString("dd/MM/yyyy");
+                }
+                if (!string.IsNullOrEmpty(item["fcVencimiento"].ToString()))
+                {
+                    FHVencimiento = DateTime.Parse(item["fcVencimiento"].ToString()).ToString("dd/MM/yyyy");
+                    FHVence = true;
+                }
+
+                if (bool.Parse(item["BitUsarFecha"].ToString()))
+                {
+                    if (!string.IsNullOrEmpty(item["DtFechaPago"].ToString()))
+                    {
+                        blDatoFecha = true;
+                    }
+                }
+
+                lsPagosColegiaturasViewModel.Add(new PagosColegiaturasViewModel()
+                {
+                    UidCliente = Guid.Parse(item["UidCliente"].ToString()),
+                    UidFechaColegiatura = Guid.Parse(item["UidFechaColegiatura"].ToString()),
+                    VchIdentificador = item["VchIdentificador"].ToString(),
+                    DcmImporte = Calculo(decimal.Parse(item["DcmImporte"].ToString()), bool.Parse(item["BitRecargo"].ToString()), item["VchTipoRecargo"].ToString(), decimal.Parse(item["DcmRecargo"].ToString()), FHLimite, bool.Parse(item["BitRecargoPeriodo"].ToString()), item["VchTipoRecargoPeriodo"].ToString(), decimal.Parse(item["DcmRecargoPeriodo"].ToString()), item["Periodicidad"].ToString(), bool.Parse(item["BitBeca"].ToString()), item["VchTipoBeca"].ToString(), decimal.Parse(item["DcmBeca"].ToString()), DateTime.Parse(item["fcFinPeriodo"].ToString()), blDatoFecha, item["DtFechaPago"].ToString()),
+                    ImpPagado = item.IsNull("ImpPagado") ? 0 : decimal.Parse(item["ImpPagado"].ToString()),
+                    UidColegiatura = Guid.Parse(item["UidColegiatura"].ToString()),
+                    VchNum = int.Parse(item["IntNum"].ToString()) + " de " + int.Parse(item["IntCantPagos"].ToString()),
+                    DtFHInicio = DateTime.Parse(item["fcInicio"].ToString()),
+                    VchFHLimite = FHLimite,
+                    VchFHVencimiento = FHVencimiento,
+                    DtFHFinPeriodo = DateTime.Parse(item["fcFinPeriodo"].ToString()),
+                    VchEstatusFechas = item["EstatusFechas"].ToString(),
+                    VchColor = item["VchColor"].ToString(),
+                    EstatusPago = item["EstatusPago"].ToString(),
+                    ColorEstatusPago = item["ColorEstatusPago"].ToString(),
+                    BitRecargo = bool.Parse(item["BitRecargo"].ToString()),
+                    VchTipoRecargo = item["VchTipoRecargo"].ToString(),
+                    DcmRecargo = decimal.Parse(item["DcmRecargo"].ToString()),
+                    BitRecargoPeriodo = bool.Parse(item["BitRecargoPeriodo"].ToString()),
+                    VchTipoRecargoPeriodo = item["VchTipoRecargoPeriodo"].ToString(),
+                    DcmRecargoPeriodo = decimal.Parse(item["DcmRecargoPeriodo"].ToString()),
+                    VchPeriodicidad = item["Periodicidad"].ToString(),
+                    UidAlumno = Guid.Parse(item["UidAlumno"].ToString()),
+                    VchMatricula = item["VchMatricula"].ToString(),
+                    VchNombres = item["VchNombres"].ToString(),
+                    VchApePaterno = item["VchApePaterno"].ToString(),
+                    VchApeMaterno = item["VchApeMaterno"].ToString(),
+                    BitBeca = bool.Parse(item["BitBeca"].ToString()),
+                    VchTipoBeca = item["VchTipoBeca"].ToString(),
+                    DcmBeca = decimal.Parse(item["DcmBeca"].ToString())
+                });
+            }
+
+            return lsPagosColegiaturasViewModel.OrderBy(x => x.DtFHInicio).ToList();
+        }
+        public List<PagosColegiaturasViewModel> BuscarReporteColegiaturas(Guid UidCliente, string Colegiatura, string NumPago, string EstatusCole, string EstatusPago, string Matricula, string AlNombre, string AlApePaterno, string AlApeMaterno, string TuNombre, string TuApePaterno, string TuApeMaterno)
+        {
+            List<PagosColegiaturasViewModel> lsPagosColegiaturasViewModel = new List<PagosColegiaturasViewModel>();
+
+            SqlCommand comando = new SqlCommand();
+            comando.CommandType = CommandType.StoredProcedure;
+            comando.CommandText = "sp_PagosColegiaturasPadresBuscar";
+            try
+            {
+                if (UidCliente != Guid.Empty)
+                {
+                    comando.Parameters.Add("@UidCliente", SqlDbType.UniqueIdentifier);
+                    comando.Parameters["@UidCliente"].Value = UidCliente;
+                }
+
+                if (Colegiatura != string.Empty)
+                {
+                    comando.Parameters.Add("@Colegiatura", SqlDbType.VarChar, 50);
+                    comando.Parameters["@Colegiatura"].Value = Colegiatura;
+                }
+                if (NumPago != string.Empty)
+                {
+                    comando.Parameters.Add("@NumPago", SqlDbType.Int);
+                    comando.Parameters["@NumPago"].Value = int.Parse(NumPago);
+                }
+                if (EstatusCole != string.Empty)
+                {
+                    comando.Parameters.Add("@EstatusCole", SqlDbType.VarChar);
+                    comando.Parameters["@EstatusCole"].Value = EstatusCole;
+                }
+                if (EstatusPago != string.Empty)
+                {
+                    comando.Parameters.Add("@EstatusPago", SqlDbType.VarChar);
+                    comando.Parameters["@EstatusPago"].Value = EstatusPago;
+                }
+
+                if (Matricula != string.Empty)
+                {
+                    comando.Parameters.Add("@Matricula", SqlDbType.VarChar, 50);
+                    comando.Parameters["@Matricula"].Value = Matricula;
+                }
+                if (AlNombre != string.Empty)
+                {
+                    comando.Parameters.Add("@AlNombre", SqlDbType.VarChar, 50);
+                    comando.Parameters["@AlNombre"].Value = AlNombre;
+                }
+                if (AlApePaterno != string.Empty)
+                {
+                    comando.Parameters.Add("@AlApePaterno", SqlDbType.VarChar, 50);
+                    comando.Parameters["@AlApePaterno"].Value = AlApePaterno;
+                }
+                if (AlApeMaterno != string.Empty)
+                {
+                    comando.Parameters.Add("@AlApeMaterno", SqlDbType.VarChar, 50);
+                    comando.Parameters["@AlApeMaterno"].Value = AlApeMaterno;
+                }
+
+                if (TuNombre != string.Empty)
+                {
+                    comando.Parameters.Add("@TuNombre", SqlDbType.VarChar, 50);
+                    comando.Parameters["@TuNombre"].Value = TuNombre;
+                }
+                if (TuApePaterno != string.Empty)
+                {
+                    comando.Parameters.Add("@TuApePaterno", SqlDbType.VarChar, 50);
+                    comando.Parameters["@TuApePaterno"].Value = TuApePaterno;
+                }
+                if (TuApeMaterno != string.Empty)
+                {
+                    comando.Parameters.Add("@TuApeMaterno", SqlDbType.VarChar, 50);
+                    comando.Parameters["@TuApeMaterno"].Value = TuApeMaterno;
+                }
+
+                foreach (DataRow item in this.Busquedas(comando).Rows)
+                {
+                    string FHLimite = "NO TIENE";
+                    string FHVencimiento = "NO TIENE";
+                    bool FHVence = false;
+                    bool blDatoFecha = false;
+
+                    if (!string.IsNullOrEmpty(item["fcLimite"].ToString()))
+                    {
+                        FHLimite = DateTime.Parse(item["fcLimite"].ToString()).ToString("dd/MM/yyyy");
+                    }
+                    if (!string.IsNullOrEmpty(item["fcVencimiento"].ToString()))
+                    {
+                        FHVencimiento = DateTime.Parse(item["fcVencimiento"].ToString()).ToString("dd/MM/yyyy");
+                        FHVence = true;
+                    }
+
+                    if (bool.Parse(item["BitUsarFecha"].ToString()))
+                    {
+                        if (!string.IsNullOrEmpty(item["DtFechaPago"].ToString()))
+                        {
+                            blDatoFecha = true;
+                        }
+                    }
+
+                    lsPagosColegiaturasViewModel.Add(new PagosColegiaturasViewModel()
+                    {
+                        UidCliente = Guid.Parse(item["UidCliente"].ToString()),
+                        UidFechaColegiatura = Guid.Parse(item["UidFechaColegiatura"].ToString()),
+                        VchIdentificador = item["VchIdentificador"].ToString(),
+                        DcmImporte = Calculo(decimal.Parse(item["DcmImporte"].ToString()), bool.Parse(item["BitRecargo"].ToString()), item["VchTipoRecargo"].ToString(), decimal.Parse(item["DcmRecargo"].ToString()), FHLimite, bool.Parse(item["BitRecargoPeriodo"].ToString()), item["VchTipoRecargoPeriodo"].ToString(), decimal.Parse(item["DcmRecargoPeriodo"].ToString()), item["Periodicidad"].ToString(), bool.Parse(item["BitBeca"].ToString()), item["VchTipoBeca"].ToString(), decimal.Parse(item["DcmBeca"].ToString()), DateTime.Parse(item["fcFinPeriodo"].ToString()), blDatoFecha, item["DtFechaPago"].ToString()),
+                        ImpPagado = item.IsNull("ImpPagado") ? 0 : decimal.Parse(item["ImpPagado"].ToString()),
+                        UidColegiatura = Guid.Parse(item["UidColegiatura"].ToString()),
+                        VchNum = int.Parse(item["IntNum"].ToString()) + " de " + int.Parse(item["IntCantPagos"].ToString()),
+                        DtFHInicio = DateTime.Parse(item["fcInicio"].ToString()),
+                        VchFHLimite = FHLimite,
+                        VchFHVencimiento = FHVencimiento,
+                        DtFHFinPeriodo = DateTime.Parse(item["fcFinPeriodo"].ToString()),
+                        VchEstatusFechas = item["EstatusFechas"].ToString(),
+                        VchColor = item["VchColor"].ToString(),
+                        EstatusPago = item["EstatusPago"].ToString(),
+                        ColorEstatusPago = item["ColorEstatusPago"].ToString(),
+                        BitRecargo = bool.Parse(item["BitRecargo"].ToString()),
+                        VchTipoRecargo = item["VchTipoRecargo"].ToString(),
+                        DcmRecargo = decimal.Parse(item["DcmRecargo"].ToString()),
+                        BitRecargoPeriodo = bool.Parse(item["BitRecargoPeriodo"].ToString()),
+                        VchTipoRecargoPeriodo = item["VchTipoRecargoPeriodo"].ToString(),
+                        DcmRecargoPeriodo = decimal.Parse(item["DcmRecargoPeriodo"].ToString()),
+                        VchPeriodicidad = item["Periodicidad"].ToString(),
+                        UidAlumno = Guid.Parse(item["UidAlumno"].ToString()),
+                        VchMatricula = item["VchMatricula"].ToString(),
+                        VchNombres = item["VchNombres"].ToString(),
+                        VchApePaterno = item["VchApePaterno"].ToString(),
+                        VchApeMaterno = item["VchApeMaterno"].ToString(),
+                        BitBeca = bool.Parse(item["BitBeca"].ToString()),
+                        VchTipoBeca = item["VchTipoBeca"].ToString(),
+                        DcmBeca = decimal.Parse(item["DcmBeca"].ToString())
+                    });
+                }
+
+                return lsPagosColegiaturasViewModel.OrderBy(x => x.DtFHInicio).ToList();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        #endregion
 
         #region Procesos Automaticos
         public List<FCAATMViewModel> ObtenerFechaColegiaturasATM(DateTime hoy)

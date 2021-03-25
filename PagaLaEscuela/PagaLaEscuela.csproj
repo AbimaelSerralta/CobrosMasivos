@@ -325,6 +325,7 @@
     <Content Include="Views\Procesos.aspx" />
     <Content Include="Views\Prue.aspx" />
     <Content Include="Views\Pruebas.aspx" />
+    <Content Include="Views\ReporteColegiaturas.aspx" />
     <Content Include="Views\ReporteLigasEscuelas.aspx" />
     <Content Include="Views\ReporteLigasPadres.aspx" />
     <Content Include="Views\Reports\ReciboPagoEfectivo.aspx" />
@@ -558,6 +559,13 @@
     </Compile>
     <Compile Include="Views\Pruebas.aspx.designer.cs">
       <DependentUpon>Pruebas.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ReporteColegiaturas.aspx.cs">
+      <DependentUpon>ReporteColegiaturas.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\ReporteColegiaturas.aspx.designer.cs">
+      <DependentUpon>ReporteColegiaturas.aspx</DependentUpon>
     </Compile>
     <Compile Include="Views\ReporteLigasEscuelas.aspx.cs">
       <DependentUpon>ReporteLigasEscuelas.aspx</DependentUpon>

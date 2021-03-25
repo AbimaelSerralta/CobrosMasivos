@@ -40,15 +40,19 @@
                                                 </asp:LinkButton>
                                                 <asp:Label Text="Listado de pagos" runat="server" />
 
-                                                <asp:LinkButton ID="btnPago" OnClick="btnPago_Click" ToolTip="Realizar pago" class="btn btn-lg btn-success btn-fab btn-fab-mini btn-round pull-right" runat="server">
-                                                        <i class="material-icons">add</i>
-                                                </asp:LinkButton>
-                                                <asp:LinkButton ID="btnActualizarLista" OnClick="btnActualizarLista_Click" ToolTip="Actualizar tabla." class="btn btn-lg btn-info btn-fab btn-fab-mini btn-round pull-right" runat="server">
-                                                        <i class="material-icons">sync</i>
-                                                </asp:LinkButton>
-                                                <asp:LinkButton ID="btnExportarLista" OnClick="btnExportarLista_Click" ToolTip="Exportar lista a excel." class="btn btn-lg btn-warning btn-fab btn-fab-mini btn-round pull-right" runat="server">
+                                                <div class="pull-right">
+                                                    <asp:LinkButton ID="btnExportarLista" OnClick="btnExportarLista_Click" ToolTip="Exportar lista a excel." class="btn btn-lg btn-warning btn-fab btn-fab-mini btn-round" runat="server">
                                                         <i class="material-icons">file_download</i>
-                                                </asp:LinkButton>
+                                                    </asp:LinkButton>
+                                                    ||
+                                                    <asp:LinkButton ID="btnActualizarLista" OnClick="btnActualizarLista_Click" ToolTip="Actualizar tabla." class="btn btn-lg btn-info btn-fab btn-fab-mini btn-round" runat="server">
+                                                        <i class="material-icons">sync</i>
+                                                    </asp:LinkButton>
+                                                    ||
+                                                    <asp:LinkButton ID="btnPago" OnClick="btnPago_Click" ToolTip="Realizar pago" class="btn btn-lg btn-success btn-fab btn-fab-mini btn-round" runat="server">
+                                                        <i class="material-icons">add</i>
+                                                    </asp:LinkButton>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -1586,9 +1590,7 @@
                                                     <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
                                                         <tbody>
                                                             <tr>
-                                                                <td align="center" valign="top" style="padding-top: 20px;">
-                                                                    
-                                                                </td>
+                                                                <td align="center" valign="top" style="padding-top: 20px;"></td>
                                                             </tr>
                                                         </tbody>
                                                     </table>

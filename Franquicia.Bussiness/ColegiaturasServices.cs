@@ -353,6 +353,19 @@ namespace Franquicia.Bussiness
         }
         #endregion
 
+        #region Metodos ReporteColegiaturas
+        public List<PagosColegiaturasViewModel> CargarReporteColegiaturas(Guid UidCliente)
+        {
+            lsPagosColegiaturasViewModel = new List<PagosColegiaturasViewModel>();
+            return lsPagosColegiaturasViewModel = colegiaturasRepository.CargarReporteColegiaturas(UidCliente);
+        }
+        public List<PagosColegiaturasViewModel> BuscarReporteColegiaturas(Guid UidCliente, string Colegiatura, string NumPago, string EstatusCole, string EstatusPago, string Matricula, string AlNombre, string AlApePaterno, string AlApeMaterno, string TuNombre, string TuApePaterno, string TuApeMaterno)
+        {
+            lsPagosColegiaturasViewModel = new List<PagosColegiaturasViewModel>();
+            return lsPagosColegiaturasViewModel = colegiaturasRepository.BuscarReporteColegiaturas(UidCliente, Colegiatura, NumPago, EstatusCole, EstatusPago, Matricula, AlNombre, AlApePaterno, AlApeMaterno, TuNombre, TuApePaterno, TuApeMaterno);
+        }
+        #endregion
+
         #region Procesos Automaticos
         public List<FCAATMViewModel> ObtenerFechaColegiaturasATM(DateTime Fecha)
         {

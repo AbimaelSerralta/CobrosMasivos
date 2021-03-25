@@ -51,13 +51,13 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.LinkButton btnFiltros;
 
         /// <summary>
-        /// Control btnPago.
+        /// Control btnExportarLista.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton btnPago;
+        protected global::System.Web.UI.WebControls.LinkButton btnExportarLista;
 
         /// <summary>
         /// Control btnActualizarLista.
@@ -69,13 +69,13 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.LinkButton btnActualizarLista;
 
         /// <summary>
-        /// Control btnExportarLista.
+        /// Control btnPago.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton btnExportarLista;
+        protected global::System.Web.UI.WebControls.LinkButton btnPago;
 
         /// <summary>
         /// Control btnDatosAlumnos.
