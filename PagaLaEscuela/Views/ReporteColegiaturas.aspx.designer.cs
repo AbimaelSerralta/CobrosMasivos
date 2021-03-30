@@ -132,13 +132,13 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.ListBox LBFiltroEstatusPago;
 
         /// <summary>
-        /// Control txtMatricula.
+        /// Control txtAlMatricula.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtMatricula;
+        protected global::System.Web.UI.WebControls.TextBox txtAlMatricula;
 
         /// <summary>
         /// Control txtAlNombre.

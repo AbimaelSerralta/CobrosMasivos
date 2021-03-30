@@ -41,7 +41,7 @@ namespace PagaLaEscuela.Views
                 LBFiltroEstatusCole.DataTextField = "VchDescripcion";
                 LBFiltroEstatusCole.DataValueField = "UidEstatusFechaColegiatura";
                 LBFiltroEstatusCole.DataBind();
-                foreach (ListItem item in LBFiltroEstatusCole.Items) { if (item.Value == "76c8793b-4493-44c8-b274-696a61358bdf") { item.Selected = true; } }
+                foreach (ListItem item in LBFiltroEstatusCole.Items) { if (item.Value == "fd1e57e9-1476-482a-a850-501e55298500" || item.Value == "db36d040-9e05-4e7b-83b4-dd4ff0d5ac3c") { item.Selected = true; } else { item.Selected = false; } }
 
                 estatusColegiaturasAlumnosServices.CargarEstatusColegiaturasAlumnos();
                 LBFiltroEstatusPago.DataSource = estatusColegiaturasAlumnosServices.lsEstatusColegiaturasAlumnos;
@@ -98,7 +98,7 @@ namespace PagaLaEscuela.Views
 
             ViewState["NewPageIndex"] = null;
 
-            colegiaturasServices.BuscarColegiaturaPadre(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), hoy, GetItemListBox(LBFiltroAlumnos), txtColegiatura.Text, txtNumPago.Text, GetItemListBox(LBFiltroEstatusCole), GetItemListBox(LBFiltroEstatusPago));
+            colegiaturasServices.BuscarReporteColegiaturas(Guid.Parse(ViewState["UidClienteLocal"].ToString()), txtColegiatura.Text, txtNumPago.Text, GetItemListBox(LBFiltroEstatusCole), GetItemListBox(LBFiltroEstatusPago), txtAlMatricula.Text, txtAlNombre.Text, txtAlApPaterno.Text, txtAlApMaterno.Text, txtTuNombre.Text, txtTuApPaterno.Text, txtTuApMaterno.Text);
             gvPagos.DataSource = colegiaturasServices.lsPagosColegiaturasViewModel;
             gvPagos.DataBind();
 
@@ -123,8 +123,17 @@ namespace PagaLaEscuela.Views
         {
             txtColegiatura.Text = string.Empty;
             txtNumPago.Text = string.Empty;
-            foreach (ListItem item in LBFiltroEstatusCole.Items) { if (item.Value == "76c8793b-4493-44c8-b274-696a61358bdf") { item.Selected = true; } else { item.Selected = false; } }
+            foreach (ListItem item in LBFiltroEstatusCole.Items) { if (item.Value == "fd1e57e9-1476-482a-a850-501e55298500" || item.Value == "db36d040-9e05-4e7b-83b4-dd4ff0d5ac3c") { item.Selected = true; } else { item.Selected = false; } }
             LBFiltroEstatusPago.SelectedIndex = -1;
+
+            txtAlMatricula.Text = string.Empty;
+            txtAlNombre.Text = string.Empty;
+            txtAlApPaterno.Text = string.Empty;
+            txtAlApMaterno.Text = string.Empty;
+
+            txtTuNombre.Text = string.Empty;
+            txtTuApPaterno.Text = string.Empty;
+            txtTuApMaterno.Text = string.Empty;
 
             ScriptManager.RegisterStartupScript(this, this.GetType(), "MultFiltro", "multiFiltro()", true);
         }
@@ -257,7 +266,28 @@ namespace PagaLaEscuela.Views
         }
         protected void gvPagos_RowCommand(object sender, GridViewCommandEventArgs e)
         {
+            if (e.CommandName == "btnInfoCole")
+            {
+                int index = Convert.ToInt32(e.CommandArgument.ToString());
+                GridViewRow Seleccionado = gvPagos.Rows[index];
+                GridView valor = (GridView)sender;
+                Guid dataKey = Guid.Parse(valor.DataKeys[Seleccionado.RowIndex].Value.ToString());
 
+                ViewState["gvPagos_Index"] = index;
+
+                string Matri = gvPagos.Rows[index].Cells[1].Text;
+                ViewState["RowCommand-Matricula"] = Matri;
+
+                int inde = colegiaturasServices.lsPagosColegiaturasViewModel.FindIndex(x => x.UidFechaColegiatura == dataKey && x.VchMatricula == Matri);
+
+                lblNoPagoDetalleCole.Text = colegiaturasServices.lsPagosColegiaturasViewModel[inde].VchNum;
+                lblMatriculaDetalleCole.Text = colegiaturasServices.lsPagosColegiaturasViewModel[inde].VchMatricula;
+                lblAlumnoDetalleCole.Text = colegiaturasServices.lsPagosColegiaturasViewModel[inde].NombreCompleto;
+                lblFLDetalleCole.Text = colegiaturasServices.lsPagosColegiaturasViewModel[inde].VchFHLimite;
+                lblFVDetalleCole.Text = colegiaturasServices.lsPagosColegiaturasViewModel[inde].VchFHVencimiento;
+
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalDetalleCole()", true);
+            }
         }
         protected void gvPagos_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {

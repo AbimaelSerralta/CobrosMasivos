@@ -42,7 +42,8 @@ namespace PagaLaEscuela.Controllers
             }
 
             //string key = "E166173C2B870BDC3F62A67A77442FE1"; //Credenciales sanbox 
-            string key = "4451B4A2EBA9E3D49E7981FD2464C361";
+            //string key = "4451B4A2EBA9E3D49E7981FD2464C361";
+            string key = "EFD881A116694CA63F9D33CD2F5B8FDB";
             AESCryptoPraga aesCryptoPraga = new AESCryptoPraga();
             string decryptedString = aesCryptoPraga.decrypt(key, cadena);
 

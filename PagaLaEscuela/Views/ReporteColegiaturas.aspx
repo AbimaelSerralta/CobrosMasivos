@@ -62,7 +62,7 @@
                                         <div class="table-responsive">
                                             <asp:GridView ID="gvPagos" OnPageIndexChanging="gvPagos_PageIndexChanging" OnSorting="gvPagos_Sorting" OnRowCommand="gvPagos_RowCommand" OnRowDataBound="gvPagos_RowDataBound" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidFechaColegiatura" GridLines="None" border="0" AllowPaging="true" PageSize="10" ShowFooter="true" runat="server">
                                                 <EmptyDataTemplate>
-                                                    <div class="alert alert-info"><strong>Felicidades</strong> no tiene pagos disponibles.</div>
+                                                    <div class="alert alert-info">No hay colegiaturas disponibles.</div>
                                                 </EmptyDataTemplate>
                                                 <Columns>
                                                     <asp:TemplateField ItemStyle-Width="160" SortExpression="VchIdentificador" HeaderText="COLEGIATURA">
@@ -161,12 +161,12 @@
                                                     <label for="txtColegiatura" style="color: black;">Colegiatura</label>
                                                     <asp:TextBox ID="txtColegiatura" Style="margin-top: 8px;" CssClass="form-control" aria-label="Search" runat="server" />
                                                 </div>
-                                                <div class="form-group col-md-3">
+                                                <div class="form-group col-md-2">
                                                     <label for="txtNumPago" style="color: black;"># de pago</label>
                                                     <asp:TextBox ID="txtNumPago" Style="margin-top: 8px;" CssClass="form-control" TextMode="Number" aria-label="Search" runat="server" />
                                                     <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" TargetControlID="txtNumPago" runat="server" />
                                                 </div>
-                                                <div class="form-group col-md-3">
+                                                <div class="form-group col-md-4">
                                                     <label for="LBFiltroEstatusCole" style="color: black; padding-left: 0px;">Estatus</label>
                                                     <asp:ListBox ID="LBFiltroEstatusCole" runat="server" SelectionMode="Multiple"></asp:ListBox>
                                                 </div>
@@ -189,8 +189,8 @@
                                         <ContentTemplate>
                                             <div class="row">
                                                 <div class="form-group col-md-3">
-                                                    <label for="txtMatricula" style="margin-left: 15px; color: black;">Matricula</label>
-                                                    <asp:TextBox ID="txtMatricula" CssClass="form-control" aria-label="Search" runat="server" />
+                                                    <label for="txtAlMatricula" style="margin-left: 15px; color: black;">Matricula</label>
+                                                    <asp:TextBox ID="txtAlMatricula" CssClass="form-control" aria-label="Search" runat="server" />
                                                 </div>
                                                 <div class="form-group col-md-3">
                                                     <label for="txtAlNombre" style="margin-left: 15px; color: black;">Nombre</label>
