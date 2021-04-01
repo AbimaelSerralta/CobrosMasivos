@@ -342,6 +342,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\IntegracionesClubPago\GenerarReferenciaController.cs" />
     <Compile Include="Controllers\PagoReferenciaController.cs" />
     <Compile Include="Controllers\CancelaPagoController.cs" />
     <Compile Include="Controllers\ConsultaReferenciaController.cs" />

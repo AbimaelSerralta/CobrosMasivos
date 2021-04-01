@@ -105,5 +105,44 @@ namespace Franquicia.Bussiness
                 return lsObtenerRefereciaPago;
             }
         }
+
+        #region Metodos Integraciones
+        public ObtenerRefereciaPago ApiGenerarReferencia(GenerarRefereciaPago generarRefereciaPago)
+        {
+            string token = string.Empty;
+            foreach (var item in AuthClub())
+            {
+                token = item.Token;
+            }
+
+            ObtenerRefereciaPago obtenerRefereciaPago = new ObtenerRefereciaPago();
+
+            try
+            {
+                var client = new RestClient(VchUrlGenerarRef);
+                var request = new RestRequest(Method.POST);
+                string json = JsonConvert.SerializeObject(generarRefereciaPago);
+                request.AddHeader("content-type", "application/json");
+                request.AddHeader("authorization", "Bearer " + token);
+                request.AddParameter("application/json", json, ParameterType.RequestBody);
+                IRestResponse response = client.Execute(request);
+                var content = response.Content;
+
+                if (content != string.Empty)
+                {
+                    obtenerRefereciaPago = JsonConvert.DeserializeObject<ObtenerRefereciaPago>(content.ToString());
+
+                }
+
+                return obtenerRefereciaPago;
+            }
+            catch (Exception ex)
+            {
+                string mnsj = ex.Message;
+
+                return obtenerRefereciaPago;
+            }
+        }
+        #endregion
     }
 }

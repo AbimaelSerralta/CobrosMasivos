@@ -20,7 +20,7 @@ namespace Franquicia.Bussiness
 
 
         #region Metodos Franquicia
-        public void ObtenerParametrosSendGrid()
+        public void ObtenerParametrosClubPago()
         {
             parametrosClubPagoRepository.ObtenerParametrosClubPago();
         }
@@ -52,6 +52,10 @@ namespace Franquicia.Bussiness
             }
             return result;
         }
+        #endregion
+
+        #region Mrtodos Integraciones
+
         #endregion
     }
 }
