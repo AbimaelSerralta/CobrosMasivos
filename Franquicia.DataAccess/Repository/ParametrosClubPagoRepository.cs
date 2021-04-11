@@ -87,5 +87,48 @@ namespace Franquicia.DataAccess.Repository
             return Resultado;
         }
         #endregion
+
+        #region Metodos Integraciones
+        public void ObtenerParametrosPragaSandbox()
+        {
+            parametrosClubPago = new ParametrosClubPago();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select * from ParametrosClubPagoIntegracion";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                parametrosClubPago.UidParametro = Guid.Parse(item["UidParametro"].ToString());
+                parametrosClubPago.VchUrlAuth = item["VchUrlAuth"].ToString();
+                parametrosClubPago.VchUrlGenerarRef = item["VchUrlGenerarRef"].ToString();
+                parametrosClubPago.VchUser = item["VchUser"].ToString();
+                parametrosClubPago.VchPass = item["VchPass"].ToString();
+            }
+        }
+        public void ObtenerParametrosPragaProduccion()
+        {
+            parametrosClubPago = new ParametrosClubPago();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select * from ParametrosClubPago";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                parametrosClubPago.UidParametro = Guid.Parse(item["UidParametro"].ToString());
+                parametrosClubPago.VchUrlAuth = item["VchUrlAuth"].ToString();
+                parametrosClubPago.VchUrlGenerarRef = item["VchUrlGenerarRef"].ToString();
+                parametrosClubPago.VchUser = item["VchUser"].ToString();
+                parametrosClubPago.VchPass = item["VchPass"].ToString();
+            }
+        }
+        #endregion
     }
 }

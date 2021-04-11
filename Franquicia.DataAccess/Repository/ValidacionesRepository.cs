@@ -11,6 +11,7 @@ namespace Franquicia.DataAccess.Repository
 {
     public class ValidacionesRepository : SqlDataRepository
     {
+        #region Metodos Genericos       
         public bool ExisteCorreo(string Correo)
         {
             bool result = false;
@@ -378,7 +379,7 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select us.VchCorreo, su.VchContrasenia, cl.VchIdWAySMS from SegUsuarios su, Usuarios us, Clientes cl, ClientesUsuarios cu where cl.UidCliente = cu.UidCliente and cu.UidUsuario = us.UidUsuario and us.UidUsuario = su.UidUsuario and us.UidUsuario = '"+ UidUsuario + "' and cl.UidCliente = '"+ UidCliente + "'";
+            query.CommandText = "select us.VchCorreo, su.VchContrasenia, cl.VchIdWAySMS from SegUsuarios su, Usuarios us, Clientes cl, ClientesUsuarios cu where cl.UidCliente = cu.UidCliente and cu.UidUsuario = us.UidUsuario and us.UidUsuario = su.UidUsuario and us.UidUsuario = '" + UidUsuario + "' and cl.UidCliente = '" + UidCliente + "'";
 
             DataTable dt = this.Busquedas(query);
 
@@ -432,5 +433,179 @@ namespace Franquicia.DataAccess.Repository
 
             return result;
         }
+
+        #endregion
+
+        #region Metodos Integraciones
+        #region Validaciones Integraciones
+        public bool ValidarUsuarioContraseniaSandbox(string Usuario, string Contrasenia)
+        {
+            bool result = false;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select * from CredenSandbox where VchUsuario = '" + Usuario + "' and VchContrasenia = '" + Contrasenia + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            if (dt.Rows.Count >= 1)
+            {
+                result = true;
+            }
+
+            return result;
+        }
+        public bool ValidarUsuarioContraseniaProduccion(string Usuario, string Contrasenia)
+        {
+            bool result = false;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select * from CredenProduccion where VchUsuario = '" + Usuario + "' and VchContrasenia = '" + Contrasenia + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            if (dt.Rows.Count >= 1)
+            {
+                result = true;
+            }
+
+            return result;
+        }
+        public bool ExisteIntegracion(int IdIntegracion)
+        {
+            bool result = false;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select * from Integraciones where IdIntegracion = '" + IdIntegracion + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            if (dt.Rows.Count >= 1)
+            {
+                result = true;
+            }
+
+            return result;
+        }
+        public bool ExisteEscuela(int IdEscuela)
+        {
+            bool result = false;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select * from Clientes where IdCliente = '" + IdEscuela + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            if (dt.Rows.Count >= 1)
+            {
+                result = true;
+            }
+
+            return result;
+        }
+        public bool ExisteNegocioSandbox(int IdNegocio)
+        {
+            bool result = false;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select * from ParametrosPragaIntegracion where BusinessId = '" + IdNegocio + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            if (dt.Rows.Count >= 1)
+            {
+                result = true;
+            }
+
+            return result;
+        }
+        public bool ExisteNegocioProduccion(int IdNegocio)
+        {
+            bool result = false;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select * from ParametrosPraga where BusinessId = '" + IdNegocio + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            if (dt.Rows.Count >= 1)
+            {
+                result = true;
+            }
+
+            return result;
+        }
+        public bool ExisteIdPromocionSandbox(int IdPromocion)
+        {
+            bool result = false;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select * from CodigoPromocionesPragaSandbox where VchCodigo = '" + IdPromocion + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            if (dt.Rows.Count >= 1)
+            {
+                result = true;
+            }
+
+            return result;
+        }
+        public bool ExisteIdPromocionProduccion(int IdPromocion)
+        {
+            bool result = false;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select * from CodigoPromocionesPragaProduccion where VchCodigo = '" + IdPromocion + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            if (dt.Rows.Count >= 1)
+            {
+                result = true;
+            }
+
+            return result;
+        }
+        public Tuple<bool, Guid> ExisteReferenciaIntegracion(string IdReferencia)
+        {
+            bool result = false;
+            Guid UidIntegracion = Guid.Empty;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select inte.UidIntegracion from Integraciones inte, RefClubPago rcp where inte.IdIntegracion = rcp.IdIntegracion and rcp.IdReferencia = '" + IdReferencia + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            if (dt.Rows.Count >= 1)
+            {
+                foreach (DataRow item in dt.Rows)
+                {
+                    UidIntegracion = Guid.Parse(item["UidIntegracion"].ToString());
+                }
+                result = true;
+            }
+
+            return Tuple.Create(result, UidIntegracion);
+        }
+        #endregion
+        #endregion
     }
 }

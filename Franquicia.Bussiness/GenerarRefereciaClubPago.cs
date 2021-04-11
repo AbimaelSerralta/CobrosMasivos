@@ -2,6 +2,7 @@
 using Franquicia.Domain;
 using Franquicia.Domain.Models.ClubPago;
 using Franquicia.Domain.Models.Praga;
+using Franquicia.Domain.ViewModels.ClubPago;
 using Newtonsoft.Json;
 using RestSharp;
 using System;
@@ -95,7 +96,7 @@ namespace Franquicia.Bussiness
 
                     lsObtenerRefereciaPago.Add(obtenerRefereciaPago);
                 }
-                
+
                 return lsObtenerRefereciaPago;
             }
             catch (Exception ex)
@@ -107,15 +108,60 @@ namespace Franquicia.Bussiness
         }
 
         #region Metodos Integraciones
-        public ObtenerRefereciaPago ApiGenerarReferencia(GenerarRefereciaPago generarRefereciaPago)
+        public List<AuthClub> ApiObtenerCredenciales(Guid UidTipoPagoIntegracion)
         {
+            if (UidTipoPagoIntegracion == Guid.Parse("3F792D20-B3B6-41D3-AF88-1BCB20D99BBE")) //SANDBOX
+            {
+                parametrosClubPagoRepository.ObtenerParametrosPragaSandbox();
+            }
+            else if (UidTipoPagoIntegracion == Guid.Parse("D87454C9-12EF-4459-9CED-36E8401E4033")) //PRODUCCION
+            {
+                parametrosClubPagoRepository.ObtenerParametrosPragaProduccion();
+            }
+
+            VchUrlAuth = parametrosClubPagoRepository.parametrosClubPago.VchUrlAuth;
+            VchUrlGenerarRef = parametrosClubPagoRepository.parametrosClubPago.VchUrlGenerarRef;
+            User = parametrosClubPagoRepository.parametrosClubPago.VchUser;
+            Pswd = parametrosClubPagoRepository.parametrosClubPago.VchPass;
+
+            List<AuthClub> lsAuthClub = new List<AuthClub>();
+
+            var client = new RestClient(VchUrlAuth);
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("content-type", "application/json");
+            request.AddParameter("application/json", "{\n\t\"user\":\"" + User + "\",\n\t\"pswd\":\"" + Pswd + "\"\n}", ParameterType.RequestBody);
+
+            IRestResponse response = client.Execute(request);
+            var content = response.Content;
+
+            if (content != string.Empty)
+            {
+                AuthClub authClub = JsonConvert.DeserializeObject<AuthClub>(content.ToString());
+
+                lsAuthClub.Add(authClub);
+            }
+
+            return lsAuthClub;
+        }
+        public ObtenerRefereciaPago ApiGenerarReferencia(GenerarRefereciaPagoIntegraciones generarRefereciaPagoIntegraciones)
+        {
+            ObtenerRefereciaPago obtenerRefereciaPago = new ObtenerRefereciaPago();
+
+            GenerarRefereciaPago generarRefereciaPago = new GenerarRefereciaPago();
+
             string token = string.Empty;
-            foreach (var item in AuthClub())
+            foreach (var item in ApiObtenerCredenciales(Guid.Parse(generarRefereciaPagoIntegraciones.UidTipoPagoIntegracion)))
             {
                 token = item.Token;
             }
 
-            ObtenerRefereciaPago obtenerRefereciaPago = new ObtenerRefereciaPago();
+            //Asignacion de parametros necesarios para generar la referencia
+            generarRefereciaPago.Description = generarRefereciaPagoIntegraciones.Description;
+            generarRefereciaPago.Amount = generarRefereciaPagoIntegraciones.Amount;
+            generarRefereciaPago.Account = generarRefereciaPagoIntegraciones.Account;
+            generarRefereciaPago.CustomerEmail = generarRefereciaPagoIntegraciones.CustomerEmail;
+            generarRefereciaPago.CustomerName = generarRefereciaPagoIntegraciones.CustomerName;
+            generarRefereciaPago.ExpirationDate = generarRefereciaPagoIntegraciones.ExpirationDate;
 
             try
             {
@@ -141,6 +187,25 @@ namespace Franquicia.Bussiness
                 string mnsj = ex.Message;
 
                 return obtenerRefereciaPago;
+            }
+        }
+
+        public void EnviarRespuesta(ObtenerRefereciaPago obtenerRefereciaPago, string UrlEntrega)
+        {
+            try
+            {
+                var client = new RestClient(UrlEntrega);
+                var request = new RestRequest(Method.POST);
+                string json = JsonConvert.SerializeObject(obtenerRefereciaPago);
+                request.AddHeader("content-type", "application/json");
+                request.AddParameter("application/json", json, ParameterType.RequestBody);
+                IRestResponse response = client.Execute(request);
+                var content = response.Content;
+
+            }
+            catch (Exception ex)
+            {
+                string mnsj = ex.Message;
             }
         }
         #endregion

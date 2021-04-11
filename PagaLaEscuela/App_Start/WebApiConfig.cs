@@ -19,6 +19,12 @@ namespace PagaLaEscuela.App_Start
             );
 
             config.Routes.MapHttpRoute(
+                name: "IntegracionesClubPago",
+                routeTemplate: "Pagalaescuela/Service/{controller}/{id}",
+                defaults: new { id = RouteParameter.Optional }
+            );
+            
+            config.Routes.MapHttpRoute(
                 name: "ClubPago",
                 routeTemplate: "Service/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }

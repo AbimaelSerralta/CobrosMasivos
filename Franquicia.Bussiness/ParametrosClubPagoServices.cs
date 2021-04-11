@@ -54,7 +54,7 @@ namespace Franquicia.Bussiness
         }
         #endregion
 
-        #region Mrtodos Integraciones
+        #region Metodos Integraciones
 
         #endregion
     }

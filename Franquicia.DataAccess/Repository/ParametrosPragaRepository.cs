@@ -30,7 +30,7 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select * from ParametrosPraga where UidPropietario = '"+ UidPropietario + "'";
+            query.CommandText = "select * from ParametrosPraga where UidPropietario = '" + UidPropietario + "'";
 
             DataTable dt = this.Busquedas(query);
 
@@ -57,7 +57,7 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select * from ParametrosPraga where UidPropietario = '"+ UidPropietario + "'";
+            query.CommandText = "select * from ParametrosPraga where UidPropietario = '" + UidPropietario + "'";
 
             DataTable dt = this.Busquedas(query);
 
@@ -87,13 +87,13 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@UidParametro", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidParametro"].Value = parametrosPraga.UidParametro;
-                
+
                 comando.Parameters.Add("@BusinessId", SqlDbType.VarChar);
                 comando.Parameters["@BusinessId"].Value = parametrosPraga.BusinessId;
-                
+
                 comando.Parameters.Add("@VchUrl", SqlDbType.VarChar);
                 comando.Parameters["@VchUrl"].Value = parametrosPraga.VchUrl;
-                
+
                 comando.Parameters.Add("@UserCode", SqlDbType.VarChar);
                 comando.Parameters["@UserCode"].Value = parametrosPraga.UserCode;
 
@@ -102,7 +102,7 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@APIKey", SqlDbType.VarChar);
                 comando.Parameters["@APIKey"].Value = parametrosPraga.APIKey;
-                
+
                 comando.Parameters.Add("@Currency", SqlDbType.VarChar);
                 comando.Parameters["@Currency"].Value = parametrosPraga.Currency;
 
@@ -144,7 +144,7 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@Currency", SqlDbType.VarChar);
                 comando.Parameters["@Currency"].Value = parametrosPraga.Currency;
-                
+
                 comando.Parameters.Add("@UidPropietario", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidPropietario"].Value = parametrosPraga.UidPropietario;
 
@@ -155,6 +155,54 @@ namespace Franquicia.DataAccess.Repository
                 throw;
             }
             return Resultado;
+        }
+        #endregion
+
+        #region Metodos Integraciones
+        public void ObtenerParametrosPragaSandbox(int BusinessId)
+        {
+            parametrosPraga = new ParametrosPraga();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select * from ParametrosPragaIntegracion where BusinessId = '" + BusinessId + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                parametrosPraga.UidParametro = Guid.Parse(item["UidParametro"].ToString());
+                parametrosPraga.BusinessId = item["BusinessId"].ToString();
+                parametrosPraga.VchUrl = item["VchUrl"].ToString();
+                parametrosPraga.UserCode = item["UserCode"].ToString();
+                parametrosPraga.WSEncryptionKey = item["WSEncryptionKey"].ToString();
+                parametrosPraga.APIKey = item["APIKey"].ToString();
+                parametrosPraga.Currency = item["Currency"].ToString();
+            }
+        }
+        public void ObtenerParametrosPragaProduccion(int BusinessId)
+        {
+            parametrosPraga = new ParametrosPraga();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select * from ParametrosPraga where BusinessId = '" + BusinessId + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                parametrosPraga.UidParametro = Guid.Parse(item["UidParametro"].ToString());
+                parametrosPraga.BusinessId = item["BusinessId"].ToString();
+                parametrosPraga.VchUrl = item["VchUrl"].ToString();
+                parametrosPraga.UserCode = item["UserCode"].ToString();
+                parametrosPraga.WSEncryptionKey = item["WSEncryptionKey"].ToString();
+                parametrosPraga.APIKey = item["APIKey"].ToString();
+                parametrosPraga.Currency = item["Currency"].ToString();
+                parametrosPraga.UidPropietario = Guid.Parse(item["UidPropietario"].ToString());
+            }
         }
         #endregion
     }

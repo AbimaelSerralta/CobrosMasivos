@@ -158,5 +158,46 @@ namespace Franquicia.Bussiness
             return validacionesRepository.ObtenerCorreoUsuario(UidUsuario);
         }
         #endregion
+
+        #region Metodos Integraciones
+        #region Validaciones Integraciones
+        public bool ValidarUsuarioContraseniaSandbox(string Usuario, string Contrasenia)
+        {
+            return validacionesRepository.ValidarUsuarioContraseniaSandbox(Usuario, Contrasenia);
+        }
+        public bool ValidarUsuarioContraseniaProduccion(string Usuario, string Contrasenia)
+        {
+            return validacionesRepository.ValidarUsuarioContraseniaProduccion(Usuario, Contrasenia);
+        }
+        public bool ExisteIntegracion(int IdIntegracion)
+        {
+            return validacionesRepository.ExisteIntegracion(IdIntegracion);
+        }
+        public bool ExisteEscuela(int IdEscuela)
+        {
+            return validacionesRepository.ExisteEscuela(IdEscuela);
+        }
+        public bool ExisteNegocioSandbox(int IdNegocio)
+        {
+            return validacionesRepository.ExisteNegocioSandbox(IdNegocio);
+        }
+        public bool ExisteNegocioProduccion(int IdNegocio)
+        {
+            return validacionesRepository.ExisteNegocioProduccion(IdNegocio);
+        }
+        public bool ExisteIdPromocionSandbox(int IdPromocion)
+        {
+            return validacionesRepository.ExisteIdPromocionSandbox(IdPromocion);
+        }
+        public bool ExisteIdPromocionProduccion(int IdPromocion)
+        {
+            return validacionesRepository.ExisteIdPromocionProduccion(IdPromocion);
+        }
+        public Tuple<bool, Guid> ExisteReferenciaIntegracion(string IdReferencia)
+        {
+            return validacionesRepository.ExisteReferenciaIntegracion(IdReferencia);
+        }
+        #endregion
+        #endregion
     }
 }

@@ -286,6 +286,10 @@
     <Content Include="PlantillasHtml\CorreoEnvioRecordatorioPago.html" />
     <Content Include="PlantillasHtml\CorreoRecoveryPassword.html" />
     <Content Include="PlantillasHtml\CorreoEnvioCredenciales.html" />
+    <Content Include="Sandbox\CheckPayOnline.aspx" />
+    <Content Include="Sandbox\CheckReference.aspx" />
+    <Content Include="Sandbox\EndPoint.aspx" />
+    <Content Include="Sandbox\GeneratedReferences.aspx" />
     <Content Include="SqlServerTypes\readme.htm" />
     <Content Include="SqlServerTypes\x64\msvcr120.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -342,7 +346,9 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\GenerarFormasPagosController.cs" />
     <Compile Include="Controllers\IntegracionesClubPago\GenerarReferenciaController.cs" />
+    <Compile Include="Controllers\IntegracionesPraga\GenerarLigasController.cs" />
     <Compile Include="Controllers\PagoReferenciaController.cs" />
     <Compile Include="Controllers\CancelaPagoController.cs" />
     <Compile Include="Controllers\ConsultaReferenciaController.cs" />
@@ -350,6 +356,8 @@
     <Compile Include="Controllers\ContactoController.cs" />
     <Compile Include="Controllers\PayCardController.cs" />
     <Compile Include="Controllers\PragPayCardController.cs" />
+    <Compile Include="Controllers\SimuladorIntegracion\ConsuReferenController.cs" />
+    <Compile Include="Controllers\SimuladorIntegracion\ReferenciaPagoController.cs" />
     <Compile Include="Controllers\StatusColeController.cs" />
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
@@ -364,6 +372,41 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Response\ResponseHelpers.cs" />
+    <Compile Include="Sandbox\CheckPayOnline.aspx.cs">
+      <DependentUpon>CheckPayOnline.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sandbox\CheckPayOnline.aspx.designer.cs">
+      <DependentUpon>CheckPayOnline.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sandbox\CheckReference.aspx.cs">
+      <DependentUpon>CheckReference.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sandbox\CheckReference.aspx.designer.cs">
+      <DependentUpon>CheckReference.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sandbox\EndPoint.aspx.cs">
+      <DependentUpon>EndPoint.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sandbox\EndPoint.aspx.designer.cs">
+      <DependentUpon>EndPoint.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sandbox\GeneratedReferences.aspx.cs">
+      <DependentUpon>GeneratedReferences.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sandbox\GeneratedReferences.aspx.designer.cs">
+      <DependentUpon>GeneratedReferences.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sandbox\Sandbox.Master.cs">
+      <DependentUpon>Sandbox.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sandbox\Sandbox.Master.designer.cs">
+      <DependentUpon>Sandbox.Master</DependentUpon>
+    </Compile>
     <Compile Include="SqlServerTypes\Loader.cs" />
     <Compile Include="Util\WebControlUtils.cs" />
     <Compile Include="Views\Accesos.aspx.cs">
@@ -837,6 +880,7 @@
     <Content Include="Views\MasterPage.Master" />
     <Content Include="Views\Prueba.Master" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <Content Include="Sandbox\Sandbox.Master" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
