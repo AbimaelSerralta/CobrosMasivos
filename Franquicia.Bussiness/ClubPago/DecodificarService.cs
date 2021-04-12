@@ -25,5 +25,12 @@ namespace Franquicia.Bussiness.ClubPago
 
             return myStr;
         }
+
+        public string Base64Encode(string valor)
+        {
+            byte[] myByte = System.Text.Encoding.UTF8.GetBytes(valor);
+            string myBase64 = Convert.ToBase64String(myByte);
+            return myBase64;
+        }
     }
 }

@@ -77,7 +77,7 @@ namespace PagaLaEscuela.Controllers
             switch (TipoEndpoint)
             {
                 case "SANDBOX":
-                    var resSand = endPointClubPagoServices.ObtenerEndPointClubPagoSandbox(para1);
+                    var resSand = endPointClubPagoServices.ObtenerEndPointClubPagoSandbox(para1, Guid.Parse("65341240-E22B-49B4-88B5-792B80E13F97"));
 
                     if (resSand.Item2)
                     {
@@ -87,7 +87,7 @@ namespace PagaLaEscuela.Controllers
                     break;
 
                 case "PRODUCCION":
-                    var resProd = endPointClubPagoServices.ObtenerEndPointClubPagoProduccion(para1);
+                    var resProd = endPointClubPagoServices.ObtenerEndPointClubPagoProduccion(para1, Guid.Parse("65341240-E22B-49B4-88B5-792B80E13F97"));
 
                     if (resProd.Item2)
                     {

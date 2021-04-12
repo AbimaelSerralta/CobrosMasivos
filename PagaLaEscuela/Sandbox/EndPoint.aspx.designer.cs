@@ -87,6 +87,15 @@ namespace PagaLaEscuela.Sandbox
         protected global::System.Web.UI.WebControls.TextBox txtEntregarReferencia;
 
         /// <summary>
+        /// Control UidEntregarReferencia.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label UidEntregarReferencia;
+
+        /// <summary>
         /// Control txtConsultarReferencia.
         /// </summary>
         /// <remarks>
@@ -94,6 +103,15 @@ namespace PagaLaEscuela.Sandbox
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtConsultarReferencia;
+
+        /// <summary>
+        /// Control UidConsultarReferencia.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label UidConsultarReferencia;
 
         /// <summary>
         /// Control txtPagarReferencia.
@@ -105,6 +123,15 @@ namespace PagaLaEscuela.Sandbox
         protected global::System.Web.UI.WebControls.TextBox txtPagarReferencia;
 
         /// <summary>
+        /// Control UidPagarReferencia.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label UidPagarReferencia;
+
+        /// <summary>
         /// Control txtCancelarReferencia.
         /// </summary>
         /// <remarks>
@@ -114,13 +141,22 @@ namespace PagaLaEscuela.Sandbox
         protected global::System.Web.UI.WebControls.TextBox txtCancelarReferencia;
 
         /// <summary>
-        /// Control btnGuardarComision.
+        /// Control UidCancelarReferencia.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton btnGuardarComision;
+        protected global::System.Web.UI.WebControls.Label UidCancelarReferencia;
+
+        /// <summary>
+        /// Control btnGuardarClubPago.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnGuardarClubPago;
 
         /// <summary>
         /// Control txtEntregarLiga.
@@ -132,6 +168,15 @@ namespace PagaLaEscuela.Sandbox
         protected global::System.Web.UI.WebControls.TextBox txtEntregarLiga;
 
         /// <summary>
+        /// Control UidEntregarLiga.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label UidEntregarLiga;
+
+        /// <summary>
         /// Control txtPagarLiga.
         /// </summary>
         /// <remarks>
@@ -141,12 +186,21 @@ namespace PagaLaEscuela.Sandbox
         protected global::System.Web.UI.WebControls.TextBox txtPagarLiga;
 
         /// <summary>
-        /// Control LinkButton1.
+        /// Control UidPagarLiga.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton LinkButton1;
+        protected global::System.Web.UI.WebControls.Label UidPagarLiga;
+
+        /// <summary>
+        /// Control btnGuardarPraga.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnGuardarPraga;
     }
 }

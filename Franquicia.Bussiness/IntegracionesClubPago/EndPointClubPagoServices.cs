@@ -17,25 +17,29 @@ namespace Franquicia.Bussiness.IntegracionesClubPago
             set { _endPointClubPagoRepository = value; }
         }
         
+        public List<EndPointClubPago> lsEndPointClubPago = new List<EndPointClubPago>();
+
         public void ObtenerEndPointClubPago(Guid UidIntegracion, Guid UidTipoEndPoint)
         {
             EndPointClubPagoRepository.ObtenerEndPointClubPago(UidIntegracion, UidTipoEndPoint);
         }
 
-        public bool RegistrarEndPointClubPago()
+        public bool RegistrarEndPointClubPago(string VchEndPoint, Guid UidTipoEndPoint, Guid UidPropietario)
         {
             bool result = false;
-            if (EndPointClubPagoRepository.RegistrarEndPointClubPago())
+
+            Guid UidEndPoint = Guid.NewGuid();
+
+            if (EndPointClubPagoRepository.RegistrarEndPointClubPago(UidEndPoint, VchEndPoint, UidTipoEndPoint, UidPropietario))
             {
                 result = true;
             }
             return result;
         }
-
-        public bool ActualizarEndPointClubPago()
+        public bool ActualizarEndPointClubPago(Guid UidEndPoint, string VchEndPoint)
         {
             bool result = false;
-            if (EndPointClubPagoRepository.ActualizarEndPointClubPago())
+            if (EndPointClubPagoRepository.ActualizarEndPointClubPago(UidEndPoint, VchEndPoint))
             {
                 result = true;
             }
@@ -53,9 +57,9 @@ namespace Franquicia.Bussiness.IntegracionesClubPago
         {
             return EndPointClubPagoRepository.ObtenerEndPointClubPagoSandbox(IdIntegracion, VchUsuario, VchContrasenia);
         }
-        public Tuple<string, bool> ObtenerEndPointClubPagoSandbox(string IdReferencia)
+        public Tuple<string, bool> ObtenerEndPointClubPagoSandbox(string IdReferencia, Guid UidTipoEndPoint)
         {
-            return EndPointClubPagoRepository.ObtenerEndPointClubPagoSandbox(IdReferencia);
+            return EndPointClubPagoRepository.ObtenerEndPointClubPagoSandbox(IdReferencia, UidTipoEndPoint);
         }
         #endregion
 
@@ -64,22 +68,20 @@ namespace Franquicia.Bussiness.IntegracionesClubPago
         {
             return EndPointClubPagoRepository.ObtenerEndPointClubPagoProduccion(IdIntegracion, VchUsuario, VchContrasenia);
         }
-        public Tuple<string, bool> ObtenerEndPointClubPagoProduccion(string IdReferencia)
+        public Tuple<string, bool> ObtenerEndPointClubPagoProduccion(string IdReferencia, Guid UidTipoEndPoint)
         {
-            return EndPointClubPagoRepository.ObtenerEndPointClubPagoProduccion(IdReferencia);
+            return EndPointClubPagoRepository.ObtenerEndPointClubPagoProduccion(IdReferencia, UidTipoEndPoint);
         }
         #endregion
 
 
         #region Metodos web
         #region EndPoint
-        public List<EndPointClubPago> ObtenerEndPointClubPagoSandboxWeb(int IdIntegracion, Guid UidCredencial)
+        public List<EndPointClubPago> ObtenerEndPointClubPagoSandboxWeb(Guid UidIntegracion, Guid UidCredencial)
         {
-            return EndPointClubPagoRepository.ObtenerEndPointClubPagoSandboxWeb(IdIntegracion, UidCredencial);
-        }
-        public List<EndPointClubPago> ObtenerEndPointPragaSandboxWeb(int IdIntegracion, Guid UidCredencial)
-        {
-            return EndPointClubPagoRepository.ObtenerEndPointPragaSandboxWeb(IdIntegracion, UidCredencial);
+            lsEndPointClubPago = new List<EndPointClubPago>();
+
+            return lsEndPointClubPago = EndPointClubPagoRepository.ObtenerEndPointClubPagoSandboxWeb(UidIntegracion, UidCredencial);
         }
         #endregion
         #endregion

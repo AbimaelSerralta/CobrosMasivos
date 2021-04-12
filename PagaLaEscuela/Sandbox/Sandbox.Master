@@ -145,7 +145,7 @@
                                 </li>
 
                                 <li class="nav-item d-block d-sm-block d-md-block d-lg-none" runat="server">
-                                    <asp:LinkButton CssClass="nav-link" runat="server">
+                                    <asp:LinkButton CssClass="nav-link" OnClick="btnSalir_Click" runat="server">
                                         <i class="material-icons">login</i>
                                         <p>Salir</p>
                                     </asp:LinkButton>
@@ -214,7 +214,7 @@
                                             </a>
                                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownProfile">
                                                 <div class="dropdown-divider"></div>
-                                                <asp:LinkButton ID="btnSalir" CssClass="dropdown-item" Text="Salir" runat="server" />
+                                                <asp:LinkButton ID="btnSalir" CssClass="dropdown-item" OnClick="btnSalir_Click" Text="Salir" runat="server" />
                                             </div>
                                         </li>
                                     </ul>

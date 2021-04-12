@@ -17,7 +17,7 @@ namespace Franquicia.Bussiness
         {
             try
             {
-                var client = new RestClient("https://localhost:44352/Pagalaescuela/Service/GenerarLigas");
+                var client = new RestClient("https://pagalaescuela.mx/Pagalaescuela/Service/GenerarLigas");
                 var request = new RestRequest(Method.POST);
                 string json = JsonConvert.SerializeObject(generarLigaPagoIntegraciones);
                 request.AddHeader("content-type", "application/json");
@@ -30,11 +30,12 @@ namespace Franquicia.Bussiness
                 string mnsj = ex.Message;
             }
         }
+        
         public void EnviarPeticionClubPago(GenerarRefereciaPagoIntegraciones generarRefereciaPagoIntegraciones)
         {
             try
             {
-                var client = new RestClient("https://localhost:44352/Pagalaescuela/Service/GenerarReferencia");
+                var client = new RestClient("https://pagalaescuela.mx/Pagalaescuela/Service/GenerarReferencia");
                 var request = new RestRequest(Method.POST);
                 string json = JsonConvert.SerializeObject(generarRefereciaPagoIntegraciones);
                 request.AddHeader("content-type", "application/json");
@@ -73,6 +74,33 @@ namespace Franquicia.Bussiness
             }
 
             return autorizacionPago;
+        }
+        public CancelacionPagoResp EnviarPeticionCancelarPagoReferenciaClubPago(CancelacionPago cancelacion, string EndPoint)
+        {
+            CancelacionPagoResp cancelacionPagoResp = new CancelacionPagoResp();
+
+            try
+            {
+                var client = new RestClient(EndPoint);
+                var request = new RestRequest(Method.DELETE);
+                string json = JsonConvert.SerializeObject(cancelacion);
+                request.AddHeader("content-type", "application/json");
+                request.AddParameter("application/json", json, ParameterType.RequestBody);
+                IRestResponse response = client.Execute(request);
+                var content = response.Content;
+
+                if (content != string.Empty)
+                {
+                    cancelacionPagoResp = JsonConvert.DeserializeObject<CancelacionPagoResp>(content.ToString());
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string mnsj = ex.Message;
+            }
+
+            return cancelacionPagoResp;
         }
     }
 }

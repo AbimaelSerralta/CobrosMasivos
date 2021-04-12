@@ -290,6 +290,7 @@
     <Content Include="Sandbox\CheckReference.aspx" />
     <Content Include="Sandbox\EndPoint.aspx" />
     <Content Include="Sandbox\GeneratedReferences.aspx" />
+    <Content Include="Sandbox\Login.aspx" />
     <Content Include="SqlServerTypes\readme.htm" />
     <Content Include="SqlServerTypes\x64\msvcr120.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -357,6 +358,7 @@
     <Compile Include="Controllers\PayCardController.cs" />
     <Compile Include="Controllers\PragPayCardController.cs" />
     <Compile Include="Controllers\SimuladorIntegracion\ConsuReferenController.cs" />
+    <Compile Include="Controllers\SimuladorIntegracion\PagoCancelaController.cs" />
     <Compile Include="Controllers\SimuladorIntegracion\ReferenciaPagoController.cs" />
     <Compile Include="Controllers\StatusColeController.cs" />
     <Compile Include="Default.aspx.cs">
@@ -399,6 +401,13 @@
     </Compile>
     <Compile Include="Sandbox\GeneratedReferences.aspx.designer.cs">
       <DependentUpon>GeneratedReferences.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sandbox\Login.aspx.cs">
+      <DependentUpon>Login.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sandbox\Login.aspx.designer.cs">
+      <DependentUpon>Login.aspx</DependentUpon>
     </Compile>
     <Compile Include="Sandbox\Sandbox.Master.cs">
       <DependentUpon>Sandbox.Master</DependentUpon>

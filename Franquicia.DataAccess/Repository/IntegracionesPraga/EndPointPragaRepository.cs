@@ -134,8 +134,35 @@ namespace Franquicia.DataAccess.Repository.IntegracionesPraga
         }
         #endregion
 
+        #region Metodos web
+
+        #region EndPoint
+        public List<EndPointPraga> ObtenerEndPointPragaSandboxWeb(Guid UidIntegracion, Guid UidCredencial)
+        {
+            List<EndPointPraga> lsEndPointPraga = new List<EndPointPraga>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select epp.* from EndPointPraga epp, CredenSandbox cs, Integraciones inte where inte.UidIntegracion = cs.UidIntegracion and epp.UidPropietario = cs.UidCredencial and inte.UidIntegracion = '" + UidIntegracion + "' and cs.UidCredencial = '" + UidCredencial + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                lsEndPointPraga.Add(new EndPointPraga
+                {
+                    UidEndPoint = Guid.Parse(item["UidEndPoint"].ToString()),
+                    VchEndPoint = item["VchEndPoint"].ToString(),
+                    UidTipoEndPoint = Guid.Parse(item["UidTipoEndPoint"].ToString()),
+                    UidPropietario = Guid.Parse(item["UidPropietario"].ToString())
+                });
+            }
+
+            return lsEndPointPraga;
+        }
         //Estos metod no se han creado
-        public bool RegistrarEndPointPraga()
+        public bool RegistrarEndPointPraga(Guid UidEndPoint, string VchEndPoint, Guid UidTipoEndPoint, Guid UidPropietario)
         {
             bool Resultado = false;
 
@@ -144,9 +171,18 @@ namespace Franquicia.DataAccess.Repository.IntegracionesPraga
             {
                 comando.CommandType = System.Data.CommandType.StoredProcedure;
                 comando.CommandText = "sp_EndPointPragaRegistrar";
+                
+                comando.Parameters.Add("@UidEndPoint", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidEndPoint"].Value = UidEndPoint;
 
-                comando.Parameters.Add("@UidParametro", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidParametro"].Value = "";
+                comando.Parameters.Add("@VchEndPoint", SqlDbType.VarChar);
+                comando.Parameters["@VchEndPoint"].Value = VchEndPoint;
+
+                comando.Parameters.Add("@UidTipoEndPoint", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidTipoEndPoint"].Value = UidTipoEndPoint;
+
+                comando.Parameters.Add("@UidPropietario", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidPropietario"].Value = UidPropietario;
 
                 Resultado = this.ManipulacionDeDatos(comando);
             }
@@ -156,7 +192,7 @@ namespace Franquicia.DataAccess.Repository.IntegracionesPraga
             }
             return Resultado;
         }
-        public bool ActualizarEndPointPraga()
+        public bool ActualizarEndPointPraga(Guid UidEndPoint, string VchEndPoint)
         {
             bool Resultado = false;
 
@@ -166,8 +202,11 @@ namespace Franquicia.DataAccess.Repository.IntegracionesPraga
                 comando.CommandType = System.Data.CommandType.StoredProcedure;
                 comando.CommandText = "sp_EndPointPragaActualizar";
 
-                comando.Parameters.Add("@BusinessId", SqlDbType.VarChar);
-                comando.Parameters["@BusinessId"].Value = "";
+                comando.Parameters.Add("@UidEndPoint", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidEndPoint"].Value = UidEndPoint;
+
+                comando.Parameters.Add("@VchEndPoint", SqlDbType.VarChar);
+                comando.Parameters["@VchEndPoint"].Value = VchEndPoint;
 
                 Resultado = this.ManipulacionDeDatos(comando);
             }
@@ -177,5 +216,7 @@ namespace Franquicia.DataAccess.Repository.IntegracionesPraga
             }
             return Resultado;
         }
+        #endregion
+        #endregion
     }
 }

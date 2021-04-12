@@ -32,7 +32,7 @@ namespace PagaLaEscuela.Controllers
                     if (!validacionesServices.ValidarUsuarioContraseniaProduccion(generarFormaPago.User, generarFormaPago.Password))
                     {
                         codigoError.Message = "El usuario y/o contraseña son invalidos.";
-                        codigoError.Codigo = "";
+                        codigoError.Codigo = "1";
 
                         return Request.CreateResponse(System.Net.HttpStatusCode.BadRequest, codigoError);
                     }
@@ -49,7 +49,7 @@ namespace PagaLaEscuela.Controllers
             else
             {
                 codigoError.Message = "El usuario y la contraseña son obligatorios.";
-                codigoError.Codigo = "";
+                codigoError.Codigo = "2";
 
                 return Request.CreateResponse(System.Net.HttpStatusCode.BadRequest, codigoError);
             }
@@ -63,7 +63,7 @@ namespace PagaLaEscuela.Controllers
                     if (!validacionesServices.ExisteIntegracion(int.Parse(generarFormaPago.IntegrationID)))
                     {
                         codigoError.Message = "El ID de la integracion no existe.";
-                        codigoError.Codigo = "";
+                        codigoError.Codigo = "3";
 
                         return Request.CreateResponse(System.Net.HttpStatusCode.BadRequest, codigoError);
                     }
@@ -71,7 +71,7 @@ namespace PagaLaEscuela.Controllers
                 catch (Exception)
                 {
                     codigoError.Message = "El formato del ID de la integracion es incorrecto.";
-                    codigoError.Codigo = "";
+                    codigoError.Codigo = "4";
 
                     return Request.CreateResponse(System.Net.HttpStatusCode.BadRequest, codigoError);
                 }
@@ -79,7 +79,7 @@ namespace PagaLaEscuela.Controllers
             else
             {
                 codigoError.Message = "El ID de la integracion es obligatorio.";
-                codigoError.Codigo = "";
+                codigoError.Codigo = "5";
 
                 return Request.CreateResponse(System.Net.HttpStatusCode.BadRequest, codigoError);
             }
@@ -92,7 +92,7 @@ namespace PagaLaEscuela.Controllers
                     if (!validacionesServices.ExisteEscuela(int.Parse(generarFormaPago.SchoolID)))
                     {
                         codigoError.Message = "El ID de la escuela no existe.";
-                        codigoError.Codigo = "";
+                        codigoError.Codigo = "6";
 
                         return Request.CreateResponse(System.Net.HttpStatusCode.BadRequest, codigoError);
                     }
@@ -100,7 +100,7 @@ namespace PagaLaEscuela.Controllers
                 catch (Exception)
                 {
                     codigoError.Message = "El formato del ID de la escuela es incorrecto.";
-                    codigoError.Codigo = "";
+                    codigoError.Codigo = "7";
 
                     return Request.CreateResponse(System.Net.HttpStatusCode.BadRequest, codigoError);
                 }
@@ -108,7 +108,7 @@ namespace PagaLaEscuela.Controllers
             else
             {
                 codigoError.Message = "El ID de la escuela es obligatorio.";
-                codigoError.Codigo = "";
+                codigoError.Codigo = "8";
 
                 return Request.CreateResponse(System.Net.HttpStatusCode.BadRequest, codigoError);
             }
@@ -123,7 +123,7 @@ namespace PagaLaEscuela.Controllers
                         if (!validacionesServices.ExisteNegocioProduccion(int.Parse(generarFormaPago.BusinessId)))
                         {
                             codigoError.Message = "El ID del negocio no existe.";
-                            codigoError.Codigo = "";
+                            codigoError.Codigo = "9";
 
                             return Request.CreateResponse(System.Net.HttpStatusCode.BadRequest, codigoError);
                         }
@@ -132,7 +132,7 @@ namespace PagaLaEscuela.Controllers
                 catch (Exception)
                 {
                     codigoError.Message = "El formato del ID del negocio es incorrecto.";
-                    codigoError.Codigo = "";
+                    codigoError.Codigo = "10";
 
                     return Request.CreateResponse(System.Net.HttpStatusCode.BadRequest, codigoError);
                 }
@@ -140,7 +140,7 @@ namespace PagaLaEscuela.Controllers
             else
             {
                 codigoError.Message = "El ID del negocio es obligatorio.";
-                codigoError.Codigo = "";
+                codigoError.Codigo = "11";
 
                 return Request.CreateResponse(System.Net.HttpStatusCode.BadRequest, codigoError);
             }
@@ -155,7 +155,7 @@ namespace PagaLaEscuela.Controllers
                         if (!validacionesServices.ExisteIdPromocionProduccion(int.Parse(generarFormaPago.PaymentTypes)))
                         {
                             codigoError.Message = "El ID de la forma de pago no existe.";
-                            codigoError.Codigo = "";
+                            codigoError.Codigo = "12";
 
                             return Request.CreateResponse(System.Net.HttpStatusCode.BadRequest, codigoError);
                         }
@@ -164,7 +164,7 @@ namespace PagaLaEscuela.Controllers
                 catch (Exception)
                 {
                     codigoError.Message = "El formato del ID de la forma de pago es incorrecto.";
-                    codigoError.Codigo = "";
+                    codigoError.Codigo = "13";
 
                     return Request.CreateResponse(System.Net.HttpStatusCode.BadRequest, codigoError);
                 }
@@ -172,7 +172,7 @@ namespace PagaLaEscuela.Controllers
             else
             {
                 codigoError.Message = "El ID de la forma de pago es obligatorio.";
-                codigoError.Codigo = "";
+                codigoError.Codigo = "14";
 
                 return Request.CreateResponse(System.Net.HttpStatusCode.BadRequest, codigoError);
             }
@@ -187,7 +187,7 @@ namespace PagaLaEscuela.Controllers
                 catch (Exception)
                 {
                     codigoError.Message = "El formato del ID es incorrecto.";
-                    codigoError.Codigo = "";
+                    codigoError.Codigo = "15";
 
                     return Request.CreateResponse(System.Net.HttpStatusCode.BadRequest, codigoError);
                 }
@@ -195,7 +195,7 @@ namespace PagaLaEscuela.Controllers
             else
             {
                 codigoError.Message = "El ID es obligatorio.";
-                codigoError.Codigo = "";
+                codigoError.Codigo = "16";
 
                 return Request.CreateResponse(System.Net.HttpStatusCode.BadRequest, codigoError);
             }
@@ -208,7 +208,7 @@ namespace PagaLaEscuela.Controllers
             else
             {
                 codigoError.Message = "La Descripcion es obligatorio.";
-                codigoError.Codigo = "";
+                codigoError.Codigo = "17";
 
                 return Request.CreateResponse(System.Net.HttpStatusCode.BadRequest, codigoError);
             }
@@ -229,7 +229,7 @@ namespace PagaLaEscuela.Controllers
                     else
                     {
                         codigoError.Message = "El importe ingresado debe ser minimo de $50.00 y máximo $15,000.00.";
-                        codigoError.Codigo = "";
+                        codigoError.Codigo = "18";
 
                         return Request.CreateResponse(System.Net.HttpStatusCode.BadRequest, codigoError);
                     }
@@ -237,7 +237,7 @@ namespace PagaLaEscuela.Controllers
                 catch (Exception)
                 {
                     codigoError.Message = "El formato del importe es incorrecto.";
-                    codigoError.Codigo = "";
+                    codigoError.Codigo = "19";
 
                     return Request.CreateResponse(System.Net.HttpStatusCode.BadRequest, codigoError);
                 }
@@ -245,12 +245,12 @@ namespace PagaLaEscuela.Controllers
             else
             {
                 codigoError.Message = "El importe es obligatorio.";
-                codigoError.Codigo = "";
+                codigoError.Codigo = "20";
 
                 return Request.CreateResponse(System.Net.HttpStatusCode.BadRequest, codigoError);
             }
 
-            //Validar referencia si existe
+            //Validar referencia si existe 21 22
 
             //Validar fecha de vencimiento
             if (!string.IsNullOrEmpty(generarFormaPago.ExpirationDate.ToString("dd/MM/yyyy")))
@@ -267,7 +267,7 @@ namespace PagaLaEscuela.Controllers
                     else
                     {
                         codigoError.Message = "La fecha de vencimiento tiene que ser mayor o igual al día de hoy.";
-                        codigoError.Codigo = "";
+                        codigoError.Codigo = "23";
 
                         return Request.CreateResponse(System.Net.HttpStatusCode.BadRequest, codigoError);
                     }
@@ -275,7 +275,7 @@ namespace PagaLaEscuela.Controllers
                 catch (Exception)
                 {
                     codigoError.Message = "El formato de la fecha vencimiento es incorrecto.";
-                    codigoError.Codigo = "";
+                    codigoError.Codigo = "24";
 
                     return Request.CreateResponse(System.Net.HttpStatusCode.BadRequest, codigoError);
                 }
@@ -318,7 +318,7 @@ namespace PagaLaEscuela.Controllers
             enviarIntegracionesServices.EnviarPeticionClubPago(generarRefereciaPagoIntegraciones);
 
             codigoError.Message = "Success";
-            codigoError.Codigo = "";
+            codigoError.Codigo = "200";
 
             return Request.CreateResponse(System.Net.HttpStatusCode.OK, codigoError);
 

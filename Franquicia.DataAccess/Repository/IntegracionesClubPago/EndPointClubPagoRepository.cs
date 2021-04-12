@@ -19,8 +19,7 @@ namespace Franquicia.DataAccess.Repository.IntegracionesClubPago
             set { _endPointClubPago = value; }
         }
 
-        //Estos metod no se han creado
-        public bool RegistrarEndPointClubPago()
+        public bool RegistrarEndPointClubPago(Guid UidEndPoint, string VchEndPoint, Guid UidTipoEndPoint, Guid UidPropietario)
         {
             bool Resultado = false;
 
@@ -30,8 +29,17 @@ namespace Franquicia.DataAccess.Repository.IntegracionesClubPago
                 comando.CommandType = System.Data.CommandType.StoredProcedure;
                 comando.CommandText = "sp_EndPointClubPagoRegistrar";
 
-                comando.Parameters.Add("@UidParametro", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidParametro"].Value = "";
+                comando.Parameters.Add("@UidEndPoint", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidEndPoint"].Value = UidEndPoint;
+                
+                comando.Parameters.Add("@VchEndPoint", SqlDbType.VarChar);
+                comando.Parameters["@VchEndPoint"].Value = VchEndPoint;
+
+                comando.Parameters.Add("@UidTipoEndPoint", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidTipoEndPoint"].Value = UidTipoEndPoint;
+                
+                comando.Parameters.Add("@UidPropietario", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidPropietario"].Value = UidPropietario;
 
                 Resultado = this.ManipulacionDeDatos(comando);
             }
@@ -41,7 +49,7 @@ namespace Franquicia.DataAccess.Repository.IntegracionesClubPago
             }
             return Resultado;
         }
-        public bool ActualizarEndPointClubPago()
+        public bool ActualizarEndPointClubPago(Guid UidEndPoint, string VchEndPoint)
         {
             bool Resultado = false;
 
@@ -51,8 +59,11 @@ namespace Franquicia.DataAccess.Repository.IntegracionesClubPago
                 comando.CommandType = System.Data.CommandType.StoredProcedure;
                 comando.CommandText = "sp_EndPointClubPagoActualizar";
 
-                comando.Parameters.Add("@BusinessId", SqlDbType.VarChar);
-                comando.Parameters["@BusinessId"].Value = "";
+                comando.Parameters.Add("@UidEndPoint", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidEndPoint"].Value = UidEndPoint;
+                
+                comando.Parameters.Add("@VchEndPoint", SqlDbType.VarChar);
+                comando.Parameters["@VchEndPoint"].Value = VchEndPoint;
 
                 Resultado = this.ManipulacionDeDatos(comando);
             }
@@ -114,7 +125,7 @@ namespace Franquicia.DataAccess.Repository.IntegracionesClubPago
 
             return Tuple.Create(Url, Respu);
         }
-        public Tuple<string, bool> ObtenerEndPointClubPagoSandbox(string IdReferencia)
+        public Tuple<string, bool> ObtenerEndPointClubPagoSandbox(string IdReferencia, Guid UidTipoEndPoint)
         {
             string Url = string.Empty;
             bool Respu = false;
@@ -122,7 +133,7 @@ namespace Franquicia.DataAccess.Repository.IntegracionesClubPago
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select epcp.* from PagosIntegracion pain, RefClubPago rcp, Integraciones inte, CredenSandbox cs, EndPointClubPago epcp where pain.UidPagoIntegracion = rcp.UidPagoIntegracion and rcp.IdIntegracion = inte.IdIntegracion and inte.UidIntegracion = cs.UidIntegracion and epcp.UidPropietario = cs.UidCredencial and epcp.UidTipoEndPoint = '65341240-E22B-49B4-88B5-792B80E13F97' and rcp.IdReferencia = '" + IdReferencia + "'";
+            query.CommandText = "select epcp.* from PagosIntegracion pain, RefClubPago rcp, Integraciones inte, CredenSandbox cs, EndPointClubPago epcp where pain.UidPagoIntegracion = rcp.UidPagoIntegracion and rcp.IdIntegracion = inte.IdIntegracion and inte.UidIntegracion = cs.UidIntegracion and epcp.UidPropietario = cs.UidCredencial and epcp.UidTipoEndPoint = '" + UidTipoEndPoint + "' and rcp.IdReferencia = '" + IdReferencia + "'";
 
             DataTable dt = this.Busquedas(query);
 
@@ -157,7 +168,7 @@ namespace Franquicia.DataAccess.Repository.IntegracionesClubPago
 
             return Tuple.Create(Url, Respu);
         }
-        public Tuple<string, bool> ObtenerEndPointClubPagoProduccion(string IdReferencia)
+        public Tuple<string, bool> ObtenerEndPointClubPagoProduccion(string IdReferencia, Guid UidTipoEndPoint)
         {
             string Url = string.Empty;
             bool Respu = false;
@@ -165,7 +176,7 @@ namespace Franquicia.DataAccess.Repository.IntegracionesClubPago
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select epcp.* from PagosIntegracion pain, RefClubPago rcp, Integraciones inte, CredenProduccion cp, EndPointClubPago epcp where pain.UidPagoIntegracion = rcp.UidPagoIntegracion and rcp.IdIntegracion = inte.IdIntegracion and inte.UidIntegracion = cp.UidIntegracion and epcp.UidPropietario = cp.UidCredencial and epcp.UidTipoEndPoint = '65341240-E22B-49B4-88B5-792B80E13F97' and rcp.IdReferencia = '" + IdReferencia + "'";
+            query.CommandText = "select epcp.* from PagosIntegracion pain, RefClubPago rcp, Integraciones inte, CredenProduccion cp, EndPointClubPago epcp where pain.UidPagoIntegracion = rcp.UidPagoIntegracion and rcp.IdIntegracion = inte.IdIntegracion and inte.UidIntegracion = cp.UidIntegracion and epcp.UidPropietario = cp.UidCredencial and epcp.UidTipoEndPoint = '" + UidTipoEndPoint + "' and rcp.IdReferencia = '" + IdReferencia + "'";
 
             DataTable dt = this.Busquedas(query);
 
@@ -203,14 +214,14 @@ namespace Franquicia.DataAccess.Repository.IntegracionesClubPago
         #endregion
 
         #region EndPoint
-        public List<EndPointClubPago> ObtenerEndPointClubPagoSandboxWeb(int IdIntegracion, Guid UidCredencial)
+        public List<EndPointClubPago> ObtenerEndPointClubPagoSandboxWeb(Guid UidIntegracion, Guid UidCredencial)
         {
             List<EndPointClubPago> lsEndPointClubPago = new List<EndPointClubPago>();
 
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select epcp.* from EndPointClubPago epcp, CredenSandbox cs, Integraciones inte where inte.UidIntegracion = cs.UidIntegracion and epcp.UidPropietario = cs.UidCredencial and inte.IdIntegracion = '" + IdIntegracion + "' and cs.UidCredencial = '" + UidCredencial + "'";
+            query.CommandText = "select epcp.* from EndPointClubPago epcp, CredenSandbox cs, Integraciones inte where inte.UidIntegracion = cs.UidIntegracion and epcp.UidPropietario = cs.UidCredencial and inte.UidIntegracion = '" + UidIntegracion + "' and cs.UidCredencial = '" + UidCredencial + "'";
 
             DataTable dt = this.Busquedas(query);
 
@@ -221,33 +232,7 @@ namespace Franquicia.DataAccess.Repository.IntegracionesClubPago
                     UidEndPoint = Guid.Parse(item["UidEndPoint"].ToString()),
                     VchEndPoint = item["VchEndPoint"].ToString(),
                     UidTipoEndPoint = Guid.Parse(item["UidTipoEndPoint"].ToString()),
-                    UidPropietario = Guid.Parse(item["UidPropietario"].ToString()),
-
-                });
-            }
-
-            return lsEndPointClubPago;
-        }
-        public List<EndPointClubPago> ObtenerEndPointPragaSandboxWeb(int IdIntegracion, Guid UidCredencial)
-        {
-            List<EndPointClubPago> lsEndPointClubPago = new List<EndPointClubPago>();
-
-            SqlCommand query = new SqlCommand();
-            query.CommandType = CommandType.Text;
-
-            query.CommandText = "select epp.* from EndPointPraga epp, CredenSandbox cs, Integraciones inte where inte.UidIntegracion = cs.UidIntegracion and epp.UidPropietario = cs.UidCredencial and inte.IdIntegracion = '" + IdIntegracion + "' and cs.UidCredencial = '" + UidCredencial + "'";
-
-            DataTable dt = this.Busquedas(query);
-
-            foreach (DataRow item in dt.Rows)
-            {
-                lsEndPointClubPago.Add(new EndPointClubPago
-                {
-                    UidEndPoint = Guid.Parse(item["UidEndPoint"].ToString()),
-                    VchEndPoint = item["VchEndPoint"].ToString(),
-                    UidTipoEndPoint = Guid.Parse(item["UidTipoEndPoint"].ToString()),
-                    UidPropietario = Guid.Parse(item["UidPropietario"].ToString()),
-
+                    UidPropietario = Guid.Parse(item["UidPropietario"].ToString())
                 });
             }
 

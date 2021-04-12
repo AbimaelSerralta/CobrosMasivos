@@ -44,17 +44,6 @@
         }
     </style>
 
-    <asp:UpdatePanel runat="server">
-        <ContentTemplate>
-            <asp:Panel ID="pnlAlert" Visible="false" runat="server">
-                <div id="divAlert" class="alert alert-danger alert-dismissible fade" role="alert" runat="server">
-                    <asp:Label ID="lblMensajeAlert" runat="server" />
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                </div>
-            </asp:Panel>
-        </ContentTemplate>
-    </asp:UpdatePanel>
-
     <div class="form-horizontal">
         <div class="rowSA">
             <div class="col-md-4">&nbsp;</div>
@@ -109,7 +98,18 @@
                     </div>
                 </div>
             </div>
-
+            <div class="col-md12" style="margin-top: 10px;">
+                <asp:UpdatePanel runat="server">
+                    <ContentTemplate>
+                        <asp:Panel ID="pnlAlert" Visible="false" runat="server">
+                            <div id="divAlert" class="alert alert-danger alert-dismissible fade" role="alert" runat="server">
+                                <asp:Label ID="lblMensajeAlert" runat="server" />
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            </div>
+                        </asp:Panel>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+            </div>
         </div>
 
         <div class="rowSA text-center mt-5">
@@ -122,9 +122,9 @@
                     <i class="material-icons">attach_money</i>
                     Pagar referencia
                 </asp:LinkButton>
-                <asp:LinkButton ID="btnNuevoPago" Visible="false" OnClick="btnNuevoPago_Click" OnClientClick="OpenProgress();" class="btn btn-warning" runat="server">
-                    <i class="material-icons">refresh</i>
-                    Consultar referencia
+                <asp:LinkButton ID="btnCancelarPago" Visible="false" OnClick="btnCancelarPago_Click" OnClientClick="OpenProgress();" class="btn btn-danger" runat="server">
+                    <i class="material-icons">clear</i>
+                    Cancelar pago
                 </asp:LinkButton>
             </div>
         </div>

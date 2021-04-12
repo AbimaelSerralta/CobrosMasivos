@@ -73,9 +73,13 @@
         </div>
     </div>
     <div class="clearfix my-3 py-2 px-2">
-        <div class="row">
-            <iframe id="ifmLiga" visible="false" style="display: block; background: #000; border: none; height: 100vh; width: 100vw;" runat="server"></iframe>
-        </div>
+        <asp:UpdatePanel runat="server">
+            <ContentTemplate>
+                <div class="row">
+                    <iframe id="ifmLiga" visible="false" style="display: block; border: none; height: 100vh; width: 100vw;" runat="server"></iframe>
+                </div>
+            </ContentTemplate>
+        </asp:UpdatePanel>
     </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="cBodyBottom" runat="server">

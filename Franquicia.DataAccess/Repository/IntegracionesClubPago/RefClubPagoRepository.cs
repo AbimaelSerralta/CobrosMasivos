@@ -82,5 +82,6 @@ namespace Franquicia.DataAccess.Repository.IntegracionesClubPago
             }
             return Resultado;
         }
+
     }
 }

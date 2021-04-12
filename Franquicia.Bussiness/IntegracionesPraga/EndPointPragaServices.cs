@@ -1,4 +1,5 @@
 ﻿using Franquicia.DataAccess.Repository.IntegracionesPraga;
+using Franquicia.Domain.Models.IntegracionesPraga;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,8 @@ namespace Franquicia.Bussiness.IntegracionesPraga
             get { return _endPointPragaRepository; }
             set { _endPointPragaRepository = value; }
         }
+
+        public List<EndPointPraga> lsEndPointPraga = new List<EndPointPraga>();
 
         public string ObtenerEndPointAUtilizar(string IdReferencia)
         {
@@ -43,24 +46,37 @@ namespace Franquicia.Bussiness.IntegracionesPraga
         }
         #endregion
 
-        public bool RegistrarEndPointPraga()
-        {
-            bool result = false;
-            if (endPointPragaRepository.RegistrarEndPointPraga())
-            {
-                result = true;
-            }
-            return result;
-        }
+        #region Metodos web
 
-        public bool ActualizarEndPointPraga()
+        #region EndPoint
+        public List<EndPointPraga> ObtenerEndPointPragaSandboxWeb(Guid UidIntegracion, Guid UidCredencial)
+        {
+            lsEndPointPraga = new List<EndPointPraga>();
+
+            return lsEndPointPraga = endPointPragaRepository.ObtenerEndPointPragaSandboxWeb(UidIntegracion, UidCredencial);
+        }
+        public bool RegistrarEndPointPraga(string VchEndPoint, Guid UidTipoEndPoint, Guid UidPropietario)
         {
             bool result = false;
-            if (endPointPragaRepository.ActualizarEndPointPraga())
+
+            Guid UidEndPoint = Guid.NewGuid();
+
+            if (endPointPragaRepository.RegistrarEndPointPraga(UidEndPoint, VchEndPoint, UidTipoEndPoint, UidPropietario))
             {
                 result = true;
             }
             return result;
         }
+        public bool ActualizarEndPointPraga(Guid UidEndPoint, string VchEndPoint)
+        {
+            bool result = false;
+            if (endPointPragaRepository.ActualizarEndPointPraga(UidEndPoint, VchEndPoint))
+            {
+                result = true;
+            }
+            return result;
+        }
+        #endregion 
+        #endregion 
     }
 }

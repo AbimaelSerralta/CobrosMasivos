@@ -76,6 +76,7 @@
                                                         </span>
                                                     </div>
                                                     <asp:TextBox ID="txtEntregarReferencia" CssClass="form-control" runat="server" />
+                                                    <asp:Label ID="UidEntregarReferencia" Visible="false" runat="server" />
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
@@ -87,6 +88,7 @@
                                                         </span>
                                                     </div>
                                                     <asp:TextBox ID="txtConsultarReferencia" CssClass="form-control" runat="server" />
+                                                    <asp:Label ID="UidConsultarReferencia" Visible="false" runat="server" />
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
@@ -98,6 +100,7 @@
                                                         </span>
                                                     </div>
                                                     <asp:TextBox ID="txtPagarReferencia" CssClass="form-control" runat="server" />
+                                                    <asp:Label ID="UidPagarReferencia" Visible="false" runat="server" />
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
@@ -109,13 +112,14 @@
                                                         </span>
                                                     </div>
                                                     <asp:TextBox ID="txtCancelarReferencia" CssClass="form-control" runat="server" />
+                                                    <asp:Label ID="UidCancelarReferencia" Visible="false" runat="server" />
                                                 </div>
                                             </div>
                                         </div>
                                         <asp:UpdatePanel runat="server">
                                             <ContentTemplate>
                                                 <div class="modal-footer justify-content-center">
-                                                    <asp:LinkButton ID="btnGuardarComision" CssClass="btn btn-success btn-round" runat="server">
+                                                    <asp:LinkButton ID="btnGuardarClubPago" OnClick="btnGuardarClubPago_Click" CssClass="btn btn-success btn-round" runat="server">
                                                                 <i class="material-icons">check</i> Guardar
                                                     </asp:LinkButton>
                                                 </div>
@@ -138,6 +142,7 @@
                                                         </span>
                                                     </div>
                                                     <asp:TextBox ID="txtEntregarLiga" CssClass="form-control" runat="server" />
+                                                    <asp:Label ID="UidEntregarLiga" Visible="false" runat="server" />
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
@@ -149,13 +154,14 @@
                                                         </span>
                                                     </div>
                                                     <asp:TextBox ID="txtPagarLiga" CssClass="form-control" runat="server" />
+                                                    <asp:Label ID="UidPagarLiga" Visible="false" runat="server" />
                                                 </div>
                                             </div>
                                         </div>
                                         <asp:UpdatePanel runat="server">
                                             <ContentTemplate>
                                                 <div class="modal-footer justify-content-center">
-                                                    <asp:LinkButton ID="LinkButton1" CssClass="btn btn-success btn-round" runat="server">
+                                                    <asp:LinkButton ID="btnGuardarPraga" OnClick="btnGuardarPraga_Click" CssClass="btn btn-success btn-round" runat="server">
                                                                 <i class="material-icons">check</i> Guardar
                                                     </asp:LinkButton>
                                                 </div>
