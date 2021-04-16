@@ -58,14 +58,14 @@
                                 <div class="col-lg-6 vis">
                                     <div style="padding-top: 80px;">
                                         <div class="row px-3 justify-content-center mt-4 mb-5 border-line">
-                                            <img src="../Images/webpayplusmujer.png" class="image img-fluid">
+                                            <img src="../Images/integration.png" class="img-fluid" style="height:300px; width:500px;">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="card2 card border-0 px-4 py-5" style="margin-left: 0px; margin-right: 0px;">
                                         <div class="text-center">
-                                            <img src="../Images/logoPagaLaEscuela.png" class="logo">
+                                            <img src="../Images/logo-cobroscontarjetas.png" class="img-fluid" style="margin-top:20px">
                                         </div>
                                         <div id="divAlert" visible="false" class="col-md-12" style="padding-left: 0px; padding-right: 0px;" runat="server">
                                             <div class="alert alert-danger" role="alert">
@@ -77,10 +77,10 @@
                                         </div>
                                         <div class="row px-3">
                                             <label class="mb-1">
-                                                <h6 class="mb-0 text-sm">Usuario o correo</h6>
+                                                <h6 class="mb-0 text-sm">Usuario</h6>
                                             </label>
 
-                                            <asp:TextBox ID="txtUsuario" class="form-control" placeholder="Ingrese su usuario o correo" runat="server" />
+                                            <asp:TextBox ID="txtUsuario" class="form-control" placeholder="Ingrese su usuario" runat="server" />
                                         </div>
                                         <div class="row px-3" style="padding-top: 15px;">
                                             <label class="mb-1">

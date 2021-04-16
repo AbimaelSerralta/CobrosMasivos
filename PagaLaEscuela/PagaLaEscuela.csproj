@@ -253,6 +253,7 @@
     <Content Include="Images\FormasDePago\tarjeta.png" />
     <Content Include="Images\icoSms.jpg" />
     <Content Include="Images\icoWhats.png" />
+    <Content Include="Images\integration.png" />
     <Content Include="Images\LigaSimple.PNG" />
     <Content Include="Images\llave.png" />
     <Content Include="Images\loaderEscuela.gif" />
@@ -271,6 +272,7 @@
     <Content Include="Images\SinLogo.png" />
     <Content Include="Images\SinLogo2.png" />
     <Content Include="Images\SinPagos.png" />
+    <Content Include="Images\terminal.png" />
     <Content Include="Images\think.png" />
     <Content Include="Images\TipoTarjeta\efectivo.png" />
     <Content Include="Images\TipoTarjeta\tarjetaAmericanExpress.png" />
@@ -289,7 +291,7 @@
     <Content Include="Sandbox\CheckPayOnline.aspx" />
     <Content Include="Sandbox\CheckReference.aspx" />
     <Content Include="Sandbox\EndPoint.aspx" />
-    <Content Include="Sandbox\GeneratedReferences.aspx" />
+    <Content Include="Sandbox\ReportGenerated.aspx" />
     <Content Include="Sandbox\Login.aspx" />
     <Content Include="SqlServerTypes\readme.htm" />
     <Content Include="SqlServerTypes\x64\msvcr120.dll">
@@ -395,12 +397,12 @@
     <Compile Include="Sandbox\EndPoint.aspx.designer.cs">
       <DependentUpon>EndPoint.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Sandbox\GeneratedReferences.aspx.cs">
-      <DependentUpon>GeneratedReferences.aspx</DependentUpon>
+    <Compile Include="Sandbox\ReportGenerated.aspx.cs">
+      <DependentUpon>ReportGenerated.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Sandbox\GeneratedReferences.aspx.designer.cs">
-      <DependentUpon>GeneratedReferences.aspx</DependentUpon>
+    <Compile Include="Sandbox\ReportGenerated.aspx.designer.cs">
+      <DependentUpon>ReportGenerated.aspx</DependentUpon>
     </Compile>
     <Compile Include="Sandbox\Login.aspx.cs">
       <DependentUpon>Login.aspx</DependentUpon>

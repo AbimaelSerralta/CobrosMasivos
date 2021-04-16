@@ -79,24 +79,6 @@
             </ProgressTemplate>
         </asp:UpdateProgress>
 
-        <asp:UpdatePanel runat="server">
-            <ContentTemplate>
-                <asp:FileUpload ID="fuSelecionarLogo" Style="display: none;" runat="server" />
-
-                <script type="text/javascript">
-                    function UploadFileLogo(fileUpload) {
-                        if (fileUpload.value != '') {
-                            document.getElementById("<%=btnSubirLogo.ClientID %>").click();
-                        }
-                    }
-                </script>
-                <asp:Button ID="btnSubirLogo" Style="display: none;" Text="Subir" runat="server" />
-            </ContentTemplate>
-            <Triggers>
-                <asp:PostBackTrigger ControlID="btnSubirLogo" />
-            </Triggers>
-        </asp:UpdatePanel>
-
         <div class="wrapper ">
             <div class="sidebar" data-color="purple" data-background-color="white" data-image="../assets/img/sidebar-1.jpg">
                 <div class="logo">
@@ -119,30 +101,17 @@
                     <asp:UpdatePanel runat="server">
                         <ContentTemplate>
                             <ul class="nav">
-                                <li class="nav-item" runat="server">
-                                    <a class="nav-link" href='CheckReference.aspx' onclick="OpenProgress();" runat="server">
-                                        <i class="material-icons">store</i>
-                                        <p>Emulador de Caja</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item" runat="server">
-                                    <a class="nav-link" href='CheckPayOnline.aspx' onclick="OpenProgress();" runat="server">
-                                        <i class="material-icons">payment</i>
-                                        <p>Emulador pago en linea</p>
-                                    </a>
-                                </li>
-                                <%--<li class="nav-item" runat="server">
-                                    <a class="nav-link" href='GeneratedReferences.aspx' onclick="OpenProgress();" runat="server">
-                                        <i class="material-icons">list</i>
-                                        <p>Pagos generados</p>
-                                    </a>
-                                </li>--%>
-                                <li class="nav-item" runat="server">
-                                    <a class="nav-link" href='EndPoint.aspx' onclick="OpenProgress();" runat="server">
-                                        <i class="material-icons">vpn_lock</i>
-                                        <p>EndPoint</p>
-                                    </a>
-                                </li>
+                                <asp:DataList ID="dlMenu" OnItemDataBound="dlMenu_ItemDataBound" Style="width: 100%;" RepeatDirection="Vertical" runat="server">
+                                    <ItemTemplate>
+                                        <li id="liMenuActivar" class="nav-item" runat="server">
+                                            <a id="aActive" class="nav-link" href='<%# Eval("VchUrl") %>' onclick="OpenProgress();" runat="server">
+                                                <i class="material-icons"><%#Eval("VchIcono")%></i>
+                                                <p><%#Eval("VchNombre")%></p>
+                                            </a>
+                                        </li>
+                                        <asp:Label ID="lblUrl" Visible="false" Text='<%# Eval("VchUrl") %>' runat="server" />
+                                    </ItemTemplate>
+                                </asp:DataList>
 
                                 <li class="nav-item d-block d-sm-block d-md-block d-lg-none" runat="server">
                                     <asp:LinkButton CssClass="nav-link" OnClick="btnSalir_Click" runat="server">

@@ -18,9 +18,6 @@ namespace PagaLaEscuela.Sandbox
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            //Mientras se realiza el login
-            Session["UidIntegracionMaster"] = "5A45AADA-7B0C-4BCC-89A9-77409877B0B7";
-
             if (Session["UidIntegracionMaster"] != null)
             {
                 ViewState["UidIntegracionLocal"] = Session["UidIntegracionMaster"];

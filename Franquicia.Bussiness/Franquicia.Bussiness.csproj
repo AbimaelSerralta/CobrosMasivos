@@ -74,6 +74,7 @@
     <Compile Include="IntegracionesPraga\LigasUrlsPragaIntegracionServices.cs" />
     <Compile Include="IntegracionesPraga\PagosIntegracionServices.cs" />
     <Compile Include="IntegracionesPraga\PagosTarjetaPragaIntegracionServices.cs" />
+    <Compile Include="ManejoSesionSandboxServices.cs" />
     <Compile Include="PagosTarjetaPragaServices.cs" />
     <Compile Include="ParametrosPragaServices.cs" />
     <Compile Include="SuperComisionesTarjetasPragaServices.cs" />

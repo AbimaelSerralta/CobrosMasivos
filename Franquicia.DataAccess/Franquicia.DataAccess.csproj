@@ -123,6 +123,7 @@
     <Compile Include="Repository\TiposEventosRepository.cs" />
     <Compile Include="Repository\AlumnosRepository.cs" />
     <Compile Include="Repository\PadresRepository.cs" />
+    <Compile Include="Repository\ManejoSesionSandboxRepository.cs" />
     <Compile Include="Repository\WhatsAppPendientesRepository.cs" />
     <Compile Include="Repository\EventosRepository.cs" />
     <Compile Include="Repository\PrefijosTelefonicosRepository.cs" />

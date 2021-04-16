@@ -53,6 +53,7 @@
     <Compile Include="Models\ClubPago\ObtenerRefereciaPago.cs" />
     <Compile Include="Models\EstatusColegiaturasAlumnos.cs" />
     <Compile Include="Models\EstatusFechasColegiaturas.cs" />
+    <Compile Include="Models\Integraciones.cs" />
     <Compile Include="Models\IntegracionesClubPago\EndPointClubPago.cs" />
     <Compile Include="Models\IntegracionesClubPago\RefClubPago.cs" />
     <Compile Include="Models\IntegracionesClubPago\RefPagosClubPago.cs" />
@@ -60,6 +61,7 @@
     <Compile Include="Models\IntegracionesPraga\LigasUrlsPragaIntegracion.cs" />
     <Compile Include="Models\IntegracionesPraga\PagosIntegracion.cs" />
     <Compile Include="Models\IntegracionesPraga\PagosTarjetaPragaIntegracion.cs" />
+    <Compile Include="Models\ModulosSandbox.cs" />
     <Compile Include="Models\PagosTarjetaPraga.cs" />
     <Compile Include="Models\ParametrosPraga.cs" />
     <Compile Include="Models\Praga\UrlV3PaymentResponse.cs" />
@@ -141,6 +143,7 @@
     <Compile Include="Models\Usuarios.cs" />
     <Compile Include="ViewModels\Alumnos\AlumnosFiltrosGridViewModel.cs" />
     <Compile Include="ViewModels\ClubPago\GenerarRefereciaPagoIntegraciones.cs" />
+    <Compile Include="ViewModels\Integraciones\IntegracionesCompleto.cs" />
     <Compile Include="ViewModels\PagosColegiaturas\PagosReporteLigaPadreViewModels.cs" />
     <Compile Include="ViewModels\PagosTarjetaPraga\PagosTarjetaPragaColeDetalleGridViewModel.cs" />
     <Compile Include="ViewModels\Praga\GenerarLigaPagoIntegraciones.cs" />

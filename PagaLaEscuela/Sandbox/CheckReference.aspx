@@ -49,7 +49,7 @@
             <div class="col-md-4">&nbsp;</div>
             <div class="col-md-4 text-center">
                 <h5 style="color: black">Por favor ingrese su referencia</h5>
-                <img src="https://qa.clubpago.site/Admin/Content/img/terminal.png" style="width: 80%">
+                <img src="../Images/terminal.png" style="width: 80%">
             </div>
             <div class="col-md-4">&nbsp;</div>
         </div>

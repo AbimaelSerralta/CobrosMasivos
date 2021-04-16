@@ -16,10 +16,6 @@ namespace PagaLaEscuela.Sandbox
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            //Mientras se realiza el login
-            Session["UidIntegracionMaster"] = "5A45AADA-7B0C-4BCC-89A9-77409877B0B7";
-            ViewState["UidCredencial"] = "DA801181-6975-41C1-A615-CF9F50580369";
-
             if (Session["UidIntegracionMaster"] != null)
             {
                 ViewState["UidIntegracionLocal"] = Session["UidIntegracionMaster"];
@@ -27,6 +23,15 @@ namespace PagaLaEscuela.Sandbox
             else
             {
                 ViewState["UidIntegracionLocal"] = Guid.Empty;
+            }
+            
+            if (Session["UidCredencialMaster"] != null)
+            {
+                ViewState["UidCredencialLocal"] = Session["UidCredencialMaster"];
+            }
+            else
+            {
+                ViewState["UidCredencialLocal"] = Guid.Empty;
             }
 
             if (!IsPostBack)
