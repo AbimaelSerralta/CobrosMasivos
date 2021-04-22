@@ -379,7 +379,7 @@ namespace PagaLaEscuela.Controllers
                     generarLigaPagoIntegraciones.reference = IdReferencia;
                     generarLigaPagoIntegraciones.station = generarFormaPago.IntegrationID;
                     generarLigaPagoIntegraciones.UidTipoPagoIntegracion = UidTipoPagoIntegracion;
-                    //enviarIntegracionesServices.EnviarPeticionPraga(generarLigaPagoIntegraciones);
+                    enviarIntegracionesServices.EnviarPeticionPraga(generarLigaPagoIntegraciones);
 
                     PermisoSolicitud = true;
                 }
@@ -402,7 +402,7 @@ namespace PagaLaEscuela.Controllers
                     generarRefereciaPagoIntegraciones.CustomerName = generarFormaPago.CustomerName;
                     generarRefereciaPagoIntegraciones.ExpirationDate = generarFormaPago.ExpirationDate.ToString("yyyy-MM-dd");
                     generarRefereciaPagoIntegraciones.UidTipoPagoIntegracion = UidTipoPagoIntegracion;
-                    //enviarIntegracionesServices.EnviarPeticionClubPago(generarRefereciaPagoIntegraciones);
+                    enviarIntegracionesServices.EnviarPeticionClubPago(generarRefereciaPagoIntegraciones);
 
                     PermisoSolicitud = true;
                 }
