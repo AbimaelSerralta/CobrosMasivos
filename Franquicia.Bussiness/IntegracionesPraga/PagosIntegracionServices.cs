@@ -1,5 +1,6 @@
 ﻿using Franquicia.DataAccess.Repository.IntegracionesPraga;
 using Franquicia.Domain.Models.IntegracionesPraga;
+using Franquicia.Domain.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,8 @@ namespace Franquicia.Bussiness.IntegracionesPraga
             get { return _pagosIntegracion; }
             set { _pagosIntegracion = value; }
         }
+
+        public List<ReporteGeneradosGridViewModel> lsReporteGeneradosGridViewModel = new List<ReporteGeneradosGridViewModel>();
 
         public bool RegistrarPagosIntegracion(Guid UidPagoIntegracion, int IdEscuela, decimal DcmImporte, decimal DcmImportePagado, decimal DcmImporteNuevo, Guid UidFormaPago, Guid UidEstatusFechaPago, Guid UidTipoPagoIntegracion)
         {
@@ -58,6 +61,21 @@ namespace Franquicia.Bussiness.IntegracionesPraga
             }
             return result;
         }
+        #endregion
+
+        #region Metodos web
+        #region ReportGenerated
+        public List<ReporteGeneradosGridViewModel> CargarReporteGenerado(Guid UidCredencial)
+        {
+            lsReporteGeneradosGridViewModel = new List<ReporteGeneradosGridViewModel>();
+            return lsReporteGeneradosGridViewModel = pagosIntegracion.CargarReporteGenerado(UidCredencial);
+        }
+        public List<ReporteGeneradosGridViewModel> BuscarReporteGenerado(string FHDesde, string FHHasta, string IdReferencia, Guid UidCredencial)
+        {
+            lsReporteGeneradosGridViewModel = new List<ReporteGeneradosGridViewModel>();
+            return lsReporteGeneradosGridViewModel = pagosIntegracion.BuscarReporteGenerado(FHDesde, FHHasta, IdReferencia, UidCredencial);
+        }
+        #endregion
         #endregion
 
         #endregion

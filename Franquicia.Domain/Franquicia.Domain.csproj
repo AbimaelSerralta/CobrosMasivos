@@ -145,6 +145,7 @@
     <Compile Include="ViewModels\ClubPago\GenerarRefereciaPagoIntegraciones.cs" />
     <Compile Include="ViewModels\Integraciones\IntegracionesCompleto.cs" />
     <Compile Include="ViewModels\PagosColegiaturas\PagosReporteLigaPadreViewModels.cs" />
+    <Compile Include="ViewModels\PagosIntegracion\ReporteGeneradosGridViewModel.cs" />
     <Compile Include="ViewModels\PagosTarjetaPraga\PagosTarjetaPragaColeDetalleGridViewModel.cs" />
     <Compile Include="ViewModels\Praga\GenerarLigaPagoIntegraciones.cs" />
     <Compile Include="ViewModels\PromocionesClubPago\CBLPromocionesClubPagoViewModel.cs" />

@@ -42,58 +42,40 @@ namespace PagaLaEscuela.Sandbox
         protected global::System.Web.UI.WebControls.Label lblMensajeAlert;
 
         /// <summary>
-        /// Control btnFiltros.
+        /// Control txtFiltroDesde.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton btnFiltros;
+        protected global::System.Web.UI.WebControls.TextBox txtFiltroDesde;
 
         /// <summary>
-        /// Control btnActualizarLista.
+        /// Control txtFiltroHasta.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton btnActualizarLista;
+        protected global::System.Web.UI.WebControls.TextBox txtFiltroHasta;
 
         /// <summary>
-        /// Control txtConsultarReferencia.
+        /// Control txtFiltroReferencia.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtConsultarReferencia;
+        protected global::System.Web.UI.WebControls.TextBox txtFiltroReferencia;
 
         /// <summary>
-        /// Control TextBox1.
+        /// Control btnLimpiar.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TextBox1;
-
-        /// <summary>
-        /// Control TextBox2.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TextBox2;
-
-        /// <summary>
-        /// Control btnBscar.
-        /// </summary>
-        /// <remarks>
-        /// Campo generado automáticamente.
-        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton btnBscar;
+        protected global::System.Web.UI.WebControls.LinkButton btnLimpiar;
 
         /// <summary>
         /// Control btnBuscar.

@@ -1,5 +1,6 @@
 ﻿using Franquicia.DataAccess.Common;
 using Franquicia.Domain.Models.IntegracionesPraga;
+using Franquicia.Domain.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -179,6 +180,86 @@ namespace Franquicia.DataAccess.Repository.IntegracionesPraga
             return Resultado;
         }
         #endregion
+
+        #region Metodos web
+        #region ReportGenerated
+        public List<ReporteGeneradosGridViewModel> CargarReporteGenerado(Guid UidCredencial)
+        {
+            List<ReporteGeneradosGridViewModel> lsReporteGeneradosGridViewModel = new List<ReporteGeneradosGridViewModel>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select pain.UidPagoIntegracion, rcp.DtRegistro, rcp.IdReferencia, rcp.DcmImporte, rcp.DtVencimiento, fp.VchDescripcion as FormaPago from PagosIntegracion pain, RefClubPago rcp, TiposPagosIntegracion tpi, FormasPagos fp, Integraciones inte, CredenSandbox cs where tpi.UidTipoPagoIntegracion = '3F792D20-B3B6-41D3-AF88-1BCB20D99BBE' and pain.UidPagoIntegracion = rcp.UidPagoIntegracion and tpi.UidTipoPagoIntegracion = pain.UidTipoPagoIntegracion and fp.UidFormaPago = pain.UidFormaPago and inte.IdIntegracion = rcp.IdIntegracion and cs.UidIntegracion = inte.UidIntegracion and cs.UidCredencial = '" + UidCredencial + "' union select pain.UidPagoIntegracion, lupi.DtRegistro, lupi.IdReferencia, lupi.DcmImporte, lupi.DtVencimiento, fp.VchDescripcion as FormaPago from PagosIntegracion pain, LigasUrlsPragaIntegracion lupi, TiposPagosIntegracion tpi, FormasPagos fp, Integraciones inte, CredenSandbox cs where tpi.UidTipoPagoIntegracion = '3F792D20-B3B6-41D3-AF88-1BCB20D99BBE' and pain.UidPagoIntegracion = lupi.UidPagoIntegracion and tpi.UidTipoPagoIntegracion = pain.UidTipoPagoIntegracion and fp.UidFormaPago = pain.UidFormaPago and inte.IdIntegracion = lupi.IdIntegracion and cs.UidIntegracion = inte.UidIntegracion and cs.UidCredencial = '" + UidCredencial + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                lsReporteGeneradosGridViewModel.Add(new ReporteGeneradosGridViewModel
+                {
+                    UidPagoIntegracion = Guid.Parse(item["UidPagoIntegracion"].ToString()),
+                    DtRegistro = DateTime.Parse(item["DtRegistro"].ToString()),
+                    IdReferencia = item["IdReferencia"].ToString(),
+                    DcmImporte = decimal.Parse(item["DcmImporte"].ToString()),
+                    DtVencimiento = DateTime.Parse(item["DtVencimiento"].ToString()),
+                    VchFormaPago = item["FormaPago"].ToString()
+                });
+            }
+
+            return lsReporteGeneradosGridViewModel.OrderByDescending(x => x.DtRegistro).ToList();
+        }
+        public List<ReporteGeneradosGridViewModel> BuscarReporteGenerado(string FHDesde, string FHHasta, string IdReferencia, Guid UidCredencial)
+        {
+            List<ReporteGeneradosGridViewModel> lsReporteGeneradosGridViewModel = new List<ReporteGeneradosGridViewModel>();
+
+            SqlCommand comando = new SqlCommand();
+            comando.CommandType = CommandType.StoredProcedure;
+            comando.CommandText = "sp_ReporteGeneradoBuscar";
+            try
+            {
+                if (FHDesde != string.Empty)
+                {
+                    comando.Parameters.Add("@FHDesde", SqlDbType.DateTime);
+                    comando.Parameters["@FHDesde"].Value = FHDesde;
+                }
+                if (FHHasta != string.Empty)
+                {
+                    comando.Parameters.Add("@FHHasta", SqlDbType.Date);
+                    comando.Parameters["@FHHasta"].Value = FHHasta;
+                }
+                if (IdReferencia != string.Empty)
+                {
+                    comando.Parameters.Add("@IdReferencia", SqlDbType.VarChar);
+                    comando.Parameters["@IdReferencia"].Value = IdReferencia;
+                }
+
+                comando.Parameters.Add("@UidCredencial", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidCredencial"].Value = UidCredencial;
+
+                foreach (DataRow item in this.Busquedas(comando).Rows)
+                {
+                    lsReporteGeneradosGridViewModel.Add(new ReporteGeneradosGridViewModel
+                    {
+                        UidPagoIntegracion = Guid.Parse(item["UidPagoIntegracion"].ToString()),
+                        DtRegistro = DateTime.Parse(item["DtRegistro"].ToString()),
+                        IdReferencia = item["IdReferencia"].ToString(),
+                        DcmImporte = decimal.Parse(item["DcmImporte"].ToString()),
+                        DtVencimiento = DateTime.Parse(item["DtVencimiento"].ToString()),
+                        VchFormaPago = item["FormaPago"].ToString()
+                    });
+                }
+
+                return lsReporteGeneradosGridViewModel.OrderByDescending(x => x.DtRegistro).ToList();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        #endregion
+        #endregion
+
         #endregion
     }
 }
