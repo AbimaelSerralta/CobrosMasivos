@@ -219,6 +219,13 @@ namespace Franquicia.Bussiness
         }
         #endregion
 
+        #region CheckRefence
+        public Tuple<bool, Guid> ExisteReferenciaIntegracionCF(string IdReferencia, Guid UidIntegracion)
+        {
+            return validacionesRepository.ExisteReferenciaIntegracionCF(IdReferencia, UidIntegracion);
+        }
+        #endregion
+
         #region EndPoint
         public bool ValidarPermisoMenu(Guid UidSegModulo, Guid UidIntegracion)
         {

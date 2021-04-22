@@ -697,6 +697,32 @@ namespace Franquicia.DataAccess.Repository
         }
         #endregion
 
+        #region CheckRefence
+        public Tuple<bool, Guid> ExisteReferenciaIntegracionCF(string IdReferencia, Guid UidIntegracion)
+        {
+            bool result = false;
+            Guid UidIntegraci = Guid.Empty;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select inte.UidIntegracion from Integraciones inte, RefClubPago rcp where inte.IdIntegracion = rcp.IdIntegracion and rcp.IdReferencia = '" + IdReferencia + "' and inte.UidIntegracion = '" + UidIntegracion + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            if (dt.Rows.Count >= 1)
+            {
+                foreach (DataRow item in dt.Rows)
+                {
+                    UidIntegraci = Guid.Parse(item["UidIntegracion"].ToString());
+                }
+                result = true;
+            }
+
+            return Tuple.Create(result, UidIntegraci);
+        }
+        #endregion
+
         #region EndPoint
         public bool ValidarPermisoMenu(Guid UidSegModulo, Guid UidIntegracion)
         {

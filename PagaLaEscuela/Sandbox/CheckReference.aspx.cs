@@ -50,7 +50,7 @@ namespace PagaLaEscuela.Sandbox
 
                 HeaderClubPago headerClubPago = headerClubPagoServices.ObtenerHeaderClubPago();
 
-                var refInt = validacionesServices.ExisteReferenciaIntegracion(txtReferencia.Text);
+                var refInt = validacionesServices.ExisteReferenciaIntegracionCF(txtReferencia.Text, Guid.Parse(ViewState["UidIntegracionLocal"].ToString()));
                 if (refInt.Item1)
                 {
                     ConsultarReferenciasServices consultarReferenciasServices = new ConsultarReferenciasServices();
