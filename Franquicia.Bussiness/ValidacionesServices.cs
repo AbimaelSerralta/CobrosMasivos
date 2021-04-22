@@ -161,6 +161,10 @@ namespace Franquicia.Bussiness
 
         #region Metodos Integraciones
         #region Validaciones Integraciones
+        public Guid ValidarEstatusIntegracion(int IdIntegracion)
+        {
+            return validacionesRepository.ValidarEstatusIntegracion(IdIntegracion);
+        }
         public bool ValidarUsuarioContraseniaSandbox(string Usuario, string Contrasenia)
         {
             return validacionesRepository.ValidarUsuarioContraseniaSandbox(Usuario, Contrasenia);
@@ -196,6 +200,29 @@ namespace Franquicia.Bussiness
         public Tuple<bool, Guid> ExisteReferenciaIntegracion(string IdReferencia)
         {
             return validacionesRepository.ExisteReferenciaIntegracion(IdReferencia);
+        }
+        public string ObtenerBusinessIdSandbox()
+        {
+            return validacionesRepository.ObtenerBusinessIdSandbox();
+        }
+        public string ObtenerBusinessIdProduccion(int IdCliente)
+        {
+            return validacionesRepository.ObtenerBusinessIdProduccion(IdCliente);
+        }
+        public bool ValidarPermisoSolicitud(Guid UidSegModulo, int IdIntegracion)
+        {
+            return validacionesRepository.ValidarPermisoSolicitud(UidSegModulo, IdIntegracion);
+        }
+        public bool ValidarReferencia(string IdReferencia)
+        {
+            return validacionesRepository.ValidarReferencia(IdReferencia);
+        }
+        #endregion
+
+        #region EndPoint
+        public bool ValidarPermisoMenu(Guid UidSegModulo, Guid UidIntegracion)
+        {
+            return validacionesRepository.ValidarPermisoMenu(UidSegModulo, UidIntegracion);
         }
         #endregion
         #endregion

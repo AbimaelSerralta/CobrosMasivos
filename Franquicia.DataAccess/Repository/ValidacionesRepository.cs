@@ -438,6 +438,24 @@ namespace Franquicia.DataAccess.Repository
 
         #region Metodos Integraciones
         #region Validaciones Integraciones
+        public Guid ValidarEstatusIntegracion(int IdIntegracion)
+        {
+            Guid UidEstatus = Guid.Empty;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select * from Integraciones where IdIntegracion = '" + IdIntegracion + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                UidEstatus = Guid.Parse(item["UidEstatus"].ToString());
+            }
+
+            return UidEstatus;
+        }
         public bool ValidarUsuarioContraseniaSandbox(string Usuario, string Contrasenia)
         {
             bool result = false;
@@ -605,7 +623,101 @@ namespace Franquicia.DataAccess.Repository
 
             return Tuple.Create(result, UidIntegracion);
         }
+        public string ObtenerBusinessIdSandbox()
+        {
+            string result = "";
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select BusinessId from ParametrosPragaIntegracion ";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                result = item["BusinessId"].ToString();
+            };
+
+            return result;
+        }
+        public string ObtenerBusinessIdProduccion(int IdCliente)
+        {
+            string result = "";
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select pp.BusinessId from ParametrosPraga pp, Clientes cl where pp.UidPropietario = cl.UidCliente and cl.IdCliente = '" + IdCliente + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                result = item["BusinessId"].ToString();
+            };
+
+            return result;
+        }
+        public bool ValidarPermisoSolicitud(Guid UidSegModulo, int IdIntegracion)
+        {
+            bool result = false;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select ai.* from SegModulosIntegraciones smi, AccesosIntegraciones ai, Integraciones inte where smi.UidSegModulo = ai.UidSegModulo and ai.UidIntegracion = inte.UidIntegracion and smi.UidSegModulo = '" + UidSegModulo + "' and inte.IdIntegracion = '" + IdIntegracion + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            if (dt.Rows.Count >= 1)
+            {
+                result = true;
+            }
+
+            return result;
+        }
+        public bool ValidarReferencia(string IdReferencia)
+        {
+            bool result = false;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select VchCuenta as IdReferencia from RefClubPago where VchCuenta = '" + IdReferencia + "' union select IdReferencia from LigasUrlsPragaIntegracion where IdReferencia = '" + IdReferencia + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            if (dt.Rows.Count >= 1)
+            {
+                result = true;
+            }
+
+            return result;
+        }
         #endregion
+
+        #region EndPoint
+        public bool ValidarPermisoMenu(Guid UidSegModulo, Guid UidIntegracion)
+        {
+            bool result = false;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select ai.* from SegModulosIntegraciones smi, AccesosIntegraciones ai, Integraciones inte where smi.UidSegModulo = ai.UidSegModulo and ai.UidIntegracion = inte.UidIntegracion and smi.UidSegModulo = '" + UidSegModulo + "' and inte.UidIntegracion = '" + UidIntegracion + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            if (dt.Rows.Count >= 1)
+            {
+                result = true;
+            }
+
+            return result;
+        }
+        #endregion
+
         #endregion
     }
 }

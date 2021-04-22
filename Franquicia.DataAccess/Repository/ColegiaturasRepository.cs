@@ -1473,6 +1473,16 @@ namespace Franquicia.DataAccess.Repository
                 {
                     blpagar = false;
                 }
+                
+                if (Guid.Parse(item["UidEstatusFechaColegiatura"].ToString()) == Guid.Parse("605A7881-54E0-47DF-8398-EDE080F4E0AA"))
+                {
+                    blpagar = false;
+                }
+                
+                if (Guid.Parse(item["UidEstatusFechaColegiatura"].ToString()) == Guid.Parse("5554CE57-1288-46D5-B36A-8AC69CB94B9A"))
+                {
+                    blpagar = false;
+                }
 
                 if (!string.IsNullOrEmpty(item["fcLimite"].ToString()))
                 {
@@ -1790,6 +1800,16 @@ namespace Franquicia.DataAccess.Repository
                     bool blpagar = true;
 
                     if (Guid.Parse(item["UidEstatusFechaColegiatura"].ToString()) == Guid.Parse("1331D93D-EA53-487F-BF28-E72F5E7D19BF"))
+                    {
+                        blpagar = false;
+                    }
+
+                    if (Guid.Parse(item["UidEstatusFechaColegiatura"].ToString()) == Guid.Parse("605A7881-54E0-47DF-8398-EDE080F4E0AA"))
+                    {
+                        blpagar = false;
+                    }
+
+                    if (Guid.Parse(item["UidEstatusFechaColegiatura"].ToString()) == Guid.Parse("5554CE57-1288-46D5-B36A-8AC69CB94B9A"))
                     {
                         blpagar = false;
                     }

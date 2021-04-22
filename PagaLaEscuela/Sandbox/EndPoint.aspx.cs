@@ -1,4 +1,5 @@
-﻿using Franquicia.Bussiness.IntegracionesClubPago;
+﻿using Franquicia.Bussiness;
+using Franquicia.Bussiness.IntegracionesClubPago;
 using Franquicia.Bussiness.IntegracionesPraga;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace PagaLaEscuela.Sandbox
     {
         EndPointClubPagoServices endPointClubPagoServices = new EndPointClubPagoServices();
         EndPointPragaServices endPointPragaServices = new EndPointPragaServices();
+        ValidacionesServices validacionesServices = new ValidacionesServices();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -24,7 +26,7 @@ namespace PagaLaEscuela.Sandbox
             {
                 ViewState["UidIntegracionLocal"] = Guid.Empty;
             }
-            
+
             if (Session["UidCredencialMaster"] != null)
             {
                 ViewState["UidCredencialLocal"] = Session["UidCredencialMaster"];
@@ -97,10 +99,14 @@ namespace PagaLaEscuela.Sandbox
                     ViewState["AccionEndPointPraga"] = "GuardarEndPointPraga";
                     btnGuardarPraga.Text = "<i class=" + "material-icons>" + "check </i> Guardar";
                 }
+
+                ValidarMenu();
             }
             else
             {
-
+                pnlAlert.Visible = false;
+                lblMensajeAlert.Text = "";
+                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
             }
         }
 
@@ -157,5 +163,58 @@ namespace PagaLaEscuela.Sandbox
                     break;
             }
         }
+
+        #region Menu
+        private void ValidarMenu()
+        {
+            //Iniciamos oculto todas las opciones de menus
+            liActivarComercios.Visible = false;
+            pnlActivarComercios.Visible = false;
+
+            liActivarPagosEnlinea.Visible = false;
+            pnlActivarPagosEnlinea.Visible = false;
+
+            //Validamos las opciones de menu a mostrar
+
+            if (validacionesServices.ValidarPermisoMenu(Guid.Parse("D0E8AE95-4EDC-4A8A-A412-87B63B678FB3"), Guid.Parse(ViewState["UidIntegracionLocal"].ToString())))
+            {
+                liActivarComercios.Visible = true;
+            }
+
+            if (validacionesServices.ValidarPermisoMenu(Guid.Parse("1981690D-B9FA-43BA-9B97-BF624EBEEC2E"), Guid.Parse(ViewState["UidIntegracionLocal"].ToString())))
+            {
+                liActivarPagosEnlinea.Visible = true;
+            }
+
+
+            //Iniciamos activo la primera opcion del menu
+            if (liActivarComercios.Visible == true)
+            {
+                btnActivarComercios.CssClass = "nav-link active show";
+                pnlActivarComercios.Visible = true;
+            }
+            else if (liActivarPagosEnlinea.Visible == true)
+            {
+                btnActivarPagosEnlinea.CssClass = "nav-link active show";
+                pnlActivarPagosEnlinea.Visible = true;
+            }
+        }
+        protected void btnActivarComercios_Click(object sender, EventArgs e)
+        {
+            btnActivarComercios.CssClass = "nav-link active show";
+            pnlActivarComercios.Visible = true;
+
+            btnActivarPagosEnlinea.CssClass = "nav-link";
+            pnlActivarPagosEnlinea.Visible = false;
+        }
+        protected void btnActivarPagosEnlinea_Click(object sender, EventArgs e)
+        {
+            btnActivarComercios.CssClass = "nav-link";
+            pnlActivarComercios.Visible = false;
+
+            btnActivarPagosEnlinea.CssClass = "nav-link active show";
+            pnlActivarPagosEnlinea.Visible = true;
+        }
+        #endregion
     }
 }

@@ -42,6 +42,42 @@ namespace PagaLaEscuela.Sandbox
         protected global::System.Web.UI.WebControls.Label lblMensajeAlert;
 
         /// <summary>
+        /// Control liActivarComercios.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl liActivarComercios;
+
+        /// <summary>
+        /// Control btnActivarComercios.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnActivarComercios;
+
+        /// <summary>
+        /// Control liActivarPagosEnlinea.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl liActivarPagosEnlinea;
+
+        /// <summary>
+        /// Control btnActivarPagosEnlinea.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton btnActivarPagosEnlinea;
+
+        /// <summary>
         /// Control Label2.
         /// </summary>
         /// <remarks>
@@ -76,6 +112,15 @@ namespace PagaLaEscuela.Sandbox
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lblMnsjEstatus;
+
+        /// <summary>
+        /// Control pnlActivarComercios.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlActivarComercios;
 
         /// <summary>
         /// Control txtEntregarReferencia.
@@ -157,6 +202,15 @@ namespace PagaLaEscuela.Sandbox
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton btnGuardarClubPago;
+
+        /// <summary>
+        /// Control pnlActivarPagosEnlinea.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlActivarPagosEnlinea;
 
         /// <summary>
         /// Control txtEntregarLiga.

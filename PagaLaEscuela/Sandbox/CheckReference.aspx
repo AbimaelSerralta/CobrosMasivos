@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Paga La Escuela" Language="C#" MasterPageFile="~/Sandbox/Sandbox.Master" AutoEventWireup="true" CodeBehind="CheckReference.aspx.cs" Inherits="PagaLaEscuela.Sandbox.CheckReference" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Sandbox/Sandbox.Master" AutoEventWireup="true" CodeBehind="CheckReference.aspx.cs" Inherits="PagaLaEscuela.Sandbox.CheckReference" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>

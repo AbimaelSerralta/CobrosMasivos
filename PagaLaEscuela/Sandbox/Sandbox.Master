@@ -28,7 +28,7 @@
     <link href="../assets/css/material-dashboard.css" rel="stylesheet" />
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title><%= Page.Title %></title>
+    <title>Cobroscontarjeta.com</title>
     <link rel="shortcut icon" href="../Images/logoPagaLaEscuela.png" />
     <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
@@ -202,7 +202,7 @@
                         <nav class="float-left">
                             <ul>
                                 <li>
-                                    <div class="row">
+                                    <%--<div class="row">
                                         <asp:Label Style="padding-top: 15px;" Text="Una solución de" runat="server" />
                                         <a style="padding-top: 0px;" href="https://www.cobroscontarjeta.com/" target="_blank">
                                             <asp:Image Height="50" Width="200" src="../Images/logo-cobroscontarjetas.png" runat="server" /></a>
@@ -215,7 +215,7 @@
                                         <asp:Label Style="padding-top: 15px;" Text="&nbsp;y&nbsp;" runat="server" />
                                         <a href="https://clubpago.mx/" style="padding-top: 0px;" target="_blank">
                                             <asp:Image Height="60" Width="90" src="../Images/clubpago.png" runat="server" /></a>
-                                    </div>
+                                    </div>--%>
                                 </li>
                             </ul>
                         </nav>
