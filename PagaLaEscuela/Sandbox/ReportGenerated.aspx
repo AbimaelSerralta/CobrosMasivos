@@ -73,7 +73,7 @@
 
                                         <div class="col-md-12" style="margin-top: 20px;">
                                             <div class="table-responsive">
-                                                <asp:GridView ID="gvReporteGeneradas" OnSorting="gvReporteGeneradas_Sorting" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidPagoIntegracion" GridLines="None" border="0" ShowHeaderWhenEmpty="true" AllowPaging="true" runat="server">
+                                                <asp:GridView ID="gvReporteGeneradas" OnSorting="gvReporteGeneradas_Sorting" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidPagoIntegracion" GridLines="None" border="0" ShowHeaderWhenEmpty="true" runat="server">
                                                     <EmptyDataTemplate>
                                                         <div style="color:black;">No hay información para mostrar</div>
                                                     </EmptyDataTemplate>
