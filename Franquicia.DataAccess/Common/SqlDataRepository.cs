@@ -13,6 +13,7 @@ namespace Franquicia.DataAccess.Common
         //private SqlConnection _sqlConnection = new SqlConnection("Data Source=.;Initial Catalog = cobrosmasivosLocal; Integrated Security = True");
         //private SqlConnection _sqlConnection = new SqlConnection("Data Source=192.168.1.73;Initial Catalog=cobrosmasivosLocal;User ID=sa;Password=Serralta");
         //private SqlConnection _sqlConnection = new SqlConnection("Data Source=.;Initial Catalog = cobrosmasivos; Integrated Security = True");
+        //private SqlConnection _sqlConnection = new SqlConnection("Data Source=.;Initial Catalog = cobrosmasivosAzure; Integrated Security = True");
         private SqlConnection _sqlConnection = new SqlConnection("Data Source=.;Initial Catalog = pagalaescuelaAzure; Integrated Security = True");
 
         //Servicio web
