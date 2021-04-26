@@ -113,7 +113,7 @@ namespace PagaLaEscuela.Sandbox
 
         private void ActualizarDatos()
         {
-            endPointClubPagoServices.ObtenerEndPointClubPagoSandboxWeb(Guid.Parse(ViewState["UidIntegracionLocal"].ToString()), Guid.Parse("DA801181-6975-41C1-A615-CF9F50580369"));
+            endPointClubPagoServices.ObtenerEndPointClubPagoSandboxWeb(Guid.Parse(ViewState["UidIntegracionLocal"].ToString()), Guid.Parse(ViewState["UidCredencialLocal"].ToString()));
             foreach (var item in endPointClubPagoServices.lsEndPointClubPago)
             {
                 if (Guid.Parse("5E6CCA56-B547-4F18-ABDD-C50D394923B3") == item.UidTipoEndPoint)
@@ -149,7 +149,7 @@ namespace PagaLaEscuela.Sandbox
                 btnGuardarClubPago.Text = "<i class=" + "material-icons>" + "check </i> Guardar";
             }
 
-            endPointPragaServices.ObtenerEndPointPragaSandboxWeb(Guid.Parse(ViewState["UidIntegracionLocal"].ToString()), Guid.Parse("DA801181-6975-41C1-A615-CF9F50580369"));
+            endPointPragaServices.ObtenerEndPointPragaSandboxWeb(Guid.Parse(ViewState["UidIntegracionLocal"].ToString()), Guid.Parse(ViewState["UidCredencialLocal"].ToString()));
             foreach (var itemPraga in endPointPragaServices.lsEndPointPraga)
             {
                 if (Guid.Parse("1F3A8ECB-806A-4970-958C-5360E2BB1009") == itemPraga.UidTipoEndPoint)
