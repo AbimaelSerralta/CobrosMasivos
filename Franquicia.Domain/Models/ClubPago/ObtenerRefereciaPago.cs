@@ -9,6 +9,7 @@ namespace Franquicia.Domain.Models.ClubPago
     public class ObtenerRefereciaPago
     {
         public string Reference { get; set; }
+        public string ReferenceEmisor { get; set; }
         public string BarCode { get; set; }
         public string PayFormat { get; set; }
         public string Message { get; set; }

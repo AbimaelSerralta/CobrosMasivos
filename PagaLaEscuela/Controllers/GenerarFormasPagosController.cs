@@ -377,6 +377,8 @@ namespace PagaLaEscuela.Controllers
                     generarLigaPagoIntegraciones.id = generarFormaPago.Id;
                     generarLigaPagoIntegraciones.paymentTypes = generarFormaPago.PaymentTypes;
                     generarLigaPagoIntegraciones.reference = IdReferencia;
+                    generarLigaPagoIntegraciones.referenceEmisor = generarFormaPago.Reference;
+
                     generarLigaPagoIntegraciones.station = generarFormaPago.IntegrationID;
                     generarLigaPagoIntegraciones.UidTipoPagoIntegracion = UidTipoPagoIntegracion;
                     enviarIntegracionesServices.EnviarPeticionPraga(generarLigaPagoIntegraciones);
@@ -398,6 +400,8 @@ namespace PagaLaEscuela.Controllers
                     generarRefereciaPagoIntegraciones.Description = generarFormaPago.Description;
                     generarRefereciaPagoIntegraciones.Amount = generarFormaPago.Amount.ToString();
                     generarRefereciaPagoIntegraciones.Account = IdReferencia;
+                    generarRefereciaPagoIntegraciones.ReferenceEmisor = generarFormaPago.Reference;
+
                     generarRefereciaPagoIntegraciones.CustomerEmail = generarFormaPago.CustomerEmail;
                     generarRefereciaPagoIntegraciones.CustomerName = generarFormaPago.CustomerName;
                     generarRefereciaPagoIntegraciones.ExpirationDate = generarFormaPago.ExpirationDate.ToString("yyyy-MM-dd");

@@ -13,6 +13,7 @@ namespace Franquicia.Domain.ViewModels.ClubPago
         public string SchoolID { get; set; }
         public string User { get; set; }
         public string Password { get; set; }
+        public string ReferenceEmisor { get; set; }
         public string UidTipoPagoIntegracion { get; set; }
     }
 }

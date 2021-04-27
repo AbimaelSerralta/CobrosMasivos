@@ -177,7 +177,7 @@ namespace Franquicia.Bussiness
                 if (content != string.Empty)
                 {
                     obtenerRefereciaPago = JsonConvert.DeserializeObject<ObtenerRefereciaPago>(content.ToString());
-
+                    obtenerRefereciaPago.ReferenceEmisor = generarRefereciaPagoIntegraciones.ReferenceEmisor;
                 }
 
                 return obtenerRefereciaPago;

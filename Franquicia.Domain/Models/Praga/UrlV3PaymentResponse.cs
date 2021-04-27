@@ -11,5 +11,7 @@ namespace Franquicia.Domain.Models.Praga
         public string code { get; set; }
         public string message { get; set; }
         public string url { get; set; }
+        public string reference { get; set; }
+        public string referenceEmisor { get; set; }
     }
 }

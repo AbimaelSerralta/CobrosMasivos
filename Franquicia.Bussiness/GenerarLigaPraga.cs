@@ -204,6 +204,8 @@ namespace Franquicia.Bussiness
                                 if (responseBody != string.Empty)
                                 {
                                     urlV3PaymentResponse = JsonConvert.DeserializeObject<UrlV3PaymentResponse>(responseBody);
+                                    urlV3PaymentResponse.reference = generarLigaPagoIntegraciones.reference;
+                                    urlV3PaymentResponse.referenceEmisor = generarLigaPagoIntegraciones.referenceEmisor;
                                 }
                             }
                         };

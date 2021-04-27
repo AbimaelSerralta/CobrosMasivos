@@ -14,6 +14,7 @@ namespace Franquicia.Domain.ViewModels.Praga
         public string user { get; set; }
         public string password { get; set; }
         public string description { get; set; }
+        public string referenceEmisor { get; set; }
         public string UidTipoPagoIntegracion { get; set; }
     }
 }
