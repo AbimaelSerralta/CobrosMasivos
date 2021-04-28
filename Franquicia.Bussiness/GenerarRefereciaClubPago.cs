@@ -108,15 +108,15 @@ namespace Franquicia.Bussiness
         }
 
         #region Metodos Integraciones
-        public List<AuthClub> ApiObtenerCredenciales(Guid UidTipoPagoIntegracion)
+        public List<AuthClub> ApiObtenerCredenciales(Guid UidTipoPagoIntegracion, int IdIntegracion)
         {
             if (UidTipoPagoIntegracion == Guid.Parse("3F792D20-B3B6-41D3-AF88-1BCB20D99BBE")) //SANDBOX
             {
-                parametrosClubPagoRepository.ObtenerParametrosPragaSandbox();
+                parametrosClubPagoRepository.ObtenerParametrosPragaSandbox(IdIntegracion);
             }
             else if (UidTipoPagoIntegracion == Guid.Parse("D87454C9-12EF-4459-9CED-36E8401E4033")) //PRODUCCION
             {
-                parametrosClubPagoRepository.ObtenerParametrosPragaProduccion();
+                parametrosClubPagoRepository.ObtenerParametrosPragaProduccion(IdIntegracion);
             }
 
             VchUrlAuth = parametrosClubPagoRepository.parametrosClubPago.VchUrlAuth;
@@ -150,7 +150,7 @@ namespace Franquicia.Bussiness
             GenerarRefereciaPago generarRefereciaPago = new GenerarRefereciaPago();
 
             string token = string.Empty;
-            foreach (var item in ApiObtenerCredenciales(Guid.Parse(generarRefereciaPagoIntegraciones.UidTipoPagoIntegracion)))
+            foreach (var item in ApiObtenerCredenciales(Guid.Parse(generarRefereciaPagoIntegraciones.UidTipoPagoIntegracion), int.Parse(generarRefereciaPagoIntegraciones.IntegrationID)))
             {
                 token = item.Token;
             }

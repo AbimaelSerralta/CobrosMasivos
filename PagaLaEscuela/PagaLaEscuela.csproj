@@ -351,6 +351,8 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\GenerarFormasPagosController.cs" />
     <Compile Include="Controllers\IntegracionesClubPago\GenerarReferenciaController.cs" />
+    <Compile Include="Controllers\IntegracionesClubPago\GenerarReferenciaIndiController.cs" />
+    <Compile Include="Controllers\IntegracionesPraga\GenerarLigaIndiController.cs" />
     <Compile Include="Controllers\IntegracionesPraga\GenerarLigasController.cs" />
     <Compile Include="Controllers\PagoReferenciaController.cs" />
     <Compile Include="Controllers\CancelaPagoController.cs" />

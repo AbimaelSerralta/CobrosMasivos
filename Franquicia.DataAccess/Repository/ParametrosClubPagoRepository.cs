@@ -89,14 +89,14 @@ namespace Franquicia.DataAccess.Repository
         #endregion
 
         #region Metodos Integraciones
-        public void ObtenerParametrosPragaSandbox()
+        public void ObtenerParametrosPragaSandbox(int IdIntegracion)
         {
             parametrosClubPago = new ParametrosClubPago();
 
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select * from ParametrosClubPagoIntegracion";
+            query.CommandText = "select pcpi.* from ParametrosClubPagoIntegracion pcpi, UrlGeneradoresClubPagoIntegracion ugcpi, Integraciones inte where pcpi.UidGenerador = ugcpi.UidGenerador and ugcpi.UidGenerador = inte.UidGenerador and pcpi.UidTipoPagoIntegracion = '3F792D20-B3B6-41D3-AF88-1BCB20D99BBE' and inte.IdIntegracion = '" + IdIntegracion + "'";
 
             DataTable dt = this.Busquedas(query);
 
@@ -109,14 +109,14 @@ namespace Franquicia.DataAccess.Repository
                 parametrosClubPago.VchPass = item["VchPass"].ToString();
             }
         }
-        public void ObtenerParametrosPragaProduccion()
+        public void ObtenerParametrosPragaProduccion(int IdIntegracion)
         {
             parametrosClubPago = new ParametrosClubPago();
 
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select * from ParametrosClubPago";
+            query.CommandText = "select pcpi.* from ParametrosClubPagoIntegracion pcpi, UrlGeneradoresClubPagoIntegracion ugcpi, Integraciones inte where pcpi.UidGenerador = ugcpi.UidGenerador and ugcpi.UidGenerador = inte.UidGenerador and pcpi.UidTipoPagoIntegracion = 'D87454C9-12EF-4459-9CED-36E8401E4033' and inte.IdIntegracion = '" + IdIntegracion + "'";
 
             DataTable dt = this.Busquedas(query);
 

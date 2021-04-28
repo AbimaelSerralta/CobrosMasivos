@@ -1,9 +1,8 @@
 ﻿using Franquicia.Bussiness;
+using Franquicia.Bussiness.IntegracionesClubPago;
+using Franquicia.Bussiness.IntegracionesPraga;
 using Franquicia.Domain.Models.ClubPago;
 using Franquicia.Domain.ViewModels.ClubPago;
-using Franquicia.Domain.ViewModels.Praga;
-using Newtonsoft.Json;
-using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,16 +10,20 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 
-namespace PagaLaEscuela.Controllers
+namespace PagaLaEscuela.Controllers.IntegracionesClubPago
 {
-    public class GenerarFormasPagosController : ApiController
+    public class GenerarReferenciaIndiController : ApiController
     {
         [HttpPost]
-        public HttpResponseMessage FormasPagos([FromBody]GenerarFormaPago generarFormaPago)
+        public HttpResponseMessage GenerarRefe([FromBody]GenerarFormaPago generarFormaPago)
         {
+            PagosIntegracionServices pagosIntegracionServices = new PagosIntegracionServices();
+            RefClubPagoServices refClubPagoServices = new RefClubPagoServices();
+            GenerarRefereciaClubPago generarRefereciaClubPago = new GenerarRefereciaClubPago();
+            EndPointClubPagoServices endPointClubPagoServices = new EndPointClubPagoServices();
+
             ValidacionesServices validacionesServices = new ValidacionesServices();
             CodigoError codigoError = new CodigoError();
-            EnviarIntegracionesServices enviarIntegracionesServices = new EnviarIntegracionesServices();
 
             string TipoCredenciales = string.Empty;
             string IdReferencia = string.Empty;
@@ -58,6 +61,8 @@ namespace PagaLaEscuela.Controllers
             if (validacionesServices.ValidarEstatusIntegracion(int.Parse(generarFormaPago.IntegrationID)) == Guid.Parse("65E46BC9-1864-4145-AD1A-70F5B5F69739"))
             {
                 string UidTipoPagoIntegracion = string.Empty;
+
+                #region Validaciones antes de pedir referencia pago
 
                 //Validar el usuario y contraseña
                 if (!string.IsNullOrEmpty(generarFormaPago.User) && !string.IsNullOrEmpty(generarFormaPago.Password))
@@ -107,7 +112,7 @@ namespace PagaLaEscuela.Controllers
                         {
                             if (generarFormaPago.SchoolID.Length == 6)
                             {
-                                
+
                             }
                             else
                             {
@@ -130,93 +135,6 @@ namespace PagaLaEscuela.Controllers
                 {
                     codigoError.Message = "El ID de la escuela es obligatorio.";
                     codigoError.Codigo = "8";
-
-                    return Request.CreateResponse(System.Net.HttpStatusCode.BadRequest, codigoError);
-                }
-
-                //Validar el ID del comercio
-                //if (!string.IsNullOrEmpty(generarFormaPago.BusinessId))
-                //{
-                //    try
-                //    {
-                //        if (!validacionesServices.ExisteNegocioSandbox(int.Parse(generarFormaPago.BusinessId)))
-                //        {
-                //            if (!validacionesServices.ExisteNegocioProduccion(int.Parse(generarFormaPago.BusinessId)))
-                //            {
-                //                codigoError.Message = "El ID del negocio no existe.";
-                //                codigoError.Codigo = "9";
-
-                //                return Request.CreateResponse(System.Net.HttpStatusCode.BadRequest, codigoError);
-                //            }
-                //        }
-                //    }
-                //    catch (Exception)
-                //    {
-                //        codigoError.Message = "El formato del ID del negocio es incorrecto.";
-                //        codigoError.Codigo = "10";
-
-                //        return Request.CreateResponse(System.Net.HttpStatusCode.BadRequest, codigoError);
-                //    }
-                //}
-                //else
-                //{
-                //    codigoError.Message = "El ID del negocio es obligatorio.";
-                //    codigoError.Codigo = "11";
-
-                //    return Request.CreateResponse(System.Net.HttpStatusCode.BadRequest, codigoError);
-                //}
-
-                //Validar el ID de las Formas de pago (promocion)
-                if (!string.IsNullOrEmpty(generarFormaPago.PaymentTypes))
-                {
-                    try
-                    {
-                        if (!validacionesServices.ExisteIdPromocionSandbox(int.Parse(generarFormaPago.PaymentTypes)))
-                        {
-                            if (!validacionesServices.ExisteIdPromocionProduccion(int.Parse(generarFormaPago.PaymentTypes)))
-                            {
-                                codigoError.Message = "El ID de la forma de pago no existe.";
-                                codigoError.Codigo = "12";
-
-                                return Request.CreateResponse(System.Net.HttpStatusCode.BadRequest, codigoError);
-                            }
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        codigoError.Message = "El formato del ID de la forma de pago es incorrecto.";
-                        codigoError.Codigo = "13";
-
-                        return Request.CreateResponse(System.Net.HttpStatusCode.BadRequest, codigoError);
-                    }
-                }
-                else
-                {
-                    codigoError.Message = "El ID de la forma de pago es obligatorio.";
-                    codigoError.Codigo = "14";
-
-                    return Request.CreateResponse(System.Net.HttpStatusCode.BadRequest, codigoError);
-                }
-
-                //Validar el ID
-                if (!string.IsNullOrEmpty(generarFormaPago.Id.ToString()))
-                {
-                    try
-                    {
-                        int ID = int.Parse(generarFormaPago.Id.ToString());
-                    }
-                    catch (Exception)
-                    {
-                        codigoError.Message = "El formato del ID es incorrecto.";
-                        codigoError.Codigo = "15";
-
-                        return Request.CreateResponse(System.Net.HttpStatusCode.BadRequest, codigoError);
-                    }
-                }
-                else
-                {
-                    codigoError.Message = "El ID es obligatorio.";
-                    codigoError.Codigo = "16";
 
                     return Request.CreateResponse(System.Net.HttpStatusCode.BadRequest, codigoError);
                 }
@@ -282,7 +200,7 @@ namespace PagaLaEscuela.Controllers
                         {
                             IdReferencia = generarFormaPago.SchoolID + generarFormaPago.Reference + "001";
 
-                            if (validacionesServices.ValidarReferencia(IdReferencia))
+                            if (validacionesServices.ValidarReferenciaClubPago(IdReferencia))
                             {
                                 codigoError.Message = "La referencia es única e irrepetible.";
                                 codigoError.Codigo = "23";
@@ -343,84 +261,68 @@ namespace PagaLaEscuela.Controllers
                     }
                 }
 
-                bool PermisoSolicitud = false;
+                #endregion
 
-                //Validar si tiene permiso para enviar peticion al servicio praga
-                if (validacionesServices.ValidarPermisoSolicitud(Guid.Parse("1981690D-B9FA-43BA-9B97-BF624EBEEC2E"), int.Parse(generarFormaPago.IntegrationID)))
-                {
-                    //Enviar peticion al servicio praga
-                    GenerarLigaPagoIntegraciones generarLigaPagoIntegraciones = new GenerarLigaPagoIntegraciones();
+                //Enviar peticion al servicio clubpago
+                GenerarRefereciaPagoIntegraciones generarRefereciaPagoIntegraciones = new GenerarRefereciaPagoIntegraciones();
 
-                    string BusinessId = string.Empty;
+                generarRefereciaPagoIntegraciones.User = generarFormaPago.User;
+                generarRefereciaPagoIntegraciones.Password = generarFormaPago.Password;
+                generarRefereciaPagoIntegraciones.IntegrationID = generarFormaPago.IntegrationID;
+                generarRefereciaPagoIntegraciones.SchoolID = generarFormaPago.SchoolID;
 
+                generarRefereciaPagoIntegraciones.Description = generarFormaPago.Description;
+                generarRefereciaPagoIntegraciones.Amount = generarFormaPago.Amount.ToString();
+                generarRefereciaPagoIntegraciones.Account = IdReferencia;
+                generarRefereciaPagoIntegraciones.ReferenceEmisor = generarFormaPago.Reference;
 
-                    switch (TipoCredenciales)
-                    {
-                        case "SANDBOX":
-                            BusinessId = validacionesServices.ObtenerBusinessIdSandbox();
-                            break;
-                        case "PRODUCCION":
-                            BusinessId = validacionesServices.ObtenerBusinessIdProduccion(int.Parse(generarFormaPago.SchoolID));
-                            break;
-                    }
-
-                    generarLigaPagoIntegraciones.user = generarFormaPago.User;
-                    generarLigaPagoIntegraciones.password = generarFormaPago.Password;
-                    generarLigaPagoIntegraciones.integrationID = generarFormaPago.IntegrationID;
-                    generarLigaPagoIntegraciones.schoolID = generarFormaPago.SchoolID;
-                    generarLigaPagoIntegraciones.description = generarFormaPago.Description;
-
-                    generarLigaPagoIntegraciones.ammount = generarFormaPago.Amount / 100;
-                    generarLigaPagoIntegraciones.businessId = BusinessId;
-                    generarLigaPagoIntegraciones.effectiveDate = generarFormaPago.ExpirationDate.ToString("dd/MM/yyyy");
-                    generarLigaPagoIntegraciones.id = generarFormaPago.Id;
-                    generarLigaPagoIntegraciones.paymentTypes = generarFormaPago.PaymentTypes;
-                    generarLigaPagoIntegraciones.reference = IdReferencia;
-                    generarLigaPagoIntegraciones.referenceEmisor = generarFormaPago.Reference;
-
-                    generarLigaPagoIntegraciones.station = generarFormaPago.IntegrationID;
-                    generarLigaPagoIntegraciones.UidTipoPagoIntegracion = UidTipoPagoIntegracion;
-                    enviarIntegracionesServices.EnviarPeticionPraga(generarLigaPagoIntegraciones);
-
-                    PermisoSolicitud = true;
-                }
+                generarRefereciaPagoIntegraciones.CustomerEmail = generarFormaPago.CustomerEmail;
+                generarRefereciaPagoIntegraciones.CustomerName = generarFormaPago.CustomerName;
+                generarRefereciaPagoIntegraciones.ExpirationDate = generarFormaPago.ExpirationDate.ToString("yyyy-MM-dd");
+                generarRefereciaPagoIntegraciones.UidTipoPagoIntegracion = UidTipoPagoIntegracion;
 
                 //Validar si tiene permiso para enviar peticion al servicio clubpago
                 if (validacionesServices.ValidarPermisoSolicitud(Guid.Parse("D0E8AE95-4EDC-4A8A-A412-87B63B678FB3"), int.Parse(generarFormaPago.IntegrationID)))
                 {
-                    //Enviar peticion al servicio clubpago
-                    GenerarRefereciaPagoIntegraciones generarRefereciaPagoIntegraciones = new GenerarRefereciaPagoIntegraciones();
+                    ObtenerRefereciaPago obtenerRefereciaPago = generarRefereciaClubPago.ApiGenerarReferencia(generarRefereciaPagoIntegraciones);
 
-                    generarRefereciaPagoIntegraciones.User = generarFormaPago.User;
-                    generarRefereciaPagoIntegraciones.Password = generarFormaPago.Password;
-                    generarRefereciaPagoIntegraciones.IntegrationID = generarFormaPago.IntegrationID;
-                    generarRefereciaPagoIntegraciones.SchoolID = generarFormaPago.SchoolID;
+                    if (obtenerRefereciaPago.Message == "Success" || obtenerRefereciaPago.Message == "Exitosa")
+                    {
+                        DateTime HoraDelServidor = DateTime.Now;
+                        DateTime hoy = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(HoraDelServidor, TimeZoneInfo.Local.Id, "Eastern Standard Time (Mexico)");
 
-                    generarRefereciaPagoIntegraciones.Description = generarFormaPago.Description;
-                    generarRefereciaPagoIntegraciones.Amount = generarFormaPago.Amount.ToString();
-                    generarRefereciaPagoIntegraciones.Account = IdReferencia;
-                    generarRefereciaPagoIntegraciones.ReferenceEmisor = generarFormaPago.Reference;
+                        Guid UidPagoIntegracion = Guid.NewGuid();
 
-                    generarRefereciaPagoIntegraciones.CustomerEmail = generarFormaPago.CustomerEmail;
-                    generarRefereciaPagoIntegraciones.CustomerName = generarFormaPago.CustomerName;
-                    generarRefereciaPagoIntegraciones.ExpirationDate = generarFormaPago.ExpirationDate.ToString("yyyy-MM-dd");
-                    generarRefereciaPagoIntegraciones.UidTipoPagoIntegracion = UidTipoPagoIntegracion;
-                    enviarIntegracionesServices.EnviarPeticionClubPago(generarRefereciaPagoIntegraciones);
+                        if (pagosIntegracionServices.RegistrarPagosIntegracion(UidPagoIntegracion, int.Parse(generarRefereciaPagoIntegraciones.SchoolID), decimal.Parse(generarRefereciaPagoIntegraciones.Amount) / 100, 0, decimal.Parse(generarRefereciaPagoIntegraciones.Amount) / 100, Guid.Parse("6BE13FFE-E567-4D4D-9CBC-37DA30EC23A5"), Guid.Parse("F25E4AAB-6044-46E9-A575-98DCBCCF7604"), Guid.Parse(generarRefereciaPagoIntegraciones.UidTipoPagoIntegracion)))
+                        {
+                            if (refClubPagoServices.RegistrarReferencia(obtenerRefereciaPago.Folio, int.Parse(generarRefereciaPagoIntegraciones.IntegrationID), int.Parse(generarRefereciaPagoIntegraciones.SchoolID), obtenerRefereciaPago.PayFormat, obtenerRefereciaPago.BarCode, generarRefereciaPagoIntegraciones.Description, obtenerRefereciaPago.Reference, generarRefereciaPagoIntegraciones.Account, hoy, DateTime.Parse(generarRefereciaPagoIntegraciones.ExpirationDate), decimal.Parse(generarRefereciaPagoIntegraciones.Amount) / 100, generarRefereciaPagoIntegraciones.CustomerEmail, generarRefereciaPagoIntegraciones.CustomerName, UidPagoIntegracion))
+                            {
+                                return Request.CreateResponse(System.Net.HttpStatusCode.OK, obtenerRefereciaPago);
+                            }
+                            else
+                            {
+                                codigoError.Message = "Error interno del servidor.";
+                                codigoError.Codigo = "500";
 
-                    PermisoSolicitud = true;
-                }
+                                return Request.CreateResponse(System.Net.HttpStatusCode.InternalServerError, codigoError);
+                            }
+                        }
+                        else
+                        {
+                            codigoError.Message = "Error interno del servidor.";
+                            codigoError.Codigo = "500";
 
-                //Validar que almenos haya un permiso activo
-                if (PermisoSolicitud)
-                {
-                    codigoError.Message = "Success";
-                    codigoError.Codigo = "200";
-
-                    return Request.CreateResponse(System.Net.HttpStatusCode.OK, codigoError);
+                            return Request.CreateResponse(System.Net.HttpStatusCode.InternalServerError, codigoError);
+                        }
+                    }
+                    else
+                    {
+                        return Request.CreateResponse(System.Net.HttpStatusCode.BadRequest, obtenerRefereciaPago);
+                    }
                 }
                 else
                 {
-                    codigoError.Message = "No tiene permiso para generar las formas de pago, por favor comuníquese con los administradores.";
+                    codigoError.Message = "No tiene permiso para generar referencias, por favor comuníquese con los administradores.";
                     codigoError.Codigo = "404";
 
                     return Request.CreateResponse(System.Net.HttpStatusCode.NotFound, codigoError);
@@ -433,30 +335,26 @@ namespace PagaLaEscuela.Controllers
 
                 return Request.CreateResponse(System.Net.HttpStatusCode.Unauthorized, codigoError);
             }
-
         }
+    }
 
-        public class GenerarFormaPago
-        {
-            public string User { get; set; }
-            public string Password { get; set; }
-            public string IntegrationID { get; set; }
-            public string SchoolID { get; set; }
-            public string BusinessId { get; set; }
-            public string PaymentTypes { get; set; }
-            public string Id { get; set; }
-            public string Description { get; set; }
-            public decimal Amount { get; set; }
-            public string Reference { get; set; }
-            public string CustomerEmail { get; set; }
-            public string CustomerName { get; set; }
-            public DateTime ExpirationDate { get; set; }
-        }
+    public class GenerarFormaPago
+    {
+        public string User { get; set; }
+        public string Password { get; set; }
+        public string IntegrationID { get; set; }
+        public string SchoolID { get; set; }
+        public string Description { get; set; }
+        public decimal Amount { get; set; }
+        public string Reference { get; set; }
+        public string CustomerEmail { get; set; }
+        public string CustomerName { get; set; }
+        public DateTime ExpirationDate { get; set; }
+    }
 
-        public class CodigoError
-        {
-            public string Codigo { get; set; }
-            public string Message { get; set; }
-        }
+    public class CodigoError
+    {
+        public string Codigo { get; set; }
+        public string Message { get; set; }
     }
 }

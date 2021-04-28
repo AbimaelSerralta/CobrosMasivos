@@ -695,6 +695,43 @@ namespace Franquicia.DataAccess.Repository
 
             return result;
         }
+
+        public bool ValidarReferenciaClubPago(string IdReferencia)
+        {
+            bool result = false;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select VchCuenta as IdReferencia from RefClubPago where VchCuenta = '" + IdReferencia + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            if (dt.Rows.Count >= 1)
+            {
+                result = true;
+            }
+
+            return result;
+        }
+        public bool ValidarReferenciaPraga(string IdReferencia)
+        {
+            bool result = false;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select IdReferencia from LigasUrlsPragaIntegracion where IdReferencia = '" + IdReferencia + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            if (dt.Rows.Count >= 1)
+            {
+                result = true;
+            }
+
+            return result;
+        }
         #endregion
 
         #region CheckRefence

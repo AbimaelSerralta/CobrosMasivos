@@ -217,6 +217,15 @@ namespace Franquicia.Bussiness
         {
             return validacionesRepository.ValidarReferencia(IdReferencia);
         }
+
+        public bool ValidarReferenciaClubPago(string IdReferencia)
+        {
+            return validacionesRepository.ValidarReferenciaClubPago(IdReferencia);
+        }
+        public bool ValidarReferenciaPraga(string IdReferencia)
+        {
+            return validacionesRepository.ValidarReferenciaPraga(IdReferencia);
+        }
         #endregion
 
         #region CheckRefence
