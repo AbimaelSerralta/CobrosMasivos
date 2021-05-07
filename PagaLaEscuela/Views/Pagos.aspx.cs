@@ -1386,7 +1386,7 @@ namespace PagaLaEscuela.Views
                                     if (resu)
                                     {
                                         bool trSubtotal = bool.Parse(ViewState["booltrSubtotal"].ToString());
-                                        bool trComisionTarjeta = bool.Parse(ViewState["booltrComisionTarjeta"].ToString());
+                                        bool trComisionTarjeta = bool.Parse(ViewState["booltrComisionTipoTarjeta"].ToString());
                                         bool trPromociones = bool.Parse(ViewState["booltrPromociones"].ToString());
 
                                         decimal DcmValidarImporte = decimal.Parse(ViewState["ValidarImporte"].ToString());
@@ -3062,42 +3062,73 @@ namespace PagaLaEscuela.Views
             Guid EstatusPagoColegiatura = Guid.Parse("51B85D66-866B-4BC2-B08F-FECE1A994053");
             Guid estatusFechaPago = Guid.Parse("F25E4AAB-6044-46E9-A575-98DCBCCF7604");
 
-            string Correo = validacionesServices.ObtenerCorreoUsuario(Guid.Parse(ViewState["UidUsuarioLocal"].ToString()));
-
-            if (decimal.Parse(ViewState["lblRestaTotal2"].ToString()) == 0)
+            //Referencia, IdPago, IdParcialidad
+            var data = pagosColegiaturasServices.GenerarReferencia(Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()));
+            if (data.Item4)
             {
-                colegiaturasServices.ActualizarEstatusColegiaturaAlumno(Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()), DateTime.Parse(headFPago2.Text), Guid.Parse("5554CE57-1288-46D5-B36A-8AC69CB94B9A"));
-            }
+                string IdReferencia = data.Item1;
+                int IdPago = data.Item2;
+                int IdParcialidad = data.Item3;
+                bool RegIdPago = data.Item5;
 
-            int UltimoFolio = pagosColegiaturasServices.ObtenerUltimoFolio(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()));
-            decimal DcmImporteSaldado = pagosColegiaturasServices.ObtenerImporteSaldadoRLE(Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()), Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()));
+                string Correo = validacionesServices.ObtenerCorreoUsuario(Guid.Parse(ViewState["UidUsuarioLocal"].ToString()));
 
-            if (pagosColegiaturasServices.RegistrarPagoColegiatura(UidPagoColegiatura, UltimoFolio, DateTime.Parse(ViewState["headFPago2"].ToString()), "AL CONTADO(0%):", "", trSubtotal, DcmSubtotal, trComisionTarjeta, DcmComisionTarjeta, trPromociones, DcmComisionPromocion, trValidarImporte, DcmValidarImporte, DcmImportePagar, Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), EstatusPagoColegiatura,
-                Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()), Guid.Parse(ViewState["RowCommand-UidFormaPago"].ToString()), DcmImporteSaldado, decimal.Parse(ViewState["lblTotaltb2"].ToString()), DcmImportePagar, decimal.Parse(ViewState["lblRestaTotal2"].ToString()), estatusFechaPago))
-            {
-                pagosManualesServices.RegistrarPagoManual(Guid.Parse(ddlBanco.SelectedValue), txtCuenta.Text, DateTime.Parse(ViewState["headFPago2"].ToString()), decimal.Parse(txtMontoPagado.Text), txtFolioPago.Text, UidPagoColegiatura);
-
-                foreach (var item in colegiaturasServices.lsDesglosePagosGridViewModel)
+                if (decimal.Parse(ViewState["lblRestaTotal2"].ToString()) == 0)
                 {
-                    detallesPagosColegiaturasServices.RegistrarDetallePagoColegiatura(item.IntNum, item.VchConcepto, item.DcmImporte, UidPagoColegiatura);
+                    colegiaturasServices.ActualizarEstatusColegiaturaAlumno(Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()), DateTime.Parse(headFPago2.Text), Guid.Parse("5554CE57-1288-46D5-B36A-8AC69CB94B9A"));
                 }
 
-                pagosColegiaturasServices.ActualizarImporteResta(Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()), decimal.Parse(ViewState["lblRestaTotal2"].ToString()));
+                int UltimoFolio = pagosColegiaturasServices.ObtenerUltimoFolio(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()));
+                decimal DcmImporteSaldado = pagosColegiaturasServices.ObtenerImporteSaldadoRLE(Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()), Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()));
 
-                correosEscuelaServices.CorreoEnvioPagoColegiaturaManual(headAlumno2.Text, headMatricula2.Text, DateTime.Parse(headFPago2.Text), trSubtotal, DcmSubtotal, trValidarImporte, DcmValidarImporte, decimal.Parse(ViewState["lblTotaltb2"].ToString()), DcmImportePagar, colegiaturasServices.lsDesglosePagosGridViewModel, "Comprobante de pago de colegiatura", ddlBanco.SelectedItem.Text, "************" + txtCuenta.Text, DateTime.Parse(txtFHPago.Text), txtFolioPago.Text, Correo, "PROCESANDO");
+                if (pagosColegiaturasServices.RegistrarPagoColegiatura2(UidPagoColegiatura, UltimoFolio, DateTime.Parse(ViewState["headFPago2"].ToString()), "AL CONTADO(0%):", "", trSubtotal, DcmSubtotal, trComisionTarjeta, DcmComisionTarjeta, trPromociones, DcmComisionPromocion, trValidarImporte, DcmValidarImporte, DcmImportePagar, Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), EstatusPagoColegiatura,
+                    IdParcialidad, Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()), Guid.Parse(ViewState["RowCommand-UidFormaPago"].ToString()), DcmImporteSaldado, decimal.Parse(ViewState["lblTotaltb2"].ToString()), DcmImportePagar, decimal.Parse(ViewState["lblRestaTotal2"].ToString()), estatusFechaPago))
+                {
+                    pagosManualesServices.RegistrarPagoManual(Guid.Parse(ddlBanco.SelectedValue), txtCuenta.Text, DateTime.Parse(ViewState["headFPago2"].ToString()), decimal.Parse(txtMontoPagado.Text), txtFolioPago.Text, UidPagoColegiatura);
 
-                DateTime HoraDelServidor = DateTime.Now;
-                DateTime hoy = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(HoraDelServidor, TimeZoneInfo.Local.Id, "Eastern Standard Time (Mexico)");
+                    foreach (var item in colegiaturasServices.lsDesglosePagosGridViewModel)
+                    {
+                        detallesPagosColegiaturasServices.RegistrarDetallePagoColegiatura(item.IntNum, item.VchConcepto, item.DcmImporte, UidPagoColegiatura);
+                    }
 
-                colegiaturasServices.CargarPagosColegiaturas(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), hoy);
-                gvPagos.DataSource = colegiaturasServices.lsPagosColegiaturasViewModel;
-                gvPagos.DataBind();
+                    pagosColegiaturasServices.ActualizarImporteResta(Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()), decimal.Parse(ViewState["lblRestaTotal2"].ToString()));
 
-                pnlAlert.Visible = true;
-                lblMensajeAlert.Text = "<b>Felicidades,</b> su pago se registró exitosamente. Ahora solo falta que la escuela lo verifique.";
-                divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                    if (RegIdPago)
+                    {
+                        pagosColegiaturasServices.RegistrarIdPago(Guid.Parse(ViewState["RowCommand-UidFechaColegiatura"].ToString()), Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()), IdPago);
+                    }
 
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "ModalDialog", "hideModalTipoPago()", true);
+                    correosEscuelaServices.CorreoEnvioPagoColegiaturaManual(headAlumno2.Text, headMatricula2.Text, DateTime.Parse(headFPago2.Text), trSubtotal, DcmSubtotal, trValidarImporte, DcmValidarImporte, decimal.Parse(ViewState["lblTotaltb2"].ToString()), DcmImportePagar, colegiaturasServices.lsDesglosePagosGridViewModel, "Comprobante de pago de colegiatura", ddlBanco.SelectedItem.Text, "************" + txtCuenta.Text, DateTime.Parse(txtFHPago.Text), txtFolioPago.Text, Correo, "PROCESANDO");
+
+                    DateTime HoraDelServidor = DateTime.Now;
+                    DateTime hoy = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(HoraDelServidor, TimeZoneInfo.Local.Id, "Eastern Standard Time (Mexico)");
+
+                    colegiaturasServices.CargarPagosColegiaturas(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), hoy);
+                    gvPagos.DataSource = colegiaturasServices.lsPagosColegiaturasViewModel;
+                    gvPagos.DataBind();
+
+                    pnlAlert.Visible = true;
+                    lblMensajeAlert.Text = "<b>Felicidades,</b> su pago se registró exitosamente. Ahora solo falta que la escuela lo verifique.";
+                    divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "ModalDialog", "hideModalTipoPago()", true);
+                }
+                else
+                {
+                    pnlAlertModalTipoPago.Visible = true;
+                    lblMnsjModalTipoPago.Text = "<b>¡Lo sentimos! </b> No se ha podido realizar el pago, por favor intentelo más tarde. Si el problema persiste por favor contacte a los administradores.";
+                    divAlertModalTipoPago.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "ModalDialog", "hideModalDialog()", true);
+                }
+            }
+            else
+            {
+                pnlAlertModalTipoPago.Visible = true;
+                lblMnsjModalTipoPago.Text = "<b>¡Lo sentimos! </b> No se ha podido realizar el pago, por favor intentelo más tarde. Si el problema persiste por favor contacte a los administradores.";
+                divAlertModalTipoPago.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "ModalDialog", "hideModalDialog()", true);
             }
         }
         #endregion

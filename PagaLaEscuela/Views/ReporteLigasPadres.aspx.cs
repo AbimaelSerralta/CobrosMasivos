@@ -617,7 +617,7 @@ namespace PagaLaEscuela.Views
                 Label lblGvUidFormaPago = (Label)Seleccionado.FindControl("lblGvUidFormaPago");
 
                 string FormaPago = string.Empty;
-                
+
 
                 if (Guid.Parse(lblGvUidFormaPago.Text) == Guid.Parse("31BE9A23-73EE-4F44-AF6C-6C0648DCEBF7"))
                 {
@@ -965,6 +965,9 @@ namespace PagaLaEscuela.Views
         }
         private void DetallePagoColegiaturaLiga(List<PagosColegiaturasViewModels> lsPagosColegiaturas, List<DetallePagosColeGridViewModel> lsDetallePagosColeGridViewModel, Guid UidPagoColegiatura)
         {
+            string Matricula = string.Empty;
+            string FhPago = string.Empty;
+
             //Resumen del pago
             foreach (var item in lsPagosColegiaturas)
             {
@@ -972,7 +975,9 @@ namespace PagaLaEscuela.Views
 
                 //Encabezado del pago
                 lblDetaAlumno.Text = "Alumno: " + item.VchAlumno;
+                Matricula = item.VchMatricula;
                 lblDetaMatricula.Text = "Matricula: " + item.VchMatricula;
+                FhPago = item.DtFHPago.ToString("dd/MM/yyyy");
                 lblDetaFHpago.Text = "Fecha de pago: " + item.DtFHPago.ToString("dd/MM/yyyy");
 
                 if (item.BitSubtotal)
@@ -1039,11 +1044,18 @@ namespace PagaLaEscuela.Views
             rpDetalleLiga.DataBind();
 
             //Nuevos Regargos
-            int inde = colegiaturasServices.lsPagosReporteLigaPadreViewModels.FindIndex(x => x.UidPagoColegiatura == UidPagoColegiatura);
+            CargarRecargos(UidPagoColegiatura, Matricula.Trim(), FhPago.Trim(), decimal.Parse(decimal.Parse(DcmImpResta.Text.Replace("$", "")).ToString("N2")), lsDetallePagosColeGridViewModel);
 
-            lblRestaPagoDetalle.Text = DcmImpResta.Text;
-            lblRecargoPagoDetalle.Text = colegiaturasServices.lsPagosReporteLigaPadreViewModels[inde].DcmImporteRecargos.ToString("N2");
-            lblNuevaRestaPagoDetalle.Text = colegiaturasServices.lsPagosReporteLigaPadreViewModels[inde].DcmImporteNuevo.ToString("N2");
+            rptDesgloseDetalleLiga.DataSource = colegiaturasServices.lsDesglosePagosGridViewModel.OrderBy(x => x.IntNum);
+            rptDesgloseDetalleLiga.DataBind();
+
+            DcmImpNuevaRestaDetalleLiga.Text = "$" + colegiaturasServices.lsDesglosePagosGridViewModel.Sum(x => x.DcmImporte).ToString("N2");
+
+            trRecargosDetalleLiga.Style.Add("display", "none");
+            if (colegiaturasServices.lsDesglosePagosGridViewModel.Count > 1)
+            {
+                trRecargosDetalleLiga.Style.Add("display", "");
+            }
 
             //Desglose del pago Liga
             pagosServices.ConsultarDetallePagoColegiatura(UidPagoColegiatura);
@@ -1059,6 +1071,9 @@ namespace PagaLaEscuela.Views
         }
         private void DetallePagoColegiaturaManual(List<PagosColegiaturasViewModels> lsPagosColegiaturas, List<DetallePagosColeGridViewModel> lsDetallePagosColeGridViewModel, Guid UidPagoColegiatura)
         {
+            string Matricula = string.Empty;
+            string FhPago = string.Empty;
+
             //Resumen del pago
             foreach (var item in lsPagosColegiaturas)
             {
@@ -1066,7 +1081,9 @@ namespace PagaLaEscuela.Views
 
                 //Encabezado del pago
                 lblDetaAlumnoManual.Text = "Alumno: " + item.VchAlumno;
+                Matricula = item.VchMatricula;
                 lblDetaMatriculaManual.Text = "Matricula: " + item.VchMatricula;
+                FhPago = item.DtFHPago.ToString("dd/MM/yyyy");
                 lblDetaFHpagoManual.Text = "Fecha de pago: " + item.DtFHPago.ToString("dd/MM/yyyy");
 
                 if (item.BitSubtotal)
@@ -1100,11 +1117,18 @@ namespace PagaLaEscuela.Views
             rpDetalleLigaManual.DataBind();
 
             //Nuevos Regargos
-            int inde = colegiaturasServices.lsPagosReporteLigaPadreViewModels.FindIndex(x => x.UidPagoColegiatura == UidPagoColegiatura);
+            CargarRecargos(UidPagoColegiatura, Matricula.Trim(), FhPago.Trim(), decimal.Parse(decimal.Parse(DcmImpRestaManual.Text.Replace("$", "")).ToString("N2")), lsDetallePagosColeGridViewModel);
 
-            lblRestaPagoDetalleManual.Text = DcmImpRestaManual.Text;
-            lblRecargoPagoDetalleManual.Text = colegiaturasServices.lsPagosReporteLigaPadreViewModels[inde].DcmImporteRecargos.ToString("N2");
-            lblNuevaRestaPagoDetalleManual.Text = colegiaturasServices.lsPagosReporteLigaPadreViewModels[inde].DcmImporteNuevo.ToString("N2");
+            rptDesglosePagoDetalleManual.DataSource = colegiaturasServices.lsDesglosePagosGridViewModel.OrderBy(x => x.IntNum);
+            rptDesglosePagoDetalleManual.DataBind();
+
+            DcmImpNuevaRestaManual.Text = "$" + colegiaturasServices.lsDesglosePagosGridViewModel.Sum(x => x.DcmImporte).ToString("N2");
+
+            trRecargosManual.Style.Add("display", "none");
+            if (colegiaturasServices.lsDesglosePagosGridViewModel.Count > 1)
+            {
+                trRecargosManual.Style.Add("display", "");
+            }
 
             //Desglose del pago
             pagosManualesServices.ConsultarDetallePagoColegiatura(UidPagoColegiatura);
@@ -1119,6 +1143,9 @@ namespace PagaLaEscuela.Views
         }
         private void DetallePagoClubPago(List<PagosColegiaturasViewModels> lsPagosColegiaturas, List<DetallePagosColeGridViewModel> lsDetallePagosColeGridViewModel, Guid UidPagoColegiatura)
         {
+            string Matricula = string.Empty;
+            string FhPago = string.Empty;
+
             //Resumen del pago
             foreach (var item in lsPagosColegiaturas)
             {
@@ -1126,7 +1153,9 @@ namespace PagaLaEscuela.Views
 
                 //Encabezado del pago
                 lblDetaAlumnoClubPago.Text = "Alumno: " + item.VchAlumno;
+                Matricula = item.VchMatricula;
                 lblDetaMatriculaClubPago.Text = "Matricula: " + item.VchMatricula;
+                FhPago = item.DtFHPago.ToString("dd/MM/yyyy");
                 lblDetaFHpagoClubPago.Text = "Fecha de pago: " + item.DtFHPago.ToString("dd/MM/yyyy");
 
                 if (item.BitSubtotal)
@@ -1174,11 +1203,18 @@ namespace PagaLaEscuela.Views
             rpDetalleClubPago.DataBind();
 
             //Nuevos Regargos
-            int inde = colegiaturasServices.lsPagosReporteLigaPadreViewModels.FindIndex(x => x.UidPagoColegiatura == UidPagoColegiatura);
+            CargarRecargos(UidPagoColegiatura, Matricula.Trim(), FhPago.Trim(), decimal.Parse(decimal.Parse(DcmImpRestaClubPago.Text.Replace("$", "")).ToString("N2")), lsDetallePagosColeGridViewModel);
 
-            lblRestaPagoDetalleClubPago.Text = DcmImpRestaClubPago.Text;
-            lblRecargoPagoDetalleClubPago.Text = colegiaturasServices.lsPagosReporteLigaPadreViewModels[inde].DcmImporteRecargos.ToString("N2");
-            lblNuevaRestaPagoDetalleClubPago.Text = colegiaturasServices.lsPagosReporteLigaPadreViewModels[inde].DcmImporteNuevo.ToString("N2");
+            rptDesgloseClubPago.DataSource = colegiaturasServices.lsDesglosePagosGridViewModel.OrderBy(x => x.IntNum);
+            rptDesgloseClubPago.DataBind();
+
+            DcmImpNuevaRestaClubPago.Text = "$" + colegiaturasServices.lsDesglosePagosGridViewModel.Sum(x => x.DcmImporte).ToString("N2");
+
+            trRecargosClubPago.Style.Add("display", "none");
+            if (colegiaturasServices.lsDesglosePagosGridViewModel.Count > 1)
+            {
+                trRecargosClubPago.Style.Add("display", "");
+            }
 
             //Desglose del pago ClubPago
             pagosClubPagoServices.ConsultarDetallePagoColegiatura(UidPagoColegiatura);
@@ -1188,6 +1224,9 @@ namespace PagaLaEscuela.Views
         }
         private void DetallePagoColegiaturaPraga(List<PagosColegiaturasViewModels> lsPagosColegiaturas, List<DetallePagosColeGridViewModel> lsDetallePagosColeGridViewModel, Guid UidPagoColegiatura)
         {
+            string Matricula = string.Empty;
+            string FhPago = string.Empty;
+
             //Resumen del pago
             foreach (var item in lsPagosColegiaturas)
             {
@@ -1195,7 +1234,9 @@ namespace PagaLaEscuela.Views
 
                 //Encabezado del pago
                 lblDetaAlumno.Text = "Alumno: " + item.VchAlumno;
+                Matricula = item.VchMatricula;
                 lblDetaMatricula.Text = "Matricula: " + item.VchMatricula;
+                FhPago = item.DtFHPago.ToString("dd/MM/yyyy");
                 lblDetaFHpago.Text = "Fecha de pago: " + item.DtFHPago.ToString("dd/MM/yyyy");
 
                 if (item.BitSubtotal)
@@ -1262,11 +1303,18 @@ namespace PagaLaEscuela.Views
             rpDetalleLiga.DataBind();
 
             //Nuevos Regargos
-            int inde = colegiaturasServices.lsPagosReporteLigaPadreViewModels.FindIndex(x => x.UidPagoColegiatura == UidPagoColegiatura);
+            CargarRecargos(UidPagoColegiatura, Matricula.Trim(), FhPago.Trim(), decimal.Parse(decimal.Parse(DcmImpResta.Text.Replace("$", "")).ToString("N2")), lsDetallePagosColeGridViewModel);
 
-            lblRestaPagoDetalle.Text = DcmImpResta.Text;
-            lblRecargoPagoDetalle.Text = colegiaturasServices.lsPagosReporteLigaPadreViewModels[inde].DcmImporteRecargos.ToString("N2");
-            lblNuevaRestaPagoDetalle.Text = colegiaturasServices.lsPagosReporteLigaPadreViewModels[inde].DcmImporteNuevo.ToString("N2");
+            rptDesgloseDetalleLiga.DataSource = colegiaturasServices.lsDesglosePagosGridViewModel.OrderBy(x => x.IntNum);
+            rptDesgloseDetalleLiga.DataBind();
+
+            DcmImpNuevaRestaDetalleLiga.Text = "$" + colegiaturasServices.lsDesglosePagosGridViewModel.Sum(x => x.DcmImporte).ToString("N2");
+
+            trRecargosDetalleLiga.Style.Add("display", "none");
+            if (colegiaturasServices.lsDesglosePagosGridViewModel.Count > 1)
+            {
+                trRecargosDetalleLiga.Style.Add("display", "");
+            }
 
             //Desglose del pago Praga
             pagosServices.ConsultarDetallePagoColegiaturaPraga(UidPagoColegiatura);
@@ -1340,6 +1388,139 @@ namespace PagaLaEscuela.Views
                     lblPaginado.Text = ViewState["lblPaginado"].ToString();
                 }
             }
+        }
+
+        private void CargarRecargos(Guid UidPagoColegiatura, string VchMatricula, string FHPago, decimal DcmImpResta, List<DetallePagosColeGridViewModel> lsDetallePagosColeGridViewModel)
+        {
+            DateTime HoraDelServidor = DateTime.Now;
+            DateTime hoy = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(HoraDelServidor, TimeZoneInfo.Local.Id, "Eastern Standard Time (Mexico)");
+
+            var data = validacionesServices.UsarFechaPagoCole(UidPagoColegiatura, VchMatricula);
+
+            if (data.Item1)
+            {
+                hoy = data.Item2;
+            }
+
+            colegiaturasServices.lsDesglosePagosGridViewModel.Clear();
+            colegiaturasServices.ObtenerPagosColegiaturasRLP(UidPagoColegiatura, VchMatricula);
+
+            decimal recargoTotalLimite = 0;
+            decimal recargoTotalPeriodo = 0;
+            decimal ImporteCole = colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.DcmImporte;
+
+            colegiaturasServices.FormarDesgloseCole(1, "IMPORTE RESTANTE. PAGO (" + FHPago + ")", DcmImpResta);
+
+            if (colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.BitRecargo)
+            {
+                if (colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchFHLimite != "NO TIENE")
+                {
+                    if (hoy > DateTime.Parse(colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchFHLimite) && DateTime.Parse(colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchFHLimite) < colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.DtFHFinPeriodo)
+                    {
+                        if (colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchTipoRecargo == "CANTIDAD")
+                        {
+                            recargoTotalLimite = colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.DcmRecargo;
+                        }
+                        else if (colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchTipoRecargo == "PORCENTAJE")
+                        {
+                            recargoTotalLimite = colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.DcmRecargo * ImporteCole / 100;
+                        }
+
+                        if (colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.BitBeca)
+                        {
+                            colegiaturasServices.FormarDesgloseCole(3, "RECARGO POR FECHA LIMITE (" + colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchFHLimite + ")", decimal.Parse(recargoTotalLimite.ToString("N2")));
+                        }
+                        else
+                        {
+                            colegiaturasServices.FormarDesgloseCole(2, "RECARGO POR FECHA LIMITE (" + colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchFHLimite + ")", decimal.Parse(recargoTotalLimite.ToString("N2")));
+                        }
+                    }
+                }
+            }
+
+            if (colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.BitRecargoPeriodo)
+            {
+                decimal recargo = decimal.Parse(colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.DcmRecargoPeriodo.ToString("N2"));
+                decimal recargoTemp = 0;
+
+                int num = colegiaturasServices.lsDesglosePagosGridViewModel.Count() + 2;
+
+                if (colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchTipoRecargoPeriodo == "CANTIDAD")
+                {
+                    if (colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchPeriodicidad == "MENSUAL")
+                    {
+                        var dateTime = DateTimeSpan.CompareDates(colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.DtFHFinPeriodo, hoy);
+                        recargoTemp = recargo * dateTime.Months;
+
+                        colegiaturasServices.FormarDesgloseCole(num, "RECARGO POR FECHA PERIODO (" + colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.DtFHFinPeriodo.ToString("dd/MM/yyyy") + ")", decimal.Parse(recargo.ToString("N2")));
+                        for (int i = 1; i < dateTime.Months; i++)
+                        {
+                            DateTime FHFinPeriodo = colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.DtFHFinPeriodo.AddMonths(1 * i);
+
+                            colegiaturasServices.FormarDesgloseCole(num + i, "RECARGO POR FECHA PERIODO (" + FHFinPeriodo.ToString("dd/MM/yyyy") + ")", decimal.Parse(recargo.ToString("N2")));
+                        }
+                    }
+                    else if (colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchPeriodicidad == "SEMANAL")
+                    {
+                        int canSem = 0;
+
+                        var dateTime = DateTimeSpan.CompareDates(colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.DtFHFinPeriodo, hoy);
+                        canSem = dateTime.Days / 7;
+                        recargoTemp = recargo * canSem;
+
+                        colegiaturasServices.FormarDesgloseCole(num, "RECARGO POR FECHA PERIODO (" + colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.DtFHFinPeriodo.ToString("dd/MM/yyyy") + ")", decimal.Parse(recargo.ToString("N2")));
+
+                        for (int i = 1; i < canSem; i++)
+                        {
+                            DateTime FHFinPeriodo = colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.DtFHFinPeriodo.AddDays(7 * i);
+
+                            colegiaturasServices.FormarDesgloseCole(num + i, "RECARGO POR FECHA PERIODO (" + FHFinPeriodo.ToString("dd/MM/yyyy") + ")", decimal.Parse(recargo.ToString("N2")));
+                        }
+                    }
+                }
+                else if (colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchTipoRecargoPeriodo == "PORCENTAJE")
+                {
+                    recargo = recargo * ImporteCole / 100;
+
+                    if (colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchPeriodicidad == "MENSUAL")
+                    {
+                        var dateTime = DateTimeSpan.CompareDates(colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.DtFHFinPeriodo, hoy);
+                        recargoTemp = recargo * dateTime.Months;
+
+                        colegiaturasServices.FormarDesgloseCole(num, "RECARGO POR FECHA PERIODO (" + colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.DtFHFinPeriodo.ToString("dd/MM/yyyy") + ")", decimal.Parse(recargo.ToString("N2")));
+                        for (int i = 1; i < dateTime.Months; i++)
+                        {
+                            DateTime FHFinPeriodo = colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.DtFHFinPeriodo.AddMonths(1 * i);
+
+                            colegiaturasServices.FormarDesgloseCole(num + i, "RECARGO POR FECHA PERIODO (" + FHFinPeriodo.ToString("dd/MM/yyyy") + ")", decimal.Parse(recargo.ToString("N2")));
+                        }
+                    }
+                    else if (colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.VchPeriodicidad == "SEMANAL")
+                    {
+                        int canSem = 0;
+
+                        var dateTime = DateTimeSpan.CompareDates(colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.DtFHFinPeriodo, hoy);
+                        canSem = dateTime.Days / 7;
+                        recargoTemp = recargo * canSem;
+
+                        colegiaturasServices.FormarDesgloseCole(num, "RECARGO POR FECHA PERIODO (" + colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.DtFHFinPeriodo.ToString("dd/MM/yyyy") + ")", decimal.Parse(recargo.ToString("N2")));
+
+                        for (int i = 1; i < canSem; i++)
+                        {
+                            DateTime FHFinPeriodo = colegiaturasServices.colegiaturasRepository.pagosColegiaturasViewModel.DtFHFinPeriodo.AddDays(7 * i);
+
+                            colegiaturasServices.FormarDesgloseCole(num + i, "RECARGO POR FECHA PERIODO (" + FHFinPeriodo.ToString("dd/MM/yyyy") + ")", decimal.Parse(recargo.ToString("N2")));
+                        }
+                    }
+                }
+
+                recargoTotalPeriodo = recargoTemp;
+
+                //colegiaturasServices.FormarDesgloseCole(4, "RECARGO FECHA ", recargoTotalPeriodo);
+            }
+
+            //Validar si el recargo ya se aplico en los item
+            colegiaturasServices.FormarDesgloseColeRLP(lsDetallePagosColeGridViewModel, colegiaturasServices.lsDesglosePagosGridViewModel).OrderBy(x => x.IntNum);
         }
         #endregion
 

@@ -591,31 +591,31 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.Label DcmImpResta;
 
         /// <summary>
-        /// Control lblRestaPagoDetalle.
+        /// Control trRecargosDetalleLiga.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblRestaPagoDetalle;
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow trRecargosDetalleLiga;
 
         /// <summary>
-        /// Control lblRecargoPagoDetalle.
+        /// Control rptDesgloseDetalleLiga.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblRecargoPagoDetalle;
+        protected global::System.Web.UI.WebControls.Repeater rptDesgloseDetalleLiga;
 
         /// <summary>
-        /// Control lblNuevaRestaPagoDetalle.
+        /// Control DcmImpNuevaRestaDetalleLiga.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblNuevaRestaPagoDetalle;
+        protected global::System.Web.UI.WebControls.Label DcmImpNuevaRestaDetalleLiga;
 
         /// <summary>
         /// Control trdetallepromociones.
@@ -816,31 +816,31 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.Label DcmImpRestaManual;
 
         /// <summary>
-        /// Control lblRestaPagoDetalleManual.
+        /// Control trRecargosManual.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblRestaPagoDetalleManual;
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow trRecargosManual;
 
         /// <summary>
-        /// Control lblRecargoPagoDetalleManual.
+        /// Control rptDesglosePagoDetalleManual.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblRecargoPagoDetalleManual;
+        protected global::System.Web.UI.WebControls.Repeater rptDesglosePagoDetalleManual;
 
         /// <summary>
-        /// Control lblNuevaRestaPagoDetalleManual.
+        /// Control DcmImpNuevaRestaManual.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblNuevaRestaPagoDetalleManual;
+        protected global::System.Web.UI.WebControls.Label DcmImpNuevaRestaManual;
 
         /// <summary>
         /// Control trDetalleOperacionManual.
@@ -1041,31 +1041,31 @@ namespace PagaLaEscuela.Views
         protected global::System.Web.UI.WebControls.Label DcmImpRestaClubPago;
 
         /// <summary>
-        /// Control lblRestaPagoDetalleClubPago.
+        /// Control trRecargosClubPago.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblRestaPagoDetalleClubPago;
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow trRecargosClubPago;
 
         /// <summary>
-        /// Control lblRecargoPagoDetalleClubPago.
+        /// Control rptDesgloseClubPago.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblRecargoPagoDetalleClubPago;
+        protected global::System.Web.UI.WebControls.Repeater rptDesgloseClubPago;
 
         /// <summary>
-        /// Control lblNuevaRestaPagoDetalleClubPago.
+        /// Control DcmImpNuevaRestaClubPago.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblNuevaRestaPagoDetalleClubPago;
+        protected global::System.Web.UI.WebControls.Label DcmImpNuevaRestaClubPago;
 
         /// <summary>
         /// Control trdetalleoperacionClubPago.

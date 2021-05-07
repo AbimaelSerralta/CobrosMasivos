@@ -706,7 +706,7 @@
                                                                             <tr>
                                                                                 <th style="text-align: center; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">N°</th>
                                                                                 <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">CONCEPTO</th>
-                                                                                <th style="text-align: right; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">PRECIO</th>
+                                                                                <th style="text-align: right; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">IMPORTE</th>
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
@@ -786,49 +786,75 @@
                                             </tr>
                                             <tr>
                                                 <%--Nuevos recargos--%>
-                                                <td bgcolor="#b62322" align="center" style="padding: 30px 10px 0px 10px;">
-                                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td bgcolor="#ffffff" align="left" style="padding: 10px 10px 10px 10px;">
-                                                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
-                                                                        <thead>
-                                                                            <tr>
-                                                                                <th colspan="3" style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px; padding-left: 8px;" align="left">NUEVOS RECARGOS
-                                                                                </th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                            <tr>
-                                                                                <td bgcolor="#ffffff" align="left" style="padding: 10px 0px 30px 0px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 25px;">
-                                                                                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                                                                                        <thead>
-                                                                                            <tr>
-                                                                                                <th style="text-align: right; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">RESTA</th>
-                                                                                                <th style="text-align: right; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">RECARGO</th>
-                                                                                                <th style="text-align: right; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">NUEVA RESTA</th>
-                                                                                            </tr>
-                                                                                        </thead>
-                                                                                        <tbody>
-                                                                                            <tr>
-                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right">
-                                                                                                    <asp:Label ID="lblRestaPagoDetalle" runat="server" /></td>
-                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right">
-                                                                                                    <asp:Label ID="lblRecargoPagoDetalle" runat="server" /></td>
-                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right">
-                                                                                                    <asp:Label ID="lblNuevaRestaPagoDetalle" runat="server" /></td>
-                                                                                            </tr>
-                                                                                        </tbody>
-                                                                                    </table>
-                                                                                </td>
-                                                                            </tr>
-                                                                        </tbody>
-                                                                    </table>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </td>
+                                                <tr id="trRecargosDetalleLiga" runat="server">
+                                                    <%--Nuevos recargos--%>
+                                                    <td bgcolor="#b62322" align="center" style="padding: 30px 10px 0px 10px;">
+                                                        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td bgcolor="#ffffff" align="left" style="padding: 10px 10px 10px 10px;">
+                                                                        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th colspan="3" style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px; padding-left: 8px;" align="left">NUEVOS RECARGOS
+                                                                                    </th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                <tr>
+                                                                                    <td bgcolor="#ffffff" align="left" style="padding: 10px 0px 30px 0px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 25px;">
+                                                                                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                                                                            <tbody>
+                                                                                                <tr>
+                                                                                                    <td bgcolor="#ffffff" align="left" style="padding: 10px 0px 10px 0px;">
+                                                                                                        <table border="0" cellpadding="5" cellspacing="0" width="100%">
+                                                                                                            <thead>
+                                                                                                                <tr>
+                                                                                                                    <th style="text-align: center; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">N°</th>
+                                                                                                                    <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">CONCEPTO</th>
+                                                                                                                    <th style="text-align: right; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">IMPORTE</th>
+                                                                                                                </tr>
+                                                                                                            </thead>
+                                                                                                            <tbody>
+                                                                                                                <asp:Repeater ID="rptDesgloseDetalleLiga" runat="server">
+                                                                                                                    <ItemTemplate>
+                                                                                                                        <tr>
+                                                                                                                            <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="center"><%#Eval("IntNum")%></td>
+                                                                                                                            <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff"><%#Eval("VchConcepto")%></td>
+                                                                                                                            <td style="border-bottom: 1px solid #ddd; color: <%#Eval("VchCoResta")%>;" bgcolor="#ffffff" align="right">$<%#Eval("DcmImporte")%> </td>
+                                                                                                                        </tr>
+                                                                                                                    </ItemTemplate>
+                                                                                                                </asp:Repeater>
+
+                                                                                                                <tr>
+                                                                                                                    <td style="font-weight: bold; padding-top: 15px; padding-bottom: 0px;" bgcolor="#ffffff" align="center"></td>
+                                                                                                                    <td style="font-weight: bold; padding-top: 15px; padding-bottom: 0px;" bgcolor="#ffffff" align="right"></td>
+                                                                                                                    <td style="font-weight: bold; padding-top: 15px; padding-bottom: 0px;" bgcolor="#ffffff" align="right"></td>
+                                                                                                                </tr>
+                                                                                                                <tr>
+                                                                                                                    <td style="border-color: white; padding-top: 0px; padding-bottom: 0px;" bgcolor="#ffffff" align="center"></td>
+                                                                                                                    <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">Nueva Resta:
+                                                                                                                    </td>
+                                                                                                                    <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">
+                                                                                                                        <asp:Label ID="DcmImpNuevaRestaDetalleLiga" runat="server" />
+                                                                                                                    </td>
+                                                                                                                </tr>
+                                                                                                            </tbody>
+                                                                                                        </table>
+                                                                                                    </td>
+                                                                                                </tr>
+                                                                                            </tbody>
+                                                                                        </table>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                </tr>
                                             </tr>
                                             <tr id="trdetallepromociones" runat="server">
                                                 <%--Detalle de promocion--%>
@@ -1010,9 +1036,9 @@
                                                                     <table border="0" cellpadding="5" cellspacing="0" width="100%">
                                                                         <thead>
                                                                             <tr>
-                                                                                <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;" align="center">N°</th>
-                                                                                <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;" align="left">CONCEPTO</th>
-                                                                                <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;" align="right">PRECIO</th>
+                                                                                <th style="text-align: center; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">N°</th>
+                                                                                <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">CONCEPTO</th>
+                                                                                <th style="text-align: right; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">IMPORTE</th>
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
@@ -1075,7 +1101,7 @@
                                                     </table>
                                                 </td>
                                             </tr>
-                                            <tr>
+                                            <tr id="trRecargosManual" runat="server">
                                                 <%--Nuevos recargos--%>
                                                 <td bgcolor="#b62322" align="center" style="padding: 30px 10px 0px 10px;">
                                                     <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
@@ -1093,21 +1119,44 @@
                                                                             <tr>
                                                                                 <td bgcolor="#ffffff" align="left" style="padding: 10px 0px 30px 0px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 25px;">
                                                                                     <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                                                                                        <thead>
-                                                                                            <tr>
-                                                                                                <th style="text-align: right; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">RESTA</th>
-                                                                                                <th style="text-align: right; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">RECARGO</th>
-                                                                                                <th style="text-align: right; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">NUEVA RESTA</th>
-                                                                                            </tr>
-                                                                                        </thead>
                                                                                         <tbody>
                                                                                             <tr>
-                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right">
-                                                                                                    <asp:Label ID="lblRestaPagoDetalleManual" runat="server" /></td>
-                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right">
-                                                                                                    <asp:Label ID="lblRecargoPagoDetalleManual" runat="server" /></td>
-                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right">
-                                                                                                    <asp:Label ID="lblNuevaRestaPagoDetalleManual" runat="server" /></td>
+                                                                                                <td bgcolor="#ffffff" align="left" style="padding: 10px 0px 10px 0px;">
+                                                                                                    <table border="0" cellpadding="5" cellspacing="0" width="100%">
+                                                                                                        <thead>
+                                                                                                            <tr>
+                                                                                                                <th style="text-align: center; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">N°</th>
+                                                                                                                <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">CONCEPTO</th>
+                                                                                                                <th style="text-align: right; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">IMPORTE</th>
+                                                                                                            </tr>
+                                                                                                        </thead>
+                                                                                                        <tbody>
+                                                                                                            <asp:Repeater ID="rptDesglosePagoDetalleManual" runat="server">
+                                                                                                                <ItemTemplate>
+                                                                                                                    <tr>
+                                                                                                                        <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="center"><%#Eval("IntNum")%></td>
+                                                                                                                        <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff"><%#Eval("VchConcepto")%></td>
+                                                                                                                        <td style="border-bottom: 1px solid #ddd; color: <%#Eval("VchCoResta")%>;" bgcolor="#ffffff" align="right">$<%#Eval("DcmImporte")%> </td>
+                                                                                                                    </tr>
+                                                                                                                </ItemTemplate>
+                                                                                                            </asp:Repeater>
+
+                                                                                                            <tr>
+                                                                                                                <td style="font-weight: bold; padding-top: 15px; padding-bottom: 0px;" bgcolor="#ffffff" align="center"></td>
+                                                                                                                <td style="font-weight: bold; padding-top: 15px; padding-bottom: 0px;" bgcolor="#ffffff" align="right"></td>
+                                                                                                                <td style="font-weight: bold; padding-top: 15px; padding-bottom: 0px;" bgcolor="#ffffff" align="right"></td>
+                                                                                                            </tr>
+                                                                                                            <tr>
+                                                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px;" bgcolor="#ffffff" align="center"></td>
+                                                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">Nueva Resta:
+                                                                                                                </td>
+                                                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">
+                                                                                                                    <asp:Label ID="DcmImpNuevaRestaManual" runat="server" />
+                                                                                                                </td>
+                                                                                                            </tr>
+                                                                                                        </tbody>
+                                                                                                    </table>
+                                                                                                </td>
                                                                                             </tr>
                                                                                         </tbody>
                                                                                     </table>
@@ -1356,7 +1405,7 @@
                                                     </table>
                                                 </td>
                                             </tr>
-                                            <tr>
+                                            <tr id="trRecargosClubPago" runat="server">
                                                 <%--Nuevos recargos--%>
                                                 <td bgcolor="#b62322" align="center" style="padding: 30px 10px 0px 10px;">
                                                     <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
@@ -1374,21 +1423,44 @@
                                                                             <tr>
                                                                                 <td bgcolor="#ffffff" align="left" style="padding: 10px 0px 30px 0px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 25px;">
                                                                                     <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                                                                                        <thead>
-                                                                                            <tr>
-                                                                                                <th style="text-align: right; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">RESTA</th>
-                                                                                                <th style="text-align: right; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">RECARGO</th>
-                                                                                                <th style="text-align: right; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">NUEVA RESTA</th>
-                                                                                            </tr>
-                                                                                        </thead>
                                                                                         <tbody>
                                                                                             <tr>
-                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right">
-                                                                                                    <asp:Label ID="lblRestaPagoDetalleClubPago" runat="server" /></td>
-                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right">
-                                                                                                    <asp:Label ID="lblRecargoPagoDetalleClubPago" runat="server" /></td>
-                                                                                                <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right">
-                                                                                                    <asp:Label ID="lblNuevaRestaPagoDetalleClubPago" runat="server" /></td>
+                                                                                                <td bgcolor="#ffffff" align="left" style="padding: 10px 0px 10px 0px;">
+                                                                                                    <table border="0" cellpadding="5" cellspacing="0" width="100%">
+                                                                                                        <thead>
+                                                                                                            <tr>
+                                                                                                                <th style="text-align: center; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">N°</th>
+                                                                                                                <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">CONCEPTO</th>
+                                                                                                                <th style="text-align: right; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">IMPORTE</th>
+                                                                                                            </tr>
+                                                                                                        </thead>
+                                                                                                        <tbody>
+                                                                                                            <asp:Repeater ID="rptDesgloseClubPago" runat="server">
+                                                                                                                <ItemTemplate>
+                                                                                                                    <tr>
+                                                                                                                        <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="center"><%#Eval("IntNum")%></td>
+                                                                                                                        <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff"><%#Eval("VchConcepto")%></td>
+                                                                                                                        <td style="border-bottom: 1px solid #ddd; color: <%#Eval("VchCoResta")%>;" bgcolor="#ffffff" align="right">$<%#Eval("DcmImporte")%> </td>
+                                                                                                                    </tr>
+                                                                                                                </ItemTemplate>
+                                                                                                            </asp:Repeater>
+
+                                                                                                            <tr>
+                                                                                                                <td style="font-weight: bold; padding-top: 15px; padding-bottom: 0px;" bgcolor="#ffffff" align="center"></td>
+                                                                                                                <td style="font-weight: bold; padding-top: 15px; padding-bottom: 0px;" bgcolor="#ffffff" align="right"></td>
+                                                                                                                <td style="font-weight: bold; padding-top: 15px; padding-bottom: 0px;" bgcolor="#ffffff" align="right"></td>
+                                                                                                            </tr>
+                                                                                                            <tr>
+                                                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px;" bgcolor="#ffffff" align="center"></td>
+                                                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">Nueva Resta:
+                                                                                                                </td>
+                                                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">
+                                                                                                                    <asp:Label ID="DcmImpNuevaRestaClubPago" runat="server" />
+                                                                                                                </td>
+                                                                                                            </tr>
+                                                                                                        </tbody>
+                                                                                                    </table>
+                                                                                                </td>
                                                                                             </tr>
                                                                                         </tbody>
                                                                                     </table>
@@ -1838,7 +1910,7 @@ Panel tuotr
                                                                                         <tr>
                                                                                             <th style="background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;" class="text-center">N°</th>
                                                                                             <th style="background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">CONCEPTO</th>
-                                                                                            <th style="background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;" class="text-right">PRECIO</th>
+                                                                                            <th style="background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;" class="text-right">IMPORTE</th>
                                                                                         </tr>
                                                                                     </thead>
                                                                                     <tbody>

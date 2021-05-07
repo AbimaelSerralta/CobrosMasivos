@@ -23,14 +23,14 @@ namespace Franquicia.Bussiness
         public List<PagosColegiaturasViewModel> lsPagosColegiaturasViewModel = new List<PagosColegiaturasViewModel>();
 
         public List<DesglosePagosGridViewModel> lsDesglosePagosGridViewModel = new List<DesglosePagosGridViewModel>();
-        
+
         public List<PagosReporteLigaEscuelaViewModels> lsPagosReporteLigaEscuelaViewModels = new List<PagosReporteLigaEscuelaViewModels>();
-        
+
         public List<PagosReporteLigaPadreViewModels> lsPagosReporteLigaPadreViewModels = new List<PagosReporteLigaPadreViewModels>();
 
         public List<ColegiaturasFechasGridViewModel> lsFechasColegiaturas = new List<ColegiaturasFechasGridViewModel>();
-        
-        
+
+
         public List<FCAATMViewModel> lsFCAATMViewModel = new List<FCAATMViewModel>();
 
         #region Metodos Cliente
@@ -136,7 +136,7 @@ namespace Franquicia.Bussiness
         {
             return colegiaturasRepository.ObtenerFechaColegiatura(UidColegiatura);
         }
-        
+
         public List<ColegiaturasFechasGridViewModel> ObtenerFechasColegiaturasVicular(Guid UidColegiatura)
         {
             lsFechasColegiaturas = new List<ColegiaturasFechasGridViewModel>();
@@ -314,6 +314,37 @@ namespace Franquicia.Bussiness
             lsPagosReporteLigaPadreViewModels = new List<PagosReporteLigaPadreViewModels>();
             return lsPagosReporteLigaPadreViewModels = colegiaturasRepository.BuscarPagosColeReportePadre(UidUsuario, UidAlumno, Colegiatura, NumPago, Folio, Cuenta, Banco, ImporteMayor, ImporteMenor, RegistroDesde, RegistroHasta, FormaPago, Estatus);
         }
+        public void ObtenerPagosColegiaturasRLP(Guid UidPagoColegiatura, string VchMatricula)
+        {
+            colegiaturasRepository.ObtenerPagosColegiaturasRLP(UidPagoColegiatura, VchMatricula);
+        }
+        public List<DesglosePagosGridViewModel> FormarDesgloseColeRLP(List<DetallePagosColeGridViewModel> lsDetallePagos, List<DesglosePagosGridViewModel> lsDesglosePagos)
+        {
+            List<DesglosePagosGridViewModel> lsNewDesglosePagos = new List<DesglosePagosGridViewModel>();
+
+            int num = 0;
+
+            foreach (var item in lsDetallePagos)
+            {
+                if (lsDesglosePagos.Exists(x=>x.VchConcepto == item.VchDescripcion))
+                {
+                    lsDesglosePagos.RemoveAt(lsDesglosePagos.FindIndex(x => x.VchConcepto == item.VchDescripcion));
+                }
+            }
+
+            foreach (var item2 in lsDesglosePagos.OrderBy(x=>x.IntNum))
+            {
+                lsNewDesglosePagos.Add(new DesglosePagosGridViewModel()
+                {
+                    IntNum = num + 1,
+                    VchConcepto = item2.VchConcepto,
+                    DcmImporte = item2.DcmImporte,
+                    VchCoResta = item2.VchCoResta
+                });
+            }
+
+            return lsNewDesglosePagos;
+        }
         #endregion
 
         #region Metodos ReporteLigasEscuelas
@@ -350,6 +381,33 @@ namespace Franquicia.Bussiness
         public void ObtenerPagosColegiaturasRLE(Guid UidCliente, Guid UidFechaColegiatura, Guid UidAlumno)
         {
             colegiaturasRepository.ObtenerPagosColegiaturasRLE(UidCliente, UidFechaColegiatura, UidAlumno);
+        }
+        public List<DesglosePagosGridViewModel> FormarDesgloseColeRLE(List<DetallePagosColeGridViewModel> lsDetallePagos, List<DesglosePagosGridViewModel> lsDesglosePagos)
+        {
+            List<DesglosePagosGridViewModel> lsNewDesglosePagos = new List<DesglosePagosGridViewModel>();
+
+            int num = 0;
+
+            foreach (var item in lsDetallePagos)
+            {
+                if (lsDesglosePagos.Exists(x => x.VchConcepto == item.VchDescripcion))
+                {
+                    lsDesglosePagos.RemoveAt(lsDesglosePagos.FindIndex(x => x.VchConcepto == item.VchDescripcion));
+                }
+            }
+
+            foreach (var item2 in lsDesglosePagos.OrderBy(x => x.IntNum))
+            {
+                lsNewDesglosePagos.Add(new DesglosePagosGridViewModel()
+                {
+                    IntNum = num + 1,
+                    VchConcepto = item2.VchConcepto,
+                    DcmImporte = item2.DcmImporte,
+                    VchCoResta = item2.VchCoResta
+                });
+            }
+
+            return lsNewDesglosePagos;
         }
         #endregion
 

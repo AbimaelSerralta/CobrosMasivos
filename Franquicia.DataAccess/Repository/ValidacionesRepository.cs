@@ -434,6 +434,33 @@ namespace Franquicia.DataAccess.Repository
             return result;
         }
 
+        public Tuple<bool, DateTime> UsarFechaPagoCole(Guid UidPagoColegiatura, string VchMatricula)
+        {
+            bool BitUsarFecha = false;
+            DateTime DtFechaPago = DateTime.Now;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select fca.BitUsarFecha, fca.DtFechaPago from Alumnos al, FechasColegiaturasAlumnos fca, FechasColegiaturas fc, FechasPagos fp, PagosColegiaturas pc where al.UidAlumno = fca.UidAlumno and fca.UidFechaColegiatura = fc.UidFechaColegiatura and fp.UidFechaColegiatura = fc.UidFechaColegiatura and pc.UidPagoColegiatura = fp.UidPagoColegiatura and pc.UidPagoColegiatura = '"+ UidPagoColegiatura + "' and al.VchMatricula = '"+ VchMatricula + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            if (dt.Rows.Count >= 1)
+            {
+                foreach (DataRow item in dt.Rows)
+                {
+                    if (bool.Parse(item["BitUsarFecha"].ToString()))
+                    {
+                        BitUsarFecha = bool.Parse(item["BitUsarFecha"].ToString());
+                        DtFechaPago = DateTime.Parse(item["DtFechaPago"].ToString());
+                    }
+                }
+            }
+
+            return Tuple.Create(BitUsarFecha, DtFechaPago);
+        }
+
         #endregion
 
         #region Metodos Integraciones

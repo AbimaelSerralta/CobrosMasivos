@@ -142,7 +142,7 @@ namespace Franquicia.Bussiness
         {
             return validacionesRepository.EstatusCuentaPadre(UidUsuario);
         }
-        
+
         public Tuple<string, string, string> Creden(Guid UidUsuario, Guid UidCliente)
         {
             return validacionesRepository.Creden(UidUsuario, UidCliente);
@@ -156,6 +156,11 @@ namespace Franquicia.Bussiness
         public string ObtenerCorreoUsuario(Guid UidUsuario)
         {
             return validacionesRepository.ObtenerCorreoUsuario(UidUsuario);
+        }
+
+        public Tuple<bool, DateTime> UsarFechaPagoCole(Guid UidPagoColegiatura, string VchMatricula)
+        {
+            return validacionesRepository.UsarFechaPagoCole(UidPagoColegiatura, VchMatricula);
         }
         #endregion
 
