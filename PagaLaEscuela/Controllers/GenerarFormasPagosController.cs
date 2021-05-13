@@ -276,7 +276,7 @@ namespace PagaLaEscuela.Controllers
                 {
                     try
                     {
-                        int Reference = int.Parse(generarFormaPago.Reference);
+                        Int64 Reference = Int64.Parse(generarFormaPago.Reference);
 
                         if (generarFormaPago.Reference.Length == 13)
                         {
