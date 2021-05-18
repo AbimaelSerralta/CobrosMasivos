@@ -241,7 +241,76 @@ namespace Franquicia.DataAccess.Repository
 
             return lsUsuariosCompletos;
         }
+        public List<UsuariosCompletos> BuscarAdministradores(Guid UidTipoPerfil, string Nombre, string ApePaterno, string ApeMaterno, string Correo, string Franquicia, Guid UidEstatus)
+        {
+            List<UsuariosCompletos> lsUsuariosCompletos = new List<UsuariosCompletos>();
 
+            SqlCommand comando = new SqlCommand();
+            comando.CommandType = CommandType.StoredProcedure;
+            comando.CommandText = "sp_AdministradoresBuscar";
+            try
+            {
+                comando.Parameters.Add("@UidTipoPerfil", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidTipoPerfil"].Value = UidTipoPerfil;
+
+                if (Nombre != string.Empty)
+                {
+                    comando.Parameters.Add("@Nombre", SqlDbType.VarChar);
+                    comando.Parameters["@Nombre"].Value = Nombre;
+                }
+                if (ApePaterno != string.Empty)
+                {
+                    comando.Parameters.Add("@ApePaterno", SqlDbType.VarChar);
+                    comando.Parameters["@ApePaterno"].Value = ApePaterno;
+                }
+                if (ApeMaterno != string.Empty)
+                {
+                    comando.Parameters.Add("@ApeMaterno", SqlDbType.VarChar);
+                    comando.Parameters["@ApeMaterno"].Value = ApeMaterno;
+                }
+                if (Correo != string.Empty)
+                {
+                    comando.Parameters.Add("@Correo", SqlDbType.VarChar);
+                    comando.Parameters["@Correo"].Value = Correo;
+                }
+                if (Franquicia != string.Empty)
+                {
+                    comando.Parameters.Add("@Franquicia", SqlDbType.VarChar);
+                    comando.Parameters["@Franquicia"].Value = Franquicia;
+                }
+                if (UidEstatus != Guid.Empty)
+                {
+                    comando.Parameters.Add("@UidEstatus", SqlDbType.UniqueIdentifier);
+                    comando.Parameters["@UidEstatus"].Value = UidEstatus;
+                }
+
+                foreach (DataRow item in this.Busquedas(comando).Rows)
+                {
+                    lsUsuariosCompletos.Add(new UsuariosCompletos()
+                    {
+                        UidUsuario = new Guid(item["UidUsuario"].ToString()),
+                        StrNombre = item["VchNombre"].ToString(),
+                        StrApePaterno = item["VchApePaterno"].ToString(),
+                        StrApeMaterno = item["VchApeMaterno"].ToString(),
+                        StrCorreo = item["VchCorreo"].ToString(),
+                        UidEstatus = new Guid(item["UidEstatus"].ToString()),
+                        VchUsuario = item["VchUsuario"].ToString(),
+                        VchContrasenia = item["VchContrasenia"].ToString(),
+                        VchNombrePerfil = item["Perfil"].ToString(),
+                        VchDescripcion = item["VchDescripcion"].ToString(),
+                        VchIcono = item["VchIcono"].ToString(),
+                        VchNombreComercial = item["VchNombreComercial"].ToString()
+                    });
+                }
+
+                return lsUsuariosCompletos;
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
         public List<UsuariosCompletos> CargarUsuariosPrincipal(Guid UidTipoPerfil)
         {
             List<UsuariosCompletos> lsUsuariosCompletos = new List<UsuariosCompletos>();
@@ -275,6 +344,76 @@ namespace Franquicia.DataAccess.Repository
             }
 
             return lsUsuariosCompletos;
+        }
+        public List<UsuariosCompletos> BuscarUsuariosPrincipal(Guid UidTipoPerfil, string Nombre, string ApePaterno, string ApeMaterno, string Correo, string Perfil, Guid UidEstatus)
+        {
+            List<UsuariosCompletos> lsUsuariosCompletos = new List<UsuariosCompletos>();
+
+            SqlCommand comando = new SqlCommand();
+            comando.CommandType = CommandType.StoredProcedure;
+            comando.CommandText = "sp_UsuariosPrincipalBuscar";
+            try
+            {
+                comando.Parameters.Add("@UidTipoPerfil", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidTipoPerfil"].Value = UidTipoPerfil;
+
+                if (Nombre != string.Empty)
+                {                    
+                    comando.Parameters.Add("@Nombre", SqlDbType.VarChar);
+                    comando.Parameters["@Nombre"].Value = Nombre;
+                }
+                if (ApePaterno != string.Empty)
+                {
+                    comando.Parameters.Add("@ApePaterno", SqlDbType.VarChar);
+                    comando.Parameters["@ApePaterno"].Value = ApePaterno;
+                }
+                if (ApeMaterno != string.Empty)
+                {
+                    comando.Parameters.Add("@ApeMaterno", SqlDbType.VarChar);
+                    comando.Parameters["@ApeMaterno"].Value = ApeMaterno;
+                }
+                if (Correo != string.Empty)
+                {
+                    comando.Parameters.Add("@Correo", SqlDbType.VarChar);
+                    comando.Parameters["@Correo"].Value = Correo;
+                }
+                if (Perfil != string.Empty)
+                {
+                    comando.Parameters.Add("@Perfil", SqlDbType.VarChar);
+                    comando.Parameters["@Perfil"].Value = Perfil;
+                }
+                if (UidEstatus != Guid.Empty)
+                {
+                    comando.Parameters.Add("@UidEstatus", SqlDbType.UniqueIdentifier);
+                    comando.Parameters["@UidEstatus"].Value = UidEstatus;
+                }
+
+                foreach (DataRow item in this.Busquedas(comando).Rows)
+                {
+                    lsUsuariosCompletos.Add(new UsuariosCompletos()
+                    {
+                        UidUsuario = new Guid(item["UidUsuario"].ToString()),
+                        StrNombre = item["VchNombre"].ToString(),
+                        StrApePaterno = item["VchApePaterno"].ToString(),
+                        StrApeMaterno = item["VchApeMaterno"].ToString(),
+                        StrCorreo = item["VchCorreo"].ToString(),
+                        UidEstatus = new Guid(item["UidEstatus"].ToString()),
+                        VchUsuario = item["VchUsuario"].ToString(),
+                        VchContrasenia = item["VchContrasenia"].ToString(),
+                        UidSegPerfil = Guid.Parse(item["UidSegPerfil"].ToString()),
+                        VchNombrePerfil = item["Perfil"].ToString(),
+                        VchDescripcion = item["VchDescripcion"].ToString(),
+                        VchIcono = item["VchIcono"].ToString()
+                    });
+                }
+
+                return lsUsuariosCompletos;
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public bool RegistrarAdministradores(UsuariosCompletos usuariosCompletos, Guid UidSegPerfilEscuela, DireccionesUsuarios direccionesUsuarios, TelefonosUsuarios telefonosUsuarios, Guid UidFranquicia)
@@ -4327,7 +4466,7 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@UidTipoTarjeta", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidTipoTarjeta"].Value = UidTipoTarjeta;
-                
+
                 comando.Parameters.Add("@UidPromocion", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidPromocion"].Value = UidPromocion;
 

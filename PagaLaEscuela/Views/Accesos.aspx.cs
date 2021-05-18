@@ -46,6 +46,12 @@ namespace PagaLaEscuela.Views
                 ddlEstatus.DataValueField = "UidEstatus";
                 ddlEstatus.DataBind();
 
+                FiltroEstatus.DataSource = estatusServices.lsEstatus;
+                FiltroEstatus.Items.Insert(0, new ListItem("TODOS", "00000000-0000-0000-0000-000000000000"));
+                FiltroEstatus.DataTextField = "VchDescripcion";
+                FiltroEstatus.DataValueField = "UidEstatus";
+                FiltroEstatus.DataBind();
+
                 tiposPerfilesServices.CargarTipoPerfil(new Guid("514433C7-4439-42F5-ABE4-6BF1C330F0CA"));
                 ddlTipoPerfil.DataSource = tiposPerfilesServices.lsTipoPerfil;
                 ddlTipoPerfil.DataTextField = "VchDescripcion";
@@ -216,6 +222,23 @@ namespace PagaLaEscuela.Views
             }
 
             ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
+        }
+        protected void btnFiltros_Click(object sender, EventArgs e)
+        {
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalBusqueda()", true);
+        }
+        protected void btnBuscar_Click(object sender, EventArgs e)
+        {
+            perfilesServices.BuscarPerfiles(FiltroNombre.Text, Guid.Parse(FiltroEstatus.SelectedValue));
+            gvPerfiles.DataSource = perfilesServices.lsperfilesGridViewModel;
+            gvPerfiles.DataBind();
+
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModalBusqueda()", true);
+        }
+        protected void btnLimpiar_Click(object sender, EventArgs e)
+        {
+            FiltroNombre.Text = string.Empty;
+            FiltroEstatus.SelectedIndex = 0;
         }
 
         private void BloquearCampos()

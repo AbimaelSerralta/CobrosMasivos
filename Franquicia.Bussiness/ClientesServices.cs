@@ -145,6 +145,10 @@ namespace Franquicia.Bussiness
         {
             return lsClientesGridViewEmpresasModel = clientesRepository.CargarTodosClientes();
         }
+        public void BuscarTodosClientes(int IdEscuela, string RFC, string RazonSocial, string NombreComercial, Guid UidEstatus)
+        {
+            lsClientesGridViewEmpresasModel = clientesRepository.BuscarTodosClientes(IdEscuela, RFC, RazonSocial, NombreComercial, UidEstatus);
+        }
         #endregion
 
         #region AdminCliente

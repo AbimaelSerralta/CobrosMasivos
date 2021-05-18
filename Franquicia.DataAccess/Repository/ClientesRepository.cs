@@ -370,6 +370,67 @@ namespace Franquicia.DataAccess.Repository
 
             return lsClientesGridViewEmpresasModel;
         }
+        public List<ClientesGridViewEmpresasModel> BuscarTodosClientes(int IdEscuela, string RFC, string RazonSocial, string NombreComercial, Guid UidEstatus)
+        {
+            List<ClientesGridViewEmpresasModel> lsClientesGridViewEmpresasModel = new List<ClientesGridViewEmpresasModel>();
+
+            SqlCommand comando = new SqlCommand();
+            comando.CommandType = CommandType.StoredProcedure;
+            comando.CommandText = "sp_SuperClientesBuscar";
+            try
+            {
+                if (IdEscuela != 0)
+                {
+                    comando.Parameters.Add("@IdEscuela", SqlDbType.Int);
+                    comando.Parameters["@IdEscuela"].Value = IdEscuela;
+                }
+                if (RFC != string.Empty)
+                {
+                    comando.Parameters.Add("@RFC", SqlDbType.VarChar);
+                    comando.Parameters["@RFC"].Value = RFC;
+                }
+                if (RazonSocial != string.Empty)
+                {
+                    comando.Parameters.Add("@RazonSocial", SqlDbType.VarChar);
+                    comando.Parameters["@RazonSocial"].Value = RazonSocial;
+                }
+                if (NombreComercial != string.Empty)
+                {
+                    comando.Parameters.Add("@NombreComercial", SqlDbType.VarChar);
+                    comando.Parameters["@NombreComercial"].Value = NombreComercial;
+                }
+                if (UidEstatus != Guid.Empty)
+                {
+                    comando.Parameters.Add("@UidEstatus", SqlDbType.UniqueIdentifier);
+                    comando.Parameters["@UidEstatus"].Value = UidEstatus;
+                }
+
+                foreach (DataRow item in this.Busquedas(comando).Rows)
+                {
+                    lsClientesGridViewEmpresasModel.Add(new ClientesGridViewEmpresasModel()
+                    {
+                        UidCliente = Guid.Parse(item["UidCliente"].ToString()),
+                        IdCliente = int.Parse(item["IdCliente"].ToString()),
+                        VchIdCliente = int.Parse(item["IdCliente"].ToString()).ToString("D6"),
+                        VchRFC = item["VchRFC"].ToString(),
+                        VchRazonSocial = item["VchRazonSocial"].ToString(),
+                        VchNombreComercial = item["VchNombreComercial"].ToString(),
+                        DtFechaAlta = (DateTime)item["DtFechaAlta"],
+                        VchCorreoElectronico = item["VchCorreoElectronico"].ToString(),
+                        UidEstatus = Guid.Parse(item["UidEstatus"].ToString()),
+                        VchEstatus = item["VchDescripcion"].ToString(),
+                        VchIcono = item["VchIcono"].ToString()
+                    });
+                }
+
+                return lsClientesGridViewEmpresasModel;
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
         #endregion
 
         #region AdminCliente

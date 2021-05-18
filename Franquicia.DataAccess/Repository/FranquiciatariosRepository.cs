@@ -40,7 +40,7 @@ namespace Franquicia.DataAccess.Repository
                     VchRFC = item["VchRFC"].ToString(),
                     VchRazonSocial = item["VchRazonSocial"].ToString(),
                     VchNombreComercial = item["VchNombreComercial"].ToString(),
-                    DtFechaAlta = (DateTime) item["DtFechaAlta"],
+                    DtFechaAlta = (DateTime)item["DtFechaAlta"],
                     VchCorreoElectronico = item["VchCorreoElectronico"].ToString(),
                     UidEstatus = new Guid(item["UidEstatus"].ToString()),
                     VchEstatus = item["VchDescripcion"].ToString(),
@@ -95,13 +95,13 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@UidCiudad", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidCiudad"].Value = direccionesFranquiciatarios.UidCiudad;
-                
+
                 comando.Parameters.Add("@UidColonia", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidColonia"].Value = direccionesFranquiciatarios.UidColonia;
 
                 comando.Parameters.Add("@Calle", SqlDbType.VarChar, 50);
                 comando.Parameters["@Calle"].Value = direccionesFranquiciatarios.Calle;
-                
+
                 comando.Parameters.Add("@EntreCalle", SqlDbType.VarChar, 50);
                 comando.Parameters["@EntreCalle"].Value = direccionesFranquiciatarios.EntreCalle;
 
@@ -119,7 +119,7 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@Referencia", SqlDbType.VarChar, 100);
                 comando.Parameters["@Referencia"].Value = direccionesFranquiciatarios.Referencia;
-                
+
                 //===========================TELEFONO==================================================
 
                 comando.Parameters.Add("@VchTelefono", SqlDbType.VarChar, 50);
@@ -137,7 +137,6 @@ namespace Franquicia.DataAccess.Repository
             }
             return Resultado;
         }
-        
         public bool ActualizarFranquiciatarios(Franquiciatarios franquiciatarios, DireccionesFranquiciatarios direccionesFranquiciatarios, TelefonosFranquicias telefonosFranquicias)
         {
             bool Resultado = false;
@@ -182,13 +181,13 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@UidCiudad", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidCiudad"].Value = direccionesFranquiciatarios.UidCiudad;
-                
+
                 comando.Parameters.Add("@UidColonia", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidColonia"].Value = direccionesFranquiciatarios.UidColonia;
 
                 comando.Parameters.Add("@Calle", SqlDbType.VarChar, 50);
                 comando.Parameters["@Calle"].Value = direccionesFranquiciatarios.Calle;
-                
+
                 comando.Parameters.Add("@EntreCalle", SqlDbType.VarChar, 50);
                 comando.Parameters["@EntreCalle"].Value = direccionesFranquiciatarios.EntreCalle;
 
@@ -206,7 +205,7 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@Referencia", SqlDbType.VarChar, 100);
                 comando.Parameters["@Referencia"].Value = direccionesFranquiciatarios.Referencia;
-                
+
                 //===========================TELEFONO==================================================
 
                 comando.Parameters.Add("@VchTelefono", SqlDbType.VarChar, 50);
@@ -224,6 +223,60 @@ namespace Franquicia.DataAccess.Repository
             }
             return Resultado;
         }
+        public List<FranquiciasGridViewModel> BuscarFranquiciatarios(string RFC, string RazonSocial, string NombreComercial, Guid UidEstatus)
+        {
+            List<FranquiciasGridViewModel> lsFranquiciasGridViewModel = new List<FranquiciasGridViewModel>();
+
+            SqlCommand comando = new SqlCommand();
+            comando.CommandType = CommandType.StoredProcedure;
+            comando.CommandText = "sp_FranquiciatariosBuscar";
+            try
+            {
+                if (RFC != string.Empty)
+                {
+                    comando.Parameters.Add("@RFC", SqlDbType.VarChar);
+                    comando.Parameters["@RFC"].Value = RFC;
+                }
+                if (RazonSocial != string.Empty)
+                {
+                    comando.Parameters.Add("@RazonSocial", SqlDbType.VarChar);
+                    comando.Parameters["@RazonSocial"].Value = RazonSocial;
+                }
+                if (NombreComercial != string.Empty)
+                {
+                    comando.Parameters.Add("@NombreComercial", SqlDbType.VarChar);
+                    comando.Parameters["@NombreComercial"].Value = NombreComercial;
+                }
+                if (UidEstatus != Guid.Empty)
+                {
+                    comando.Parameters.Add("@UidEstatus", SqlDbType.UniqueIdentifier);
+                    comando.Parameters["@UidEstatus"].Value = UidEstatus;
+                }
+
+                foreach (DataRow item in this.Busquedas(comando).Rows)
+                {
+                    lsFranquiciasGridViewModel.Add(new FranquiciasGridViewModel()
+                    {
+                        UidFranquiciatarios = new Guid(item["UidFranquiciatarios"].ToString()),
+                        VchRFC = item["VchRFC"].ToString(),
+                        VchRazonSocial = item["VchRazonSocial"].ToString(),
+                        VchNombreComercial = item["VchNombreComercial"].ToString(),
+                        DtFechaAlta = (DateTime)item["DtFechaAlta"],
+                        VchCorreoElectronico = item["VchCorreoElectronico"].ToString(),
+                        UidEstatus = new Guid(item["UidEstatus"].ToString()),
+                        VchEstatus = item["VchDescripcion"].ToString(),
+                        VchIcono = item["VchIcono"].ToString()
+                    });
+                }
+
+                return lsFranquiciasGridViewModel;
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
         #region AdminFranquicias
         public void ObtenerFranquicia(Guid UidAdministrador)
@@ -231,7 +284,7 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "Select fr.*, es.VchDescripcion, es.VchIcono from Franquiciatarios fr, Estatus es, FranquiciasUsuarios fu, Usuarios us where fu.UidUsuario = us.UidUsuario and fr.UidFranquiciatarios = fu.UidFranquicia and fr.UidEstatus = es.UidEstatus and us.UidUsuario = '"+ UidAdministrador +"'";
+            query.CommandText = "Select fr.*, es.VchDescripcion, es.VchIcono from Franquiciatarios fr, Estatus es, FranquiciasUsuarios fu, Usuarios us where fu.UidUsuario = us.UidUsuario and fr.UidFranquiciatarios = fu.UidFranquicia and fr.UidEstatus = es.UidEstatus and us.UidUsuario = '" + UidAdministrador + "'";
 
             DataTable dt = this.Busquedas(query);
 

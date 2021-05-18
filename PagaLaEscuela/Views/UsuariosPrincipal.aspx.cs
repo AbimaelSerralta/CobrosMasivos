@@ -55,6 +55,12 @@ namespace PagaLaEscuela.Views
                 ddlEstatus.DataValueField = "UidEstatus";
                 ddlEstatus.DataBind();
 
+                FiltroEstatus.DataSource = estatusService.lsEstatus;
+                FiltroEstatus.Items.Insert(0, new ListItem("TODOS", "00000000-0000-0000-0000-000000000000"));
+                FiltroEstatus.DataTextField = "VchDescripcion";
+                FiltroEstatus.DataValueField = "UidEstatus";
+                FiltroEstatus.DataBind();
+
                 tiposTelefonosServices.CargarTiposTelefonos();
                 ddlTipoTelefono.DataSource = tiposTelefonosServices.lsTiposTelefonos;
                 ddlTipoTelefono.DataTextField = "VchDescripcion";
@@ -409,7 +415,27 @@ namespace PagaLaEscuela.Views
 
             ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
         }
+        protected void btnFiltros_Click(object sender, EventArgs e)
+        {
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalBusqueda()", true);
+        }
+        protected void btnBuscar_Click(object sender, EventArgs e)
+        {
+            usuariosCompletosServices.BuscarUsuariosPrincipal(Guid.Parse("2DBF3126-03A3-41A3-9DFD-31D9D93D35AA"), FiltroNombre.Text, FiltroApePaterno.Text, FiltroApeMaterno.Text, FiltroCorreo.Text, FiltroPerfil.Text, Guid.Parse(FiltroEstatus.SelectedValue));
+            gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
+            gvAdministradores.DataBind();
 
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModalBusqueda()", true);
+        }
+        protected void btnLimpiar_Click(object sender, EventArgs e)
+        {
+            FiltroNombre.Text = string.Empty;
+            FiltroApePaterno.Text = string.Empty;
+            FiltroApeMaterno.Text = string.Empty;
+            FiltroCorreo.Text = string.Empty;
+            FiltroPerfil.Text = string.Empty;
+            FiltroEstatus.SelectedIndex = 0;
+        }
         private void BloquearCampos()
         {
             txtNombre.Enabled = false;
@@ -735,6 +761,16 @@ namespace PagaLaEscuela.Views
                         else
                         {
                             usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.NombreCompleto).ToList();
+                        }
+                        break;
+                    case "StrCorreo":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderBy(x => x.StrCorreo).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.StrCorreo).ToList();
                         }
                         break;
                     case "VchUsuario":

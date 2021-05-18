@@ -60,6 +60,12 @@ namespace PagaLaEscuela.Views
                 ddlEstatus.DataValueField = "UidEstatus";
                 ddlEstatus.DataBind();
 
+                FiltroEstatus.DataSource = estatusService.lsEstatus;
+                FiltroEstatus.Items.Insert(0, new ListItem("TODOS", "00000000-0000-0000-0000-000000000000"));
+                FiltroEstatus.DataTextField = "VchDescripcion";
+                FiltroEstatus.DataValueField = "UidEstatus";
+                FiltroEstatus.DataBind();
+
                 tiposTelefonosServices.CargarTiposTelefonos();
                 ddlTipoTelefono.DataSource = tiposTelefonosServices.lsTiposTelefonos;
                 ddlTipoTelefono.DataTextField = "VchDescripcion";
@@ -356,6 +362,25 @@ namespace PagaLaEscuela.Views
 
             ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
 
+        }
+        protected void btnFiltros_Click(object sender, EventArgs e)
+        {
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalBusqueda()", true);
+        }
+        protected void btnBuscar_Click(object sender, EventArgs e)
+        {
+            franquiciatariosServices.BuscarFranquiciatarios(FiltroRfc.Text, FiltroRazonSocial.Text, FiltroNombreComercial.Text, Guid.Parse(FiltroEstatus.SelectedValue));
+            gvFranquiciatarios.DataSource = franquiciatariosServices.lsFranquiciasGridViewModel;
+            gvFranquiciatarios.DataBind();
+
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModalBusqueda()", true);
+        }
+        protected void btnLimpiar_Click(object sender, EventArgs e)
+        {
+            FiltroRfc.Text = string.Empty;
+            FiltroRazonSocial.Text = string.Empty;
+            FiltroNombreComercial.Text = string.Empty;
+            FiltroEstatus.SelectedIndex = 0;
         }
 
         private void BloquearCampos()

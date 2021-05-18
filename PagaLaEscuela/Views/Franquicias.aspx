@@ -35,11 +35,11 @@
                     <div class="row">
                         <div class="col-lg-12 col-md-12">
                             <div class="card">
-                                <div class="card-header card-header-tabs card-header-primary" style="background:#b9504c; padding-top: 0px; padding-bottom: 0px;">
+                                <div class="card-header card-header-tabs card-header-primary" style="background: #b9504c; padding-top: 0px; padding-bottom: 0px;">
                                     <div class="nav-tabs-navigation">
                                         <div class="nav-tabs-wrapper">
                                             <div class="form-group" style="margin-top: 0px; padding-bottom: 0px;">
-                                                <asp:LinkButton ID="btnFiltros" ToolTip="Filtros de busqueda." BackColor="#4db6ac" class="btn btn-lg btn-fab btn-fab-mini btn-round" runat="server">
+                                                <asp:LinkButton ID="btnFiltros" OnClick="btnFiltros_Click" ToolTip="Filtros de busqueda." BackColor="#4db6ac" class="btn btn-lg btn-fab btn-fab-mini btn-round" runat="server">
                                                         <i class="material-icons">search</i>
                                                 </asp:LinkButton>
                                                 <asp:Label Text="Listado de Franquicias" runat="server" />
@@ -134,6 +134,76 @@
 
 <asp:Content ID="Content3" ContentPlaceHolderID="cBodyBottom" runat="server">
     <!--MODAL-->
+    <div id="ModalBusqueda" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <asp:UpdatePanel runat="server">
+                    <ContentTemplate>
+                        <div class="modal-header">
+                            <h5 class="modal-title" runat="server">
+                                <asp:Label ID="lblTittleLigas" Text="Filtro de busqueda" runat="server" /></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+                <div class="modal-body pt-0" style="padding-bottom: 0px;">
+                    <div class="tab-content">
+                        <asp:UpdatePanel runat="server">
+                            <ContentTemplate>
+                                <asp:Panel ID="pnlFiltrosBusqueda" runat="server">
+                                    <div class="card" style="margin-top: 0px;">
+                                        <div class="card-header card-header-tabs card-header" style="padding-top: 0px; padding-bottom: 0px; margin-top: 0px;">
+                                            <div class="nav-tabs-navigation">
+                                                <div class="nav-tabs-wrapper">
+                                                    <div class="form-group">
+                                                        <div class="row">
+                                                            <div class="form-group col-md-4">
+                                                                <label for="FiltroRfc" style="color: black;">RFC</label>
+                                                                <asp:TextBox ID="FiltroRfc" CssClass="form-control" aria-label="Search" runat="server" />
+                                                            </div>
+                                                            <div class="form-group col-md-4">
+                                                                <label for="FiltroRazonSocial" style="color: black;">Razon Social</label>
+                                                                <asp:TextBox ID="FiltroRazonSocial" CssClass="form-control" aria-label="Search" runat="server" />
+                                                            </div>
+                                                            <div class="form-group col-md-4">
+                                                                <label for="FiltroNombreComercial" style="color: black;">Nombre Comercial</label>
+                                                                <asp:TextBox ID="FiltroNombreComercial" CssClass="form-control" aria-label="Search" runat="server" />
+                                                            </div>
+                                                            <div class="form-group col-md-4">
+                                                                <label for="FiltroEstatus" style="color: black;">Estatus</label>
+                                                                <asp:DropDownList ID="FiltroEstatus" AppendDataBoundItems="true" CssClass="form-control" runat="server"></asp:DropDownList>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </asp:Panel>
+                            </ContentTemplate>
+                        </asp:UpdatePanel>
+                    </div>
+                </div>
+                <asp:UpdatePanel runat="server">
+                    <ContentTemplate>
+                        <div class="modal-footer justify-content-center" style="padding-top: 0px; padding-bottom: 10px;">
+                            <asp:LinkButton ID="btnBuscar" OnClick="btnBuscar_Click" CssClass="btn btn-primary btn-round" runat="server">
+                            <i class="material-icons">search</i> Buscar
+                            </asp:LinkButton>
+                            <asp:LinkButton ID="btnLimpiar" OnClick="btnLimpiar_Click" CssClass="btn btn-warning btn-round" runat="server">
+                            <i class="material-icons">clear_all</i> Limpiar
+                            </asp:LinkButton>
+                        </div>
+                    </ContentTemplate>
+                    <Triggers>
+                        <asp:AsyncPostBackTrigger ControlID="btnBuscar" EventName="Click" />
+                    </Triggers>
+                </asp:UpdatePanel>
+            </div>
+        </div>
+    </div>
     <div id="ModalNuevo" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -160,7 +230,7 @@
                 <div class="modal-body pt-0" style="padding-bottom: 0px;">
                     <div class="row">
                         <div class="card card-nav-tabs">
-                            <div class="card-header card-header-primary" style="background:#b9504c;">
+                            <div class="card-header card-header-primary" style="background: #b9504c;">
                                 <!-- colors: "header-primary", "header-info", "header-success", "header-warning", "header-danger" -->
                                 <div class="nav-tabs-navigation">
                                     <div class="nav-tabs-wrapper">
@@ -565,6 +635,15 @@
     </div>
     <!--END MODAL-->
 
+    <script>
+        function showModalBusqueda() {
+            $('#ModalBusqueda').modal('show');
+        }
+
+        function hideModalBusqueda() {
+            $('#ModalBusqueda').modal('hide');
+        }
+    </script>
     <script>
         function showModal() {
             $('#ModalNuevo').modal('show');

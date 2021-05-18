@@ -133,6 +133,11 @@ namespace Franquicia.Bussiness
             return result;
         }
 
+        public void BuscarFranquiciatarios(string RFC, string RazonSocial, string NombreComercial, Guid UidEstatus)
+        {
+            lsFranquiciasGridViewModel = franquiciatariosRepository.BuscarFranquiciatarios(RFC, RazonSocial, NombreComercial, UidEstatus);
+        }
+
         #region AdminFranquicias
         public void ObtenerFranquicia(Guid UidAdministrador)
         {

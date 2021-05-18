@@ -60,9 +60,18 @@ namespace Franquicia.Bussiness
             lsUsuariosCompletos = usuariosCompletosRepository.CargarAdministradores(UidTipoPerfil);
         }
 
+        public void BuscarAdministradores(Guid UidTipoPerfil, string Nombre, string ApePaterno, string ApeMaterno, string Correo, string Franquicia, Guid UidEstatus)
+        {
+            lsUsuariosCompletos = usuariosCompletosRepository.BuscarAdministradores(UidTipoPerfil, Nombre, ApePaterno, ApeMaterno, Correo, Franquicia, UidEstatus);
+        }
+
         public void CargarUsuariosPrincipal(Guid UidTipoPerfil)
         {
             lsUsuariosCompletos = usuariosCompletosRepository.CargarUsuariosPrincipal(UidTipoPerfil);
+        }
+        public void BuscarUsuariosPrincipal(Guid UidTipoPerfil, string Nombre, string ApePaterno, string ApeMaterno, string Correo, string Perfil, Guid UidEstatus)
+        {
+            lsUsuariosCompletos = usuariosCompletosRepository.BuscarUsuariosPrincipal(UidTipoPerfil, Nombre, ApePaterno, ApeMaterno, Correo, Perfil, UidEstatus);
         }
 
         #region Metodos Principal

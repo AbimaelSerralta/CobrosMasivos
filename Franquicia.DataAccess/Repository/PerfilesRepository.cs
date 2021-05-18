@@ -72,6 +72,50 @@ namespace Franquicia.DataAccess.Repository
 
             return lsPerfilesGridViewModel;
         }
+        public List<PerfilesGridViewModel> BuscarPerfiles(string Nombre, Guid UidEstatus)
+        {
+            List<PerfilesGridViewModel> lsPerfilesGridViewModel = new List<PerfilesGridViewModel>();
+
+            SqlCommand comando = new SqlCommand();
+            comando.CommandType = CommandType.StoredProcedure;
+            comando.CommandText = "sp_PerfilesBuscar";
+            try
+            {
+                if (Nombre != string.Empty)
+                {
+                    comando.Parameters.Add("@Nombre", SqlDbType.VarChar);
+                    comando.Parameters["@Nombre"].Value = Nombre;
+                }
+                if (UidEstatus != Guid.Empty)
+                {
+                    comando.Parameters.Add("@UidEstatus", SqlDbType.UniqueIdentifier);
+                    comando.Parameters["@UidEstatus"].Value = UidEstatus;
+                }
+
+                foreach (DataRow item in this.Busquedas(comando).Rows)
+                {
+                    perfilesGridViewModel = new PerfilesGridViewModel()
+                    {
+                        UidSegPerfil = new Guid(item["UidSegPerfil"].ToString()),
+                        VchNombre = item["VchNombre"].ToString(),
+                        UidTipoPerfil = new Guid(item["UidTipoPerfil"].ToString()),
+                        VchPerfil = item["VchPerfil"].ToString(),
+                        UidModuloInicial = new Guid(item["UidModuloInicial"].ToString()),
+                        VchEstatus = item["VchEstatus"].ToString(),
+                        VchIcono = item["VchIcono"].ToString()
+                    };
+
+                    lsPerfilesGridViewModel.Add(perfilesGridViewModel);
+                }
+
+                return lsPerfilesGridViewModel;
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
         public List<PerfilesDropDownListModel> CargarPerfilesDropDownListModel(Guid UidSegPerfil)
         {
