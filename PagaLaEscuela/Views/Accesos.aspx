@@ -179,7 +179,7 @@
         </div>
     </div>
     <div class="modal fade" id="ModalNuevo" tabindex="-1" role="dialog" data-backdrop="static" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <asp:UpdatePanel runat="server">
                     <ContentTemplate>

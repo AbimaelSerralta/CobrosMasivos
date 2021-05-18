@@ -369,12 +369,89 @@ namespace PagaLaEscuela.Views
                 }
             }
         }
-
         protected void gvEmpresas_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             gvEmpresas.PageIndex = e.NewPageIndex;
             gvEmpresas.DataSource = clientesServices.lsClientesGridViewEmpresasModel;
             gvEmpresas.DataBind();
+        }
+        protected void gvEmpresas_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            string SortExpression = e.SortExpression;
+            SortDirection direccion;
+            string Orden = string.Empty;
+
+            if (ViewState["gvEmpresas"] != null)
+            {
+                direccion = (SortDirection)ViewState["gvEmpresas"];
+                if (direccion == SortDirection.Ascending)
+                {
+                    ViewState["gvEmpresas"] = SortDirection.Descending;
+                    Orden = "ASC";
+                }
+                else
+                {
+                    ViewState["gvEmpresas"] = SortDirection.Ascending;
+                    Orden = "DESC";
+                }
+
+                switch (SortExpression)
+                {
+                    case "VchIdCliente":
+                        if (Orden == "ASC")
+                        {
+                            clientesServices.lsClientesGridViewEmpresasModel = clientesServices.lsClientesGridViewEmpresasModel.OrderBy(x => x.VchIdCliente).ToList();
+                        }
+                        else
+                        {
+                            clientesServices.lsClientesGridViewEmpresasModel = clientesServices.lsClientesGridViewEmpresasModel.OrderByDescending(x => x.VchIdCliente).ToList();
+                        }
+                        break;
+                    case "VchRFC":
+                        if (Orden == "ASC")
+                        {
+                            clientesServices.lsClientesGridViewEmpresasModel = clientesServices.lsClientesGridViewEmpresasModel.OrderBy(x => x.VchRFC).ToList();
+                        }
+                        else
+                        {
+                            clientesServices.lsClientesGridViewEmpresasModel = clientesServices.lsClientesGridViewEmpresasModel.OrderByDescending(x => x.VchRFC).ToList();
+                        }
+                        break;
+                    case "VchRazonSocial":
+                        if (Orden == "ASC")
+                        {
+                            clientesServices.lsClientesGridViewEmpresasModel = clientesServices.lsClientesGridViewEmpresasModel.OrderBy(x => x.VchRazonSocial).ToList();
+                        }
+                        else
+                        {
+                            clientesServices.lsClientesGridViewEmpresasModel = clientesServices.lsClientesGridViewEmpresasModel.OrderByDescending(x => x.VchRazonSocial).ToList();
+                        }
+                        break;
+                    case "VchNombreComercial":
+                        if (Orden == "ASC")
+                        {
+                            clientesServices.lsClientesGridViewEmpresasModel = clientesServices.lsClientesGridViewEmpresasModel.OrderBy(x => x.VchNombreComercial).ToList();
+                        }
+                        else
+                        {
+                            clientesServices.lsClientesGridViewEmpresasModel = clientesServices.lsClientesGridViewEmpresasModel.OrderByDescending(x => x.VchNombreComercial).ToList();
+                        }
+                        break;
+                    case "UidEstatus":
+                        if (Orden == "ASC")
+                        {
+                            clientesServices.lsClientesGridViewEmpresasModel = clientesServices.lsClientesGridViewEmpresasModel.OrderBy(x => x.UidEstatus).ToList();
+                        }
+                        else
+                        {
+                            clientesServices.lsClientesGridViewEmpresasModel = clientesServices.lsClientesGridViewEmpresasModel.OrderByDescending(x => x.UidEstatus).ToList();
+                        }
+                        break;
+                }
+
+                gvEmpresas.DataSource = clientesServices.lsClientesGridViewEmpresasModel;
+                gvEmpresas.DataBind();
+            }
         }
 
         #region CobrosEnLinea
@@ -541,84 +618,5 @@ namespace PagaLaEscuela.Views
         #endregion
 
         #endregion
-
-        protected void gvEmpresas_Sorting(object sender, GridViewSortEventArgs e)
-        {
-            string SortExpression = e.SortExpression;
-            SortDirection direccion;
-            string Orden = string.Empty;
-
-            if (ViewState["gvEmpresas"] != null)
-            {
-                direccion = (SortDirection)ViewState["gvEmpresas"];
-                if (direccion == SortDirection.Ascending)
-                {
-                    ViewState["gvEmpresas"] = SortDirection.Descending;
-                    Orden = "ASC";
-                }
-                else
-                {
-                    ViewState["gvEmpresas"] = SortDirection.Ascending;
-                    Orden = "DESC";
-                }
-
-                switch (SortExpression)
-                {
-                    case "IdEscuela":
-                        if (Orden == "ASC")
-                        {
-                            clientesServices.lsClientesGridViewEmpresasModel = clientesServices.lsClientesGridViewEmpresasModel.OrderBy(x => x.IdCliente).ToList();
-                        }
-                        else
-                        {
-                            clientesServices.lsClientesGridViewEmpresasModel = clientesServices.lsClientesGridViewEmpresasModel.OrderByDescending(x => x.IdCliente).ToList();
-                        }
-                        break;
-                    case "VchRFC":
-                        if (Orden == "ASC")
-                        {
-                            clientesServices.lsClientesGridViewEmpresasModel = clientesServices.lsClientesGridViewEmpresasModel.OrderBy(x => x.VchRFC).ToList();
-                        }
-                        else
-                        {
-                            clientesServices.lsClientesGridViewEmpresasModel = clientesServices.lsClientesGridViewEmpresasModel.OrderByDescending(x => x.VchRFC).ToList();
-                        }
-                        break;
-                    case "VchRazonSocial":
-                        if (Orden == "ASC")
-                        {
-                            clientesServices.lsClientesGridViewEmpresasModel = clientesServices.lsClientesGridViewEmpresasModel.OrderBy(x => x.VchRazonSocial).ToList();
-                        }
-                        else
-                        {
-                            clientesServices.lsClientesGridViewEmpresasModel = clientesServices.lsClientesGridViewEmpresasModel.OrderByDescending(x => x.VchRazonSocial).ToList();
-                        }
-                        break;
-                    case "VchNombreComercial":
-                        if (Orden == "ASC")
-                        {
-                            clientesServices.lsClientesGridViewEmpresasModel = clientesServices.lsClientesGridViewEmpresasModel.OrderBy(x => x.VchNombreComercial).ToList();
-                        }
-                        else
-                        {
-                            clientesServices.lsClientesGridViewEmpresasModel = clientesServices.lsClientesGridViewEmpresasModel.OrderByDescending(x => x.VchNombreComercial).ToList();
-                        }
-                        break;
-                    case "UidEstatus":
-                        if (Orden == "ASC")
-                        {
-                            clientesServices.lsClientesGridViewEmpresasModel = clientesServices.lsClientesGridViewEmpresasModel.OrderBy(x => x.UidEstatus).ToList();
-                        }
-                        else
-                        {
-                            clientesServices.lsClientesGridViewEmpresasModel = clientesServices.lsClientesGridViewEmpresasModel.OrderByDescending(x => x.UidEstatus).ToList();
-                        }
-                        break;
-                }
-
-                gvEmpresas.DataSource = clientesServices.lsClientesGridViewEmpresasModel;
-                gvEmpresas.DataBind();
-            }
-        }
     }
 }

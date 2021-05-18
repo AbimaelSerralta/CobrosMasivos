@@ -26,6 +26,8 @@ namespace PagaLaEscuela.Views
         {
             if (!IsPostBack)
             {
+                ViewState["gvPerfiles"] = SortDirection.Ascending;
+
                 Session["listPermisosPrincipal"] = listPermisosPrincipal;
                 Session["listDenegarPermisos"] = listDenegarPermisos;
 
@@ -53,6 +55,12 @@ namespace PagaLaEscuela.Views
                 ddlEstatus.DataTextField = "VchDescripcion";
                 ddlEstatus.DataValueField = "UidEstatus";
                 ddlEstatus.DataBind();
+
+                FiltroEstatus.DataSource = estatusServices.lsEstatus;
+                FiltroEstatus.Items.Insert(0, new ListItem("TODOS", "00000000-0000-0000-0000-000000000000"));
+                FiltroEstatus.DataTextField = "VchDescripcion";
+                FiltroEstatus.DataValueField = "UidEstatus";
+                FiltroEstatus.DataBind();
 
                 tiposPerfilesServices.CargarTipoPerfil(new Guid("6D70F88D-3CE0-4C8B-87A1-92666039F5B2"));
                 ddlTipoPerfil.DataSource = tiposPerfilesServices.lsTipoPerfil;
@@ -219,6 +227,23 @@ namespace PagaLaEscuela.Views
 
             ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
         }
+        protected void btnFiltros_Click(object sender, EventArgs e)
+        {
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalBusqueda()", true);
+        }
+        protected void btnBuscar_Click(object sender, EventArgs e)
+        {
+            perfilesServices.BuscarPerfilesFranquiciaGridViewModel(Guid.Parse(ViewState["UidFranquiciaLocal"].ToString()), FiltroNombre.Text, Guid.Parse(FiltroEstatus.SelectedValue));
+            gvPerfiles.DataSource = perfilesServices.lsperfilesGridViewModel;
+            gvPerfiles.DataBind();
+
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModalBusqueda()", true);
+        }
+        protected void btnLimpiar_Click(object sender, EventArgs e)
+        {
+            FiltroNombre.Text = string.Empty;
+            FiltroEstatus.SelectedIndex = 0;
+        }
 
         private void BloquearCampos()
         {
@@ -260,7 +285,6 @@ namespace PagaLaEscuela.Views
                 }
             }
         }
-
         protected void gvPerfiles_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandName == "Editar")
@@ -304,6 +328,70 @@ namespace PagaLaEscuela.Views
                 lblTituloModal.Text = "Visualización del Acceso";
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
+            }
+        }
+        protected void gvPerfiles_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvPerfiles.PageIndex = e.NewPageIndex;
+            gvPerfiles.DataSource = perfilesServices.lsperfilesGridViewModel;
+            gvPerfiles.DataBind();
+        }
+        protected void gvPerfiles_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            string SortExpression = e.SortExpression;
+            SortDirection direccion;
+            string Orden = string.Empty;
+
+            if (ViewState["gvPerfiles"] != null)
+            {
+                direccion = (SortDirection)ViewState["gvPerfiles"];
+                if (direccion == SortDirection.Ascending)
+                {
+                    ViewState["gvPerfiles"] = SortDirection.Descending;
+                    Orden = "ASC";
+                }
+                else
+                {
+                    ViewState["gvPerfiles"] = SortDirection.Ascending;
+                    Orden = "DESC";
+                }
+
+                switch (SortExpression)
+                {
+                    case "VchNombre":
+                        if (Orden == "ASC")
+                        {
+                            perfilesServices.lsperfilesGridViewModel = perfilesServices.lsperfilesGridViewModel.OrderBy(x => x.VchNombre).ToList();
+                        }
+                        else
+                        {
+                            perfilesServices.lsperfilesGridViewModel = perfilesServices.lsperfilesGridViewModel.OrderByDescending(x => x.VchNombre).ToList();
+                        }
+                        break;
+                    case "VchPerfil":
+                        if (Orden == "ASC")
+                        {
+                            perfilesServices.lsperfilesGridViewModel = perfilesServices.lsperfilesGridViewModel.OrderBy(x => x.VchPerfil).ToList();
+                        }
+                        else
+                        {
+                            perfilesServices.lsperfilesGridViewModel = perfilesServices.lsperfilesGridViewModel.OrderByDescending(x => x.VchPerfil).ToList();
+                        }
+                        break;
+                    case "UidEstatus":
+                        if (Orden == "ASC")
+                        {
+                            perfilesServices.lsperfilesGridViewModel = perfilesServices.lsperfilesGridViewModel.OrderBy(x => x.UidEstatus).ToList();
+                        }
+                        else
+                        {
+                            perfilesServices.lsperfilesGridViewModel = perfilesServices.lsperfilesGridViewModel.OrderByDescending(x => x.UidEstatus).ToList();
+                        }
+                        break;
+                }
+
+                gvPerfiles.DataSource = perfilesServices.lsperfilesGridViewModel;
+                gvPerfiles.DataBind();
             }
         }
 

@@ -42,6 +42,7 @@ namespace PagaLaEscuela.Views
             if (!IsPostBack)
             {
                 //ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideAlert()", true);
+                ViewState["gvClientes"] = SortDirection.Ascending;
 
                 #region Direccion
                 Session["paisesServices"] = paisesServices;
@@ -78,6 +79,12 @@ namespace PagaLaEscuela.Views
                 ddlEstatus.DataTextField = "VchDescripcion";
                 ddlEstatus.DataValueField = "UidEstatus";
                 ddlEstatus.DataBind();
+
+                FiltroEstatus.DataSource = estatusService.lsEstatus;
+                FiltroEstatus.Items.Insert(0, new ListItem("TODOS", "00000000-0000-0000-0000-000000000000"));
+                FiltroEstatus.DataTextField = "VchDescripcion";
+                FiltroEstatus.DataValueField = "UidEstatus";
+                FiltroEstatus.DataBind();
 
                 tiposTelefonosServices.CargarTiposTelefonos();
                 ddlTipoTelefono.DataSource = tiposTelefonosServices.lsTiposTelefonos;
@@ -413,7 +420,36 @@ namespace PagaLaEscuela.Views
 
             ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
         }
+        protected void btnFiltros_Click(object sender, EventArgs e)
+        {
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalBusqueda()", true);
+        }
+        protected void btnBuscar_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(FiltroIdEscuela.Text))
+            {
+                FiltroIdEscuela.Text = "0";
+            }
 
+            clientesServices.BuscarClientes(Guid.Parse(ViewState["UidFranquiciaLocal"].ToString()), int.Parse(FiltroIdEscuela.Text), FiltroRfc.Text, FiltroRazonSocial.Text, FiltroNombreComercial.Text, Guid.Parse(FiltroEstatus.SelectedValue));
+            gvClientes.DataSource = clientesServices.lsClientesGridViewModel;
+            gvClientes.DataBind();
+
+            if (FiltroIdEscuela.Text == "0")
+            {
+                FiltroIdEscuela.Text = string.Empty;
+            }
+
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModalBusqueda()", true);
+        }
+        protected void btnLimpiar_Click(object sender, EventArgs e)
+        {
+            FiltroIdEscuela.Text = string.Empty;
+            FiltroRfc.Text = string.Empty;
+            FiltroRazonSocial.Text = string.Empty;
+            FiltroNombreComercial.Text = string.Empty;
+            FiltroEstatus.SelectedIndex = 0;
+        }
         private void BloquearCampos()
         {
             txtIdentificadorWASMS.Enabled = false;
@@ -568,6 +604,90 @@ namespace PagaLaEscuela.Views
                 Session["NombreClienteMaster"] = clientesServices.clientes.VchNombreComercial;
                 Master.MenuCliente.Attributes.Add("class", "dropdown-toggle font-weight-bold");
             }
+        }
+        protected void gvClientes_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            string SortExpression = e.SortExpression;
+            SortDirection direccion;
+            string Orden = string.Empty;
+
+            if (ViewState["gvClientes"] != null)
+            {
+                direccion = (SortDirection)ViewState["gvClientes"];
+                if (direccion == SortDirection.Ascending)
+                {
+                    ViewState["gvClientes"] = SortDirection.Descending;
+                    Orden = "ASC";
+                }
+                else
+                {
+                    ViewState["gvClientes"] = SortDirection.Ascending;
+                    Orden = "DESC";
+                }
+
+                switch (SortExpression)
+                {
+                    case "VchIdCliente":
+                        if (Orden == "ASC")
+                        {
+                            clientesServices.lsClientesGridViewModel = clientesServices.lsClientesGridViewModel.OrderBy(x => x.VchIdCliente).ToList();
+                        }
+                        else
+                        {
+                            clientesServices.lsClientesGridViewModel = clientesServices.lsClientesGridViewModel.OrderByDescending(x => x.VchIdCliente).ToList();
+                        }
+                        break;
+                    case "VchRFC":
+                        if (Orden == "ASC")
+                        {
+                            clientesServices.lsClientesGridViewModel = clientesServices.lsClientesGridViewModel.OrderBy(x => x.VchRFC).ToList();
+                        }
+                        else
+                        {
+                            clientesServices.lsClientesGridViewModel = clientesServices.lsClientesGridViewModel.OrderByDescending(x => x.VchRFC).ToList();
+                        }
+                        break;
+                    case "VchRazonSocial":
+                        if (Orden == "ASC")
+                        {
+                            clientesServices.lsClientesGridViewModel = clientesServices.lsClientesGridViewModel.OrderBy(x => x.VchRazonSocial).ToList();
+                        }
+                        else
+                        {
+                            clientesServices.lsClientesGridViewModel = clientesServices.lsClientesGridViewModel.OrderByDescending(x => x.VchRazonSocial).ToList();
+                        }
+                        break;
+                    case "VchNombreComercial":
+                        if (Orden == "ASC")
+                        {
+                            clientesServices.lsClientesGridViewModel = clientesServices.lsClientesGridViewModel.OrderBy(x => x.VchNombreComercial).ToList();
+                        }
+                        else
+                        {
+                            clientesServices.lsClientesGridViewModel = clientesServices.lsClientesGridViewModel.OrderByDescending(x => x.VchNombreComercial).ToList();
+                        }
+                        break;
+                    case "UidEstatus":
+                        if (Orden == "ASC")
+                        {
+                            clientesServices.lsClientesGridViewModel = clientesServices.lsClientesGridViewModel.OrderBy(x => x.UidEstatus).ToList();
+                        }
+                        else
+                        {
+                            clientesServices.lsClientesGridViewModel = clientesServices.lsClientesGridViewModel.OrderByDescending(x => x.UidEstatus).ToList();
+                        }
+                        break;
+                }
+
+                gvClientes.DataSource = clientesServices.lsClientesGridViewModel;
+                gvClientes.DataBind();
+            }
+        }
+        protected void gvClientes_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvClientes.PageIndex = e.NewPageIndex;
+            gvClientes.DataSource = clientesServices.lsClientesGridViewModel;
+            gvClientes.DataBind();
         }
         private void ManejoDatos(Guid dataKeys)
         {

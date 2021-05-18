@@ -57,7 +57,7 @@
                                                 </EmptyDataTemplate>
                                                 <Columns>
                                                     <asp:ButtonField CommandName="Select" HeaderStyle-CssClass="hide" ItemStyle-CssClass="hide" />
-                                                    <asp:TemplateField SortExpression="IdEscuela" HeaderText="IdEscuela">
+                                                    <asp:TemplateField SortExpression="VchIdCliente" HeaderText="IdEscuela">
                                                         <ItemTemplate>
                                                             <table>
                                                                 <tr>

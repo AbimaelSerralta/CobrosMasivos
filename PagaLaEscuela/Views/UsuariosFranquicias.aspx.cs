@@ -62,6 +62,12 @@ namespace PagaLaEscuela.Views
                 ddlEstatus.DataValueField = "UidEstatus";
                 ddlEstatus.DataBind();
 
+                FiltroEstatus.DataSource = estatusService.lsEstatus;
+                FiltroEstatus.Items.Insert(0, new ListItem("TODOS", "00000000-0000-0000-0000-000000000000"));
+                FiltroEstatus.DataTextField = "VchDescripcion";
+                FiltroEstatus.DataValueField = "UidEstatus";
+                FiltroEstatus.DataBind();
+
                 tiposTelefonosServices.CargarTiposTelefonos();
                 ddlTipoTelefono.DataSource = tiposTelefonosServices.lsTiposTelefonos;
                 ddlTipoTelefono.DataTextField = "VchDescripcion";
@@ -416,6 +422,27 @@ namespace PagaLaEscuela.Views
 
             ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
         }
+        protected void btnFiltros_Click(object sender, EventArgs e)
+        {
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalBusqueda()", true);
+        }
+        protected void btnBuscar_Click(object sender, EventArgs e)
+        {
+            usuariosCompletosServices.BuscarAdministradoresFranquicia(Guid.Parse(ViewState["UidFranquiciaLocal"].ToString()), Guid.Parse("8490C81D-5979-49AC-92CC-E34A50A497D5"), FiltroNombre.Text, FiltroApePaterno.Text, FiltroApeMaterno.Text, FiltroCorreo.Text, FiltroPerfil.Text, Guid.Parse(FiltroEstatus.SelectedValue));
+            gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
+            gvAdministradores.DataBind();
+
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModalBusqueda()", true);
+        }
+        protected void btnLimpiar_Click(object sender, EventArgs e)
+        {
+            FiltroNombre.Text = string.Empty;
+            FiltroApePaterno.Text = string.Empty;
+            FiltroApeMaterno.Text = string.Empty;
+            FiltroCorreo.Text = string.Empty;
+            FiltroPerfil.Text = string.Empty;
+            FiltroEstatus.SelectedIndex = 0;
+        }
 
         private void BloquearCampos()
         {
@@ -512,7 +539,6 @@ namespace PagaLaEscuela.Views
                 e.Row.Attributes["onclick"] = Page.ClientScript.GetPostBackClientHyperlink(gvAdministradores, "Select$" + e.Row.RowIndex);
             }
         }
-
         protected void gvAdministradores_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandName == "Editar")
@@ -556,6 +582,90 @@ namespace PagaLaEscuela.Views
                 lblTituloModal.Text = "Visualización de Usuario";
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
+            }
+        }
+        protected void gvAdministradores_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvAdministradores.PageIndex = e.NewPageIndex;
+            gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
+            gvAdministradores.DataBind();
+        }
+        protected void gvAdministradores_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            string SortExpression = e.SortExpression;
+            SortDirection direccion;
+            string Orden = string.Empty;
+
+            if (ViewState["gvAdministradores"] != null)
+            {
+                direccion = (SortDirection)ViewState["gvAdministradores"];
+                if (direccion == SortDirection.Ascending)
+                {
+                    ViewState["gvAdministradores"] = SortDirection.Descending;
+                    Orden = "ASC";
+                }
+                else
+                {
+                    ViewState["gvAdministradores"] = SortDirection.Ascending;
+                    Orden = "DESC";
+                }
+
+                switch (SortExpression)
+                {
+                    case "NombreCompleto":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderBy(x => x.NombreCompleto).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.NombreCompleto).ToList();
+                        }
+                        break;
+                    case "StrCorreo":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderBy(x => x.StrCorreo).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.StrCorreo).ToList();
+                        }
+                        break;
+                    case "VchUsuario":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderBy(x => x.VchUsuario).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.VchUsuario).ToList();
+                        }
+                        break;
+                    case "VchNombrePerfil":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderBy(x => x.VchNombrePerfil).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.VchNombrePerfil).ToList();
+                        }
+                        break;
+                    case "UidEstatus":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderBy(x => x.UidEstatus).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.UidEstatus).ToList();
+                        }
+                        break;
+                }
+
+                gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
+                gvAdministradores.DataBind();
             }
         }
 

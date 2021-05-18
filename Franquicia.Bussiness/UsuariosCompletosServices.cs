@@ -59,7 +59,6 @@ namespace Franquicia.Bussiness
         {
             lsUsuariosCompletos = usuariosCompletosRepository.CargarAdministradores(UidTipoPerfil);
         }
-
         public void BuscarAdministradores(Guid UidTipoPerfil, string Nombre, string ApePaterno, string ApeMaterno, string Correo, string Franquicia, Guid UidEstatus)
         {
             lsUsuariosCompletos = usuariosCompletosRepository.BuscarAdministradores(UidTipoPerfil, Nombre, ApePaterno, ApeMaterno, Correo, Franquicia, UidEstatus);
@@ -422,6 +421,10 @@ namespace Franquicia.Bussiness
         {
             lsUsuariosCompletos = usuariosCompletosRepository.CargarAdministradoresFranquicia(UidFranquiciatario, UidTipoPerfilFranquicia);
         }
+        public void BuscarAdministradoresFranquicia(Guid UidFranquiciatario, Guid UidTipoPerfilFranquicia, string Nombre, string ApePaterno, string ApeMaterno, string Correo, string Perfil, Guid UidEstatus)
+        {
+            lsUsuariosCompletos = usuariosCompletosRepository.BuscarAdministradoresFranquicia(UidFranquiciatario, UidTipoPerfilFranquicia, Nombre, ApePaterno, ApeMaterno, Correo, Perfil, UidEstatus);
+        }
         public bool RegistrarAdministradoresFranquicia(
             string Nombre, string ApePaterno, string ApeMaterno, string Correo, string Usuario, string Password, Guid UidSegPerfil, Guid UidSegPerfilEscuela,
             string Identificador, Guid UidPais, Guid UidEstado, Guid Municipio, Guid UidCiudad, Guid UidColonia, string Calle, string EntreCalle, string YCalle, string NumeroExterior, string NumeroInterior, string CodigoPostal, string Referencia,
@@ -529,6 +532,10 @@ namespace Franquicia.Bussiness
         public void CargarAdministradoresCliente(Guid UidFranquiciatario, Guid UidTipoPerfil)
         {
             lsUsuariosCompletos = usuariosCompletosRepository.CargarAdministradoresCliente(UidFranquiciatario, UidTipoPerfil);
+        }
+        public void BuscarAdministradoresCliente(Guid UidFranquiciatario, Guid UidTipoPerfil, string Nombre, string ApePaterno, string ApeMaterno, string Correo, string Cliente, Guid UidEstatus)
+        {
+            lsUsuariosCompletos = usuariosCompletosRepository.BuscarAdministradoresCliente(UidFranquiciatario, UidTipoPerfil, Nombre, ApePaterno, ApeMaterno, Correo, Cliente, UidEstatus);
         }
         public bool RegistrarAdministradoresCliente(
             string Nombre, string ApePaterno, string ApeMaterno, string Correo, string Usuario, string Password, bool BitEscuela, Guid UidSegPerfil, Guid UidSegPerfilEscuela,

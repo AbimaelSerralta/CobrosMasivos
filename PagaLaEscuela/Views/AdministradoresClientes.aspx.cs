@@ -32,6 +32,8 @@ namespace PagaLaEscuela.Views
         {
             if (!IsPostBack)
             {
+                ViewState["gvAdministradores"] = SortDirection.Ascending;
+
                 #region Direccion
                 Session["paisesServices"] = paisesServices;
                 Session["estadosServices"] = estadosServices;
@@ -54,7 +56,7 @@ namespace PagaLaEscuela.Views
                     ViewState["UidFranquiciaLocal"] = Guid.Empty;
                 }
 
-                usuariosCompletosServices.CargarAdministradoresCliente(new Guid(ViewState["UidFranquiciaLocal"].ToString()), new Guid("4EF31BD5-95AB-4172-AF94-E25A3CADAD74"));
+                usuariosCompletosServices.CargarAdministradoresCliente(Guid.Parse(ViewState["UidFranquiciaLocal"].ToString()), Guid.Parse("4EF31BD5-95AB-4172-AF94-E25A3CADAD74"));
                 gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
                 gvAdministradores.DataBind();
 
@@ -63,6 +65,12 @@ namespace PagaLaEscuela.Views
                 ddlEstatus.DataTextField = "VchDescripcion";
                 ddlEstatus.DataValueField = "UidEstatus";
                 ddlEstatus.DataBind();
+
+                FiltroEstatus.DataSource = estatusService.lsEstatus;
+                FiltroEstatus.Items.Insert(0, new ListItem("TODOS", "00000000-0000-0000-0000-000000000000"));
+                FiltroEstatus.DataTextField = "VchDescripcion";
+                FiltroEstatus.DataValueField = "UidEstatus";
+                FiltroEstatus.DataBind();
 
                 tiposTelefonosServices.CargarTiposTelefonos();
                 ddlTipoTelefono.DataSource = tiposTelefonosServices.lsTiposTelefonos;
@@ -76,7 +84,7 @@ namespace PagaLaEscuela.Views
                 ddlPais.DataValueField = "UidPais";
                 ddlPais.DataBind();
 
-                perfilesServices.CargarPerfilesFranquiciaDropDownListModel(new Guid(ViewState["UidFranquiciaLocal"].ToString()), new Guid("4EF31BD5-95AB-4172-AF94-E25A3CADAD74"));
+                perfilesServices.CargarPerfilesFranquiciaDropDownListModel(Guid.Parse(ViewState["UidFranquiciaLocal"].ToString()), Guid.Parse("4EF31BD5-95AB-4172-AF94-E25A3CADAD74"));
                 ddlPerfil.DataSource = perfilesServices.lsPerfilesDropDownListModel;
                 ddlPerfil.DataTextField = "VchNombre";
                 ddlPerfil.DataValueField = "UidSegPerfil";
@@ -310,7 +318,7 @@ namespace PagaLaEscuela.Views
             #endregion
 
             List<PermisosMenuModel> permisosMenuModels = (List<PermisosMenuModel>)Session["lsAccesosPermitidos"];
-            permisosMenuModels = permisosMenuModels.Where(x => x.UidSegModulo == new Guid("34C2AD6C-0F91-4DF5-9A35-501E6279003D")).ToList();
+            permisosMenuModels = permisosMenuModels.Where(x => x.UidSegModulo == Guid.Parse("34C2AD6C-0F91-4DF5-9A35-501E6279003D")).ToList();
             foreach (var item in permisosMenuModels)
             {
                 if (ViewState["Accion"].ToString() == "Guardar")
@@ -325,10 +333,10 @@ namespace PagaLaEscuela.Views
                                 {
                                     if (usuariosCompletosServices.RegistrarAdministradoresCliente(
                                     txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), txtUsuario.Text.Trim().ToUpper(), txtPassword.Text.Trim(), bool.Parse(ViewState["BitEstatus"].ToString()), Guid.Parse("d2c80d47-c14c-4677-a63d-c46bcb50fe17"), Guid.Parse("85b6ce16-bace-489e-8e75-2280f72605f1"),
-                                    txtIdentificador.Text.Trim().ToUpper(), new Guid(ddlPais.SelectedValue), new Guid(ddlEstado.SelectedValue), new Guid(ddlMunicipio.SelectedValue), new Guid(ddlCiudad.SelectedValue), new Guid(ddlColonia.SelectedValue), txtCalle.Text.Trim().ToUpper(), txtEntreCalle.Text.Trim().ToUpper(), txtYCalle.Text.Trim().ToUpper(), txtNumeroExterior.Text.Trim().ToUpper(), txtNumeroInterior.Text.Trim().ToUpper(), txtCodigoPostal.Text.Trim().ToUpper(), txtReferencia.Text.Trim().ToUpper(),
-                                    txtNumero.Text.Trim(), new Guid(ddlTipoTelefono.SelectedValue), new Guid(ViewState["UidCliente"].ToString())))
+                                    txtIdentificador.Text.Trim().ToUpper(), Guid.Parse(ddlPais.SelectedValue), Guid.Parse(ddlEstado.SelectedValue), Guid.Parse(ddlMunicipio.SelectedValue), Guid.Parse(ddlCiudad.SelectedValue), Guid.Parse(ddlColonia.SelectedValue), txtCalle.Text.Trim().ToUpper(), txtEntreCalle.Text.Trim().ToUpper(), txtYCalle.Text.Trim().ToUpper(), txtNumeroExterior.Text.Trim().ToUpper(), txtNumeroInterior.Text.Trim().ToUpper(), txtCodigoPostal.Text.Trim().ToUpper(), txtReferencia.Text.Trim().ToUpper(),
+                                    txtNumero.Text.Trim(), Guid.Parse(ddlTipoTelefono.SelectedValue), Guid.Parse(ViewState["UidCliente"].ToString())))
                                     {
-                                        usuariosCompletosServices.CargarAdministradoresCliente(new Guid(ViewState["UidFranquiciaLocal"].ToString()), new Guid("4EF31BD5-95AB-4172-AF94-E25A3CADAD74"));
+                                        usuariosCompletosServices.CargarAdministradoresCliente(Guid.Parse(ViewState["UidFranquiciaLocal"].ToString()), Guid.Parse("4EF31BD5-95AB-4172-AF94-E25A3CADAD74"));
                                         gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
                                         gvAdministradores.DataBind();
 
@@ -390,11 +398,11 @@ namespace PagaLaEscuela.Views
                             if (Actualizar)
                             {
                                 if (usuariosCompletosServices.ActualizarAdministradoresCliente(
-                                new Guid(ViewState["UidRequerido"].ToString()), txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), new Guid(ddlEstatus.SelectedValue), txtUsuario.Text.Trim().ToUpper(), txtPassword.Text.Trim(), bool.Parse(ViewState["BitEstatus"].ToString()), Guid.Parse("d2c80d47-c14c-4677-a63d-c46bcb50fe17"), Guid.Parse("85b6ce16-bace-489e-8e75-2280f72605f1"),
-                                txtIdentificador.Text.Trim().ToUpper(), new Guid(ddlPais.SelectedValue), new Guid(ddlEstado.SelectedValue), new Guid(ddlMunicipio.SelectedValue), new Guid(ddlCiudad.SelectedValue), new Guid(ddlColonia.SelectedValue), txtCalle.Text.Trim().ToUpper(), txtEntreCalle.Text.Trim().ToUpper(), txtYCalle.Text.Trim().ToUpper(), txtNumeroExterior.Text.Trim().ToUpper(), txtNumeroInterior.Text.Trim().ToUpper(), txtCodigoPostal.Text.Trim().ToUpper(), txtReferencia.Text.Trim().ToUpper(),
-                                txtNumero.Text.Trim(), new Guid(ddlTipoTelefono.SelectedValue), new Guid(ViewState["UidCliente"].ToString())))
+                                Guid.Parse(ViewState["UidRequerido"].ToString()), txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), Guid.Parse(ddlEstatus.SelectedValue), txtUsuario.Text.Trim().ToUpper(), txtPassword.Text.Trim(), bool.Parse(ViewState["BitEstatus"].ToString()), Guid.Parse("d2c80d47-c14c-4677-a63d-c46bcb50fe17"), Guid.Parse("85b6ce16-bace-489e-8e75-2280f72605f1"),
+                                txtIdentificador.Text.Trim().ToUpper(), Guid.Parse(ddlPais.SelectedValue), Guid.Parse(ddlEstado.SelectedValue), Guid.Parse(ddlMunicipio.SelectedValue), Guid.Parse(ddlCiudad.SelectedValue), Guid.Parse(ddlColonia.SelectedValue), txtCalle.Text.Trim().ToUpper(), txtEntreCalle.Text.Trim().ToUpper(), txtYCalle.Text.Trim().ToUpper(), txtNumeroExterior.Text.Trim().ToUpper(), txtNumeroInterior.Text.Trim().ToUpper(), txtCodigoPostal.Text.Trim().ToUpper(), txtReferencia.Text.Trim().ToUpper(),
+                                txtNumero.Text.Trim(), Guid.Parse(ddlTipoTelefono.SelectedValue), Guid.Parse(ViewState["UidCliente"].ToString())))
                                 {
-                                    usuariosCompletosServices.CargarAdministradoresCliente(new Guid(ViewState["UidFranquiciaLocal"].ToString()), new Guid("4EF31BD5-95AB-4172-AF94-E25A3CADAD74"));
+                                    usuariosCompletosServices.CargarAdministradoresCliente(Guid.Parse(ViewState["UidFranquiciaLocal"].ToString()), Guid.Parse("4EF31BD5-95AB-4172-AF94-E25A3CADAD74"));
                                     gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
                                     gvAdministradores.DataBind();
 
@@ -436,7 +444,27 @@ namespace PagaLaEscuela.Views
 
             ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
         }
+        protected void btnFiltros_Click(object sender, EventArgs e)
+        {
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalBusqueda()", true);
+        }
+        protected void btnFiltroBuscar_Click(object sender, EventArgs e)
+        {
+            usuariosCompletosServices.BuscarAdministradoresCliente(Guid.Parse(ViewState["UidFranquiciaLocal"].ToString()), Guid.Parse("4EF31BD5-95AB-4172-AF94-E25A3CADAD74"), FiltroNombre.Text, FiltroApePaterno.Text, FiltroApeMaterno.Text, FiltroCorreo.Text, FiltroEscuela.Text, Guid.Parse(FiltroEstatus.SelectedValue));
+            gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
+            gvAdministradores.DataBind();
 
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModalBusqueda()", true);
+        }
+        protected void btnFiltroLimpiar_Click(object sender, EventArgs e)
+        {
+            FiltroNombre.Text = string.Empty;
+            FiltroApePaterno.Text = string.Empty;
+            FiltroApeMaterno.Text = string.Empty;
+            FiltroCorreo.Text = string.Empty;
+            FiltroEscuela.Text = string.Empty;
+            FiltroEstatus.SelectedIndex = 0;
+        }
         private void BloquearCampos()
         {
             txtNombre.Enabled = false;
@@ -553,7 +581,6 @@ namespace PagaLaEscuela.Views
                 e.Row.Attributes["onclick"] = Page.ClientScript.GetPostBackClientHyperlink(gvAdministradores, "Select$" + e.Row.RowIndex);
             }
         }
-
         protected void gvAdministradores_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandName == "Editar")
@@ -598,6 +625,91 @@ namespace PagaLaEscuela.Views
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
             }
+        }
+        protected void gvAdministradores_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            string SortExpression = e.SortExpression;
+            SortDirection direccion;
+            string Orden = string.Empty;
+
+            if (ViewState["gvAdministradores"] != null)
+            {
+                direccion = (SortDirection)ViewState["gvAdministradores"];
+                if (direccion == SortDirection.Ascending)
+                {
+                    ViewState["gvAdministradores"] = SortDirection.Descending;
+                    Orden = "ASC";
+                }
+                else
+                {
+                    ViewState["gvAdministradores"] = SortDirection.Ascending;
+                    Orden = "DESC";
+                }
+
+                switch (SortExpression)
+                {
+                    case "NombreCompleto":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderBy(x => x.NombreCompleto).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.NombreCompleto).ToList();
+                        }
+                        break;
+                    case "StrCorreo":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderBy(x => x.StrCorreo).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.StrCorreo).ToList();
+                        }
+                        break;
+                    case "VchUsuario":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderBy(x => x.VchUsuario).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.VchUsuario).ToList();
+                        }
+                        break;
+                    case "VchNombreComercial":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderBy(x => x.VchNombreComercial).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.VchNombreComercial).ToList();
+                        }
+                        break;
+                    case "UidEstatus":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderBy(x => x.UidEstatus).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.UidEstatus).ToList();
+                        }
+                        break;
+                }
+
+                gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
+                gvAdministradores.DataBind();
+            }
+        }
+
+        protected void gvAdministradores_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvAdministradores.PageIndex = e.NewPageIndex;
+            gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
+            gvAdministradores.DataBind();
         }
 
         private void ManejoDatos(Guid dataKeys)
@@ -659,7 +771,7 @@ namespace PagaLaEscuela.Views
         {
             GridViewRow row = gvClientes.SelectedRow;
 
-            Guid UidCliente = new Guid(gvClientes.SelectedDataKey.Value.ToString());
+            Guid UidCliente = Guid.Parse(gvClientes.SelectedDataKey.Value.ToString());
 
             ViewState["UidCliente"] = UidCliente;
 
@@ -739,7 +851,7 @@ namespace PagaLaEscuela.Views
 
         protected void btnBuscar_Click(object sender, EventArgs e)
         {
-            clientesServices.CargarClientes(new Guid(Session["UidFranquiciaMaster"].ToString()));
+            clientesServices.CargarClientes(Guid.Parse(Session["UidFranquiciaMaster"].ToString()));
             gvClientes.DataSource = clientesServices.lsClientesGridViewModel;
             gvClientes.DataBind();
 

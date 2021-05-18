@@ -2,6 +2,8 @@
 
 <%@ MasterType VirtualPath="~/Views/MasterPage.Master" %>
 
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="CPHCaja" runat="server">
@@ -26,7 +28,9 @@
                                     <div class="nav-tabs-navigation">
                                         <div class="nav-tabs-wrapper">
                                             <div class="form-group">
-
+                                                <asp:LinkButton ID="btnFiltros" OnClick="btnFiltros_Click" ToolTip="Filtros de busqueda." BackColor="#4db6ac" class="btn btn-lg btn-fab btn-fab-mini btn-round" runat="server">
+                                                        <i class="material-icons">search</i>
+                                                </asp:LinkButton>
                                                 <asp:Label Text="Listado de Escuelas" runat="server" />
 
                                                 <div class="pull-right">
@@ -41,13 +45,13 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="table-responsive">
-                                            <asp:GridView ID="gvClientes" OnSelectedIndexChanged="gvClientes_SelectedIndexChanged" OnRowCommand="gvClientes_RowCommand" OnRowDataBound="gvClientes_RowDataBound" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidCliente" GridLines="None" border="0" runat="server">
+                                            <asp:GridView ID="gvClientes" OnSelectedIndexChanged="gvClientes_SelectedIndexChanged" OnRowCommand="gvClientes_RowCommand" OnRowDataBound="gvClientes_RowDataBound" OnPageIndexChanging="gvClientes_PageIndexChanging" OnSorting="gvClientes_Sorting" AllowPaging="true" PageSize="10" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidCliente" GridLines="None" border="0" runat="server">
                                                 <EmptyDataTemplate>
                                                     <div class="alert alert-info">No hay comercios registrados</div>
                                                 </EmptyDataTemplate>
                                                 <Columns>
                                                     <asp:ButtonField CommandName="Select" HeaderStyle-CssClass="hide" ItemStyle-CssClass="hide" />
-                                                    <asp:TemplateField HeaderText="IdEscuela">
+                                                    <asp:TemplateField SortExpression="VchIdCliente" HeaderText="IdEscuela">
                                                         <ItemTemplate>
                                                             <table>
                                                                 <tr>
@@ -68,7 +72,7 @@
                                                     <asp:BoundField SortExpression="VchRFC" DataField="VchRFC" HeaderText="RFC" />
                                                     <asp:BoundField SortExpression="VchRazonSocial" DataField="VchRazonSocial" HeaderText="RAZÓN SOCIAL" />
                                                     <asp:BoundField SortExpression="VchNombreComercial" DataField="VchNombreComercial" HeaderText="NOMBRE COMERCIAL" />
-                                                    <asp:BoundField SortExpression="VchIdWAySMS" DataField="VchIdWAySMS" HeaderText="DESCRIPCION WA/SMS" />
+                                                    <%--                                                    <asp:BoundField SortExpression="VchIdWAySMS" DataField="VchIdWAySMS" HeaderText="DESCRIPCION WA/SMS" />--%>
                                                     <asp:TemplateField SortExpression="UidEstatus" HeaderText="ESTATUS">
                                                         <ItemTemplate>
                                                             <div class="col-md-6">
@@ -106,6 +110,7 @@
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                 </Columns>
+                                                <PagerStyle HorizontalAlign="Center" CssClass="pagination-ys" />
                                             </asp:GridView>
                                         </div>
                                     </div>
@@ -125,8 +130,83 @@
 
 <asp:Content ID="Content3" ContentPlaceHolderID="cBodyBottom" runat="server">
     <!--MODAL-->
+    <div id="ModalBusqueda" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <asp:UpdatePanel runat="server">
+                    <ContentTemplate>
+                        <div class="modal-header">
+                            <h5 class="modal-title" runat="server">
+                                <asp:Label ID="lblTittleLigas" Text="Filtro de busqueda" runat="server" /></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+                <div class="modal-body pt-0" style="padding-bottom: 0px;">
+                    <div class="tab-content">
+                        <asp:UpdatePanel runat="server">
+                            <ContentTemplate>
+                                <asp:Panel ID="pnlFiltrosBusqueda" runat="server">
+                                    <div class="card" style="margin-top: 0px;">
+                                        <div class="card-header card-header-tabs card-header" style="padding-top: 0px; padding-bottom: 0px; margin-top: 0px;">
+                                            <div class="nav-tabs-navigation">
+                                                <div class="nav-tabs-wrapper">
+                                                    <div class="form-group">
+                                                        <div class="row">
+                                                            <div class="form-group col-md-4">
+                                                                <label for="FiltroIdEscuela" style="color: black;">IdEscuela</label>
+                                                                <asp:TextBox ID="FiltroIdEscuela" CssClass="form-control" TextMode="Number" aria-label="Search" runat="server" />
+                                                                <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars="" TargetControlID="FiltroIdEscuela" runat="server" />
+                                                            </div>
+                                                            <div class="form-group col-md-4">
+                                                                <label for="FiltroRfc" style="color: black;">RFC</label>
+                                                                <asp:TextBox ID="FiltroRfc" CssClass="form-control" aria-label="Search" runat="server" />
+                                                            </div>
+                                                            <div class="form-group col-md-4">
+                                                                <label for="FiltroRazonSocial" style="color: black;">Razon Social</label>
+                                                                <asp:TextBox ID="FiltroRazonSocial" CssClass="form-control" aria-label="Search" runat="server" />
+                                                            </div>
+                                                            <div class="form-group col-md-4">
+                                                                <label for="FiltroNombreComercial" style="color: black;">Nombre Comercial</label>
+                                                                <asp:TextBox ID="FiltroNombreComercial" CssClass="form-control" aria-label="Search" runat="server" />
+                                                            </div>
+                                                            <div class="form-group col-md-4">
+                                                                <label for="FiltroEstatus" style="color: black;">Estatus</label>
+                                                                <asp:DropDownList ID="FiltroEstatus" AppendDataBoundItems="true" CssClass="form-control" runat="server"></asp:DropDownList>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </asp:Panel>
+                            </ContentTemplate>
+                        </asp:UpdatePanel>
+                    </div>
+                </div>
+                <asp:UpdatePanel runat="server">
+                    <ContentTemplate>
+                        <div class="modal-footer justify-content-center" style="padding-top: 0px; padding-bottom: 10px;">
+                            <asp:LinkButton ID="btnBuscar" OnClick="btnBuscar_Click" CssClass="btn btn-primary btn-round" runat="server">
+                            <i class="material-icons">search</i> Buscar
+                            </asp:LinkButton>
+                            <asp:LinkButton ID="btnLimpiar" OnClick="btnLimpiar_Click" CssClass="btn btn-warning btn-round" runat="server">
+                            <i class="material-icons">clear_all</i> Limpiar
+                            </asp:LinkButton>
+                        </div>
+                    </ContentTemplate>
+                    <Triggers>
+                        <asp:AsyncPostBackTrigger ControlID="btnBuscar" EventName="Click" />
+                    </Triggers>
+                </asp:UpdatePanel>
+            </div>
+        </div>
+    </div>
     <div class="modal fade" id="ModalNuevo" tabindex="-1" role="dialog" data-backdrop="static" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <asp:UpdatePanel runat="server">
                     <ContentTemplate>
@@ -220,7 +300,7 @@
                                                         </asp:DropDownList>
                                                     </div>
                                                     <div visible="false" class="form-group col-md-3" runat="server">
-                                                        <label for="ddlEscuela" style="font-weight:bold; color: black;">¿Es una escuela?</label>
+                                                        <label for="ddlEscuela" style="font-weight: bold; color: black;">¿Es una escuela?</label>
                                                         <asp:DropDownList ID="ddlEscuela" CssClass="form-control" runat="server">
                                                             <asp:ListItem Text="NO" Value="false" />
                                                             <asp:ListItem Text="SI" Value="true" />
@@ -360,6 +440,15 @@
     </div>
     <!--END MODAL-->
 
+    <script>
+        function showModalBusqueda() {
+            $('#ModalBusqueda').modal('show');
+        }
+
+        function hideModalBusqueda() {
+            $('#ModalBusqueda').modal('hide');
+        }
+    </script>
     <script>
         function showModal() {
             $('#ModalNuevo').modal('show');

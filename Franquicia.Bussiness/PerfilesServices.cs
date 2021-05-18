@@ -88,6 +88,10 @@ namespace Franquicia.Bussiness
 
             return lsperfilesGridViewModel = perfilesRepository.CargarPerfilesFranquiciaGridViewModel(UidFranquiciatario);
         }
+        public void BuscarPerfilesFranquiciaGridViewModel(Guid UidFranquiciatario, string Nombre, Guid UidEstatus)
+        {
+            lsperfilesGridViewModel = perfilesRepository.BuscarPerfilesFranquiciaGridViewModel(UidFranquiciatario, Nombre, UidEstatus);
+        }
 
         public List<PerfilesDropDownListModel> CargarPerfilesFranquiciaDropDownListModel(Guid UidFranquiciatario, Guid UidSegPerfil)
         {

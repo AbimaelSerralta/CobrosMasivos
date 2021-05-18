@@ -55,6 +55,73 @@ namespace Franquicia.DataAccess.Repository
 
             return lsClientesGridViewModel;
         }
+        public List<ClientesGridViewModel> BuscarClientes(Guid UidFranquiciatario, int IdEscuela, string RFC, string RazonSocial, string NombreComercial, Guid UidEstatus)
+        {
+            List<ClientesGridViewModel> lsClientesGridViewModel = new List<ClientesGridViewModel>();
+
+            SqlCommand comando = new SqlCommand();
+            comando.CommandType = CommandType.StoredProcedure;
+            comando.CommandText = "sp_ClientesBuscar";
+            try
+            {
+                comando.Parameters.Add("@UidFranquiciatario", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidFranquiciatario"].Value = UidFranquiciatario;
+
+                if (IdEscuela != 0)
+                {
+                    comando.Parameters.Add("@IdEscuela", SqlDbType.Int);
+                    comando.Parameters["@IdEscuela"].Value = IdEscuela;
+                }
+                if (RFC != string.Empty)
+                {
+                    comando.Parameters.Add("@RFC", SqlDbType.VarChar);
+                    comando.Parameters["@RFC"].Value = RFC;
+                }
+                if (RazonSocial != string.Empty)
+                {
+                    comando.Parameters.Add("@RazonSocial", SqlDbType.VarChar);
+                    comando.Parameters["@RazonSocial"].Value = RazonSocial;
+                }
+                if (NombreComercial != string.Empty)
+                {
+                    comando.Parameters.Add("@NombreComercial", SqlDbType.VarChar);
+                    comando.Parameters["@NombreComercial"].Value = NombreComercial;
+                }
+                if (UidEstatus != Guid.Empty)
+                {
+                    comando.Parameters.Add("@UidEstatus", SqlDbType.UniqueIdentifier);
+                    comando.Parameters["@UidEstatus"].Value = UidEstatus;
+                }
+
+                foreach (DataRow item in this.Busquedas(comando).Rows)
+                {
+                    lsClientesGridViewModel.Add(new ClientesGridViewModel()
+                    {
+                        UidCliente = Guid.Parse(item["UidCliente"].ToString()),
+                        VchRFC = item["VchRFC"].ToString(),
+                        VchRazonSocial = item["VchRazonSocial"].ToString(),
+                        VchNombreComercial = item["VchNombreComercial"].ToString(),
+                        DtFechaAlta = (DateTime)item["DtFechaAlta"],
+                        VchCorreoElectronico = item["VchCorreoElectronico"].ToString(),
+                        UidEstatus = Guid.Parse(item["UidEstatus"].ToString()),
+                        VchEstatus = item["VchDescripcion"].ToString(),
+                        VchIcono = item["VchIcono"].ToString(),
+                        IdCliente = int.Parse(item["IdCliente"].ToString()),
+                        VchIdCliente = int.Parse(item["IdCliente"].ToString()).ToString("D6"),
+                        VchIdWAySMS = item["VchIdWAySMS"].ToString(),
+                        VchZonaHoraria = item["VchZonaHoraria"].ToString(),
+                        BitEscuela = bool.Parse(item["BitEscuela"].ToString())
+                    });
+                }
+
+                return lsClientesGridViewModel;
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
 
         public bool RegistrarClientes(Clientes clientes, DireccionesClientes direccionesClientes, TelefonosClientes telefonosClientes)
         {

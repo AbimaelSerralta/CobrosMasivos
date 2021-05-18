@@ -34,7 +34,7 @@ namespace Franquicia.DataAccess.Repository
             get { return _perfilesGridViewModel; }
             set { _perfilesGridViewModel = value; }
         }
-        
+
         private PerfilesDropDownListModel _perfilesDropDownListModel = new PerfilesDropDownListModel();
         public PerfilesDropDownListModel perfilesDropDownListModel
         {
@@ -251,7 +251,7 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select sp.UidSegPerfil, sp.VchNombre, tp.UidTipoPerfil, sp.UidModuloInicial, tp.VchDescripcion as VchPerfil, es.VchDescripcion as VchEstatus, es.VchIcono from SegPerfiles sp, TiposPerfiles tp, Estatus es where sp.UidSegPerfil != 'D2C80D47-C14C-4677-A63D-C46BCB50FE17' and sp.UidTipoPerfil = tp.UidTipoPerfil and sp.UidEstatus = es.UidEstatus and tp.UidAppWeb = '6D70F88D-3CE0-4C8B-87A1-92666039F5B2' and sp.UidFranquiciatario = '" + UidFranquiciatario +"'";
+            query.CommandText = "select sp.UidSegPerfil, sp.VchNombre, tp.UidTipoPerfil, sp.UidModuloInicial, tp.VchDescripcion as VchPerfil, es.VchDescripcion as VchEstatus, es.VchIcono from SegPerfiles sp, TiposPerfiles tp, Estatus es where sp.UidSegPerfil != 'D2C80D47-C14C-4677-A63D-C46BCB50FE17' and sp.UidTipoPerfil = tp.UidTipoPerfil and sp.UidEstatus = es.UidEstatus and tp.UidAppWeb = '6D70F88D-3CE0-4C8B-87A1-92666039F5B2' and sp.UidFranquiciatario = '" + UidFranquiciatario + "'";
 
             DataTable dt = this.Busquedas(query);
 
@@ -272,6 +272,53 @@ namespace Franquicia.DataAccess.Repository
             }
 
             return lsPerfilesGridViewModel;
+        }
+        public List<PerfilesGridViewModel> BuscarPerfilesFranquiciaGridViewModel(Guid UidFranquiciatario, string Nombre, Guid UidEstatus)
+        {
+            List<PerfilesGridViewModel> lsPerfilesGridViewModel = new List<PerfilesGridViewModel>();
+
+            SqlCommand comando = new SqlCommand();
+            comando.CommandType = CommandType.StoredProcedure;
+            comando.CommandText = "sp_PerfilesFranquiciaBuscar";
+            try
+            {
+                comando.Parameters.Add("@UidFranquiciatario", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidFranquiciatario"].Value = UidFranquiciatario;
+
+                if (Nombre != string.Empty)
+                {
+                    comando.Parameters.Add("@Nombre", SqlDbType.VarChar);
+                    comando.Parameters["@Nombre"].Value = Nombre;
+                }
+                if (UidEstatus != Guid.Empty)
+                {
+                    comando.Parameters.Add("@UidEstatus", SqlDbType.UniqueIdentifier);
+                    comando.Parameters["@UidEstatus"].Value = UidEstatus;
+                }
+
+                foreach (DataRow item in this.Busquedas(comando).Rows)
+                {
+                    perfilesGridViewModel = new PerfilesGridViewModel()
+                    {
+                        UidSegPerfil = new Guid(item["UidSegPerfil"].ToString()),
+                        VchNombre = item["VchNombre"].ToString(),
+                        UidTipoPerfil = new Guid(item["UidTipoPerfil"].ToString()),
+                        VchPerfil = item["VchPerfil"].ToString(),
+                        UidModuloInicial = new Guid(item["UidModuloInicial"].ToString()),
+                        VchEstatus = item["VchEstatus"].ToString(),
+                        VchIcono = item["VchIcono"].ToString()
+                    };
+
+                    lsPerfilesGridViewModel.Add(perfilesGridViewModel);
+                }
+
+                return lsPerfilesGridViewModel;
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         public List<PerfilesDropDownListModel> CargarPerfilesFranquiciaDropDownListModel(Guid UidFranquiciatario, Guid UidTipoPerfil)

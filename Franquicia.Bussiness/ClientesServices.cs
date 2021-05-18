@@ -34,6 +34,10 @@ namespace Franquicia.Bussiness
         {
             return lsClientesGridViewModel = clientesRepository.CargarClientes(UidFranquiciatario);
         }
+        public void BuscarClientes(Guid UidFranquiciatario, int IdEscuela, string RFC, string RazonSocial, string NombreComercial, Guid UidEstatus)
+        {
+            lsClientesGridViewModel = clientesRepository.BuscarClientes(UidFranquiciatario, IdEscuela, RFC, RazonSocial, NombreComercial, UidEstatus);
+        }
 
         public void ObtenerCliente(Guid UidCliente)
         {
