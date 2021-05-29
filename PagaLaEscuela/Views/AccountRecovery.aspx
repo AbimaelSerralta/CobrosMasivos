@@ -61,12 +61,6 @@
                                     <%--<div id="divAlert" visible="false" class="col-md-12" style="padding-left: 0px; padding-right: 0px;" runat="server">
                                         
                                     </div>--%>
-                                    <asp:Panel ID="pnlAlertRecovery" Visible="false" runat="server">
-                                        <div id="divAlertRecovery" class="alert alert-danger alert-dismissible fade" role="alert" runat="server">
-                                            <asp:Label ID="lblMensajeAlertRecovery" runat="server" />
-                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                        </div>
-                                    </asp:Panel>
                                     <div class="row px-3">
                                         <h3>Recuperación de Cuenta</h3>
                                     </div>
@@ -74,6 +68,12 @@
                                         <h4>¡Busquemos tu cuenta!</h4>
                                         <p>Por favor ingrese su <strong>correo electrónico</strong> o <strong>nombre de usuario</strong> asosiado a la cuenta.</p>
                                     </div>
+                                    <asp:Panel ID="pnlAlertRecovery" Visible="false" runat="server">
+                                        <div id="divAlertRecovery" class="alert alert-danger alert-dismissible fade" role="alert" runat="server">
+                                            <asp:Label ID="lblMensajeAlertRecovery" runat="server" />
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        </div>
+                                    </asp:Panel>
                                     <div class="col-md-12" style="padding-top: 15px; padding-left: 0px; padding-right: 0px;">
                                         <label class="sr-only" for="inlineFormInputGroup">Username</label>
                                         <div class="input-group mb-2">
