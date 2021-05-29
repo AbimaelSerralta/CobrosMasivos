@@ -158,17 +158,21 @@ namespace PagaLaEscuela.Views
 
         protected void btnRecovery_Click(object sender, EventArgs e)
         {
-            pnlAlertRecovery.Visible = false;
-            lblMensajeAlertRecovery.Text = "";
-            divAlertRecovery.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
-            
-            txtDatos.Text = string.Empty;
-            btnEnviar.Visible = true;
-            btnCancelar.CssClass = "btn btn-danger";
-            btnCancelar.Text = "Cancelar";
+            Session["AccountRecovery"] = txtUsuario.Text;
 
-            SetFocus(txtDatos);
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormModalsScript", "showModal()", true);
+            Response.Redirect(URLBase + "Views/AccountRecovery.aspx");
+
+            //pnlAlertRecovery.Visible = false;
+            //lblMensajeAlertRecovery.Text = "";
+            //divAlertRecovery.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
+
+            //txtDatos.Text = string.Empty;
+            //btnEnviar.Visible = true;
+            //btnCancelar.CssClass = "btn btn-danger";
+            //btnCancelar.Text = "Cancelar";
+
+            //SetFocus(txtDatos);
+            //ScriptManager.RegisterStartupScript(this, this.GetType(), "FormModalsScript", "showModal()", true);
         }
 
         protected void btnEnviar_Click(object sender, EventArgs e)
