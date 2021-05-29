@@ -54,7 +54,7 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="table-responsive">
-                                            <asp:GridView ID="gvFranquiciatarios" OnSorting="gvFranquiciatarios_Sorting" OnSelectedIndexChanged="gvFranquiciatarios_SelectedIndexChanged" OnRowCommand="gvFranquiciatarios_RowCommand" OnRowDataBound="gvFranquiciatarios_RowDataBound" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidFranquiciatarios" GridLines="None" border="0" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvFranquiciatarios_PageIndexChanging" runat="server">
+                                            <asp:GridView ID="gvFranquiciatarios" OnRowCreated="gvFranquiciatarios_RowCreated" OnSorting="gvFranquiciatarios_Sorting" OnSelectedIndexChanged="gvFranquiciatarios_SelectedIndexChanged" OnRowCommand="gvFranquiciatarios_RowCommand" OnRowDataBound="gvFranquiciatarios_RowDataBound" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidFranquiciatarios" GridLines="None" border="0" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvFranquiciatarios_PageIndexChanging" runat="server">
                                                 <EmptyDataTemplate>
                                                     <div class="alert alert-info">No hay franquicias registrados</div>
                                                 </EmptyDataTemplate>

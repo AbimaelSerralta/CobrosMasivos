@@ -51,7 +51,7 @@ namespace Franquicia.Bussiness
             Currency = parametrosPragaRepository.parametrosPraga.Currency;
         }
 
-        public List<UrlV3PaymentResponse> ApiGenerarURL(decimal Ammount, string EffectiveDate, string Id, string PaymentTypes, string Reference, string Station)
+        public List<UrlV3PaymentResponse> ApiGenerarURL(decimal Ammount, string EffectiveDate, string Id, string PaymentTypes, string Reference, string Station, string concepto)
         {
             UrlV3PaymentRequest urlV3 = new UrlV3PaymentRequest();
             AESCryptoPraga aesCryptoPraga = new AESCryptoPraga();
@@ -67,6 +67,7 @@ namespace Franquicia.Bussiness
             urlV3.reference = Reference;
             urlV3.station = Station;
             urlV3.userCode = UserCode;
+            urlV3.valuePairs = new ValuePair[1] { new ValuePair { label = "Concepto:", value = concepto } };
 
             string Mnsj = string.Empty;
 
@@ -166,6 +167,7 @@ namespace Franquicia.Bussiness
             urlV3.reference = generarLigaPagoIntegraciones.reference;
             urlV3.station = generarLigaPagoIntegraciones.integrationID;
             urlV3.userCode = UserCode;
+            urlV3.valuePairs = new ValuePair[1]{new ValuePair {label = "Concepto:", value = generarLigaPagoIntegraciones.description } };
 
             string Mnsj = string.Empty;
 

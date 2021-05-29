@@ -71,7 +71,7 @@
                                         </div>
                                         <div class="table-responsive">
                                             <asp:Panel ID="pnlDatosAlumnos" runat="server">
-                                                <asp:GridView ID="gvDatosAlumnos" OnPageIndexChanging="gvDatosAlumnos_PageIndexChanging" OnSorting="gvDatosAlumnos_Sorting" OnRowCommand="gvDatosAlumnos_RowCommand" OnRowDataBound="gvDatosAlumnos_RowDataBound" DataKeyNames="UidPagoColegiatura" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" GridLines="None" border="0" AllowPaging="true" PageSize="10" ShowFooter="true" runat="server">
+                                                <asp:GridView ID="gvDatosAlumnos" OnRowCreated="gvDatosAlumnos_RowCreated" OnPageIndexChanging="gvDatosAlumnos_PageIndexChanging" OnSorting="gvDatosAlumnos_Sorting" OnRowCommand="gvDatosAlumnos_RowCommand" OnRowDataBound="gvDatosAlumnos_RowDataBound" DataKeyNames="UidPagoColegiatura" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" GridLines="None" border="0" AllowPaging="true" PageSize="10" ShowFooter="true" runat="server">
                                                     <EmptyDataTemplate>
                                                         <div class="alert alert-info">No hay pagos realizados</div>
                                                     </EmptyDataTemplate>
@@ -147,7 +147,7 @@
                                             </asp:Panel>
 
                                             <asp:Panel ID="pnlDatosPagos" Visible="false" runat="server">
-                                                <asp:GridView ID="gvDatosPagos" OnPageIndexChanging="gvDatosPagos_PageIndexChanging" OnSorting="gvDatosPagos_Sorting" OnRowCommand="gvDatosPagos_RowCommand" OnRowDataBound="gvDatosPagos_RowDataBound" DataKeyNames="UidPagoColegiatura" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" GridLines="None" border="0" AllowPaging="true" PageSize="10" ShowFooter="true" runat="server">
+                                                <asp:GridView ID="gvDatosPagos" OnRowCreated="gvDatosPagos_RowCreated" OnPageIndexChanging="gvDatosPagos_PageIndexChanging" OnSorting="gvDatosPagos_Sorting" OnRowCommand="gvDatosPagos_RowCommand" OnRowDataBound="gvDatosPagos_RowDataBound" DataKeyNames="UidPagoColegiatura" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" GridLines="None" border="0" AllowPaging="true" PageSize="10" ShowFooter="true" runat="server">
                                                     <EmptyDataTemplate>
                                                         <div class="alert alert-info">No hay pagos realizados</div>
                                                     </EmptyDataTemplate>
@@ -343,7 +343,7 @@
                                                         </div>
 
                                                         <div class="table-responsive">
-                                                            <asp:GridView ID="gvAlumnos" OnSelectedIndexChanged="gvAlumnos_SelectedIndexChanged" OnRowDataBound="gvAlumnos_RowDataBound" OnPageIndexChanging="gvAlumnos_PageIndexChanging" OnSorting="gvAlumnos_Sorting" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidAlumno" GridLines="None" border="0" EnablePersistedSelection="true" AllowPaging="true" PageSize="5" runat="server">
+                                                            <asp:GridView ID="gvAlumnos" OnRowCreated="gvAlumnos_RowCreated" OnSelectedIndexChanged="gvAlumnos_SelectedIndexChanged" OnRowDataBound="gvAlumnos_RowDataBound" OnPageIndexChanging="gvAlumnos_PageIndexChanging" OnSorting="gvAlumnos_Sorting" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidAlumno" GridLines="None" border="0" EnablePersistedSelection="true" AllowPaging="true" PageSize="5" runat="server">
                                                                 <EmptyDataTemplate>
                                                                     <div class="alert alert-info">No se encontro alumnos</div>
                                                                 </EmptyDataTemplate>
@@ -366,7 +366,7 @@
                                             <asp:UpdatePanel runat="server">
                                                 <ContentTemplate>
                                                     <div class="table-responsive">
-                                                        <asp:GridView ID="gvPagos" OnSelectedIndexChanged="gvPagos_SelectedIndexChanged" OnPageIndexChanging="gvPagos_PageIndexChanging" OnRowDataBound="gvPagos_RowDataBound" OnSorting="gvPagos_Sorting" OnRowCommand="gvPagos_RowCommand" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidFechaColegiatura" GridLines="None" border="0" EnablePersistedSelection="true" AllowPaging="true" PageSize="5" runat="server">
+                                                        <asp:GridView ID="gvPagos" OnRowCreated="gvPagos_RowCreated" OnSelectedIndexChanged="gvPagos_SelectedIndexChanged" OnPageIndexChanging="gvPagos_PageIndexChanging" OnRowDataBound="gvPagos_RowDataBound" OnSorting="gvPagos_Sorting" OnRowCommand="gvPagos_RowCommand" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidFechaColegiatura" GridLines="None" border="0" EnablePersistedSelection="true" AllowPaging="true" PageSize="5" runat="server">
                                                             <EmptyDataTemplate>
                                                                 <div class="alert alert-info"><strong>Felicidades</strong> no tiene pagos disponibles.</div>
                                                             </EmptyDataTemplate>

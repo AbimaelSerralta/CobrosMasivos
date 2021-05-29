@@ -40,11 +40,13 @@ namespace PagaLaEscuela.Views
 
             if (!IsPostBack)
             {
-
                 fuSelecionarExcel.Attributes["onchange"] = "UploadFile(this)";
 
                 ViewState["gvColegiaturas"] = SortDirection.Ascending;
+                ViewState["SoExgvColegiaturas"] = "";
+
                 ViewState["gvAlumnos"] = SortDirection.Ascending;
+                ViewState["SoExgvAlumnos"] = "";
 
                 Session["colegiaturasServices"] = colegiaturasServices;
                 Session["padresServices"] = padresServices;
@@ -302,7 +304,7 @@ namespace PagaLaEscuela.Views
                 {
                     if (item.Actualizar)
                     {
-                        if (colegiaturasServices.ActualizarColegiatura(Guid.Parse(ViewState["UidRequerido"].ToString()), txtIdentificador.Text.Trim().ToUpper(), decimal.Parse(txtImporte.Text), int.Parse(txtCantPagos.Text), Guid.Parse(ddlPeriodicidad.SelectedValue), DateTime.Parse(txtFHInicio.Text), cbActivarFHL.Checked, DateTime.Parse(txtFHLimite.Text), cbActivarFHV.Checked, DateTime.Parse(txtFHVencimiento.Text), cbActivarRL.Checked, ddlTipoRecargo.SelectedValue, decimal.Parse(txtRecargo.Text), cbActivarRP.Checked, ddlTipoRecargoP.SelectedValue, decimal.Parse(txtRecargoP.Text)))
+                        if (colegiaturasServices.ActualizarColegiatura(Guid.Parse(ViewState["UidRequerido"].ToString()), txtIdentificador.Text.Trim().ToUpper(), decimal.Parse(txtImporte.Text), int.Parse(txtCantPagos.Text), Guid.Parse(ddlPeriodicidad.SelectedValue), DateTime.Parse(txtFHInicio.Text), cbActivarFHL.Checked, DateTime.Parse(txtFHLimite.Text), cbActivarFHV.Checked, DateTime.Parse(txtFHVencimiento.Text), cbActivarRL.Checked, ddlTipoRecargo.SelectedValue, decimal.Parse(txtRecargo.Text), cbActivarRP.Checked, ddlTipoRecargoP.SelectedValue, decimal.Parse(txtRecargoP.Text), Guid.Parse(ddlEstatus.SelectedValue)))
                         {
                             colegiaturasServices.ObtenerFechasColegiaturasVicular(Guid.Parse(ViewState["UidRequerido"].ToString()));
                             foreach (var itFechaColegiatura in colegiaturasServices.lsFechasColegiaturas)
@@ -698,6 +700,7 @@ namespace PagaLaEscuela.Views
         protected void gvColegiaturas_Sorting(object sender, GridViewSortEventArgs e)
         {
             string SortExpression = e.SortExpression;
+            ViewState["SoExgvColegiaturas"] = e.SortExpression;
             SortDirection direccion;
             string Orden = string.Empty;
 
@@ -822,6 +825,37 @@ namespace PagaLaEscuela.Views
                 ViewState["NewPageIndex"] = int.Parse(ViewState["NewPageIndex"].ToString()) - 1;
                 gvColegiaturas.DataSource = colegiaturasServices.lsColegiaturasGridViewModel;
                 gvColegiaturas.DataBind();
+            }
+        }
+        protected void gvColegiaturas_RowCreated(object sender, GridViewRowEventArgs e)
+        {
+            SortDirection direccion = (SortDirection)ViewState["gvColegiaturas"];
+            string SortExpression = ViewState["SoExgvColegiaturas"].ToString();
+
+            if (e.Row.RowType == DataControlRowType.Header)
+            {
+                foreach (TableCell tc in e.Row.Cells)
+                {
+                    if (tc.HasControls())
+                    {
+                        // Buscar el enlace de la cabecera
+                        LinkButton lnk = tc.Controls[0] as LinkButton;
+                        if (lnk != null && SortExpression == lnk.CommandArgument)
+                        {
+                            // Verificar que se está ordenando por el campo indicado en el comando de ordenación
+                            // Crear una imagen
+                            System.Web.UI.WebControls.Image img = new System.Web.UI.WebControls.Image();
+                            img.Height = 20;
+                            img.Width = 20;
+                            // Ajustar dinámicamente el icono adecuado
+                            img.ImageUrl = "~/Images/SortingGv/" + (direccion == SortDirection.Ascending ? "desc" : "asc") + ".png";
+                            img.ImageAlign = ImageAlign.AbsMiddle;
+                            // Le metemos un espacio delante de la imagen para que no se pegue al enlace
+                            tc.Controls.Add(new LiteralControl(""));
+                            tc.Controls.Add(img);
+                        }
+                    }
+                }
             }
         }
 
@@ -1139,6 +1173,7 @@ namespace PagaLaEscuela.Views
         protected void gvAlumnos_Sorting(object sender, GridViewSortEventArgs e)
         {
             string SortExpression = e.SortExpression;
+            ViewState["SoExgvAlumnos"] = e.SortExpression;
             SortDirection direccion;
             string Orden = string.Empty;
 
@@ -1215,6 +1250,37 @@ namespace PagaLaEscuela.Views
                 else
                 {
                     cbTodo.Checked = true;
+                }
+            }
+        }
+        protected void gvAlumnos_RowCreated(object sender, GridViewRowEventArgs e)
+        {
+            SortDirection direccion = (SortDirection)ViewState["gvAlumnos"];
+            string SortExpression = ViewState["SoExgvAlumnos"].ToString();
+
+            if (e.Row.RowType == DataControlRowType.Header)
+            {
+                foreach (TableCell tc in e.Row.Cells)
+                {
+                    if (tc.HasControls())
+                    {
+                        // Buscar el enlace de la cabecera
+                        LinkButton lnk = tc.Controls[0] as LinkButton;
+                        if (lnk != null && SortExpression == lnk.CommandArgument)
+                        {
+                            // Verificar que se está ordenando por el campo indicado en el comando de ordenación
+                            // Crear una imagen
+                            System.Web.UI.WebControls.Image img = new System.Web.UI.WebControls.Image();
+                            img.Height = 20;
+                            img.Width = 20;
+                            // Ajustar dinámicamente el icono adecuado
+                            img.ImageUrl = "~/Images/SortingGv/" + (direccion == SortDirection.Ascending ? "desc" : "asc") + ".png";
+                            img.ImageAlign = ImageAlign.AbsMiddle;
+                            // Le metemos un espacio delante de la imagen para que no se pegue al enlace
+                            tc.Controls.Add(new LiteralControl(""));
+                            tc.Controls.Add(img);
+                        }
+                    }
                 }
             }
         }

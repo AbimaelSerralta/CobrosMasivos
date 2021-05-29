@@ -27,6 +27,7 @@ namespace PagaLaEscuela.Views
             if (!IsPostBack)
             {
                 ViewState["gvEmpresas"] = SortDirection.Ascending;
+                ViewState["SoExgvEmpresas"] = "";
 
                 Session["clientesServices"] = clientesServices;
                 Session["parametrosEntradaServices"] = parametrosEntradaServices;
@@ -298,77 +299,6 @@ namespace PagaLaEscuela.Views
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalPromociones()", true);
             }
         }
-
-        protected void gvPromociones_RowDataBound(object sender, GridViewRowEventArgs e)
-        {
-            if (e.Row.RowType == DataControlRowType.DataRow)
-            {
-                //e.Row.Attributes["onclick"] = Page.ClientScript.GetPostBackClientHyperlink(DGVCajas, "Select$" + e.Row.RowIndex);
-
-                CheckBox cbPromocion = e.Row.FindControl("cbPromocion") as CheckBox;
-                TextBox txtComicion = e.Row.FindControl("txtComicion") as TextBox;
-                TextBox txtDcmApartirDe = e.Row.FindControl("txtApartirDe") as TextBox;
-
-
-                foreach (var item in promocionesServices.lsCBLPromocionesModel)
-                {
-                    if (e.Row.Cells[0].Text == item.UidPromocion.ToString())
-                    {
-                        cbPromocion.Checked = true;
-                        txtComicion.Text = item.DcmComicion.ToString();
-                        txtDcmApartirDe.Text = item.DcmApartirDe.ToString("N2");
-                    }
-                }
-            }
-        }
-
-        protected void btnGuardarPromociones_Click(object sender, EventArgs e)
-        {
-            promocionesServices.EliminarPromociones(Guid.Parse(ViewState["UidCliente"].ToString()));
-
-            foreach (GridViewRow row in gvPromociones.Rows)
-            {
-                CheckBox cbPromocion = row.FindControl("cbPromocion") as CheckBox;
-                TextBox txtComicion = row.FindControl("txtComicion") as TextBox;
-                TextBox txtApartirDe = row.FindControl("txtApartirDe") as TextBox;
-
-                if (cbPromocion.Checked)
-                {
-                    Guid UidPromocion = Guid.Parse(row.Cells[0].Text);
-                    decimal DcmComicion = 0;
-                    decimal DcmApartirDe = 0;
-
-                    if (!string.IsNullOrEmpty(txtComicion.Text))
-                    {
-                        DcmComicion = decimal.Parse(txtComicion.Text);
-                    }
-
-                    if (!string.IsNullOrEmpty(txtApartirDe.Text))
-                    {
-                        DcmApartirDe = decimal.Parse(txtApartirDe.Text);
-                    }
-
-                    if (promocionesServices.RegistrarPromociones(Guid.Parse(ViewState["UidCliente"].ToString()), UidPromocion, DcmComicion, DcmApartirDe))
-                    {
-                    }
-                }
-
-                switch (ViewState["AccionPromociones"].ToString())
-                {
-                    case "ActualizarPromociones":
-                        pnlAlertPromociones.Visible = true;
-                        lblMnsjAlertPromociones.Text = "<b>¡Felicidades! </b> se ha actualizado exitosamente.";
-                        divAlertPromociones.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
-                        break;
-
-                    case "GuardarPromociones":
-                        pnlAlertPromociones.Visible = true;
-                        lblMnsjAlertPromociones.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
-                        divAlertPromociones.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
-                        break;
-                }
-            }
-        }
         protected void gvEmpresas_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             gvEmpresas.PageIndex = e.NewPageIndex;
@@ -378,6 +308,7 @@ namespace PagaLaEscuela.Views
         protected void gvEmpresas_Sorting(object sender, GridViewSortEventArgs e)
         {
             string SortExpression = e.SortExpression;
+            ViewState["SoExgvEmpresas"] = e.SortExpression;
             SortDirection direccion;
             string Orden = string.Empty;
 
@@ -451,6 +382,108 @@ namespace PagaLaEscuela.Views
 
                 gvEmpresas.DataSource = clientesServices.lsClientesGridViewEmpresasModel;
                 gvEmpresas.DataBind();
+            }
+        }
+        protected void gvEmpresas_RowCreated(object sender, GridViewRowEventArgs e)
+        {
+            SortDirection direccion = (SortDirection)ViewState["gvEmpresas"];
+            string SortExpression = ViewState["SoExgvEmpresas"].ToString();
+
+            if (e.Row.RowType == DataControlRowType.Header)
+            {
+                foreach (TableCell tc in e.Row.Cells)
+                {
+                    if (tc.HasControls())
+                    {
+                        // Buscar el enlace de la cabecera
+                        LinkButton lnk = tc.Controls[0] as LinkButton;
+                        if (lnk != null && SortExpression == lnk.CommandArgument)
+                        {
+                            // Verificar que se está ordenando por el campo indicado en el comando de ordenación
+                            // Crear una imagen
+                            System.Web.UI.WebControls.Image img = new System.Web.UI.WebControls.Image();
+                            img.Height = 20;
+                            img.Width = 20;
+                            // Ajustar dinámicamente el icono adecuado
+                            img.ImageUrl = "~/Images/SortingGv/" + (direccion == SortDirection.Ascending ? "desc" : "asc") + ".png";
+                            img.ImageAlign = ImageAlign.AbsMiddle;
+                            // Le metemos un espacio delante de la imagen para que no se pegue al enlace
+                            tc.Controls.Add(new LiteralControl(""));
+                            tc.Controls.Add(img);
+                        }
+                    }
+                }
+            }
+        }
+
+        protected void gvPromociones_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                //e.Row.Attributes["onclick"] = Page.ClientScript.GetPostBackClientHyperlink(DGVCajas, "Select$" + e.Row.RowIndex);
+
+                CheckBox cbPromocion = e.Row.FindControl("cbPromocion") as CheckBox;
+                TextBox txtComicion = e.Row.FindControl("txtComicion") as TextBox;
+                TextBox txtDcmApartirDe = e.Row.FindControl("txtApartirDe") as TextBox;
+
+
+                foreach (var item in promocionesServices.lsCBLPromocionesModel)
+                {
+                    if (e.Row.Cells[0].Text == item.UidPromocion.ToString())
+                    {
+                        cbPromocion.Checked = true;
+                        txtComicion.Text = item.DcmComicion.ToString();
+                        txtDcmApartirDe.Text = item.DcmApartirDe.ToString("N2");
+                    }
+                }
+            }
+        }
+
+        protected void btnGuardarPromociones_Click(object sender, EventArgs e)
+        {
+            promocionesServices.EliminarPromociones(Guid.Parse(ViewState["UidCliente"].ToString()));
+
+            foreach (GridViewRow row in gvPromociones.Rows)
+            {
+                CheckBox cbPromocion = row.FindControl("cbPromocion") as CheckBox;
+                TextBox txtComicion = row.FindControl("txtComicion") as TextBox;
+                TextBox txtApartirDe = row.FindControl("txtApartirDe") as TextBox;
+
+                if (cbPromocion.Checked)
+                {
+                    Guid UidPromocion = Guid.Parse(row.Cells[0].Text);
+                    decimal DcmComicion = 0;
+                    decimal DcmApartirDe = 0;
+
+                    if (!string.IsNullOrEmpty(txtComicion.Text))
+                    {
+                        DcmComicion = decimal.Parse(txtComicion.Text);
+                    }
+
+                    if (!string.IsNullOrEmpty(txtApartirDe.Text))
+                    {
+                        DcmApartirDe = decimal.Parse(txtApartirDe.Text);
+                    }
+
+                    if (promocionesServices.RegistrarPromociones(Guid.Parse(ViewState["UidCliente"].ToString()), UidPromocion, DcmComicion, DcmApartirDe))
+                    {
+                    }
+                }
+
+                switch (ViewState["AccionPromociones"].ToString())
+                {
+                    case "ActualizarPromociones":
+                        pnlAlertPromociones.Visible = true;
+                        lblMnsjAlertPromociones.Text = "<b>¡Felicidades! </b> se ha actualizado exitosamente.";
+                        divAlertPromociones.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                        break;
+
+                    case "GuardarPromociones":
+                        pnlAlertPromociones.Visible = true;
+                        lblMnsjAlertPromociones.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
+                        divAlertPromociones.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                        break;
+                }
             }
         }
 

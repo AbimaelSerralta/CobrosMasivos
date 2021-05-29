@@ -51,6 +51,7 @@
     <Compile Include="Models\ClubPago\ConsultarReferencia.cs" />
     <Compile Include="Models\ClubPago\GenerarRefereciaPago.cs" />
     <Compile Include="Models\ClubPago\ObtenerRefereciaPago.cs" />
+    <Compile Include="Models\EliminarPagos.cs" />
     <Compile Include="Models\EstatusColegiaturasAlumnos.cs" />
     <Compile Include="Models\EstatusFechasColegiaturas.cs" />
     <Compile Include="Models\Integraciones.cs" />
@@ -65,6 +66,7 @@
     <Compile Include="Models\PagosTarjetaPraga.cs" />
     <Compile Include="Models\ParametrosPraga.cs" />
     <Compile Include="Models\Praga\UrlV3PaymentResponse.cs" />
+    <Compile Include="Models\Praga\ValuePair.cs" />
     <Compile Include="Models\SuperComisionesTarjetasPraga.cs" />
     <Compile Include="Models\ComisionesTarjetasPraga.cs" />
     <Compile Include="Models\ComisionesTarjetasClubPago.cs" />

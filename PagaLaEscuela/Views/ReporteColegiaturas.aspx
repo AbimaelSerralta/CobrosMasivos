@@ -60,7 +60,7 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="table-responsive">
-                                            <asp:GridView ID="gvPagos" OnPageIndexChanging="gvPagos_PageIndexChanging" OnSorting="gvPagos_Sorting" OnRowCommand="gvPagos_RowCommand" OnRowDataBound="gvPagos_RowDataBound" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidFechaColegiatura" GridLines="None" border="0" AllowPaging="true" PageSize="10" ShowFooter="true" runat="server">
+                                            <asp:GridView ID="gvPagos" OnRowCreated="gvPagos_RowCreated" OnPageIndexChanging="gvPagos_PageIndexChanging" OnSorting="gvPagos_Sorting" OnRowCommand="gvPagos_RowCommand" OnRowDataBound="gvPagos_RowDataBound" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidFechaColegiatura" GridLines="None" border="0" AllowPaging="true" PageSize="10" ShowFooter="true" runat="server">
                                                 <EmptyDataTemplate>
                                                     <div class="alert alert-info">No hay colegiaturas disponibles.</div>
                                                 </EmptyDataTemplate>

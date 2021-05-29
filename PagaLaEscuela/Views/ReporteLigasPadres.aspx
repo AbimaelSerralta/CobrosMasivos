@@ -82,7 +82,7 @@
                                         </div>
                                         <div class="table-responsive">
                                             <asp:Panel ID="pnlDatosAlumnos" runat="server">
-                                                <asp:GridView ID="gvDatosAlumnos" OnPageIndexChanging="gvDatosAlumnos_PageIndexChanging" OnSorting="gvDatosAlumnos_Sorting" OnRowCommand="gvDatosAlumnos_RowCommand" OnRowDataBound="gvDatosAlumnos_RowDataBound" DataKeyNames="UidPagoColegiatura" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" GridLines="None" border="0" AllowPaging="true" PageSize="10" ShowFooter="true" runat="server">
+                                                <asp:GridView ID="gvDatosAlumnos" OnRowCreated="gvDatosAlumnos_RowCreated" OnPageIndexChanging="gvDatosAlumnos_PageIndexChanging" OnSorting="gvDatosAlumnos_Sorting" OnRowCommand="gvDatosAlumnos_RowCommand" OnRowDataBound="gvDatosAlumnos_RowDataBound" DataKeyNames="UidPagoColegiatura" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" GridLines="None" border="0" AllowPaging="true" PageSize="10" ShowFooter="true" runat="server">
                                                     <EmptyDataTemplate>
                                                         <div class="alert alert-info">No hay pagos realizados</div>
                                                     </EmptyDataTemplate>
@@ -142,7 +142,7 @@
                                             </asp:Panel>
 
                                             <asp:Panel ID="pnlDatosPagos" Visible="false" runat="server">
-                                                <asp:GridView ID="gvDatosPagos" OnPageIndexChanging="gvDatosPagos_PageIndexChanging" OnSorting="gvDatosPagos_Sorting" OnRowCommand="gvDatosPagos_RowCommand" OnRowDataBound="gvDatosPagos_RowDataBound" DataKeyNames="UidPagoColegiatura" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" GridLines="None" border="0" AllowPaging="true" PageSize="10" ShowFooter="true" runat="server">
+                                                <asp:GridView ID="gvDatosPagos" OnRowCreated="gvDatosPagos_RowCreated" OnPageIndexChanging="gvDatosPagos_PageIndexChanging" OnSorting="gvDatosPagos_Sorting" OnRowCommand="gvDatosPagos_RowCommand" OnRowDataBound="gvDatosPagos_RowDataBound" DataKeyNames="UidPagoColegiatura" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" GridLines="None" border="0" AllowPaging="true" PageSize="10" ShowFooter="true" runat="server">
                                                     <EmptyDataTemplate>
                                                         <div class="alert alert-info">No hay pagos realizados</div>
                                                     </EmptyDataTemplate>

@@ -162,6 +162,15 @@ namespace Franquicia.Bussiness
         {
             return validacionesRepository.UsarFechaPagoCole(UidPagoColegiatura, VchMatricula);
         }
+
+        public bool TienePagosTarjeta(string IdReferencia)
+        {
+            return validacionesRepository.TienePagosTarjeta(IdReferencia);
+        }
+        public bool TienePagosTarjetaPraga(string IdReferencia)
+        {
+            return validacionesRepository.TienePagosTarjetaPraga(IdReferencia);
+        }
         #endregion
 
         #region Metodos Integraciones
@@ -169,6 +178,14 @@ namespace Franquicia.Bussiness
         public Guid ValidarEstatusIntegracion(int IdIntegracion)
         {
             return validacionesRepository.ValidarEstatusIntegracion(IdIntegracion);
+        }
+        public Guid ValidarEstatusCredencialesSandbox(string Usuario, string Contrasenia)
+        {
+            return validacionesRepository.ValidarEstatusCredencialesSandbox(Usuario, Contrasenia);
+        }
+        public Guid ValidarEstatusCredencialesProduccion(string Usuario, string Contrasenia)
+        {
+            return validacionesRepository.ValidarEstatusCredencialesProduccion(Usuario, Contrasenia);
         }
         public bool ValidarUsuarioContraseniaSandbox(string Usuario, string Contrasenia)
         {

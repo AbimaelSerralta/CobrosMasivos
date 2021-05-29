@@ -211,6 +211,28 @@ namespace Franquicia.DataAccess.Repository
 
             return Tuple.Create(Resultado, Resultado2, Resultado3);
         }
+        public Tuple<string, string, string> ConsultarPagoColegiaturaDenegado(string IdReferencia)
+        {
+            string Resultado = string.Empty;
+            string Resultado2 = string.Empty;
+            string Resultado3 = string.Empty;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select distinct lup.UidPagoColegiatura, us.VchCorreo, lup.UidPropietario from LigasUrlsPraga lup, PagosTarjetaPraga ptp, Usuarios us where us.UidUsuario = lup.UidUsuario and lup.IdReferencia = ptp.IdReferencia and lup.IdReferencia = '" + IdReferencia + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                Resultado = item["UidPagoColegiatura"].ToString();
+                Resultado2 = item["VchCorreo"].ToString();
+                Resultado3 = item["UidPropietario"].ToString();
+            }
+
+            return Tuple.Create(Resultado, Resultado2, Resultado3);
+        }
         public Tuple<List<PagosColegiaturasViewModels>, List<DetallesPagosColegiaturas>> ObtenerPagoColegiatura(Guid UidPagoColegiatura)
         {
             List<PagosColegiaturasViewModels> lsPagosColegiaturasViewModels = new List<PagosColegiaturasViewModels>();
@@ -268,7 +290,7 @@ namespace Franquicia.DataAccess.Repository
 
             return Tuple.Create(lsPagosColegiaturasViewModels, lsDetallesPagosColegiaturas);
         }
-        public bool ActualizarPagoColegiatura(Guid UidPagoColegiatura)
+        public bool ActualizarPagoColegiatura(Guid UidPagoColegiatura, Guid UidEstatusFechaPago)
         {
             SqlCommand Comando = new SqlCommand();
             bool resultado = false;
@@ -279,6 +301,9 @@ namespace Franquicia.DataAccess.Repository
 
                 Comando.Parameters.Add("@UidPagoColegiatura", SqlDbType.UniqueIdentifier);
                 Comando.Parameters["@UidPagoColegiatura"].Value = UidPagoColegiatura;
+                
+                Comando.Parameters.Add("@UidEstatusFechaPago", SqlDbType.UniqueIdentifier);
+                Comando.Parameters["@UidEstatusFechaPago"].Value = UidEstatusFechaPago;
 
                 resultado = this.ManipulacionDeDatos(Comando);
 

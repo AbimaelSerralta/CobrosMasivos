@@ -17,6 +17,6 @@ namespace Franquicia.Domain.Models.Praga
         public string reference { get; set; }
         public string station { get; set; }
         public string userCode { get; set; }
-        public string[] valuePairs { get; set; }
+        public ValuePair[] valuePairs { get; set; }
     }
 }

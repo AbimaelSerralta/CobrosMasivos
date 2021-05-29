@@ -41,7 +41,7 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="table-responsive">
-                                            <asp:GridView ID="gvAdministradores" OnPageIndexChanging="gvAdministradores_PageIndexChanging" PageSize="10" AllowPaging="true" OnSorting="gvAdministradores_Sorting" AllowSorting="true" OnRowCommand="gvAdministradores_RowCommand" OnRowDataBound="gvAdministradores_RowDataBound" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidUsuario" GridLines="None" border="0" runat="server">
+                                            <asp:GridView ID="gvAdministradores" OnRowCreated="gvAdministradores_RowCreated" OnPageIndexChanging="gvAdministradores_PageIndexChanging" PageSize="10" AllowPaging="true" OnSorting="gvAdministradores_Sorting" AllowSorting="true" OnRowCommand="gvAdministradores_RowCommand" OnRowDataBound="gvAdministradores_RowDataBound" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidUsuario" GridLines="None" border="0" runat="server">
                                                 <EmptyDataTemplate>
                                                     <div class="alert alert-info">No hay usuarios registrados</div>
                                                 </EmptyDataTemplate>

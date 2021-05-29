@@ -69,6 +69,10 @@ namespace PagaLaEscuela.Views
 
                 tmValidar.Enabled = false;
                 ViewState["gvPagos"] = SortDirection.Descending;
+                ViewState["SoExgvPagos"] = "";
+
+                ViewState["gvPagosColegiaturas"] = SortDirection.Descending;
+                ViewState["SoExgvPagosColegiaturas"] = "";
 
                 Session["pagosPadresServices"] = pagosPadresServices;
                 Session["colegiaturasServices"] = colegiaturasServices;
@@ -78,6 +82,7 @@ namespace PagaLaEscuela.Views
                 Session["parametrosEntradaServices"] = parametrosEntradaServices;
                 Session["usuariosCompletosServices"] = usuariosCompletosServices;
                 Session["comisionesTarjetasCl"] = comisionesTarjetasCl;
+                Session["pagosColegiaturasServices"] = pagosColegiaturasServices;
 
                 Session["formasPagosServices"] = formasPagosServices;
                 Session["bancosServices"] = bancosServices;
@@ -109,6 +114,7 @@ namespace PagaLaEscuela.Views
                 parametrosEntradaServices = (ParametrosEntradaServices)Session["parametrosEntradaServices"];
                 usuariosCompletosServices = (UsuariosCompletosServices)Session["usuariosCompletosServices"];
                 comisionesTarjetasCl = (ComisionesTarjetasClientesServices)Session["comisionesTarjetasCl"];
+                pagosColegiaturasServices = (PagosColegiaturasServices)Session["pagosColegiaturasServices"];
 
                 formasPagosServices = (FormasPagosServices)Session["formasPagosServices"];
                 bancosServices = (BancosServices)Session["bancosServices"];
@@ -238,6 +244,7 @@ namespace PagaLaEscuela.Views
         protected void gvPagos_Sorting(object sender, GridViewSortEventArgs e)
         {
             string SortExpression = e.SortExpression;
+            ViewState["SoExgvPagos"] = e.SortExpression;
             SortDirection direccion;
             string Orden = string.Empty;
 
@@ -735,7 +742,37 @@ namespace PagaLaEscuela.Views
                 }
             }
         }
+        protected void gvPagos_RowCreated(object sender, GridViewRowEventArgs e)
+        {
+            SortDirection direccion = (SortDirection)ViewState["gvPagos"];
+            string SortExpression = ViewState["SoExgvPagos"].ToString();
 
+            if (e.Row.RowType == DataControlRowType.Header)
+            {
+                foreach (TableCell tc in e.Row.Cells)
+                {
+                    if (tc.HasControls())
+                    {
+                        // Buscar el enlace de la cabecera
+                        LinkButton lnk = tc.Controls[0] as LinkButton;
+                        if (lnk != null && SortExpression == lnk.CommandArgument)
+                        {
+                            // Verificar que se está ordenando por el campo indicado en el comando de ordenación
+                            // Crear una imagen
+                            System.Web.UI.WebControls.Image img = new System.Web.UI.WebControls.Image();
+                            img.Height = 20;
+                            img.Width = 20;
+                            // Ajustar dinámicamente el icono adecuado
+                            img.ImageUrl = "~/Images/SortingGv/" + (direccion == SortDirection.Ascending ? "desc" : "asc") + ".png";
+                            img.ImageAlign = ImageAlign.AbsMiddle;
+                            // Le metemos un espacio delante de la imagen para que no se pegue al enlace
+                            tc.Controls.Add(new LiteralControl(""));
+                            tc.Controls.Add(img);
+                        }
+                    }
+                }
+            }
+        }
         protected void btnFinalizar_Click(object sender, EventArgs e)
         {
             pnlValidar.Visible = true;
@@ -772,7 +809,7 @@ namespace PagaLaEscuela.Views
                     {
                         if (itComi.BitComision)
                         {
-                            ImporteCCT = itComi.DcmComision * decimal.Parse(ViewState["ImporteTotal"].ToString()) / 100;
+                            ImporteCCT = itComi.DcmComision * decimal.Parse(ViewState["ImporteTotal"].ToString()) / (100 - itComi.DcmComision);
                             ViewState["ImporteCCT"] = ImporteCCT;
 
                             trComisionTarjeta.Attributes.Add("style", "");
@@ -816,7 +853,7 @@ namespace PagaLaEscuela.Views
                     {
                         if (itComi.BitComision)
                         {
-                            ImporteComercio = itComi.DcmComision * decimal.Parse(ViewState["ImporteTotal"].ToString()) / 100;
+                            ImporteComercio = itComi.DcmComision * decimal.Parse(ViewState["ImporteTotal"].ToString()) / (100 - itComi.DcmComision);
                             ViewState["ImporteComercio"] = ImporteComercio;
 
                             trComisionTarjeta.Attributes.Add("style", "");
@@ -927,7 +964,7 @@ namespace PagaLaEscuela.Views
 
                     foreach (var itPromo in promocionesServices.lsPromocionesColegiaturaModel.Where(x => x.UidPromocion == Guid.Parse(ddlFormasPago.SelectedValue)).ToList())
                     {
-                        decimal Valor = itPromo.DcmComicion * importeTotal / 100;
+                        decimal Valor = itPromo.DcmComicion * importeTotal / (100 - itPromo.DcmComicion);
                         decimal Importe = Valor + importeTotal;
 
                         lblComisionPromocion.Text = Valor.ToString("N2");
@@ -1348,7 +1385,7 @@ namespace PagaLaEscuela.Views
                             string IdAlumno = alumnosServices.ObtenerIdAlumno(Guid.Parse(ViewState["RowCommand-UidAlumno"].ToString()));
 
                             GenerarLigaPraga generarLigaPraga = new GenerarLigaPraga(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()));
-                            List<UrlV3PaymentResponse> lsUrlV3PaymentResponse = generarLigaPraga.ApiGenerarURL(importeTotal, vencimiento, IdAlumno, VchCodigo, IdReferencia, "PagaLaEscuela");
+                            List<UrlV3PaymentResponse> lsUrlV3PaymentResponse = generarLigaPraga.ApiGenerarURL(importeTotal, vencimiento, IdAlumno, VchCodigo, IdReferencia, "PagaLaEscuela", concepto);
 
                             if (lsUrlV3PaymentResponse.Count != 0 && lsUrlV3PaymentResponse != null)
                             {
@@ -1694,8 +1731,11 @@ namespace PagaLaEscuela.Views
                     pnlValidar.Visible = false;
                     tmValidar.Enabled = false;
 
-                    colegiaturasServices.EliminarLigaColegiatura(ViewState["IdReferencia"].ToString());
-                    pagosColegiaturasServices.EliminarPagoColegiatura(Guid.Parse(Session["UidPagoColegiatura"].ToString()));
+                    if (validacionesServices.TienePagosTarjeta(ViewState["IdReferencia"].ToString()))
+                    {
+                        colegiaturasServices.EliminarLigaColegiatura(ViewState["IdReferencia"].ToString());
+                        pagosColegiaturasServices.EliminarPagoColegiatura(Guid.Parse(Session["UidPagoColegiatura"].ToString()));
+                    }
 
                     pnlPromociones.Visible = true;
                     pnlIframe.Visible = false;
@@ -1747,8 +1787,11 @@ namespace PagaLaEscuela.Views
                     pnlValidar.Visible = false;
                     tmValidar.Enabled = false;
 
-                    colegiaturasServices.EliminarLigaPragaColegiatura(ViewState["IdReferencia"].ToString());
-                    pagosColegiaturasServices.EliminarPagoColegiatura(Guid.Parse(Session["UidPagoColegiatura"].ToString()));
+                    if (validacionesServices.TienePagosTarjetaPraga(ViewState["IdReferencia"].ToString()))
+                    {
+                        colegiaturasServices.EliminarLigaPragaColegiatura(ViewState["IdReferencia"].ToString());
+                        pagosColegiaturasServices.EliminarPagoColegiatura(Guid.Parse(Session["UidPagoColegiatura"].ToString()));
+                    }
 
                     pnlPromociones.Visible = true;
                     pnlIframe.Visible = false;
@@ -1821,7 +1864,7 @@ namespace PagaLaEscuela.Views
                         {
                             foreach (var itPromo in promocionesServices.lsPromocionesColegiaturaModel.Where(x => x.UidPromocion == Guid.Parse(ddlFormasPago.SelectedValue)).ToList())
                             {
-                                ImporteCP = Totaltb * itPromo.DcmComicion / (100 + itPromo.DcmComicion);
+                                ImporteCP = Totaltb * itPromo.DcmComicion / 100;
                                 ViewState["ImpOtraCantCP"] = ImporteCP;
                                 Promocion = "Comisión " + itPromo.VchDescripcion + ": $" + ImporteCP.ToString("N2") + "<br />";
                             }
@@ -1836,7 +1879,7 @@ namespace PagaLaEscuela.Views
                             {
                                 if (itComi.BitComision)
                                 {
-                                    ImporteCCT = SubTotal * itComi.DcmComision / (100 + itComi.DcmComision);
+                                    ImporteCCT = SubTotal * itComi.DcmComision / 100;
                                     SubTotal = SubTotal - ImporteCCT;
                                     ViewState["ImpOtraCantCCT"] = ImporteCCT;
                                     CCT = "Comisión Bancaria: $" + ImporteCCT.ToString("N2") + "<br />";
@@ -1913,7 +1956,7 @@ namespace PagaLaEscuela.Views
                             {
                                 if (itComi.BitComision)
                                 {
-                                    ImporteCCT = SubTotal * itComi.DcmComision / (100 + itComi.DcmComision);
+                                    ImporteCCT = SubTotal * itComi.DcmComision / 100;
                                     SubTotal = SubTotal - ImporteCCT;
                                     ViewState["ImpOtraCantCCT"] = ImporteCCT;
                                     CCT = "Comisión: $" + ImporteCCT.ToString("N2") + "<br />";
@@ -2011,7 +2054,7 @@ namespace PagaLaEscuela.Views
                         {
                             foreach (var itPromo in promocionesPragaServices.lsCBLPromocionesPragaViewModel.Where(x => x.UidPromocion == Guid.Parse(ddlPromocionesTT.SelectedValue)).ToList())
                             {
-                                ImporteCPTT = Totaltb * itPromo.DcmComicion / (100 + itPromo.DcmComicion);
+                                ImporteCPTT = Totaltb * itPromo.DcmComicion / 100;
                                 ViewState["ImpOtraCantCPTT"] = ImporteCPTT;
                                 PromocionTT = "Comisión " + itPromo.VchDescripcion + ": $" + ImporteCPTT.ToString("N2") + "<br />";
                             }
@@ -2027,7 +2070,7 @@ namespace PagaLaEscuela.Views
                                 {
                                     if (itComi.BitComision)
                                     {
-                                        ImporteCTT = SubTotal * itComi.DcmComision / (100 + itComi.DcmComision);
+                                        ImporteCTT = SubTotal * itComi.DcmComision / 100;
                                         SubTotal = SubTotal - ImporteCTT;
                                         ViewState["ImpOtraCantCTT"] = ImporteCTT;
                                         CTT = "Comisión Bancaria: $" + ImporteCTT.ToString("N2") + "<br />";
@@ -2285,7 +2328,120 @@ namespace PagaLaEscuela.Views
         }
         protected void gvPagosColegiaturas_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
+            gvPagosColegiaturas.PageIndex = e.NewPageIndex;
+            gvPagosColegiaturas.DataSource = pagosColegiaturasServices.lsReportePadresFechasPagosColeViewModel;
+            gvPagosColegiaturas.DataBind();
+        }
+        protected void gvPagosColegiaturas_RowCreated(object sender, GridViewRowEventArgs e)
+        {
+            SortDirection direccion = (SortDirection)ViewState["gvPagosColegiaturas"];
+            string SortExpression = ViewState["SoExgvPagosColegiaturas"].ToString();
 
+            if (e.Row.RowType == DataControlRowType.Header)
+            {
+                foreach (TableCell tc in e.Row.Cells)
+                {
+                    if (tc.HasControls())
+                    {
+                        // Buscar el enlace de la cabecera
+                        LinkButton lnk = tc.Controls[0] as LinkButton;
+                        if (lnk != null && SortExpression == lnk.CommandArgument)
+                        {
+                            // Verificar que se está ordenando por el campo indicado en el comando de ordenación
+                            // Crear una imagen
+                            System.Web.UI.WebControls.Image img = new System.Web.UI.WebControls.Image();
+                            img.Height = 20;
+                            img.Width = 20;
+                            // Ajustar dinámicamente el icono adecuado
+                            img.ImageUrl = "~/Images/SortingGv/" + (direccion == SortDirection.Ascending ? "desc" : "asc") + ".png";
+                            img.ImageAlign = ImageAlign.AbsMiddle;
+                            // Le metemos un espacio delante de la imagen para que no se pegue al enlace
+                            tc.Controls.Add(new LiteralControl(""));
+                            tc.Controls.Add(img);
+                        }
+                    }
+                }
+            }
+        }
+
+        protected void gvPagosColegiaturas_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            string SortExpression = e.SortExpression;
+            ViewState["SoExgvPagosColegiaturas"] = e.SortExpression;
+            SortDirection direccion;
+            string Orden = string.Empty;
+
+            if (ViewState["gvPagosColegiaturas"] != null)
+            {
+                direccion = (SortDirection)ViewState["gvPagosColegiaturas"];
+                if (direccion == SortDirection.Ascending)
+                {
+                    ViewState["gvPagosColegiaturas"] = SortDirection.Descending;
+                    Orden = "ASC";
+                }
+                else
+                {
+                    ViewState["gvPagosColegiaturas"] = SortDirection.Ascending;
+                    Orden = "DESC";
+                }
+
+                switch (SortExpression)
+                {
+                    case "NombreCompleto":
+                        if (Orden == "ASC")
+                        {
+                            pagosColegiaturasServices.lsReportePadresFechasPagosColeViewModel = pagosColegiaturasServices.lsReportePadresFechasPagosColeViewModel.OrderBy(x => x.NombreCompleto).ToList();
+                        }
+                        else
+                        {
+                            pagosColegiaturasServices.lsReportePadresFechasPagosColeViewModel = pagosColegiaturasServices.lsReportePadresFechasPagosColeViewModel.OrderByDescending(x => x.NombreCompleto).ToList();
+                        }
+                        break;
+                    case "DtFHPago":
+                        if (Orden == "ASC")
+                        {
+                            pagosColegiaturasServices.lsReportePadresFechasPagosColeViewModel = pagosColegiaturasServices.lsReportePadresFechasPagosColeViewModel.OrderBy(x => x.DtFHPago).ToList();
+                        }
+                        else
+                        {
+                            pagosColegiaturasServices.lsReportePadresFechasPagosColeViewModel = pagosColegiaturasServices.lsReportePadresFechasPagosColeViewModel.OrderByDescending(x => x.DtFHPago).ToList();
+                        }
+                        break;
+                    case "VchFormaPago":
+                        if (Orden == "ASC")
+                        {
+                            pagosColegiaturasServices.lsReportePadresFechasPagosColeViewModel = pagosColegiaturasServices.lsReportePadresFechasPagosColeViewModel.OrderBy(x => x.VchFormaPago).ToList();
+                        }
+                        else
+                        {
+                            pagosColegiaturasServices.lsReportePadresFechasPagosColeViewModel = pagosColegiaturasServices.lsReportePadresFechasPagosColeViewModel.OrderByDescending(x => x.VchFormaPago).ToList();
+                        }
+                        break;
+                    case "DcmImportePagado":
+                        if (Orden == "ASC")
+                        {
+                            pagosColegiaturasServices.lsReportePadresFechasPagosColeViewModel = pagosColegiaturasServices.lsReportePadresFechasPagosColeViewModel.OrderBy(x => x.DcmImportePagado).ToList();
+                        }
+                        else
+                        {
+                            pagosColegiaturasServices.lsReportePadresFechasPagosColeViewModel = pagosColegiaturasServices.lsReportePadresFechasPagosColeViewModel.OrderByDescending(x => x.DcmImportePagado).ToList();
+                        }
+                        break;
+                    case "VchEstatus":
+                        if (Orden == "ASC")
+                        {
+                            pagosColegiaturasServices.lsReportePadresFechasPagosColeViewModel = pagosColegiaturasServices.lsReportePadresFechasPagosColeViewModel.OrderBy(x => x.VchEstatus).ToList();
+                        }
+                        else
+                        {
+                            pagosColegiaturasServices.lsReportePadresFechasPagosColeViewModel = pagosColegiaturasServices.lsReportePadresFechasPagosColeViewModel.OrderByDescending(x => x.VchEstatus).ToList();
+                        }
+                        break;
+                }
+
+                gvPagosColegiaturas.DataSource = pagosColegiaturasServices.lsReportePadresFechasPagosColeViewModel;
+                gvPagosColegiaturas.DataBind();
+            }
         }
 
         private void DetallePagoColegiaturaLiga(List<PagosColegiaturasViewModels> lsPagosColegiaturas, List<DetallePagosColeGridViewModel> lsDetallePagosColeGridViewModel, Guid UidPagoColegiatura)
@@ -3158,7 +3314,7 @@ namespace PagaLaEscuela.Views
                     {
                         if (itComi.BitComision)
                         {
-                            ImporteCTT = itComi.DcmComision * ImporteTotal / 100;
+                            ImporteCTT = itComi.DcmComision * ImporteTotal / (100 - itComi.DcmComision);
                             ViewState["ImporteCTT"] = ImporteCTT;
 
                             trComisionTarjeta.Attributes.Add("style", "");
@@ -3204,7 +3360,7 @@ namespace PagaLaEscuela.Views
             {
                 foreach (var itPromo in promocionesPragaServices.lsCBLPromocionesPragaViewModel.Where(x => x.UidPromocion == Guid.Parse(ddlPromocionesTT.SelectedValue)).ToList())
                 {
-                    decimal Valor = itPromo.DcmComicion * importeTotal / 100;
+                    decimal Valor = itPromo.DcmComicion * importeTotal / (100 - itPromo.DcmComicion);
                     decimal Importe = Valor + importeTotal;
 
                     lblPromotb.Text = "COMISIÓN " + itPromo.VchDescripcion + ":";

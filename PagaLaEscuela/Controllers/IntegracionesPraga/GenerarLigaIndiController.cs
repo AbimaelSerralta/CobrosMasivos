@@ -78,14 +78,34 @@ namespace PagaLaEscuela.Controllers.IntegracionesPraga
                         }
                         else
                         {
-                            UidTipoPagoIntegracion = "D87454C9-12EF-4459-9CED-36E8401E4033";
-                            TipoCredenciales = "PRODUCCION";
+                            if (validacionesServices.ValidarEstatusCredencialesProduccion(generarFormaPago.User, generarFormaPago.Password) == Guid.Parse("65E46BC9-1864-4145-AD1A-70F5B5F69739"))
+                            {
+                                UidTipoPagoIntegracion = "D87454C9-12EF-4459-9CED-36E8401E4033";
+                                TipoCredenciales = "PRODUCCION";
+                            }
+                            else
+                            {
+                                codigoError.Message = "Su cuenta no tiene acceso, por favor comuníquese con los administradores.";
+                                codigoError.Codigo = "401";
+
+                                return Request.CreateResponse(System.Net.HttpStatusCode.Unauthorized, codigoError);
+                            }
                         }
                     }
                     else
                     {
-                        UidTipoPagoIntegracion = "3F792D20-B3B6-41D3-AF88-1BCB20D99BBE";
-                        TipoCredenciales = "SANDBOX";
+                        if (validacionesServices.ValidarEstatusCredencialesSandbox(generarFormaPago.User, generarFormaPago.Password) == Guid.Parse("65E46BC9-1864-4145-AD1A-70F5B5F69739"))
+                        {
+                            UidTipoPagoIntegracion = "3F792D20-B3B6-41D3-AF88-1BCB20D99BBE";
+                            TipoCredenciales = "SANDBOX";
+                        }
+                        else
+                        {
+                            codigoError.Message = "Su cuenta no tiene acceso, por favor comuníquese con los administradores.";
+                            codigoError.Codigo = "401";
+
+                            return Request.CreateResponse(System.Net.HttpStatusCode.Unauthorized, codigoError);
+                        }
                     }
                 }
                 else

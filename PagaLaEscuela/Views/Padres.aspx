@@ -87,7 +87,7 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="table-responsive">
-                                            <asp:GridView ID="gvPadres" OnSorting="gvPadres_Sorting" OnRowCommand="gvPadres_RowCommand" OnRowDataBound="gvPadres_RowDataBound" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidUsuario" GridLines="None" border="0" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvPadres_PageIndexChanging" ShowFooter="true" runat="server">
+                                            <asp:GridView ID="gvPadres" OnRowCreated="gvPadres_RowCreated" OnSorting="gvPadres_Sorting" OnRowCommand="gvPadres_RowCommand" OnRowDataBound="gvPadres_RowDataBound" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidUsuario" GridLines="None" border="0" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvPadres_PageIndexChanging" ShowFooter="true" runat="server">
                                                 <EmptyDataTemplate>
                                                     <div class="alert alert-info">No hay tutores registrados</div>
                                                 </EmptyDataTemplate>
@@ -456,7 +456,7 @@
                                                     </div>
 
                                                     <div class="table-responsive">
-                                                        <asp:GridView ID="gvAlumnos" OnRowDataBound="gvAlumnos_RowDataBound" OnPageIndexChanging="gvAlumnos_PageIndexChanging" OnSorting="gvAlumnos_Sorting" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidAlumno" GridLines="None" border="0" AllowPaging="true" PageSize="5" runat="server">
+                                                        <asp:GridView ID="gvAlumnos" OnRowCreated="gvAlumnos_RowCreated" OnRowDataBound="gvAlumnos_RowDataBound" OnPageIndexChanging="gvAlumnos_PageIndexChanging" OnSorting="gvAlumnos_Sorting" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidAlumno" GridLines="None" border="0" AllowPaging="true" PageSize="5" runat="server">
                                                             <EmptyDataTemplate>
                                                                 <div class="alert alert-info">No hay alumnos asignados</div>
                                                             </EmptyDataTemplate>

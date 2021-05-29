@@ -70,6 +70,10 @@ namespace Franquicia.Bussiness
         {
             return pagosRepository.ActualizarPagoColegiatura(UidPagoColegiatura);
         }
+        public bool ActualizarPagoColegiaturaPLE(Guid UidPagoColegiatura, Guid UidEstatusFechaPago)
+        {
+            return pagosRepository.ActualizarPagoColegiaturaPLE(UidPagoColegiatura, UidEstatusFechaPago);
+        }
 
         public Tuple<string, string, string, string> ConsultarDatosValidarPago(Guid UidPagoColegiatura)
         {

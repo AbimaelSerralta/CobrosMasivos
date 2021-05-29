@@ -294,6 +294,30 @@ namespace Franquicia.DataAccess.Repository
             }
             return resultado;
         }
+        public bool ActualizarPagoColegiaturaPLE(Guid UidPagoColegiatura, Guid UidEstatusFechaPago)
+        {
+            SqlCommand Comando = new SqlCommand();
+            bool resultado = false;
+            try
+            {
+                Comando.CommandType = CommandType.StoredProcedure;
+                Comando.CommandText = "sp_PagosColegiaturasEstatusActualizar";
+
+                Comando.Parameters.Add("@UidPagoColegiatura", SqlDbType.UniqueIdentifier);
+                Comando.Parameters["@UidPagoColegiatura"].Value = UidPagoColegiatura;
+                
+                Comando.Parameters.Add("@UidEstatusFechaPago", SqlDbType.UniqueIdentifier);
+                Comando.Parameters["@UidEstatusFechaPago"].Value = UidEstatusFechaPago;
+
+                resultado = this.ManipulacionDeDatos(Comando);
+
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+            }
+            return resultado;
+        }
 
         public Tuple<string, string, string, string> ConsultarDatosValidarPago(Guid UidPagoColegiatura)
         {

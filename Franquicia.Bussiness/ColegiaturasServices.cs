@@ -77,7 +77,7 @@ namespace Franquicia.Bussiness
             }
             return result;
         }
-        public bool ActualizarColegiatura(Guid UidColegiatura, string VchIdentificador, decimal DcmImporte, int IntCantPagos, Guid UidPeriodicidad, DateTime DtFHInicio, bool BitFHLimite, DateTime DtFHLimite, bool BitFHVencimiento, DateTime DtFHVencimiento, bool BitRecargo, string VchTipoRecargo, decimal DcmRecargo, bool BitRecargoPeriodo, string VchTipoRecargoPeriodo, decimal DcmRecargoPeriodo)
+        public bool ActualizarColegiatura(Guid UidColegiatura, string VchIdentificador, decimal DcmImporte, int IntCantPagos, Guid UidPeriodicidad, DateTime DtFHInicio, bool BitFHLimite, DateTime DtFHLimite, bool BitFHVencimiento, DateTime DtFHVencimiento, bool BitRecargo, string VchTipoRecargo, decimal DcmRecargo, bool BitRecargoPeriodo, string VchTipoRecargoPeriodo, decimal DcmRecargoPeriodo, Guid UidEstatus)
         {
             bool result = false;
             if (colegiaturasRepository.ActualizarColegiatura(new ColegiaturasGridViewModel
@@ -97,7 +97,8 @@ namespace Franquicia.Bussiness
                 DcmRecargo = DcmRecargo,
                 BitRecargoPeriodo = BitRecargoPeriodo,
                 VchTipoRecargoPeriodo = VchTipoRecargoPeriodo,
-                DcmRecargoPeriodo = DcmRecargoPeriodo
+                DcmRecargoPeriodo = DcmRecargoPeriodo,
+                UidEstatus = UidEstatus
             }))
             {
                 result = true;
@@ -326,13 +327,13 @@ namespace Franquicia.Bussiness
 
             foreach (var item in lsDetallePagos)
             {
-                if (lsDesglosePagos.Exists(x=>x.VchConcepto == item.VchDescripcion))
+                if (lsDesglosePagos.Exists(x => x.VchConcepto == item.VchDescripcion))
                 {
                     lsDesglosePagos.RemoveAt(lsDesglosePagos.FindIndex(x => x.VchConcepto == item.VchDescripcion));
                 }
             }
 
-            foreach (var item2 in lsDesglosePagos.OrderBy(x=>x.IntNum))
+            foreach (var item2 in lsDesglosePagos.OrderBy(x => x.IntNum))
             {
                 lsNewDesglosePagos.Add(new DesglosePagosGridViewModel()
                 {
@@ -432,6 +433,15 @@ namespace Franquicia.Bussiness
         public bool ActualizarEstatusFechasPagosATM(Guid UidFechaColegiaturaAlumno, Guid UidEstatusFechaColegiatura)
         {
             return colegiaturasRepository.ActualizarEstatusFechasPagosATM(UidFechaColegiaturaAlumno, UidEstatusFechaColegiatura);
+        }
+
+        public List<EliminarPagos> ObtenerLigasEliminarATM(DateTime Fecha)
+        {
+            return colegiaturasRepository.ObtenerLigasEliminarATM(Fecha);
+        }
+        public List<EliminarPagos> ObtenerLigasEliminarPragaATM(DateTime Fecha)
+        {
+            return colegiaturasRepository.ObtenerLigasEliminarPragaATM(Fecha);
         }
         #endregion
 

@@ -29,6 +29,7 @@ namespace PagaLaEscuela.Views
             if (!IsPostBack)
             {
                 ViewState["gvPagos"] = SortDirection.Descending;
+                ViewState["SoExgvPagos"] = "";
 
                 Session["colegiaturasServices"] = colegiaturasServices;
 
@@ -158,6 +159,7 @@ namespace PagaLaEscuela.Views
         protected void gvPagos_Sorting(object sender, GridViewSortEventArgs e)
         {
             string SortExpression = e.SortExpression;
+            ViewState["SoExgvPagos"] = e.SortExpression;
             SortDirection direccion;
             string Orden = string.Empty;
 
@@ -341,6 +343,37 @@ namespace PagaLaEscuela.Views
                 else
                 {
                     lblPaginado.Text = ViewState["lblPaginado"].ToString();
+                }
+            }
+        }
+        protected void gvPagos_RowCreated(object sender, GridViewRowEventArgs e)
+        {
+            SortDirection direccion = (SortDirection)ViewState["gvPagos"];
+            string SortExpression = ViewState["SoExgvPagos"].ToString();
+
+            if (e.Row.RowType == DataControlRowType.Header)
+            {
+                foreach (TableCell tc in e.Row.Cells)
+                {
+                    if (tc.HasControls())
+                    {
+                        // Buscar el enlace de la cabecera
+                        LinkButton lnk = tc.Controls[0] as LinkButton;
+                        if (lnk != null && SortExpression == lnk.CommandArgument)
+                        {
+                            // Verificar que se está ordenando por el campo indicado en el comando de ordenación
+                            // Crear una imagen
+                            System.Web.UI.WebControls.Image img = new System.Web.UI.WebControls.Image();
+                            img.Height = 20;
+                            img.Width = 20;
+                            // Ajustar dinámicamente el icono adecuado
+                            img.ImageUrl = "~/Images/SortingGv/" + (direccion == SortDirection.Ascending ? "desc" : "asc") + ".png";
+                            img.ImageAlign = ImageAlign.AbsMiddle;
+                            // Le metemos un espacio delante de la imagen para que no se pegue al enlace
+                            tc.Controls.Add(new LiteralControl(""));
+                            tc.Controls.Add(img);
+                        }
+                    }
                 }
             }
         }

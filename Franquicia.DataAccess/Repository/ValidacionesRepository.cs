@@ -461,6 +461,42 @@ namespace Franquicia.DataAccess.Repository
             return Tuple.Create(BitUsarFecha, DtFechaPago);
         }
 
+        public bool TienePagosTarjeta(string IdReferencia)
+        {
+            bool result = true;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select * from PagosTarjeta where IdReferencia = '" + IdReferencia + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            if (dt.Rows.Count >= 1)
+            {
+                result = false;
+            }
+
+            return result;
+        }
+        public bool TienePagosTarjetaPraga(string IdReferencia)
+        {
+            bool result = true;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select * from PagosTarjetaPraga where IdReferencia = '" + IdReferencia + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            if (dt.Rows.Count >= 1)
+            {
+                result = false;
+            }
+
+            return result;
+        }
         #endregion
 
         #region Metodos Integraciones
@@ -480,6 +516,42 @@ namespace Franquicia.DataAccess.Repository
             {
                 UidEstatus = Guid.Parse(item["UidEstatus"].ToString());
             }
+
+            return UidEstatus;
+        }
+        public Guid ValidarEstatusCredencialesSandbox(string Usuario, string Contrasenia)
+        {
+            Guid UidEstatus = Guid.Empty;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select * from CredenSandbox where VchUsuario = '" + Usuario + "' and VchContrasenia = '" + Contrasenia + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                UidEstatus = Guid.Parse(item["UidEstatus"].ToString());
+            };
+
+            return UidEstatus;
+        }
+        public Guid ValidarEstatusCredencialesProduccion(string Usuario, string Contrasenia)
+        {
+            Guid UidEstatus = Guid.Empty;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select * from CredenProduccion where VchUsuario = '" + Usuario + "' and VchContrasenia = '" + Contrasenia + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                UidEstatus = Guid.Parse(item["UidEstatus"].ToString());
+            };
 
             return UidEstatus;
         }

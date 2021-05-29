@@ -50,13 +50,17 @@ namespace Franquicia.Bussiness
         {
             return pagosTarjetaPragaRepository.ConsultarPagoColegiatura(IdReferencia);
         }
+        public Tuple<string, string, string> ConsultarPagoColegiaturaDenegado(string IdReferencia)
+        {
+            return pagosTarjetaPragaRepository.ConsultarPagoColegiaturaDenegado(IdReferencia);
+        }
         public Tuple<List<PagosColegiaturasViewModels>, List<DetallesPagosColegiaturas>> ObtenerPagoColegiatura(Guid UidPagoColegiatura)
         {
             return pagosTarjetaPragaRepository.ObtenerPagoColegiatura(UidPagoColegiatura);
         }
-        public bool ActualizarPagoColegiatura(Guid UidPagoColegiatura)
+        public bool ActualizarPagoColegiatura(Guid UidPagoColegiatura, Guid UidEstatusFechaPago)
         {
-            return pagosTarjetaPragaRepository.ActualizarPagoColegiatura(UidPagoColegiatura);
+            return pagosTarjetaPragaRepository.ActualizarPagoColegiatura(UidPagoColegiatura, UidEstatusFechaPago);
         }
 
         public Tuple<string, string, string, string> ConsultarDatosValidarPago(Guid UidPagoColegiatura)

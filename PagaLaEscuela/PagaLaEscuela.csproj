@@ -222,6 +222,7 @@
     <Content Include="bootstrap4.0.0\js\bootstrap.min.js" />
     <Content Include="CSSPropio\AccordionTipoTarjeta.css" />
     <Content Include="CSSPropio\AccordionModoFiltros.css" />
+    <Content Include="CSSPropio\AccountRecovery.css" />
     <Content Include="CSSPropio\BadgeNotification.css" />
     <Content Include="CSSPropio\BasicEventos.css" />
     <Content Include="CSSPropio\BtnPaginacion.css" />
@@ -272,6 +273,8 @@
     <Content Include="Images\SinLogo.png" />
     <Content Include="Images\SinLogo2.png" />
     <Content Include="Images\SinPagos.png" />
+    <Content Include="Images\SortingGv\asc.png" />
+    <Content Include="Images\SortingGv\desc.png" />
     <Content Include="Images\terminal.png" />
     <Content Include="Images\think.png" />
     <Content Include="Images\TipoTarjeta\efectivo.png" />
@@ -308,6 +311,7 @@
     </Content>
     <Content Include="Views\Accesos.aspx" />
     <Content Include="Views\AccesosFranquicias.aspx" />
+    <Content Include="Views\AccountRecovery.aspx" />
     <Content Include="Views\AdministradoresClientes.aspx" />
     <Content Include="Views\AdministradoresFranquicias.aspx" />
     <Content Include="Views\Alumnos.aspx" />
@@ -361,6 +365,7 @@
     <Compile Include="Controllers\ContactoController.cs" />
     <Compile Include="Controllers\PayCardController.cs" />
     <Compile Include="Controllers\PragPayCardController.cs" />
+    <Compile Include="Controllers\ProcesosAutomaticos\DeletePaidLinkController.cs" />
     <Compile Include="Controllers\SimuladorIntegracion\ConsuReferenController.cs" />
     <Compile Include="Controllers\SimuladorIntegracion\PagoCancelaController.cs" />
     <Compile Include="Controllers\SimuladorIntegracion\ReferenciaPagoController.cs" />
@@ -435,6 +440,13 @@
     </Compile>
     <Compile Include="Views\AccesosFranquicias.aspx.designer.cs">
       <DependentUpon>AccesosFranquicias.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AccountRecovery.aspx.cs">
+      <DependentUpon>AccountRecovery.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\AccountRecovery.aspx.designer.cs">
+      <DependentUpon>AccountRecovery.aspx</DependentUpon>
     </Compile>
     <Compile Include="Views\AdministradoresClientes.aspx.cs">
       <DependentUpon>AdministradoresClientes.aspx</DependentUpon>

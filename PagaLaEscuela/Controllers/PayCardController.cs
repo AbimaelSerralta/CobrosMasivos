@@ -182,7 +182,7 @@ namespace PagaLaEscuela.Controllers
                         {
                             var list = pagosServices.ObtenerPagoColegiatura(Guid.Parse(para.Item1));
 
-                            pagosServices.ActualizarPagoColegiatura(Guid.Parse(para.Item1));
+                            pagosServices.ActualizarPagoColegiaturaPLE(Guid.Parse(para.Item1), Guid.Parse("8720B2B9-5712-4E75-A981-932887AACDC9"));
 
                             //correosEscuelaServices.CorreoEnvioPagoColegiatura(list.Item1, list.Item2, "Comprobante de pago de colegiatura", reference, fechaRegistro, "************" + cc_number, foliocpagos, para.Item2, "APROBADO", Guid.Parse(para.Item3));
 
@@ -342,6 +342,15 @@ namespace PagaLaEscuela.Controllers
                                 //    }
                                 //}
                             }
+                        }
+                    }
+                    else
+                    {
+                        var para = pagosServices.ConsultarPagoColegiatura(reference);
+
+                        if (!string.IsNullOrEmpty(para.Item1))
+                        {
+                            pagosServices.ActualizarPagoColegiaturaPLE(Guid.Parse(para.Item1), Guid.Parse("77DB3F13-7EC8-4CE1-A3DB-E5C96D14A581"));
                         }
                     }
                 }

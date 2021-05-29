@@ -58,7 +58,7 @@
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link" href="#clubPago" data-toggle="tab">
-                                            <i class="material-icons">store</i>ClubPago<div class="ripple-container"></div>
+                                            <i class="material-icons">store</i>Pago En Efectivo<div class="ripple-container"></div>
                                         </a>
                                     </li>
                                 </ul>

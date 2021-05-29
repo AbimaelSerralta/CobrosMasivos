@@ -48,8 +48,13 @@ namespace PagaLaEscuela.Views
                 txtTotaltb.Attributes.Add("onchange", "button_click(this,'" + btnCalcular.ClientID + "')");
 
                 ViewState["gvDatos"] = SortDirection.Ascending;
+                ViewState["SoExgvDatos"] = "";
+
                 ViewState["gvAlumnos"] = SortDirection.Ascending;
+                ViewState["SoExgvAlumnos"] = "";
+
                 ViewState["gvPagos"] = SortDirection.Ascending;
+                ViewState["SoExgvPagos"] = "";
 
                 Session["pagosTarjetaServices"] = pagosTarjetaServices;
                 Session["colegiaturasServices"] = colegiaturasServices;
@@ -289,6 +294,7 @@ namespace PagaLaEscuela.Views
         protected void gvDatosAlumnos_Sorting(object sender, GridViewSortEventArgs e)
         {
             string SortExpression = e.SortExpression;
+            ViewState["SoExgvDatos"] = e.SortExpression;
             SortDirection direccion;
             string Orden = string.Empty;
 
@@ -666,12 +672,44 @@ namespace PagaLaEscuela.Views
 
             //}
         }
+        protected void gvDatosAlumnos_RowCreated(object sender, GridViewRowEventArgs e)
+        {
+            SortDirection direccion = (SortDirection)ViewState["gvDatos"];
+            string SortExpression = ViewState["SoExgvDatos"].ToString();
+
+            if (e.Row.RowType == DataControlRowType.Header)
+            {
+                foreach (TableCell tc in e.Row.Cells)
+                {
+                    if (tc.HasControls())
+                    {
+                        // Buscar el enlace de la cabecera
+                        LinkButton lnk = tc.Controls[0] as LinkButton;
+                        if (lnk != null && SortExpression == lnk.CommandArgument)
+                        {
+                            // Verificar que se está ordenando por el campo indicado en el comando de ordenación
+                            // Crear una imagen
+                            System.Web.UI.WebControls.Image img = new System.Web.UI.WebControls.Image();
+                            img.Height = 20;
+                            img.Width = 20;
+                            // Ajustar dinámicamente el icono adecuado
+                            img.ImageUrl = "~/Images/SortingGv/" + (direccion == SortDirection.Ascending ? "desc" : "asc") + ".png";
+                            img.ImageAlign = ImageAlign.AbsMiddle;
+                            // Le metemos un espacio delante de la imagen para que no se pegue al enlace
+                            tc.Controls.Add(new LiteralControl(""));
+                            tc.Controls.Add(img);
+                        }
+                    }
+                }
+            }
+        }
         #endregion
 
         #region GridViewDatosPagos
         protected void gvDatosPagos_Sorting(object sender, GridViewSortEventArgs e)
         {
             string SortExpression = e.SortExpression;
+            ViewState["SoExgvDatos"] = e.SortExpression;
             SortDirection direccion;
             string Orden = string.Empty;
 
@@ -1370,6 +1408,37 @@ namespace PagaLaEscuela.Views
                 }
             }
         }
+        protected void gvDatosPagos_RowCreated(object sender, GridViewRowEventArgs e)
+        {
+            SortDirection direccion = (SortDirection)ViewState["gvDatos"];
+            string SortExpression = ViewState["SoExgvDatos"].ToString();
+
+            if (e.Row.RowType == DataControlRowType.Header)
+            {
+                foreach (TableCell tc in e.Row.Cells)
+                {
+                    if (tc.HasControls())
+                    {
+                        // Buscar el enlace de la cabecera
+                        LinkButton lnk = tc.Controls[0] as LinkButton;
+                        if (lnk != null && SortExpression == lnk.CommandArgument)
+                        {
+                            // Verificar que se está ordenando por el campo indicado en el comando de ordenación
+                            // Crear una imagen
+                            System.Web.UI.WebControls.Image img = new System.Web.UI.WebControls.Image();
+                            img.Height = 20;
+                            img.Width = 20;
+                            // Ajustar dinámicamente el icono adecuado
+                            img.ImageUrl = "~/Images/SortingGv/" + (direccion == SortDirection.Ascending ? "desc" : "asc") + ".png";
+                            img.ImageAlign = ImageAlign.AbsMiddle;
+                            // Le metemos un espacio delante de la imagen para que no se pegue al enlace
+                            tc.Controls.Add(new LiteralControl(""));
+                            tc.Controls.Add(img);
+                        }
+                    }
+                }
+            }
+        }
 
         private void CargarRecargos(Guid UidPagoColegiatura, string VchMatricula, string FHPago, decimal DcmImpResta, List<DetallePagosColeGridViewModel> lsDetallePagosColeGridViewModel)
         {
@@ -1610,6 +1679,7 @@ namespace PagaLaEscuela.Views
         protected void gvAlumnos_Sorting(object sender, GridViewSortEventArgs e)
         {
             string SortExpression = e.SortExpression;
+            ViewState["SoExgvAlumnos"] = e.SortExpression;
             SortDirection direccion;
             string Orden = string.Empty;
 
@@ -1719,12 +1789,44 @@ namespace PagaLaEscuela.Views
             gvPagos.DataSource = colegiaturasServices.lsPagosColegiaturasViewModel;
             gvPagos.DataBind();
         }
+        protected void gvAlumnos_RowCreated(object sender, GridViewRowEventArgs e)
+        {
+            SortDirection direccion = (SortDirection)ViewState["gvAlumnos"];
+            string SortExpression = ViewState["SoExgvAlumnos"].ToString();
+
+            if (e.Row.RowType == DataControlRowType.Header)
+            {
+                foreach (TableCell tc in e.Row.Cells)
+                {
+                    if (tc.HasControls())
+                    {
+                        // Buscar el enlace de la cabecera
+                        LinkButton lnk = tc.Controls[0] as LinkButton;
+                        if (lnk != null && SortExpression == lnk.CommandArgument)
+                        {
+                            // Verificar que se está ordenando por el campo indicado en el comando de ordenación
+                            // Crear una imagen
+                            System.Web.UI.WebControls.Image img = new System.Web.UI.WebControls.Image();
+                            img.Height = 20;
+                            img.Width = 20;
+                            // Ajustar dinámicamente el icono adecuado
+                            img.ImageUrl = "~/Images/SortingGv/" + (direccion == SortDirection.Ascending ? "desc" : "asc") + ".png";
+                            img.ImageAlign = ImageAlign.AbsMiddle;
+                            // Le metemos un espacio delante de la imagen para que no se pegue al enlace
+                            tc.Controls.Add(new LiteralControl(""));
+                            tc.Controls.Add(img);
+                        }
+                    }
+                }
+            }
+        }
         #endregion
 
         #region GridViewPagos
         protected void gvPagos_Sorting(object sender, GridViewSortEventArgs e)
         {
             string SortExpression = e.SortExpression;
+            ViewState["SoExgvPagos"] = e.SortExpression;
             SortDirection direccion;
             string Orden = string.Empty;
 
@@ -2063,6 +2165,37 @@ namespace PagaLaEscuela.Views
             rptDesglose.DataSource = colegiaturasServices.lsDesglosePagosGridViewModel.OrderBy(x => x.IntNum);
             rptDesglose.DataBind();
         }
+        protected void gvPagos_RowCreated(object sender, GridViewRowEventArgs e)
+        {
+            SortDirection direccion = (SortDirection)ViewState["gvPagos"];
+            string SortExpression = ViewState["SoExgvPagos"].ToString();
+
+            if (e.Row.RowType == DataControlRowType.Header)
+            {
+                foreach (TableCell tc in e.Row.Cells)
+                {
+                    if (tc.HasControls())
+                    {
+                        // Buscar el enlace de la cabecera
+                        LinkButton lnk = tc.Controls[0] as LinkButton;
+                        if (lnk != null && SortExpression == lnk.CommandArgument)
+                        {
+                            // Verificar que se está ordenando por el campo indicado en el comando de ordenación
+                            // Crear una imagen
+                            System.Web.UI.WebControls.Image img = new System.Web.UI.WebControls.Image();
+                            img.Height = 20;
+                            img.Width = 20;
+                            // Ajustar dinámicamente el icono adecuado
+                            img.ImageUrl = "~/Images/SortingGv/" + (direccion == SortDirection.Ascending ? "desc" : "asc") + ".png";
+                            img.ImageAlign = ImageAlign.AbsMiddle;
+                            // Le metemos un espacio delante de la imagen para que no se pegue al enlace
+                            tc.Controls.Add(new LiteralControl(""));
+                            tc.Controls.Add(img);
+                        }
+                    }
+                }
+            }
+        }
         protected void Calcular(string Importe, Guid UidTipoTarjeta)
         {
             ddlFormasPago_SelectedIndexChanged(null, null);
@@ -2192,7 +2325,7 @@ namespace PagaLaEscuela.Views
                 {
                     foreach (var itPromo in promocionesTerminalServices.lsCBLPromocionesTerminalViewModel.Where(x => x.UidPromocionTerminal == Guid.Parse(ddlPromocionesTT.SelectedValue)).ToList())
                     {
-                        ImporteCPTT = Totaltb * itPromo.DcmComicion / (100 + itPromo.DcmComicion);
+                        ImporteCPTT = Totaltb * itPromo.DcmComicion / 100;
                         ViewState["ImpOtraCantCPTT"] = ImporteCPTT;
                         PromocionTT = "Comisión " + itPromo.VchDescripcion + ": $" + ImporteCPTT.ToString("N2") + "<br />";
                     }
@@ -2208,7 +2341,7 @@ namespace PagaLaEscuela.Views
                         {
                             if (itComi.BitComision)
                             {
-                                ImporteCTT = SubTotal * itComi.DcmComision / (100 + itComi.DcmComision);
+                                ImporteCTT = SubTotal * itComi.DcmComision / 100;
                                 SubTotal = SubTotal - ImporteCTT;
                                 ViewState["ImpOtraCantCTT"] = ImporteCTT;
                                 CTT = "Comisión Bancaria: $" + ImporteCTT.ToString("N2") + "<br />";
@@ -2294,7 +2427,7 @@ namespace PagaLaEscuela.Views
                     {
                         if (itComi.BitComision)
                         {
-                            ImporteCTT = itComi.DcmComision * ImporteTotal / 100;
+                            ImporteCTT = itComi.DcmComision * ImporteTotal / (100 - itComi.DcmComision);
                             ViewState["ImporteCTT"] = ImporteCTT;
 
                             trComisionTarjeta.Attributes.Add("style", "");
@@ -2340,7 +2473,7 @@ namespace PagaLaEscuela.Views
             {
                 foreach (var itPromo in promocionesTerminalServices.lsCBLPromocionesTerminalViewModel.Where(x => x.UidPromocionTerminal == Guid.Parse(ddlPromocionesTT.SelectedValue)).ToList())
                 {
-                    decimal Valor = itPromo.DcmComicion * importeTotal / 100;
+                    decimal Valor = itPromo.DcmComicion * importeTotal / (100 - itPromo.DcmComicion);
                     decimal Importe = Valor + importeTotal;
 
                     lblPromotb.Text = "COMISIÓN " + itPromo.VchDescripcion + ":";

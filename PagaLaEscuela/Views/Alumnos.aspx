@@ -88,7 +88,7 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="table-responsive">
-                                            <asp:GridView ID="gvAlumnos" SelectedRowStyle-BackColor="#dff0d8" OnSorting="gvAlumnos_Sorting" OnRowCommand="gvAlumnos_RowCommand" OnRowDataBound="gvAlumnos_RowDataBound" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidAlumno" GridLines="None" border="0" AllowPaging="true" PageSize="10" EnablePersistedSelection="true" OnPageIndexChanging="gvAlumnos_PageIndexChanging" ShowFooter="true" runat="server">
+                                            <asp:GridView ID="gvAlumnos" SelectedRowStyle-BackColor="#dff0d8" OnRowCreated="gvAlumnos_RowCreated" OnSorting="gvAlumnos_Sorting" OnRowCommand="gvAlumnos_RowCommand" OnRowDataBound="gvAlumnos_RowDataBound" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidAlumno" GridLines="None" border="0" AllowPaging="true" PageSize="10" EnablePersistedSelection="true" OnPageIndexChanging="gvAlumnos_PageIndexChanging" ShowFooter="true" runat="server">
                                                 <EmptyDataTemplate>
                                                     <div class="alert alert-info">No hay alumnos registrados</div>
                                                 </EmptyDataTemplate>

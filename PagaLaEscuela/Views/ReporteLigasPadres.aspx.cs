@@ -46,8 +46,11 @@ namespace PagaLaEscuela.Views
             if (!IsPostBack)
             {
                 ViewState["gvDatos"] = SortDirection.Ascending;
+                ViewState["SoExgvDatos"] = "";
                 ViewState["gvAlumnos"] = SortDirection.Ascending;
+                ViewState["SoExgvAlumnos"] = "";
                 ViewState["gvLigasGeneradas"] = SortDirection.Ascending;
+                ViewState["SoExgvLigasGeneradas"] = "";
 
                 Session["ReporteLigasUsuariosligasUrlsServices"] = ligasUrlsServices;
                 Session["ReporteLigasUsuariospagosTarjetaServices"] = pagosTarjetaServices;
@@ -464,6 +467,7 @@ namespace PagaLaEscuela.Views
         protected void gvDatosAlumnos_Sorting(object sender, GridViewSortEventArgs e)
         {
             string SortExpression = e.SortExpression;
+            ViewState["SoExgvDatos"] = e.SortExpression;
             SortDirection direccion;
             string Orden = string.Empty;
 
@@ -763,12 +767,44 @@ namespace PagaLaEscuela.Views
 
             //}
         }
+        protected void gvDatosAlumnos_RowCreated(object sender, GridViewRowEventArgs e)
+        {
+            SortDirection direccion = (SortDirection)ViewState["gvDatos"];
+            string SortExpression = ViewState["SoExgvDatos"].ToString();
+
+            if (e.Row.RowType == DataControlRowType.Header)
+            {
+                foreach (TableCell tc in e.Row.Cells)
+                {
+                    if (tc.HasControls())
+                    {
+                        // Buscar el enlace de la cabecera
+                        LinkButton lnk = tc.Controls[0] as LinkButton;
+                        if (lnk != null && SortExpression == lnk.CommandArgument)
+                        {
+                            // Verificar que se está ordenando por el campo indicado en el comando de ordenación
+                            // Crear una imagen
+                            System.Web.UI.WebControls.Image img = new System.Web.UI.WebControls.Image();
+                            img.Height = 20;
+                            img.Width = 20;
+                            // Ajustar dinámicamente el icono adecuado
+                            img.ImageUrl = "~/Images/SortingGv/" + (direccion == SortDirection.Ascending ? "desc" : "asc") + ".png";
+                            img.ImageAlign = ImageAlign.AbsMiddle;
+                            // Le metemos un espacio delante de la imagen para que no se pegue al enlace
+                            tc.Controls.Add(new LiteralControl(""));
+                            tc.Controls.Add(img);
+                        }
+                    }
+                }
+            }
+        }
         #endregion
 
         #region GridViewDatosPagos
         protected void gvDatosPagos_Sorting(object sender, GridViewSortEventArgs e)
         {
             string SortExpression = e.SortExpression;
+            ViewState["SoExgvDatos"] = e.SortExpression;
             SortDirection direccion;
             string Orden = string.Empty;
 
@@ -1386,6 +1422,37 @@ namespace PagaLaEscuela.Views
                 else
                 {
                     lblPaginado.Text = ViewState["lblPaginado"].ToString();
+                }
+            }
+        }
+        protected void gvDatosPagos_RowCreated(object sender, GridViewRowEventArgs e)
+        {
+            SortDirection direccion = (SortDirection)ViewState["gvDatos"];
+            string SortExpression = ViewState["SoExgvDatos"].ToString();
+
+            if (e.Row.RowType == DataControlRowType.Header)
+            {
+                foreach (TableCell tc in e.Row.Cells)
+                {
+                    if (tc.HasControls())
+                    {
+                        // Buscar el enlace de la cabecera
+                        LinkButton lnk = tc.Controls[0] as LinkButton;
+                        if (lnk != null && SortExpression == lnk.CommandArgument)
+                        {
+                            // Verificar que se está ordenando por el campo indicado en el comando de ordenación
+                            // Crear una imagen
+                            System.Web.UI.WebControls.Image img = new System.Web.UI.WebControls.Image();
+                            img.Height = 20;
+                            img.Width = 20;
+                            // Ajustar dinámicamente el icono adecuado
+                            img.ImageUrl = "~/Images/SortingGv/" + (direccion == SortDirection.Ascending ? "desc" : "asc") + ".png";
+                            img.ImageAlign = ImageAlign.AbsMiddle;
+                            // Le metemos un espacio delante de la imagen para que no se pegue al enlace
+                            tc.Controls.Add(new LiteralControl(""));
+                            tc.Controls.Add(img);
+                        }
+                    }
                 }
             }
         }

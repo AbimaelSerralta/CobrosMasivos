@@ -35,6 +35,7 @@ namespace PagaLaEscuela.Views
             if (!IsPostBack)
             {
                 ViewState["gvFranquiciatarios"] = SortDirection.Ascending;
+                ViewState["SoExgvFranquiciatarios"] = "";
 
                 #region Direccion
                 Session["paisesServices"] = paisesServices;
@@ -474,7 +475,6 @@ namespace PagaLaEscuela.Views
                 e.Row.Attributes["onclick"] = Page.ClientScript.GetPostBackClientHyperlink(gvFranquiciatarios, "Select$" + e.Row.RowIndex);
             }
         }
-
         protected void gvFranquiciatarios_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandName == "Editar")
@@ -588,6 +588,129 @@ namespace PagaLaEscuela.Views
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalPromociones()", true);
             }
         }
+        protected void gvFranquiciatarios_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Guid UidFranquicia = new Guid(gvFranquiciatarios.SelectedDataKey.Value.ToString());
+
+            if (Guid.Parse(Session["UidFranquiciaMaster"].ToString()) != UidFranquicia)
+            {
+                Session["UidFranquiciaMaster"] = UidFranquicia;
+                franquiciatariosServices.ObtenerFraquiciatario(UidFranquicia);
+                Master.NombreComercial.Text = "<< " + franquiciatariosServices.franquiciatarios.VchNombreComercial + " >>";
+                Session["NombreComercial"] = franquiciatariosServices.franquiciatarios.VchNombreComercial;
+                Master.MenuFranquicia.Attributes.Add("class", "dropdown-toggle font-weight-bold");
+
+                Master.NombreCliente.Text = "seleccione un comercio";
+                Session["NombreClienteMaster"] = null;
+                Master.MenuCliente.Attributes.Add("class", "dropdown-toggle disabled");
+            }
+        }
+        protected void gvFranquiciatarios_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            string SortExpression = e.SortExpression;
+            ViewState["SoExgvFranquiciatarios"] = e.SortExpression;
+            SortDirection direccion;
+            string Orden = string.Empty;
+
+            if (ViewState["gvFranquiciatarios"] != null)
+            {
+                direccion = (SortDirection)ViewState["gvFranquiciatarios"];
+                if (direccion == SortDirection.Ascending)
+                {
+                    ViewState["gvFranquiciatarios"] = SortDirection.Descending;
+                    Orden = "ASC";
+                }
+                else
+                {
+                    ViewState["gvFranquiciatarios"] = SortDirection.Ascending;
+                    Orden = "DESC";
+                }
+
+                switch (SortExpression)
+                {
+                    case "VchRFC":
+                        if (Orden == "ASC")
+                        {
+                            franquiciatariosServices.lsFranquiciasGridViewModel = franquiciatariosServices.lsFranquiciasGridViewModel.OrderBy(x => x.VchRFC).ToList();
+                        }
+                        else
+                        {
+                            franquiciatariosServices.lsFranquiciasGridViewModel = franquiciatariosServices.lsFranquiciasGridViewModel.OrderByDescending(x => x.VchRFC).ToList();
+                        }
+                        break;
+                    case "VchRazonSocial":
+                        if (Orden == "ASC")
+                        {
+                            franquiciatariosServices.lsFranquiciasGridViewModel = franquiciatariosServices.lsFranquiciasGridViewModel.OrderBy(x => x.VchRazonSocial).ToList();
+                        }
+                        else
+                        {
+                            franquiciatariosServices.lsFranquiciasGridViewModel = franquiciatariosServices.lsFranquiciasGridViewModel.OrderByDescending(x => x.VchRazonSocial).ToList();
+                        }
+                        break;
+                    case "VchNombreComercial":
+                        if (Orden == "ASC")
+                        {
+                            franquiciatariosServices.lsFranquiciasGridViewModel = franquiciatariosServices.lsFranquiciasGridViewModel.OrderBy(x => x.VchNombreComercial).ToList();
+                        }
+                        else
+                        {
+                            franquiciatariosServices.lsFranquiciasGridViewModel = franquiciatariosServices.lsFranquiciasGridViewModel.OrderByDescending(x => x.VchNombreComercial).ToList();
+                        }
+                        break;
+                    case "UidEstatus":
+                        if (Orden == "ASC")
+                        {
+                            franquiciatariosServices.lsFranquiciasGridViewModel = franquiciatariosServices.lsFranquiciasGridViewModel.OrderBy(x => x.UidEstatus).ToList();
+                        }
+                        else
+                        {
+                            franquiciatariosServices.lsFranquiciasGridViewModel = franquiciatariosServices.lsFranquiciasGridViewModel.OrderByDescending(x => x.UidEstatus).ToList();
+                        }
+                        break;
+                }
+
+                gvFranquiciatarios.DataSource = franquiciatariosServices.lsFranquiciasGridViewModel;
+                gvFranquiciatarios.DataBind();
+            }
+        }
+        protected void gvFranquiciatarios_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvFranquiciatarios.PageIndex = e.NewPageIndex;
+            gvFranquiciatarios.DataSource = franquiciatariosServices.lsFranquiciasGridViewModel;
+            gvFranquiciatarios.DataBind();
+        }
+        protected void gvFranquiciatarios_RowCreated(object sender, GridViewRowEventArgs e)
+        {
+            SortDirection direccion = (SortDirection)ViewState["gvFranquiciatarios"];
+            string SortExpression = ViewState["SoExgvFranquiciatarios"].ToString();
+
+            if (e.Row.RowType == DataControlRowType.Header)
+            {
+                foreach (TableCell tc in e.Row.Cells)
+                {
+                    if (tc.HasControls())
+                    {
+                        // Buscar el enlace de la cabecera
+                        LinkButton lnk = tc.Controls[0] as LinkButton;
+                        if (lnk != null && SortExpression == lnk.CommandArgument)
+                        {
+                            // Verificar que se está ordenando por el campo indicado en el comando de ordenación
+                            // Crear una imagen
+                            System.Web.UI.WebControls.Image img = new System.Web.UI.WebControls.Image();
+                            img.Height = 20;
+                            img.Width = 20;
+                            // Ajustar dinámicamente el icono adecuado
+                            img.ImageUrl = "~/Images/SortingGv/" + (direccion == SortDirection.Ascending ? "desc" : "asc") + ".png";
+                            img.ImageAlign = ImageAlign.AbsMiddle;
+                            // Le metemos un espacio delante de la imagen para que no se pegue al enlace
+                            tc.Controls.Add(new LiteralControl(""));
+                            tc.Controls.Add(img);
+                        }
+                    }
+                }
+            }
+        }
 
         private void ManejoDatos(Guid dataKeys)
         {
@@ -687,24 +810,6 @@ namespace PagaLaEscuela.Views
             btnGuardar.Text = "<i class=" + "material-icons>" + "refresh </i> Actualizar";
         }
 
-        protected void gvFranquiciatarios_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            Guid UidFranquicia = new Guid(gvFranquiciatarios.SelectedDataKey.Value.ToString());
-
-            if (Guid.Parse(Session["UidFranquiciaMaster"].ToString()) != UidFranquicia)
-            {
-                Session["UidFranquiciaMaster"] = UidFranquicia;
-                franquiciatariosServices.ObtenerFraquiciatario(UidFranquicia);
-                Master.NombreComercial.Text = "<< " + franquiciatariosServices.franquiciatarios.VchNombreComercial + " >>";
-                Session["NombreComercial"] = franquiciatariosServices.franquiciatarios.VchNombreComercial;
-                Master.MenuFranquicia.Attributes.Add("class", "dropdown-toggle font-weight-bold");
-
-                Master.NombreCliente.Text = "seleccione un comercio";
-                Session["NombreClienteMaster"] = null;
-                Master.MenuCliente.Attributes.Add("class", "dropdown-toggle disabled");
-            }
-        }
-
         protected void btnValidarCorreo_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(txtCorreo.Text))
@@ -725,82 +830,6 @@ namespace PagaLaEscuela.Views
                 //lblNoExiste.Text = string.Empty;
                 //lblExiste.Text = string.Empty;
             }
-        }
-
-        protected void gvFranquiciatarios_Sorting(object sender, GridViewSortEventArgs e)
-        {
-            string SortExpression = e.SortExpression;
-            SortDirection direccion;
-            string Orden = string.Empty;
-
-            if (ViewState["gvFranquiciatarios"] != null)
-            {
-                direccion = (SortDirection)ViewState["gvFranquiciatarios"];
-                if (direccion == SortDirection.Ascending)
-                {
-                    ViewState["gvFranquiciatarios"] = SortDirection.Descending;
-                    Orden = "ASC";
-                }
-                else
-                {
-                    ViewState["gvFranquiciatarios"] = SortDirection.Ascending;
-                    Orden = "DESC";
-                }
-
-                switch (SortExpression)
-                {
-                    case "VchRFC":
-                        if (Orden == "ASC")
-                        {
-                            franquiciatariosServices.lsFranquiciasGridViewModel = franquiciatariosServices.lsFranquiciasGridViewModel.OrderBy(x => x.VchRFC).ToList();
-                        }
-                        else
-                        {
-                            franquiciatariosServices.lsFranquiciasGridViewModel = franquiciatariosServices.lsFranquiciasGridViewModel.OrderByDescending(x => x.VchRFC).ToList();
-                        }
-                        break;
-                    case "VchRazonSocial":
-                        if (Orden == "ASC")
-                        {
-                            franquiciatariosServices.lsFranquiciasGridViewModel = franquiciatariosServices.lsFranquiciasGridViewModel.OrderBy(x => x.VchRazonSocial).ToList();
-                        }
-                        else
-                        {
-                            franquiciatariosServices.lsFranquiciasGridViewModel = franquiciatariosServices.lsFranquiciasGridViewModel.OrderByDescending(x => x.VchRazonSocial).ToList();
-                        }
-                        break;
-                    case "VchNombreComercial":
-                        if (Orden == "ASC")
-                        {
-                            franquiciatariosServices.lsFranquiciasGridViewModel = franquiciatariosServices.lsFranquiciasGridViewModel.OrderBy(x => x.VchNombreComercial).ToList();
-                        }
-                        else
-                        {
-                            franquiciatariosServices.lsFranquiciasGridViewModel = franquiciatariosServices.lsFranquiciasGridViewModel.OrderByDescending(x => x.VchNombreComercial).ToList();
-                        }
-                        break;
-                    case "UidEstatus":
-                        if (Orden == "ASC")
-                        {
-                            franquiciatariosServices.lsFranquiciasGridViewModel = franquiciatariosServices.lsFranquiciasGridViewModel.OrderBy(x => x.UidEstatus).ToList();
-                        }
-                        else
-                        {
-                            franquiciatariosServices.lsFranquiciasGridViewModel = franquiciatariosServices.lsFranquiciasGridViewModel.OrderByDescending(x => x.UidEstatus).ToList();
-                        }
-                        break;
-                }
-
-                gvFranquiciatarios.DataSource = franquiciatariosServices.lsFranquiciasGridViewModel;
-                gvFranquiciatarios.DataBind();
-            }
-        }
-
-        protected void gvFranquiciatarios_PageIndexChanging(object sender, GridViewPageEventArgs e)
-        {
-            gvFranquiciatarios.PageIndex = e.NewPageIndex;
-            gvFranquiciatarios.DataSource = franquiciatariosServices.lsFranquiciasGridViewModel;
-            gvFranquiciatarios.DataBind();
         }
 
         protected void btnGuardarCredenciales_Click(object sender, EventArgs e)
