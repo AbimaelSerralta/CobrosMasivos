@@ -270,7 +270,7 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@DcmRecargoPeriodo", SqlDbType.Decimal);
                 comando.Parameters["@DcmRecargoPeriodo"].Value = colegiaturas.DcmRecargoPeriodo;
-                
+
                 comando.Parameters.Add("@UidEstatus", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidEstatus"].Value = colegiaturas.UidEstatus;
 
@@ -1378,45 +1378,48 @@ namespace Franquicia.DataAccess.Repository
 
             if (BitRecargoPeriodo)
             {
-                decimal recargo = decimal.Parse(DcmRecargoPeriodo.ToString("N2"));
-                decimal recargoTemp = 0;
-
-                if (VchTipoRecargoPeriodo == "CANTIDAD")
+                if (hoy > DtFHFinPeriodo)
                 {
-                    if (VchPeriodicidad == "MENSUAL")
-                    {
-                        var dateTime = DateTimeSpan.CompareDates(DtFHFinPeriodo, hoy);
-                        recargoTemp = recargo * dateTime.Months;
-                    }
-                    else if (VchPeriodicidad == "SEMANAL")
-                    {
-                        int canSem = 0;
+                    decimal recargo = decimal.Parse(DcmRecargoPeriodo.ToString("N2"));
+                    decimal recargoTemp = 0;
 
-                        var dateTime = DateTimeSpan.CompareDates(DtFHFinPeriodo, hoy);
-                        canSem = dateTime.Days / 7;
-                        recargoTemp = recargo * canSem;
+                    if (VchTipoRecargoPeriodo == "CANTIDAD")
+                    {
+                        if (VchPeriodicidad == "MENSUAL")
+                        {
+                            var dateTime = DateTimeSpan.CompareDates(DtFHFinPeriodo, hoy);
+                            recargoTemp = recargo * (dateTime.Months + 1);
+                        }
+                        else if (VchPeriodicidad == "SEMANAL")
+                        {
+                            int canSem = 0;
+
+                            var dateTime = DateTimeSpan.CompareDates(DtFHFinPeriodo, hoy);
+                            canSem = (dateTime.Days + 7) / 7;
+                            recargoTemp = recargo * canSem;
+                        }
                     }
+                    else if (VchTipoRecargoPeriodo == "PORCENTAJE")
+                    {
+                        recargo = recargo * ImporteCole / 100;
+
+                        if (VchPeriodicidad == "MENSUAL")
+                        {
+                            var dateTime = DateTimeSpan.CompareDates(DtFHFinPeriodo, hoy);
+                            recargoTemp = recargo * (dateTime.Months + 1);
+                        }
+                        else if (VchPeriodicidad == "SEMANAL")
+                        {
+                            int canSem = 0;
+
+                            var dateTime = DateTimeSpan.CompareDates(DtFHFinPeriodo, hoy);
+                            canSem = (dateTime.Days + 7) / 7;
+                            recargoTemp = recargo * canSem;
+                        }
+                    }
+
+                    recargoTotalPeriodo = recargoTemp;
                 }
-                else if (VchTipoRecargoPeriodo == "PORCENTAJE")
-                {
-                    recargo = recargo * ImporteCole / 100;
-
-                    if (VchPeriodicidad == "MENSUAL")
-                    {
-                        var dateTime = DateTimeSpan.CompareDates(DtFHFinPeriodo, hoy);
-                        recargoTemp = recargo * dateTime.Months;
-                    }
-                    else if (VchPeriodicidad == "SEMANAL")
-                    {
-                        int canSem = 0;
-
-                        var dateTime = DateTimeSpan.CompareDates(DtFHFinPeriodo, hoy);
-                        canSem = dateTime.Days / 7;
-                        recargoTemp = recargo * canSem;
-                    }
-                }
-
-                recargoTotalPeriodo = recargoTemp;
             }
 
             recargoTotal = recargoTotalLimite + recargoTotalPeriodo;

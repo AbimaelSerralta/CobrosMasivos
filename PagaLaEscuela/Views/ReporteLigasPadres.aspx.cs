@@ -597,6 +597,36 @@ namespace PagaLaEscuela.Views
                             colegiaturasServices.lsPagosReporteLigaPadreViewModels = colegiaturasServices.lsPagosReporteLigaPadreViewModels.OrderByDescending(x => x.VchEstatus).ToList();
                         }
                         break;
+                    case "VchFolio":
+                        if (Orden == "ASC")
+                        {
+                            colegiaturasServices.lsPagosReporteLigaPadreViewModels = colegiaturasServices.lsPagosReporteLigaPadreViewModels.OrderBy(x => x.VchFolio).ToList();
+                        }
+                        else
+                        {
+                            colegiaturasServices.lsPagosReporteLigaPadreViewModels = colegiaturasServices.lsPagosReporteLigaPadreViewModels.OrderByDescending(x => x.VchFolio).ToList();
+                        }
+                        break;
+                    case "VchBanco":
+                        if (Orden == "ASC")
+                        {
+                            colegiaturasServices.lsPagosReporteLigaPadreViewModels = colegiaturasServices.lsPagosReporteLigaPadreViewModels.OrderBy(x => x.VchBanco).ToList();
+                        }
+                        else
+                        {
+                            colegiaturasServices.lsPagosReporteLigaPadreViewModels = colegiaturasServices.lsPagosReporteLigaPadreViewModels.OrderByDescending(x => x.VchBanco).ToList();
+                        }
+                        break;
+                    case "VchCuenta":
+                        if (Orden == "ASC")
+                        {
+                            colegiaturasServices.lsPagosReporteLigaPadreViewModels = colegiaturasServices.lsPagosReporteLigaPadreViewModels.OrderBy(x => x.VchCuenta).ToList();
+                        }
+                        else
+                        {
+                            colegiaturasServices.lsPagosReporteLigaPadreViewModels = colegiaturasServices.lsPagosReporteLigaPadreViewModels.OrderByDescending(x => x.VchCuenta).ToList();
+                        }
+                        break;
                 }
 
                 ViewState["NewPageIndex"] = int.Parse(ViewState["NewPageIndex"].ToString()) - 1;

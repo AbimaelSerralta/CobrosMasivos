@@ -71,12 +71,12 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-6" style="padding-right: 2px;">
-                                            <asp:LinkButton ID="btnDatosAlumnos" OnClick="btnDatosAlumnos_Click" CssClass="btn btn-primary pull-right" runat="server">
+                                            <asp:LinkButton ID="btnDatosAlumnos" Visible="false" OnClick="btnDatosAlumnos_Click" CssClass="btn btn-primary pull-right" runat="server">
                                             <i class="material-icons">wc</i> Alumnos
                                             </asp:LinkButton>
                                         </div>
                                         <div class="col-6" style="padding-left: 2px;">
-                                            <asp:LinkButton ID="btnDatosPagos" OnClick="btnDatosPagos_Click" CssClass="btn btn-secondary pull-left" runat="server">
+                                            <asp:LinkButton ID="btnDatosPagos" Visible="false" OnClick="btnDatosPagos_Click" CssClass="btn btn-secondary pull-left" runat="server">
                                             <i class="material-icons">attach_money</i> PAGOS
                                             </asp:LinkButton>
                                         </div>
@@ -119,6 +119,9 @@
                                                                 <asp:Label Text='<%#Eval("VchEstatus")%>' ForeColor='<%# System.Drawing.ColorTranslator.FromHtml(Eval("VchColor").ToString()) %>' Font-Names="Comic Sans MS" Font-Bold="true" runat="server"></asp:Label>
                                                             </ItemTemplate>
                                                         </asp:TemplateField>
+                                                        <asp:BoundField SortExpression="VchFolio" DataField="VchFolio" HeaderText="FOLIO TICKET" />
+                                                        <asp:BoundField SortExpression="VchBanco" DataField="VchBanco" HeaderText="BANCO" />
+                                                        <asp:BoundField SortExpression="VchCuenta" DataField="VchCuenta" HeaderText="CUENTA" />
                                                         <asp:TemplateField>
                                                             <ItemTemplate>
                                                                 <table>
