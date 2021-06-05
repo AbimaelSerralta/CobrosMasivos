@@ -98,6 +98,28 @@
                     </div>
                 </div>
             </div>
+
+            <asp:Panel ID="pnlPago" Visible="false" runat="server">
+                <div class="row align-items-center text-center" style="padding-top: 10px;">
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Transacción:</span>
+                            </div>
+                            <asp:TextBox ID="txtTransaccion" CssClass="form-control text-box single-line" ReadOnly="true" runat="server" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Autorización:</span>
+                            </div>
+                            <asp:TextBox ID="txtAutorizacion" CssClass="form-control text-box single-line" ReadOnly="true" runat="server" />
+                        </div>
+                    </div>
+                </div>
+            </asp:Panel>
+
             <div class="col-md12" style="margin-top: 10px;">
                 <asp:UpdatePanel runat="server">
                     <ContentTemplate>

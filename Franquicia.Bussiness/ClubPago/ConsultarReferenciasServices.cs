@@ -83,9 +83,9 @@ namespace Franquicia.Bussiness.ClubPago
                 return consultarReferencia;
             }
         }
-        public ConsultarReferencia ApiPagarReferenciaWeb(string EndPoint, string Transaccion, string Fecha, string Monto, string IdReferencia, string UserAgent, string XOrigin)
+        public AutorizacionPago ApiPagarReferenciaWeb(string EndPoint, string Transaccion, string Fecha, string Monto, string IdReferencia, string UserAgent, string XOrigin)
         {
-            ConsultarReferencia consultarReferencia = new ConsultarReferencia();
+            AutorizacionPago autorizacionPago = new AutorizacionPago();
 
             try
             {
@@ -101,22 +101,22 @@ namespace Franquicia.Bussiness.ClubPago
 
                 if (content != string.Empty)
                 {
-                    consultarReferencia = JsonConvert.DeserializeObject<ConsultarReferencia>(content.ToString());
+                    autorizacionPago = JsonConvert.DeserializeObject<AutorizacionPago>(content.ToString());
 
                 }
 
-                return consultarReferencia;
+                return autorizacionPago;
             }
             catch (Exception ex)
             {
                 string mnsj = ex.Message;
 
-                return consultarReferencia;
+                return autorizacionPago;
             }
         }
-        public ConsultarReferencia ApiCancelarPagarReferenciaWeb(string EndPoint, string Fecha, string Monto, string Transaccion, string IdReferencia, string Autorizacion, string UserAgent, string XOrigin)
+        public CancelacionPagoResp ApiCancelarPagarReferenciaWeb(string EndPoint, string Fecha, string Monto, string Transaccion, string IdReferencia, string Autorizacion, string UserAgent, string XOrigin)
         {
-            ConsultarReferencia consultarReferencia = new ConsultarReferencia();
+            CancelacionPagoResp cancelacionPagoResp = new CancelacionPagoResp();
 
             try
             {
@@ -132,17 +132,17 @@ namespace Franquicia.Bussiness.ClubPago
 
                 if (content != string.Empty)
                 {
-                    consultarReferencia = JsonConvert.DeserializeObject<ConsultarReferencia>(content.ToString());
+                    cancelacionPagoResp = JsonConvert.DeserializeObject<CancelacionPagoResp>(content.ToString());
 
                 }
 
-                return consultarReferencia;
+                return cancelacionPagoResp;
             }
             catch (Exception ex)
             {
                 string mnsj = ex.Message;
 
-                return consultarReferencia;
+                return cancelacionPagoResp;
             }
         }
         #endregion

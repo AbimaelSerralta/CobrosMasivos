@@ -103,7 +103,7 @@ namespace PagaLaEscuela.Controllers
             {
                 AutorizacionPago autorizacionPago = enviarIntegracionesServices.EnviarPeticionPagoReferenciaClubPago(solicitud, UrlEntrega);
 
-                if (autorizacionPago.codigo == 0)
+                if (autorizacionPago.codigo == 0 && autorizacionPago.transaccion != string.Empty && autorizacionPago.mensaje != string.Empty && autorizacionPago.autorizacion != string.Empty && autorizacionPago.fecha != string.Empty)
                 {
                     Guid UidPagoIntegracion = Guid.Empty;
                     decimal Importe = 0;

@@ -51,6 +51,33 @@ namespace PagaLaEscuela.Sandbox
         protected global::System.Web.UI.WebControls.TextBox txtMonto;
 
         /// <summary>
+        /// Control pnlPago.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlPago;
+
+        /// <summary>
+        /// Control txtTransaccion.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtTransaccion;
+
+        /// <summary>
+        /// Control txtAutorizacion.
+        /// </summary>
+        /// <remarks>
+        /// Campo generado automáticamente.
+        /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtAutorizacion;
+
+        /// <summary>
         /// Control pnlAlert.
         /// </summary>
         /// <remarks>

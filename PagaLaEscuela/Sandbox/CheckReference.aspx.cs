@@ -13,6 +13,38 @@ namespace PagaLaEscuela.Sandbox
 {
     public partial class CheckReference : System.Web.UI.Page
     {
+        #region Propiedades
+        // Nombre del servidor
+        string ServerName
+        {
+            get { return Request.ServerVariables["SERVER_NAME"].ToString(); }
+        }
+        // Puerto del servidor
+        string ServerPort
+        {
+            get { return Request.ServerVariables["SERVER_PORT"].ToString(); }
+        }
+
+        // Obtener URL Base
+        public string URLBase
+        {
+            get
+            {
+                if (ServerPort != string.Empty && ServerPort.Trim() != "")
+                {
+                    return "https://" + ServerName + ":" + ServerPort + "/";
+                }
+                else
+                {
+                    return "https://" + ServerName + "/";
+                }
+            }
+        }
+
+        ManejoSesionSandboxServices manejoSesionSandboxServices { get; set; }
+
+        #endregion
+
         HeaderClubPagoServices headerClubPagoServices = new HeaderClubPagoServices();
         DecodificarService decodificarService = new DecodificarService();
 
@@ -48,13 +80,17 @@ namespace PagaLaEscuela.Sandbox
                 btnConsultar.Visible = true;
                 btnPagar.Visible = false;
 
+                pnlPago.Visible = false;
+                txtTransaccion.Text = "";
+                txtAutorizacion.Text = "";
+
                 HeaderClubPago headerClubPago = headerClubPagoServices.ObtenerHeaderClubPago();
 
                 var refInt = validacionesServices.ExisteReferenciaIntegracionCF(txtReferencia.Text, Guid.Parse(ViewState["UidIntegracionLocal"].ToString()));
                 if (refInt.Item1)
                 {
                     ConsultarReferenciasServices consultarReferenciasServices = new ConsultarReferenciasServices();
-                    ConsultarReferencia consultarReferecia = consultarReferenciasServices.ApiConsultarReferenciaWeb("https://pagalaescuela.mx/Pagalaescuela/Service/ConsultaReferencia", txtReferencia.Text, headerClubPago.UserAgent, decodificarService.Base64Encode(headerClubPago.XOrigin));
+                    ConsultarReferencia consultarReferecia = consultarReferenciasServices.ApiConsultarReferenciaWeb(URLBase + "Pagalaescuela/Service/ConsultaReferencia", txtReferencia.Text, headerClubPago.UserAgent, decodificarService.Base64Encode(headerClubPago.XOrigin));
 
                     txtCodigo.Text = consultarReferecia.codigo.ToString();
                     txtMnsj.Text = consultarReferecia.mensaje;
@@ -96,30 +132,43 @@ namespace PagaLaEscuela.Sandbox
                 decimal pago = decimal.Parse(txtMonto.Text) * 100;
 
                 ConsultarReferenciasServices consultarReferenciasServices = new ConsultarReferenciasServices();
-                ConsultarReferencia consultarReferecia = consultarReferenciasServices.ApiPagarReferenciaWeb("https://pagalaescuela.mx/Pagalaescuela/Service/PagoReferencia", "101", hoy.ToString("yyyy-MM-dd"), pago.ToString(), txtReferencia.Text, headerClubPago.UserAgent, decodificarService.Base64Encode(headerClubPago.XOrigin));
+                AutorizacionPago autorizacionPago = consultarReferenciasServices.ApiPagarReferenciaWeb(URLBase + "Pagalaescuela/Service/PagoReferencia", "101", hoy.ToString("yyyy-MM-dd"), pago.ToString(), txtReferencia.Text, headerClubPago.UserAgent, decodificarService.Base64Encode(headerClubPago.XOrigin));
 
-                txtCodigo.Text = consultarReferecia.codigo.ToString();
-                txtMnsj.Text = consultarReferecia.mensaje;
+                txtCodigo.Text = autorizacionPago.codigo.ToString();
+                txtMnsj.Text = autorizacionPago.mensaje;
                 txtMonto.Text = txtMonto.Text;
 
-                if (consultarReferecia.codigo == 0 && !string.IsNullOrEmpty(consultarReferecia.mensaje))
+                if (autorizacionPago.transaccion != string.Empty && autorizacionPago.mensaje != string.Empty && autorizacionPago.autorizacion != string.Empty && autorizacionPago.fecha != string.Empty)
                 {
-                    Session["UltimaReferencia"] = txtReferencia.Text;
+                    if (autorizacionPago.codigo == 0 && !string.IsNullOrEmpty(autorizacionPago.mensaje))
+                    {
+                        Session["UltimaReferencia"] = txtReferencia.Text;
 
-                    btnConsultar.Visible = true;
-                    btnPagar.Visible = false;
-                    btnCancelarPago.Visible = true;
-                    txtMonto.ReadOnly = true;
+                        btnConsultar.Visible = true;
+                        btnPagar.Visible = false;
+                        btnCancelarPago.Visible = true;
+                        txtMonto.ReadOnly = true;
 
-                    txtCodigo.Text = string.Empty;
-                    txtMnsj.Text = string.Empty;
-                    txtMonto.Text = "0.00";
-                    txtMonto.ReadOnly = false;
-                    txtReferencia.Text = string.Empty;
+                        //txtCodigo.Text = string.Empty;
+                        //txtMnsj.Text = string.Empty;
+                        //txtMonto.Text = "0.00";
+                        txtMonto.ReadOnly = false;
+                        //txtReferencia.Text = string.Empty;
 
+                        pnlPago.Visible = true;
+                        txtTransaccion.Text = autorizacionPago.transaccion;
+                        txtAutorizacion.Text = autorizacionPago.autorizacion;
+
+                        pnlAlert.Visible = true;
+                        lblMensajeAlert.Text = "<b>Transacción exitosa.</b>";
+                        divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                    }
+                }
+                else
+                {
                     pnlAlert.Visible = true;
-                    lblMensajeAlert.Text = "<b>Transacción exitosa.</b>";
-                    divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                    lblMensajeAlert.Text = "Lo sentimos, los parametros <b>autorizacion, mensaje, transaccion y fecha</b> son datos requeridos, por favor revise nuestra documentación en el apartado *Servicio de Autorización de Pago*.";
+                    divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                 }
             }
             catch (Exception ex)
@@ -158,13 +207,13 @@ namespace PagaLaEscuela.Sandbox
                 {
 
                     ConsultarReferenciasServices consultarReferenciasServices = new ConsultarReferenciasServices();
-                    ConsultarReferencia consultarReferecia = consultarReferenciasServices.ApiCancelarPagarReferenciaWeb("https://pagalaescuela.mx/Pagalaescuela/Service/CancelaPago", hoy.ToString("yyyy-MM-dd"), monto, transaccion, Session["UltimaReferencia"].ToString(), autorizacion, headerClubPago.UserAgent, decodificarService.Base64Encode(headerClubPago.XOrigin));
+                    CancelacionPagoResp cancelacionPagoResp = consultarReferenciasServices.ApiCancelarPagarReferenciaWeb(URLBase + "Pagalaescuela/Service/CancelaPago", hoy.ToString("yyyy-MM-dd"), monto, transaccion, Session["UltimaReferencia"].ToString(), autorizacion, headerClubPago.UserAgent, decodificarService.Base64Encode(headerClubPago.XOrigin));
 
-                    txtCodigo.Text = consultarReferecia.codigo.ToString();
-                    txtMnsj.Text = consultarReferecia.mensaje;
+                    txtCodigo.Text = cancelacionPagoResp.codigo.ToString();
+                    txtMnsj.Text = cancelacionPagoResp.mensaje;
                     txtMonto.Text = txtMonto.Text;
 
-                    if (consultarReferecia.codigo == 0 && !string.IsNullOrEmpty(consultarReferecia.mensaje))
+                    if (cancelacionPagoResp.codigo == 0 && !string.IsNullOrEmpty(cancelacionPagoResp.mensaje))
                     {
                         btnConsultar.Visible = true;
                         btnPagar.Visible = false;
@@ -176,6 +225,10 @@ namespace PagaLaEscuela.Sandbox
                         txtMonto.Text = "0.00";
                         txtMonto.ReadOnly = false;
                         txtReferencia.Text = string.Empty;
+
+                        pnlPago.Visible = false;
+                        txtTransaccion.Text = "";
+                        txtAutorizacion.Text = "";
 
                         pnlAlert.Visible = true;
                         lblMensajeAlert.Text = "<b>Transacción exitosa.</b>";

@@ -101,7 +101,7 @@ namespace PagaLaEscuela.Controllers.SimuladorIntegracion
                                 {
                                     codigo = 14;
                                     mnsj = "Referencia fuera de vigencia";
-                                    monto = decimal.Parse(item["DcmTotal"].ToString());
+                                    monto = decimal.Parse(item["DcmImporteNuevo"].ToString());
                                     referencia = item["IdReferencia"].ToString();
                                     parcial = false;
                                 }
