@@ -144,7 +144,9 @@
     <Compile Include="Models\UsuariosCompletos.cs" />
     <Compile Include="Models\Usuarios.cs" />
     <Compile Include="ViewModels\Alumnos\AlumnosFiltrosGridViewModel.cs" />
+    <Compile Include="ViewModels\Alumnos\AlumnosSliderGridViewModel.cs" />
     <Compile Include="ViewModels\ClubPago\GenerarRefereciaPagoIntegraciones.cs" />
+    <Compile Include="ViewModels\Colegiaturas\ColegiaturasAlumnosViewModel.cs" />
     <Compile Include="ViewModels\Integraciones\IntegracionesCompleto.cs" />
     <Compile Include="ViewModels\PagosColegiaturas\PagosReporteLigaPadreViewModels.cs" />
     <Compile Include="ViewModels\PagosIntegracion\ReporteGeneradosGridViewModel.cs" />

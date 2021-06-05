@@ -8,6 +8,7 @@ using PagaLaEscuela.Util;
 using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -83,6 +84,8 @@ namespace PagaLaEscuela.Views
                 Session["usuariosCompletosServices"] = usuariosCompletosServices;
                 Session["comisionesTarjetasCl"] = comisionesTarjetasCl;
                 Session["pagosColegiaturasServices"] = pagosColegiaturasServices;
+                Session["alumnosServices"] = alumnosServices;
+
 
                 Session["formasPagosServices"] = formasPagosServices;
                 Session["bancosServices"] = bancosServices;
@@ -115,6 +118,7 @@ namespace PagaLaEscuela.Views
                 usuariosCompletosServices = (UsuariosCompletosServices)Session["usuariosCompletosServices"];
                 comisionesTarjetasCl = (ComisionesTarjetasClientesServices)Session["comisionesTarjetasCl"];
                 pagosColegiaturasServices = (PagosColegiaturasServices)Session["pagosColegiaturasServices"];
+                alumnosServices = (AlumnosServices)Session["alumnosServices"];
 
                 formasPagosServices = (FormasPagosServices)Session["formasPagosServices"];
                 bancosServices = (BancosServices)Session["bancosServices"];
@@ -145,6 +149,28 @@ namespace PagaLaEscuela.Views
                 {
                     rpFormasPago.DataSource = formasPagosServices.lsFormasPagos;
                     rpFormasPago.DataBind();
+                }
+
+                if (colegiaturasServices != null)
+                {
+                    if (colegiaturasServices.lsColegiaturasAlumnosViewModel.Count != 0)
+                    {
+                        gvColegiaturasAlumnos.DataSource = colegiaturasServices.lsColegiaturasAlumnosViewModel;
+                        gvColegiaturasAlumnos.DataBind();
+                    }
+                }
+                
+                if (alumnosServices != null)
+                {
+                    if (alumnosServices.lsAlumnosSliderGridViewModel.Count != 0)
+                    {
+                        int index = int.Parse(ViewState["AlumnosSliderGetRange"].ToString());
+                        int count = int.Parse(ViewState["AlumnosSliderGetRangeCount"].ToString());
+
+                        lblCantSeleccionado.Text = alumnosServices.lsSelectAlumnosSliderGridViewModel.Count.ToString();
+                        rpListAlumnos.DataSource = alumnosServices.lsAlumnosSliderGridViewModel.GetRange(index, count);
+                        rpListAlumnos.DataBind();
+                    }
                 }
             }
         }
@@ -207,9 +233,9 @@ namespace PagaLaEscuela.Views
                     imgLogoSelect3.DataBind();
                 }
 
-                colegiaturasServices.CargarPagosColegiaturas(UidCliente, Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), hoy);
-                gvPagos.DataSource = colegiaturasServices.lsPagosColegiaturasViewModel;
-                gvPagos.DataBind();
+                //colegiaturasServices.CargarPagosColegiaturas(UidCliente, Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), hoy);
+                //gvPagos.DataSource = colegiaturasServices.lsPagosColegiaturasViewModel;
+                //gvPagos.DataBind();
 
                 alumnosServices.lsAlumnosFiltrosGridViewModel.Clear();
                 alumnosServices.CargarFiltroAlumnosPA(UidCliente, Guid.Parse(ViewState["UidUsuarioLocal"].ToString()));
@@ -217,6 +243,39 @@ namespace PagaLaEscuela.Views
                 LBFiltroAlumnos.DataTextField = "Alumno";
                 LBFiltroAlumnos.DataValueField = "UidAlumno";
                 LBFiltroAlumnos.DataBind();
+
+                alumnosServices.CargarAlumnosSliderPA(UidCliente, Guid.Parse(ViewState["UidUsuarioLocal"].ToString()));
+
+                int lscount = alumnosServices.lsAlumnosSliderGridViewModel.Count;
+                ViewState["AlumnosSliderGetRange"] = "0";
+
+                if (lscount == 1)
+                {
+                    rpListAlumnos.DataSource = alumnosServices.lsAlumnosSliderGridViewModel.GetRange(0, 1);
+                    rpListAlumnos.DataBind();
+
+                    ViewState["AlumnosSliderGetRangeCount"] = 1;
+
+                    lblPagAluSlider.Text = "Del " + 1 + " al " + 1 + " de " + lscount;
+                }
+                else if (lscount == 2)
+                {
+                    rpListAlumnos.DataSource = alumnosServices.lsAlumnosSliderGridViewModel.GetRange(0, 2);
+                    rpListAlumnos.DataBind();
+
+                    ViewState["AlumnosSliderGetRangeCount"] = 2;
+
+                    lblPagAluSlider.Text = "Del " + 1 + " al " + 2 + " de " + lscount;
+                }
+                else
+                {
+                    rpListAlumnos.DataSource = alumnosServices.lsAlumnosSliderGridViewModel.GetRange(0, 3);
+                    rpListAlumnos.DataBind();
+
+                    ViewState["AlumnosSliderGetRangeCount"] = 3;
+
+                    lblPagAluSlider.Text = "Del " + 1 + " al " + 3 + " de " + lscount;
+                }
 
             }
         }
@@ -2168,6 +2227,7 @@ namespace PagaLaEscuela.Views
             }
             return Values;
         }
+
         protected void btnLimpiar_Click(object sender, EventArgs e)
         {
             LBFiltroAlumnos.SelectedIndex = -1;
@@ -3425,6 +3485,287 @@ namespace PagaLaEscuela.Views
             Session["lsPagosColegiaturasViewModel"] = colegiaturasServices.lsPagosColegiaturasViewModel;
             string _open = "window.open('Excel/ExportarAExcelPagosColegiaturas.aspx', '_blank');";
             ScriptManager.RegisterStartupScript(this, this.GetType(), Guid.NewGuid().ToString(), _open, true);
+        }
+
+        #region Slider
+
+        #region RepeaterListAlumnos
+        protected void rpListAlumnos_ItemCommand(object source, RepeaterCommandEventArgs e)
+        {
+            if (e.CommandName == "btnSeleAlumno")
+            {
+                Guid UidAlumno = Guid.Parse((string)e.CommandArgument);
+                ViewState["ItemCommand-UidAlumno"] = UidAlumno;
+
+                bool cbAluSeleccionado = ((CheckBox)e.Item.FindControl("cbAluSeleccionado")).Checked;
+
+                if (cbAluSeleccionado)
+                {
+                    ((CheckBox)e.Item.FindControl("cbAluSeleccionado")).Checked = false;
+                    cbAluSeleccionado = false;
+                }
+                else
+                {
+                    ((CheckBox)e.Item.FindControl("cbAluSeleccionado")).Checked = true;
+                    cbAluSeleccionado = true;
+                }
+
+                if (cbAluSeleccionado)
+                {
+                    alumnosServices.SeleccionarAlumnosSliderPA(alumnosServices.lsAlumnosSliderGridViewModel, UidAlumno, true);
+                }
+                else
+                {
+                    alumnosServices.SeleccionarAlumnosSliderPA(alumnosServices.lsAlumnosSliderGridViewModel, UidAlumno, false);
+                }
+
+                int index = int.Parse(ViewState["AlumnosSliderGetRange"].ToString());
+                int count = int.Parse(ViewState["AlumnosSliderGetRangeCount"].ToString());
+
+                lblCantSeleccionado.Text = alumnosServices.lsSelectAlumnosSliderGridViewModel.Count.ToString();
+                rpListAlumnos.DataSource = alumnosServices.lsAlumnosSliderGridViewModel.GetRange(index, count);
+                rpListAlumnos.DataBind();
+
+                //Cargar colegiaturas
+
+                colegiaturasServices.BuscarColegiaturasAlumnos(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), GetItemList(alumnosServices.lsSelectAlumnosSliderGridViewModel));
+                //colegiaturasServices.CargarColegiaturasAlumno(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), UidAlumno);
+                gvColegiaturasAlumnos.DataSource = colegiaturasServices.lsColegiaturasAlumnosViewModel;
+                gvColegiaturasAlumnos.DataBind();
+
+                //Limpiamos gridviews de pagos
+                colegiaturasServices.lsPagosColegiaturasViewModel.Clear();
+                gvPagos.DataSource = colegiaturasServices.lsPagosColegiaturasViewModel;
+                gvPagos.DataBind();
+                lblAlumno.Text = "";
+
+                ViewState["RowSelectUidColegiatura"] = null;
+                ViewState["RowSelectUidAlumno"] = null;
+                gvColegiaturasAlumnos.DataSource = colegiaturasServices.lsColegiaturasAlumnosViewModel;
+                gvColegiaturasAlumnos.DataBind();
+            }
+
+            if (e.CommandName == "btnAvatar")
+            {
+                int index = int.Parse(ViewState["AlumnosSliderGetRange"].ToString());
+                int count = int.Parse(ViewState["AlumnosSliderGetRangeCount"].ToString());
+
+                lblCantSeleccionado.Text = alumnosServices.lsSelectAlumnosSliderGridViewModel.Count.ToString();
+                rpListAlumnos.DataSource = alumnosServices.lsAlumnosSliderGridViewModel.GetRange(index, count);
+                rpListAlumnos.DataBind();
+
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalAvatar()", true);
+            }
+        }
+        private string GetItemList(List<AlumnosSliderGridViewModel> ls)
+        {
+            string Values = string.Empty;
+
+            if (ls.Count == 0)
+            {
+                Values = "00000000-0000-0000-0000-000000000000";
+            }
+            else
+            {
+                foreach (var item in ls)
+                {
+                    if (Values == string.Empty)
+                        Values = item.UidAlumno.ToString();
+                    else
+                        Values += "," + item.UidAlumno.ToString();
+                }
+            }
+
+            return Values;
+        }
+        protected void rpListAlumnos_ItemDataBound(object sender, RepeaterItemEventArgs e)
+        {
+            //if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
+            //{
+            //    if (ViewState["ItemCommand-UidAlumno"] == null)
+            //    {
+            //        ViewState["ItemCommand-UidAlumno"] = Guid.Empty;
+            //    }
+
+            //    if (((AlumnosSliderGridViewModel)e.Item.DataItem).UidAlumno == Guid.Parse(ViewState["ItemCommand-UidAlumno"].ToString()))
+            //    {
+            //        ((CheckBox)e.Item.FindControl("cbAluSeleccionado")).Checked = true;
+
+            //    }
+            //}
+        }
+        #endregion
+
+        protected void btnSliderBack_Click(object sender, EventArgs e)
+        {
+            int index = int.Parse(ViewState["AlumnosSliderGetRange"].ToString()) - 3;
+            ViewState["AlumnosSliderGetRange"] = index;
+
+            int lscount = alumnosServices.lsAlumnosSliderGridViewModel.Count;
+
+            if (index != -3)
+            {
+                rpListAlumnos.DataSource = alumnosServices.lsAlumnosSliderGridViewModel.GetRange(index, 3);
+                rpListAlumnos.DataBind();
+
+                ViewState["AlumnosSliderGetRangeCount"] = 3;
+
+                lblPagAluSlider.Text = "Del " + (index + 1) + " al " + (index + 3) + " de " + lscount;
+            }
+            else
+            {
+                ViewState["AlumnosSliderGetRange"] = 0;
+            }
+        }
+
+        protected void btnSliderForward_Click(object sender, EventArgs e)
+        {
+            int index = int.Parse(ViewState["AlumnosSliderGetRange"].ToString()) + 3;
+            ViewState["AlumnosSliderGetRange"] = index;
+
+            int lscount = alumnosServices.lsAlumnosSliderGridViewModel.Count;
+
+            int rest = lscount - index;
+
+            if (lscount <= index)
+            {
+                ViewState["AlumnosSliderGetRange"] = int.Parse(ViewState["AlumnosSliderGetRange"].ToString()) - 3;
+            }
+            else
+            {
+                if (rest == 1)
+                {
+                    rpListAlumnos.DataSource = alumnosServices.lsAlumnosSliderGridViewModel.GetRange(index, 1);
+                    rpListAlumnos.DataBind();
+
+                    ViewState["AlumnosSliderGetRangeCount"] = 1;
+
+                    lblPagAluSlider.Text = "Del " + (index + 1) + " al " + (index + 1) + " de " + lscount;
+                }
+                else if (rest == 2)
+                {
+                    rpListAlumnos.DataSource = alumnosServices.lsAlumnosSliderGridViewModel.GetRange(index, 2);
+                    rpListAlumnos.DataBind();
+
+                    ViewState["AlumnosSliderGetRangeCount"] = 2;
+
+                    lblPagAluSlider.Text = "Del " + (index + 1) + " al " + (index + 2) + " de " + lscount;
+                }
+                else
+                {
+                    rpListAlumnos.DataSource = alumnosServices.lsAlumnosSliderGridViewModel.GetRange(index, 3);
+                    rpListAlumnos.DataBind();
+
+                    ViewState["AlumnosSliderGetRangeCount"] = 3;
+
+                    lblPagAluSlider.Text = "Del " + (index + 1) + " al " + (index + 3) + " de " + lscount;
+                }
+            }
+        }
+
+        #endregion
+
+        protected void gvColegiaturasAlumnos_RowCreated(object sender, GridViewRowEventArgs e)
+        {
+
+        }
+        protected void gvColegiaturasAlumnos_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+
+        }
+        protected void gvColegiaturasAlumnos_Sorting(object sender, GridViewSortEventArgs e)
+        {
+
+        }
+        protected void gvColegiaturasAlumnos_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+
+        }
+        protected void gvColegiaturasAlumnos_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                e.Row.Attributes["onclick"] = Page.ClientScript.GetPostBackClientHyperlink(gvColegiaturasAlumnos, "Select$" + e.Row.RowIndex);
+
+                GridView valor = (GridView)sender;
+                Guid dataKeys = Guid.Parse(valor.DataKeys[e.Row.RowIndex].Value.ToString());
+
+                TextBox txtGvUidAlumno = (TextBox)e.Row.FindControl("txtGvUidAlumno");
+
+                if (ViewState["RowSelectUidColegiatura"] != null && ViewState["RowSelectUidAlumno"] != null)
+                {
+                    if (dataKeys == Guid.Parse(ViewState["RowSelectUidColegiatura"].ToString()) && Guid.Parse(txtGvUidAlumno.Text) == Guid.Parse(ViewState["RowSelectUidAlumno"].ToString()))
+                    {
+                        e.Row.BackColor = Color.FromName("#dff0d8");
+                    }
+                }
+            }
+        }
+        protected void gvColegiaturasAlumnos_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Guid UidColegiatura = new Guid(gvColegiaturasAlumnos.SelectedDataKey.Value.ToString());
+            ViewState["RowSelectUidColegiatura"] = UidColegiatura;
+
+            GridViewRow row = gvColegiaturasAlumnos.SelectedRow;
+
+            TextBox txtGvUidAlumno = (TextBox)row.FindControl("txtGvUidAlumno");
+            TextBox txtGvAlumno = (TextBox)row.FindControl("txtGvAlumno");
+
+            ViewState["RowSelectUidAlumno"] = txtGvUidAlumno.Text;
+
+            lblAlumno.Text = txtGvAlumno.Text;
+
+            colegiaturasServices.CargarPagosColegiaturasDashboard(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), UidColegiatura, Guid.Parse(txtGvUidAlumno.Text));
+            gvPagos.DataSource = colegiaturasServices.lsPagosColegiaturasViewModel;
+            gvPagos.DataBind();
+
+            gvColegiaturasAlumnos.DataSource = colegiaturasServices.lsColegiaturasAlumnosViewModel;
+            gvColegiaturasAlumnos.DataBind();
+        }
+
+        protected void cbAluSeleccionado_CheckedChanged(object sender, EventArgs e)
+        {
+            var chk = (CheckBox)sender;
+
+            var UidAlumno = Guid.Parse(chk.Attributes["CommandArgument"].ToString());
+
+            ViewState["ItemCommand-UidAlumno"] = UidAlumno;
+
+
+            if (chk.Checked)
+            {
+                alumnosServices.SeleccionarAlumnosSliderPA(alumnosServices.lsAlumnosSliderGridViewModel, UidAlumno, true);
+            }
+            else
+            {
+                alumnosServices.SeleccionarAlumnosSliderPA(alumnosServices.lsAlumnosSliderGridViewModel, UidAlumno, false);
+            }
+
+            int index = int.Parse(ViewState["AlumnosSliderGetRange"].ToString());
+            int count = int.Parse(ViewState["AlumnosSliderGetRangeCount"].ToString());
+
+            lblCantSeleccionado.Text = alumnosServices.lsSelectAlumnosSliderGridViewModel.Count.ToString();
+            rpListAlumnos.DataSource = alumnosServices.lsAlumnosSliderGridViewModel.GetRange(index, count);
+            rpListAlumnos.DataBind();
+
+            //Cargar colegiaturas
+
+            colegiaturasServices.BuscarColegiaturasAlumnos(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), GetItemList(alumnosServices.lsSelectAlumnosSliderGridViewModel));
+            //colegiaturasServices.CargarColegiaturasAlumno(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), UidAlumno);
+            gvColegiaturasAlumnos.DataSource = colegiaturasServices.lsColegiaturasAlumnosViewModel;
+            gvColegiaturasAlumnos.DataBind();
+
+            //Limpiamos gridviews de pagos
+            colegiaturasServices.lsPagosColegiaturasViewModel.Clear();
+            gvPagos.DataSource = colegiaturasServices.lsPagosColegiaturasViewModel;
+            gvPagos.DataBind();
+            lblAlumno.Text = "";
+
+            ViewState["RowSelectUidColegiatura"] = null;
+            ViewState["RowSelectUidAlumno"] = null;
+            gvColegiaturasAlumnos.DataSource = colegiaturasServices.lsColegiaturasAlumnosViewModel;
+            gvColegiaturasAlumnos.DataBind();
+
         }
     }
 }

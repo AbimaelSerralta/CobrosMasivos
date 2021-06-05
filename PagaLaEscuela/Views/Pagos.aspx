@@ -36,6 +36,52 @@
             /*width: 100%;*/
         }
     </style>
+    
+    <%--Circle--%>
+    <style>
+        .circle {
+            margin: 0px;
+            width: 20px;
+            height: 20px;
+            border-radius: 100%;
+            background-color: #3D6AA2;
+            color: #fff;
+            text-align: center;
+            font-size: 14px;
+            overflow: hidden;
+        }
+
+            .circle.one-line {
+                line-height: 20px;
+            }
+
+            .circle.multi-line {
+                padding-top: 30px;
+                height: 30px;
+            }
+    </style>
+    <style>
+        .circleCard {
+            margin: 0px;
+            width: 30px;
+            height: 30px;
+            border-radius: 100%;
+            background-color: #3D6AA2;
+            color: #fff;
+            text-align: center;
+            font-size: 14px;
+            overflow: hidden;
+        }
+
+            .circleCard.one-lineCard {
+                line-height: 30px;
+            }
+
+            .circleCard.multi-lineCard {
+                padding-top: 30px;
+                height: 30px;
+            }
+    </style>
 
     <asp:UpdatePanel runat="server">
         <ContentTemplate>
@@ -184,99 +230,226 @@
                             </div>
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="table-responsive">
-                                        <asp:GridView ID="gvPagos" OnRowCreated="gvPagos_RowCreated" OnPageIndexChanging="gvPagos_PageIndexChanging" OnSorting="gvPagos_Sorting" OnRowCommand="gvPagos_RowCommand" OnRowDataBound="gvPagos_RowDataBound" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidFechaColegiatura" GridLines="None" border="0" AllowPaging="true" PageSize="10" ShowFooter="true" runat="server">
-                                            <EmptyDataTemplate>
-                                                <div class="alert alert-info"><strong>Felicidades</strong> no tiene pagos disponibles.</div>
-                                            </EmptyDataTemplate>
-                                            <Columns>
-                                                <asp:TemplateField ItemStyle-Width="160" SortExpression="VchIdentificador" HeaderText="COLEGIATURA">
-                                                    <ItemTemplate>
-                                                        <asp:TextBox ID="txtGvIdentificador" ToolTip='<%#Eval("VchIdentificador")%>' Style="width: 100%; text-overflow: ellipsis;" Text='<%#Eval("VchIdentificador")%>' Enabled="false" BackColor="Transparent" BorderStyle="None" runat="server" />
-                                                        <asp:TextBox ID="txtGvUidCliente" Text='<%#Eval("UidCliente")%>' Visible="false" runat="server" />
-                                                        <asp:TextBox ID="txtGvUidAlumno" Text='<%#Eval("UidAlumno")%>' Visible="false" runat="server" />
-                                                    </ItemTemplate>
-                                                    <FooterTemplate>
-                                                        <asp:Label ID="lblPaginado" Font-Bold="true" runat="server" />
-                                                    </FooterTemplate>
-                                                </asp:TemplateField>
-                                                <asp:BoundField DataField="VchMatricula" HeaderStyle-CssClass="hiddenHeaderGrid" ItemStyle-CssClass="hiddenHeaderGrid" />
-                                                <asp:TemplateField SortExpression="NombreCompleto" HeaderStyle-CssClass="text-center" HeaderText="ALUMNO">
-                                                    <ItemTemplate>
-                                                        <asp:TextBox ID="txtGvAlumno" ToolTip='<%#Eval("NombreCompleto")%>' Style="width: 100%; text-overflow: ellipsis;" Text='<%#Eval("NombreCompleto")%>' Enabled="false" BackColor="Transparent" BorderStyle="None" runat="server" />
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:TemplateField SortExpression="VchNum" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" HeaderText="# DE PAGOS">
-                                                    <ItemTemplate>
-                                                        <table style="width: 100%;">
-                                                            <tbody>
-                                                                <tr style="background: transparent;">
-                                                                    <td style="width: 70%; vertical-align: middle; border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
-                                                                        <asp:Label Text='<%#Eval("VchNum")%>' runat="server" />
-                                                                    </td>
-                                                                    <td style="width: 30%; border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
-                                                                        <asp:LinkButton ID="btnInfoCole" ToolTip="Detalle de la colegiatura" CommandArgument="<%# ((GridViewRow)Container).RowIndex %>" CommandName="btnInfoCole" Style="margin-left: 5px;" runat="server">
-                                                                                        <i class="material-icons" style="color:black;">info_outline</i>
-                                                                        </asp:LinkButton>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
 
-                                                <asp:BoundField SortExpression="DcmImporte" DataField="DcmImporte" ItemStyle-CssClass="text-right" HeaderStyle-CssClass="text-right" DataFormatString="{0:C}" HeaderText="IMPORTE" />
-                                                <asp:BoundField SortExpression="ImpPagado" DataField="ImpPagado" ItemStyle-CssClass="text-right" HeaderStyle-CssClass="text-right" DataFormatString="{0:C}" HeaderText="ABONADO" />
-                                                <asp:BoundField SortExpression="ImpTotal" DataField="ImpTotal" ItemStyle-CssClass="text-right" HeaderStyle-CssClass="text-right" DataFormatString="{0:C}" HeaderText="SALDO" />
-                                                <asp:BoundField SortExpression="DtFHInicio" DataField="DtFHInicio" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" DataFormatString="{0:dd/MM/yyyy}" HeaderText="INICIO" />
-                                                <asp:TemplateField SortExpression="VchEstatusFechas" HeaderText="ESTATUS">
-                                                    <ItemTemplate>
-                                                        <asp:Label Text='<%#Eval("VchEstatusFechas")%>' ForeColor='<%# System.Drawing.ColorTranslator.FromHtml(Eval("VchColor").ToString()) %>' Font-Names="Comic Sans MS" Font-Bold="true" runat="server"></asp:Label>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:TemplateField SortExpression="EstatusPago" HeaderText="PAGO">
-                                                    <ItemTemplate>
-                                                        <asp:Label Text='<%#Eval("EstatusPago")%>' ForeColor='<%# System.Drawing.ColorTranslator.FromHtml(Eval("ColorEstatusPago").ToString()) %>' Font-Names="Comic Sans MS" Font-Bold="true" runat="server"></asp:Label>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:TemplateField>
-                                                    <ItemTemplate>
-                                                        <table>
-                                                            <tbody>
-                                                                <tr style="background: transparent;">
-                                                                    <td style="border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
-                                                                        <asp:Panel Visible='<%#Eval("blPagar")%>' runat="server">
-                                                                            <asp:LinkButton ID="btnPagar" ToolTip="Pagar" CommandArgument="<%# ((GridViewRow)Container).RowIndex %>" CommandName="btnPagar" Style="margin-left: 5px;" runat="server">
+                                    <div class="container my-4">
+                                        <!--Carousel Wrapper-->
+                                        <div id="multi-item-example" class="carousel slide carousel-multi-item" data-interval="false">
+                                            <!--Controls-->
+                                            <div class="controls-top text-center">
+                                                <div>
+                                                    <h5>Seleccionados:<asp:Label ID="lblCantSeleccionado" CssClass="alert alert-warning" Font-Size="Larger" Text="0" Style="padding-top: 1px; padding-bottom: 1px; padding-left: 5px; padding-right: 5px;" runat="server" />
+                                                    </h5>
+                                                </div>
+                                                <%--<a class="btn-floating" href="#multi-item-example" data-slide="prev"><i class="material-icons">arrow_back_ios</i></a>--%>
+                                                <asp:Label ID="lblPagAluSlider" Style="font-weight: bold;" runat="server" />
+                                                <%--<a class="btn-floating" href="#multi-item-example" data-slide="next"><i class="material-icons">arrow_forward_ios</i></a>--%>
+                                            </div>
+                                            <!--/.Controls-->
+
+                                            <!--Slides-->
+                                            <div class="carousel-inner" role="listbox">
+                                                <div class="carousel-item active">
+
+                                                    <table style="width: 100%;">
+                                                        <tr>
+                                                            <td style="width: 5%;">
+                                                                <asp:LinkButton ID="btnSliderBack" OnClick="btnSliderBack_Click" CssClass="btn-floating" data-slide="prev" runat="server">
+                                                                    <i class="material-icons">arrow_back_ios</i>
+                                                                </asp:LinkButton>
+
+                                                            </td>
+                                                            <td style="width: 90%;">
+                                                                <asp:Repeater ID="rpListAlumnos" OnItemCommand="rpListAlumnos_ItemCommand" OnItemDataBound="rpListAlumnos_ItemDataBound" runat="server">
+                                                                    <ItemTemplate>
+                                                                        <div style="cursor: pointer;">
+                                                                            <asp:UpdatePanel runat="server">
+                                                                                <ContentTemplate>
+                                                                                    <div class="col-md-4" style="float: left;padding-left: 8px;padding-right: 8px;">
+                                                                                        <div class="card cardEfe" style="margin-top: 15px; margin-bottom: 15px; border-left: 8px solid <%#Eval("VchColor")%>;">
+
+                                                                                            <asp:CheckBox ID="cbAluSeleccionado" OnCheckedChanged="cbAluSeleccionado_CheckedChanged" Checked='<%#Eval("blSelect")%>' CommandArgument='<%#Eval("UidAlumno")%>' Style="margin-left: 8px;" AutoPostBack="true" runat="server" />
+                                                                                            <div class="card-header" style="padding-top: 0px;padding-left: 10px;padding-right: 0px;">
+                                                                                                <asp:LinkButton ID="btnAvatar" CommandArgument='<%#Eval("UidAlumno")%>' CommandName="btnAvatar" runat="server">
+                                                                                                    <div style="background-color: #d8ecfe;" class="float-left rounded-circle">
+                                                                                                        <div class="circleCard one-lineCard">
+                                                                                                            <asp:Label Text='<%#Eval("VchNombreCorto")%>' Style="font-weight: bold; font-size: smaller; font-family: Castellar;" runat="server" />
+                                                                                                            <%--<img src="https://image.flaticon.com/icons/png/512/2620/2620127.png" style="background-color: #d8ecfe" height="50" width="50" class="float-left rounded-circle" />--%>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </asp:LinkButton>
+                                                                                                <%--<img src="https://image.flaticon.com/icons/png/512/2620/2620127.png" style="background-color: #d8ecfe" height="70" width="70" class="float-left rounded-circle">--%>
+                                                                                                <asp:LinkButton ID="btnSeleAlumno" CommandArgument='<%#Eval("UidAlumno")%>' CommandName="btnSeleAlumno" runat="server">
+                                                                                                <div style="padding-left:35px; color:black;">
+                                                                                                    <h5 class="card-title" style="font-weight: bold;"><%#Eval("VchMatricula")%></h5>
+                                                                                                    <p class="card-text"><%#Eval("Alumno")%></p>
+                                                                                                </div>
+                                                                                                </asp:LinkButton>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </ContentTemplate>
+                                                                                <Triggers>
+                                                                                    <asp:AsyncPostBackTrigger ControlID="btnSeleAlumno" EventName="Click" />
+                                                                                    <asp:AsyncPostBackTrigger ControlID="btnAvatar" EventName="Click" />
+                                                                                </Triggers>
+                                                                            </asp:UpdatePanel>
+                                                                        </div>
+                                                                    </ItemTemplate>
+                                                                </asp:Repeater>
+                                                            </td>
+                                                            <td style="width: 5%;">
+                                                                <asp:LinkButton ID="btnSliderForward" OnClick="btnSliderForward_Click" CssClass="btn-floating" data-slide="next" runat="server">
+                                                                    <i class="material-icons">arrow_forward_ios</i>
+                                                                </asp:LinkButton>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <!--/.Slides-->
+
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-lg-5 col-md-12">
+                                        <div class="card">
+                                            <div class="card-header card-header-warning">
+                                                <h4 class="card-title">COLEGIATURAS</h4>
+                                            </div>
+                                            <div class="table-responsive">
+                                                <asp:GridView ID="gvColegiaturasAlumnos" EnablePersistedSelection="true" OnSelectedIndexChanged="gvColegiaturasAlumnos_SelectedIndexChanged" OnRowCreated="gvColegiaturasAlumnos_RowCreated" OnPageIndexChanging="gvColegiaturasAlumnos_PageIndexChanging" OnSorting="gvColegiaturasAlumnos_Sorting" OnRowCommand="gvColegiaturasAlumnos_RowCommand" OnRowDataBound="gvColegiaturasAlumnos_RowDataBound" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidColegiatura" GridLines="None" border="0" AllowPaging="true" PageSize="10" ShowFooter="false" runat="server">
+                                                    <EmptyDataTemplate>
+                                                        <%--<div class="alert alert-info">No hay <strong>colegiaturas</strong> disponibles.</div>--%>
+                                                    </EmptyDataTemplate>
+                                                    <Columns>
+                                                        <asp:ButtonField CommandName="Select" HeaderStyle-CssClass="hide" ItemStyle-CssClass="hide" />
+                                                        <asp:TemplateField ItemStyle-CssClass="text-left" HeaderText="">
+                                                            <ItemTemplate>
+                                                                <div class="circle one-line">
+
+                                                                    <asp:Label Text='<%#Eval("VchNombreCorto")%>' Style="font-weight: bold; font-size:xx-small; font-family: Castellar;" runat="server" />
+                                                                    <%--<img src="https://image.flaticon.com/icons/png/512/2620/2620127.png" style="background-color: #d8ecfe" height="50" width="50" class="float-left rounded-circle" />--%>
+                                                                </div>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                        <asp:TemplateField SortExpression="VchIdentificador" HeaderStyle-CssClass="hiddenHeaderGrid" ItemStyle-CssClass="hiddenHeaderGrid">
+                                                            <ItemTemplate>
+                                                                <asp:TextBox ID="txtGvUidAlumno" Text='<%#Eval("UidAlumno")%>' Visible="false" runat="server" />
+                                                                <asp:TextBox ID="txtGvAlumno" Text='<%#Eval("Alumno")%>' Visible="false" runat="server" />
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                        <asp:BoundField SortExpression="VchIdentificador" DataField="VchIdentificador" HeaderText="COLEGIATURA(S)" />
+                                                        <asp:BoundField SortExpression="DcmImporte" DataField="DcmImporte" ItemStyle-CssClass="text-right" HeaderStyle-CssClass="text-right" DataFormatString="{0:C}" HeaderText="IMPORTE" />
+                                                        <asp:BoundField SortExpression="IntCantPagos" DataField="IntCantPagos" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" HeaderText="# DE PAGOS" />
+
+                                                        <%--<asp:BoundField SortExpression="DtFHInicio" DataField="DtFHInicio" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" DataFormatString="{0:dd/MM/yyyy}" HeaderText="INICIO" />--%>
+                                                    </Columns>
+                                                    <PagerStyle HorizontalAlign="Center" CssClass="pagination-ys" />
+                                                </asp:GridView>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-7 col-md-12">
+                                        <div class="card">
+                                            <div class="card-header card-header-primary">
+                                                <h4 class="card-title">Pago(s)<asp:Label ID="lblAlumno" Style="font-weight: bold;" runat="server" /></h4>
+                                            </div>
+                                            <div class="table-responsive">
+                                                <asp:GridView ID="gvPagos" OnRowCreated="gvPagos_RowCreated" OnPageIndexChanging="gvPagos_PageIndexChanging" OnSorting="gvPagos_Sorting" OnRowCommand="gvPagos_RowCommand" OnRowDataBound="gvPagos_RowDataBound" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidFechaColegiatura" GridLines="None" border="0" AllowPaging="true" PageSize="10" ShowFooter="false" runat="server">
+                                                    <EmptyDataTemplate>
+                                                        <%--<div class="alert alert-info">No tiene <strong>pagos</strong> disponibles.</div>--%>
+                                                    </EmptyDataTemplate>
+                                                    <Columns>
+                                                        <asp:TemplateField ItemStyle-Width="160" SortExpression="VchIdentificador" HeaderStyle-CssClass="hiddenHeaderGrid" ItemStyle-CssClass="hiddenHeaderGrid" HeaderText="COLEGIATURA">
+                                                            <ItemTemplate>
+                                                                <asp:TextBox ID="txtGvIdentificador" ToolTip='<%#Eval("VchIdentificador")%>' Style="width: 100%; text-overflow: ellipsis;" Text='<%#Eval("VchIdentificador")%>' Enabled="false" BackColor="Transparent" BorderStyle="None" runat="server" />
+                                                                <asp:TextBox ID="txtGvUidCliente" Text='<%#Eval("UidCliente")%>' Visible="false" runat="server" />
+                                                                <asp:TextBox ID="txtGvUidAlumno" Text='<%#Eval("UidAlumno")%>' Visible="false" runat="server" />
+                                                            </ItemTemplate>
+                                                            <FooterTemplate>
+                                                                <asp:Label ID="lblPaginado" Font-Bold="true" runat="server" />
+                                                            </FooterTemplate>
+                                                        </asp:TemplateField>
+                                                        <asp:BoundField DataField="VchMatricula" HeaderStyle-CssClass="hiddenHeaderGrid" ItemStyle-CssClass="hiddenHeaderGrid" />
+                                                        <asp:TemplateField SortExpression="NombreCompleto" HeaderStyle-CssClass="hiddenHeaderGrid" ItemStyle-CssClass="hiddenHeaderGrid" HeaderText="ALUMNO">
+                                                            <ItemTemplate>
+                                                                <asp:TextBox ID="txtGvAlumno" ToolTip='<%#Eval("NombreCompleto")%>' Style="width: 100%; text-overflow: ellipsis;" Text='<%#Eval("NombreCompleto")%>' Enabled="false" BackColor="Transparent" BorderStyle="None" runat="server" />
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                        <asp:TemplateField SortExpression="VchNum" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" HeaderText="# DE PAGOS">
+                                                            <ItemTemplate>
+                                                                <table style="width: 100%;">
+                                                                    <tbody>
+                                                                        <tr style="background: transparent;">
+                                                                            <td style="width: 70%; vertical-align: middle; border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
+                                                                                <asp:Label Text='<%#Eval("IntNum")%>' runat="server" />
+                                                                            </td>
+                                                                            <td style="width: 30%; border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
+                                                                                <asp:LinkButton ID="btnInfoCole" ToolTip="Detalle de la colegiatura" CommandArgument="<%# ((GridViewRow)Container).RowIndex %>" CommandName="btnInfoCole" Style="margin-left: 5px;" runat="server">
+                                                                                        <i class="material-icons" style="color:black;">info_outline</i>
+                                                                                </asp:LinkButton>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+
+                                                        <asp:BoundField SortExpression="DcmImporte" DataField="DcmImporte" ItemStyle-CssClass="text-right" HeaderStyle-CssClass="text-right" DataFormatString="{0:C}" HeaderText="IMPORTE" />
+                                                        <asp:BoundField SortExpression="ImpPagado" DataField="ImpPagado" ItemStyle-CssClass="text-right" HeaderStyle-CssClass="text-right" DataFormatString="{0:C}" HeaderText="ABONADO" />
+                                                        <asp:BoundField SortExpression="ImpTotal" DataField="ImpTotal" ItemStyle-CssClass="text-right" HeaderStyle-CssClass="text-right" DataFormatString="{0:C}" HeaderText="SALDO" />
+                                                        <asp:BoundField SortExpression="DtFHInicio" DataField="DtFHInicio" ItemStyle-CssClass="text-center" HeaderStyle-CssClass="text-center" DataFormatString="{0:dd/MM/yyyy}" HeaderText="INICIO" />
+                                                        <asp:TemplateField SortExpression="VchEstatusFechas" HeaderText="ESTATUS">
+                                                            <ItemTemplate>
+                                                                <asp:Label Text='<%#Eval("VchEstatusFechas")%>' ForeColor='<%# System.Drawing.ColorTranslator.FromHtml(Eval("VchColor").ToString()) %>' Font-Names="Comic Sans MS" Font-Bold="true" runat="server"></asp:Label>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                        <asp:TemplateField SortExpression="EstatusPago" HeaderText="PAGO">
+                                                            <ItemTemplate>
+                                                                <asp:Label Text='<%#Eval("EstatusPago")%>' ForeColor='<%# System.Drawing.ColorTranslator.FromHtml(Eval("ColorEstatusPago").ToString()) %>' Font-Names="Comic Sans MS" Font-Bold="true" runat="server"></asp:Label>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                        <asp:TemplateField>
+                                                            <ItemTemplate>
+                                                                <table>
+                                                                    <tbody>
+                                                                        <tr style="background: transparent;">
+                                                                            <td style="border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
+                                                                                <asp:Panel Visible='<%#Eval("blPagar")%>' runat="server">
+                                                                                    <asp:LinkButton ID="btnPagar" ToolTip="Pagar" CommandArgument="<%# ((GridViewRow)Container).RowIndex %>" CommandName="btnPagar" Style="margin-left: 5px;" runat="server">
                                                                             <asp:Label class="btn btn-sm btn-success btn-fab btn-fab-mini btn-round" runat="server">
                                                                                         <i class="material-icons">attach_money</i>
                                                                             </asp:Label>
-                                                                            </asp:LinkButton>
-                                                                        </asp:Panel>
-                                                                    </td>
-                                                                    <td style="border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
-                                                                        <asp:Panel Visible='<%#Eval("blPagar")%>' runat="server">
-                                                                            <asp:LinkButton ID="btnFormasPago" ToolTip="Pagar por otro medio" CommandArgument="<%# ((GridViewRow)Container).RowIndex %>" CommandName="btnFormasPago" Style="margin-left: 5px;" runat="server">
+                                                                                    </asp:LinkButton>
+                                                                                </asp:Panel>
+                                                                            </td>
+                                                                            <td style="border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
+                                                                                <asp:Panel Visible='<%#Eval("blPagar")%>' runat="server">
+                                                                                    <asp:LinkButton ID="btnFormasPago" ToolTip="Pagar por otro medio" CommandArgument="<%# ((GridViewRow)Container).RowIndex %>" CommandName="btnFormasPago" Style="margin-left: 5px;" runat="server">
                                                                                 <asp:Label class="btn btn-sm btn-warning btn-fab btn-fab-mini btn-round" runat="server">
                                                                                         <i class="material-icons">add</i>
                                                                                 </asp:Label>
-                                                                            </asp:LinkButton>
-                                                                        </asp:Panel>
-                                                                    </td>
-                                                                    <td style="border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
-                                                                        <asp:LinkButton ID="btnPagos" ToolTip="Pagos realizados" CommandArgument="<%# ((GridViewRow)Container).RowIndex %>" CommandName="btnPagos" Style="margin-left: 5px;" runat="server">
+                                                                                    </asp:LinkButton>
+                                                                                </asp:Panel>
+                                                                            </td>
+                                                                            <td style="border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
+                                                                                <asp:LinkButton ID="btnPagos" ToolTip="Pagos realizados" CommandArgument="<%# ((GridViewRow)Container).RowIndex %>" CommandName="btnPagos" Style="margin-left: 5px;" runat="server">
                                                                                 <asp:Label class="btn btn-sm btn-info btn-fab btn-fab-mini btn-round" runat="server">
                                                                                         <i class="material-icons">info_outline</i>
                                                                                 </asp:Label>
-                                                                        </asp:LinkButton>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                            </Columns>
-                                            <PagerStyle HorizontalAlign="Center" CssClass="pagination-ys" />
-                                        </asp:GridView>
+                                                                                </asp:LinkButton>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                    </Columns>
+                                                    <PagerStyle HorizontalAlign="Center" CssClass="pagination-ys" />
+                                                </asp:GridView>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -2054,6 +2227,56 @@
             </div>
         </div>
     </div>
+    
+    <div id="ModalAvatar" class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <asp:UpdatePanel runat="server">
+                    <ContentTemplate>
+                        <div class="modal-header">
+                            <h5 class="modal-title" runat="server">
+                                <asp:Label ID="Lab" Text="Seleccione un AVATAR" runat="server" /></h5>
+                            <asp:LinkButton ID="LinkB" OnClientClick="hideModalAvatar();" aria-label="Close" CssClass="close" runat="server">
+                            <span aria-hidden="true">&times;</span>
+                            </asp:LinkButton>
+                        </div>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+                <div class="modal-body pt-0" style="padding-bottom: 0px;">
+                    <div class="tab-content">
+                        <asp:UpdatePanel runat="server">
+                            <ContentTemplate>
+                                
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="card" style="margin-top: 15px; margin-bottom: 15px;">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="table-responsive">
+                                                        
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ContentTemplate>
+
+                        </asp:UpdatePanel>
+                    </div>
+                </div>
+                <asp:UpdatePanel runat="server">
+                    <ContentTemplate>
+                        <%--<div class="modal-footer justify-content-center">
+                            <asp:LinkButton ID="LinkButton2" data-dismiss="modal" aria-label="Close" CssClass="btn btn-info btn-round" runat="server">
+                            <i class="material-icons">close</i> Cerrar
+                            </asp:LinkButton>
+                        </div>--%>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+            </div>
+        </div>
+    </div>
     <!--END MODAL-->
 
     <script>
@@ -2182,6 +2405,15 @@
                 includeSelectAllOption: false,
                 nonSelectedText: "TODOS"
             });
+        }
+    </script>
+
+    <script>
+        function showModalAvatar() {
+            $('#ModalAvatar').modal('show');
+        }
+        function hideModalAvatar() {
+            $('#ModalAvatar').modal('hide');
         }
     </script>
 </asp:Content>

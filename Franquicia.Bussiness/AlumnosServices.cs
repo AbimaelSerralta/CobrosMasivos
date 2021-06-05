@@ -33,7 +33,7 @@ namespace Franquicia.Bussiness
             get { return _prefijosTelefonicosRepository; }
             set { _prefijosTelefonicosRepository = value; }
         }
-        
+
         public List<AlumnosGridViewModel> lsAlumnosGridViewModel = new List<AlumnosGridViewModel>();
         public List<AlumnosGridViewModel> lsSelectAlumnosGridViewModel = new List<AlumnosGridViewModel>();
 
@@ -43,8 +43,10 @@ namespace Franquicia.Bussiness
         public List<AlumnosGridViewModel> lsExcelErrores = new List<AlumnosGridViewModel>();
 
         public List<AlumnosRLEGridViewModel> lsAlumnosRLEGridViewModel = new List<AlumnosRLEGridViewModel>();
-        
+
         public List<AlumnosFiltrosGridViewModel> lsAlumnosFiltrosGridViewModel = new List<AlumnosFiltrosGridViewModel>();
+        public List<AlumnosSliderGridViewModel> lsAlumnosSliderGridViewModel = new List<AlumnosSliderGridViewModel>();
+        public List<AlumnosSliderGridViewModel> lsSelectAlumnosSliderGridViewModel = new List<AlumnosSliderGridViewModel>();
 
         public string ObtenerIdAlumno(Guid UidAlumno)
         {
@@ -681,6 +683,68 @@ namespace Franquicia.Bussiness
         {
             lsAlumnosFiltrosGridViewModel = new List<AlumnosFiltrosGridViewModel>();
             return lsAlumnosFiltrosGridViewModel = alumnosRepository.CargarFiltroAlumnosPA(UidCliente, UidUsuario);
+        }
+        public void CargarAlumnosSliderPA(Guid UidCliente, Guid UidUsuario)
+        {
+            lsAlumnosSliderGridViewModel = alumnosRepository.CargarAlumnosSliderPA(UidCliente, UidUsuario);
+
+            //lsSelectAlumnosSliderGridViewModel = new List<AlumnosSliderGridViewModel>(lsAlumnosSliderGridViewModel);
+        }
+        public List<AlumnosSliderGridViewModel> SeleccionarAlumnosSliderPA(List<AlumnosSliderGridViewModel> lsAlumnosSlider, Guid UidAlumno, bool accion)
+        {
+            List<AlumnosSliderGridViewModel> lsNuevoAlumnosSliderGridViewModel = new List<AlumnosSliderGridViewModel>();
+
+            foreach (var item in lsAlumnosSlider)
+            {
+                if (item.UidAlumno == UidAlumno)
+                {
+                    lsNuevoAlumnosSliderGridViewModel.Add(new AlumnosSliderGridViewModel()
+                    {
+                        UidAlumno = item.UidAlumno,
+                        VchNombres = item.VchNombres,
+                        VchApePaterno = item.VchApePaterno,
+                        VchApeMaterno = item.VchApeMaterno,
+                        VchMatricula = item.VchMatricula,
+                        blSelect = accion,
+                        VchColor = item.VchColor
+
+                    });
+
+                    if (accion)
+                    {
+                        lsSelectAlumnosSliderGridViewModel.Add(new AlumnosSliderGridViewModel()
+                        {
+                            UidAlumno = item.UidAlumno,
+                            VchNombres = item.VchNombres,
+                            VchApePaterno = item.VchApePaterno,
+                            VchApeMaterno = item.VchApeMaterno,
+                            VchMatricula = item.VchMatricula,
+                            blSelect = accion,
+                            VchColor = item.VchColor
+                        });
+                    }
+                    else
+                    {
+                        lsSelectAlumnosSliderGridViewModel.RemoveAt(lsSelectAlumnosSliderGridViewModel.FindIndex(x => x.UidAlumno == UidAlumno));
+                    }
+                }
+                else
+                {
+                    lsNuevoAlumnosSliderGridViewModel.Add(new AlumnosSliderGridViewModel()
+                    {
+                        UidAlumno = item.UidAlumno,
+                        VchNombres = item.VchNombres,
+                        VchApePaterno = item.VchApePaterno,
+                        VchApeMaterno = item.VchApeMaterno,
+                        VchMatricula = item.VchMatricula,
+                        blSelect = item.blSelect,
+                        VchColor = item.VchColor
+                    });
+                }
+            }
+
+            return lsAlumnosSliderGridViewModel = lsNuevoAlumnosSliderGridViewModel.OrderBy(x => x.Alumno).ToList();
+
         }
         #endregion
         #region ReporteLigasPadre

@@ -949,6 +949,39 @@ namespace Franquicia.DataAccess.Repository
 
             return lsAlumnosFiltrosGridViewModel.OrderBy(x => x.Alumno).ToList();
         }
+        public List<AlumnosSliderGridViewModel> CargarAlumnosSliderPA(Guid UidCliente, Guid UidUsuario)
+        {
+            List<AlumnosSliderGridViewModel> lsAlumnosSliderGridViewModel = new List<AlumnosSliderGridViewModel>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select * from Alumnos al, Clientes cl, UsuariosAlumnos ua, Usuarios us where al.UidAlumno = ua.UidAlumno and us.UidUsuario = ua.UidUsuario and cl.UidCliente = al.UidCliente and cl.UidCliente = '" + UidCliente + "' and us.UidUsuario = '" + UidUsuario + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            // Define your colors array
+            string[] colors = { "#B9EB14", "#3FA8BE", "#C56668", "#F353BB", "#D0E1BD", "#569F67", "#DC5D12", "#621ABC", "#E7D866", "#6D9611", "#4B2413", "#791165", "#FECF10", "#848CBA", "#0A4A64", "#90080F", "#15C5B9", "#9B8363", "#21410E", "#A6FEB8", "#2CBC63", "#B27A0D", "#3837B7", "#BDF562", "#43B30C", "#C970B6", "#4F2E61", "#D4EC0B", "#5AA9B5", "#E06760", "#66250A", "#EBE2B4", "#71A05F", "#F75E09", "#7D1BB3", "#02D95E", "#889708", "#0E54B2", "#94125D", "#19D007", "#9F8DB1", "#254B5C", "#AB0906", "#30C6B0", "#B6845B", "#3C4205", "#C1FFAF", "#47BD5A", "#CD7B04", "#5338AE", "#D8F659", "#5EB403", "#E471AD", "#6A2F58", "#EFED02", "#75AAAC", "#FB6857", "#812601", "#06E3AB", "#8CA156", "#125F00", "#981CAA", "#1DDA55", "#A397FF", "#2955A9", "#AF1354", "#34D0FE", "#BA8EA8", "#404C53", "#C609FD", "#4BC7A8", "#D18552", "#5742FC", "#DD00A7", "#62BE51", "#E87BFB", "#6E39A6", "#F3F750", "#79B4FA", "#FF72A5", "#85304F", "#0AEDF9", "#90ABA4", "#16694E", "#9C26F8", "#21E4A3", "#A7A24D", "#2D5FF7", "#B31DA2", "#38DB4C", "#BE98F6", "#4456A1", "#CA144B", "#4FD1F5", "#D58FA0", "#5B4D4A", "#E10AF4", "#66C89F", "#EC8649", "#7243F3" };
+
+            int num = 0;
+
+            foreach (DataRow item in dt.Rows)
+            {
+                num = num + 1;
+                lsAlumnosSliderGridViewModel.Add(new AlumnosSliderGridViewModel()
+                {
+                    UidAlumno = Guid.Parse(item["UidAlumno"].ToString()),
+                    VchNombres = item["VchNombres"].ToString(),
+                    VchApePaterno = item["VchApePaterno"].ToString(),
+                    VchApeMaterno = item["VchApeMaterno"].ToString(),
+                    VchMatricula = item["VchMatricula"].ToString(),
+                    blSelect = false,
+                    VchColor = colors[num]
+                });
+            }
+
+            return lsAlumnosSliderGridViewModel.OrderBy(x => x.Alumno).ToList();
+        }
         #endregion
         #region ReporteLigasPadre
 

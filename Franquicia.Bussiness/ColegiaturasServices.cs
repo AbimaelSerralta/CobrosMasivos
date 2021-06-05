@@ -29,6 +29,8 @@ namespace Franquicia.Bussiness
         public List<PagosReporteLigaPadreViewModels> lsPagosReporteLigaPadreViewModels = new List<PagosReporteLigaPadreViewModels>();
 
         public List<ColegiaturasFechasGridViewModel> lsFechasColegiaturas = new List<ColegiaturasFechasGridViewModel>();
+        
+        public List<ColegiaturasAlumnosViewModel> lsColegiaturasAlumnosViewModel = new List<ColegiaturasAlumnosViewModel>();
 
 
         public List<FCAATMViewModel> lsFCAATMViewModel = new List<FCAATMViewModel>();
@@ -240,10 +242,26 @@ namespace Franquicia.Bussiness
         #endregion
 
         #region Metodos Padres
+        public List<ColegiaturasAlumnosViewModel> CargarColegiaturasAlumno(Guid UidCliente, Guid UidUsuario, Guid UidAlumno)
+        {
+            lsColegiaturasAlumnosViewModel = new List<ColegiaturasAlumnosViewModel>();
+            return lsColegiaturasAlumnosViewModel = colegiaturasRepository.CargarColegiaturasAlumno(UidCliente, UidUsuario, UidAlumno);
+        }
+        public List<ColegiaturasAlumnosViewModel> BuscarColegiaturasAlumnos(Guid UidCliente, Guid UidUsuario, string UidAlumno)
+        {
+            lsColegiaturasAlumnosViewModel = new List<ColegiaturasAlumnosViewModel>();
+            return lsColegiaturasAlumnosViewModel = colegiaturasRepository.BuscarColegiaturasAlumnos(UidCliente, UidUsuario, UidAlumno);
+        }
+
         public List<PagosColegiaturasViewModel> CargarPagosColegiaturas(Guid UidCliente, Guid UidUsuario, DateTime FechaInicio)
         {
             lsPagosColegiaturasViewModel = new List<PagosColegiaturasViewModel>();
             return lsPagosColegiaturasViewModel = colegiaturasRepository.CargarPagosColegiaturas(UidCliente, UidUsuario, FechaInicio);
+        }
+        public List<PagosColegiaturasViewModel> CargarPagosColegiaturasDashboard(Guid UidCliente, Guid UidUsuario, Guid UidColegiatura, Guid UidAlumno)
+        {
+            lsPagosColegiaturasViewModel = new List<PagosColegiaturasViewModel>();
+            return lsPagosColegiaturasViewModel = colegiaturasRepository.CargarPagosColegiaturasDashboard(UidCliente, UidUsuario, UidColegiatura, UidAlumno);
         }
         public void ObtenerPagosColegiaturas(Guid UidCliente, Guid UidUsuario, Guid UidFechaColegiatura, string VchMatricula)
         {
