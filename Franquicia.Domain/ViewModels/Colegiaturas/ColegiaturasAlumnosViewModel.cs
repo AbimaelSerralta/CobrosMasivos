@@ -12,5 +12,9 @@ namespace Franquicia.Domain.ViewModels
         public Guid UidAlumno { get; set; }
         public string Alumno { get; set; }
         public string VchNombreCorto { get; set; }
+        
+        public string Avatar { get; set; }
+        public bool blActivarCorto { get; set; }
+        public bool blActivarAvatar { get; set; }
     }
 }

@@ -684,9 +684,9 @@ namespace Franquicia.Bussiness
             lsAlumnosFiltrosGridViewModel = new List<AlumnosFiltrosGridViewModel>();
             return lsAlumnosFiltrosGridViewModel = alumnosRepository.CargarFiltroAlumnosPA(UidCliente, UidUsuario);
         }
-        public void CargarAlumnosSliderPA(Guid UidCliente, Guid UidUsuario)
+        public List<AlumnosSliderGridViewModel> CargarAlumnosSliderPA(List<AlumnosSliderGridViewModel> lsSelectAlumnosSlider, Guid UidCliente, Guid UidUsuario)
         {
-            lsAlumnosSliderGridViewModel = alumnosRepository.CargarAlumnosSliderPA(UidCliente, UidUsuario);
+            return lsAlumnosSliderGridViewModel = alumnosRepository.CargarAlumnosSliderPA(lsSelectAlumnosSlider, UidCliente, UidUsuario);
 
             //lsSelectAlumnosSliderGridViewModel = new List<AlumnosSliderGridViewModel>(lsAlumnosSliderGridViewModel);
         }
@@ -706,7 +706,11 @@ namespace Franquicia.Bussiness
                         VchApeMaterno = item.VchApeMaterno,
                         VchMatricula = item.VchMatricula,
                         blSelect = accion,
-                        VchColor = item.VchColor
+                        VchColor = item.VchColor,
+
+                        Avatar = item.Avatar,
+                        blActivarCorto = item.blActivarCorto,
+                        blActivarAvatar = item.blActivarAvatar
 
                     });
 
@@ -720,7 +724,12 @@ namespace Franquicia.Bussiness
                             VchApeMaterno = item.VchApeMaterno,
                             VchMatricula = item.VchMatricula,
                             blSelect = accion,
-                            VchColor = item.VchColor
+                            VchColor = item.VchColor,
+
+
+                            Avatar = item.Avatar,
+                            blActivarCorto = item.blActivarCorto,
+                            blActivarAvatar = item.blActivarAvatar
                         });
                     }
                     else
@@ -738,13 +747,37 @@ namespace Franquicia.Bussiness
                         VchApeMaterno = item.VchApeMaterno,
                         VchMatricula = item.VchMatricula,
                         blSelect = item.blSelect,
-                        VchColor = item.VchColor
+                        VchColor = item.VchColor,
+
+
+                        Avatar = item.Avatar,
+                        blActivarCorto = item.blActivarCorto,
+                        blActivarAvatar = item.blActivarAvatar
                     });
                 }
             }
 
             return lsAlumnosSliderGridViewModel = lsNuevoAlumnosSliderGridViewModel.OrderBy(x => x.Alumno).ToList();
 
+        }
+
+        public bool AsignarAvatarAlumno(Guid UidAvatar, Guid UidAlumno, Guid UidUsuario)
+        {
+            bool result = false;
+            if (alumnosRepository.AsignarAvatarAlumno(UidAvatar, UidAlumno, UidUsuario))
+            {
+                result = true;
+            }
+            return result;
+        }
+        public bool ActualizarAvatarAlumno(Guid UidAvatar, Guid UidAlumno, Guid UidUsuario)
+        {
+            bool result = false;
+            if (alumnosRepository.ActualizarAvatarAlumno(UidAvatar, UidAlumno, UidUsuario))
+            {
+                result = true;
+            }
+            return result;
         }
         #endregion
         #region ReporteLigasPadre

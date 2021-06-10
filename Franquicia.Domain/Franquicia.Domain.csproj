@@ -52,6 +52,7 @@
     <Compile Include="Models\ClubPago\GenerarRefereciaPago.cs" />
     <Compile Include="Models\ClubPago\ObtenerRefereciaPago.cs" />
     <Compile Include="Models\EliminarPagos.cs" />
+    <Compile Include="Models\Avatars.cs" />
     <Compile Include="Models\EstatusColegiaturasAlumnos.cs" />
     <Compile Include="Models\EstatusFechasColegiaturas.cs" />
     <Compile Include="Models\Integraciones.cs" />

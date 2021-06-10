@@ -8,9 +8,7 @@ using PagaLaEscuela.Util;
 using RestSharp;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -19,7 +17,7 @@ using static Franquicia.Bussiness.DateTimeSpanServices;
 
 namespace PagaLaEscuela.Views
 {
-    public partial class Pagos : System.Web.UI.Page
+    public partial class ReporteColegiaturasTutor : System.Web.UI.Page
     {
         PagosPadresServices pagosPadresServices = new PagosPadresServices();
         ColegiaturasServices colegiaturasServices = new ColegiaturasServices();
@@ -53,8 +51,6 @@ namespace PagaLaEscuela.Views
         EstatusFechasColegiaturasServices estatusFechasColegiaturasServices = new EstatusFechasColegiaturasServices();
         EstatusColegiaturasAlumnosServices estatusColegiaturasAlumnosServices = new EstatusColegiaturasAlumnosServices();
 
-        AvatarsServices avatarsServices = new AvatarsServices();
-
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Session["UidUsuarioMaster"] != null)
@@ -77,9 +73,6 @@ namespace PagaLaEscuela.Views
                 ViewState["gvPagosColegiaturas"] = SortDirection.Descending;
                 ViewState["SoExgvPagosColegiaturas"] = "";
 
-                ViewState["gvColegiaturasAlumnos"] = SortDirection.Descending;
-                ViewState["SoExgvColegiaturasAlumnos"] = "";
-
                 Session["pagosPadresServices"] = pagosPadresServices;
                 Session["colegiaturasServices"] = colegiaturasServices;
                 Session["pagosTarjetaServices"] = pagosTarjetaServices;
@@ -96,7 +89,6 @@ namespace PagaLaEscuela.Views
                 Session["bancosServices"] = bancosServices;
 
                 Session["promocionesPragaServices"] = promocionesPragaServices;
-                Session["avatarsServices"] = avatarsServices;
 
                 CargarComercios();
 
@@ -105,7 +97,7 @@ namespace PagaLaEscuela.Views
                 LBFiltroEstatusCole.DataTextField = "VchDescripcion";
                 LBFiltroEstatusCole.DataValueField = "UidEstatusFechaColegiatura";
                 LBFiltroEstatusCole.DataBind();
-                foreach (ListItem item in LBFiltroEstatusCole.Items) { if (item.Value == "76c8793b-4493-44c8-b274-696a61358bdf" || item.Value == "fd1e57e9-1476-482a-a850-501e55298500" || item.Value == "db36d040-9e05-4e7b-83b4-dd4ff0d5ac3c") { item.Selected = true; } }
+                foreach (ListItem item in LBFiltroEstatusCole.Items) { if (item.Value == "605A7881-54E0-47DF-8398-EDE080F4E0AA") { item.Selected = true; } }
 
                 estatusColegiaturasAlumnosServices.CargarEstatusColegiaturasAlumnos();
                 LBFiltroEstatusPago.DataSource = estatusColegiaturasAlumnosServices.lsEstatusColegiaturasAlumnos;
@@ -125,7 +117,6 @@ namespace PagaLaEscuela.Views
                 comisionesTarjetasCl = (ComisionesTarjetasClientesServices)Session["comisionesTarjetasCl"];
                 pagosColegiaturasServices = (PagosColegiaturasServices)Session["pagosColegiaturasServices"];
                 alumnosServices = (AlumnosServices)Session["alumnosServices"];
-                avatarsServices = (AvatarsServices)Session["avatarsServices"];
 
                 formasPagosServices = (FormasPagosServices)Session["formasPagosServices"];
                 bancosServices = (BancosServices)Session["bancosServices"];
@@ -156,34 +147,6 @@ namespace PagaLaEscuela.Views
                 {
                     rpFormasPago.DataSource = formasPagosServices.lsFormasPagos;
                     rpFormasPago.DataBind();
-                }
-
-                if (colegiaturasServices != null)
-                {
-                    if (colegiaturasServices.lsColegiaturasAlumnosViewModel.Count != 0)
-                    {
-                        gvColegiaturasAlumnos.DataSource = colegiaturasServices.lsColegiaturasAlumnosViewModel;
-                        gvColegiaturasAlumnos.DataBind();
-                    }
-                }
-
-                if (alumnosServices != null)
-                {
-                    if (alumnosServices.lsAlumnosSliderGridViewModel.Count != 0)
-                    {
-                        int index = int.Parse(ViewState["AlumnosSliderGetRange"].ToString());
-                        int count = int.Parse(ViewState["AlumnosSliderGetRangeCount"].ToString());
-
-                        lblCantSeleccionado.Text = alumnosServices.lsSelectAlumnosSliderGridViewModel.Count.ToString();
-                        rpListAlumnos.DataSource = alumnosServices.lsAlumnosSliderGridViewModel.GetRange(index, count);
-                        rpListAlumnos.DataBind();
-                    }
-                }
-
-                if (avatarsServices != null)
-                {
-                    rpAvatars.DataSource = avatarsServices.lsAvatars;
-                    rpAvatars.DataBind();
                 }
             }
         }
@@ -246,104 +209,26 @@ namespace PagaLaEscuela.Views
                     imgLogoSelect3.DataBind();
                 }
 
-                //colegiaturasServices.CargarPagosColegiaturas(UidCliente, Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), hoy);
-                //gvPagos.DataSource = colegiaturasServices.lsPagosColegiaturasViewModel;
-                //gvPagos.DataBind();
-
-                alumnosServices.lsSelectAlumnosSliderGridViewModel.Clear();
-                lblCantSeleccionado.Text = alumnosServices.lsSelectAlumnosSliderGridViewModel.Count.ToString();
-
-                //Limpiamos gridviews de pagos
-                colegiaturasServices.lsPagosColegiaturasViewModel.Clear();
+                CargarReporteColegiaturasPadre(UidCliente, Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), hoy);
                 gvPagos.DataSource = colegiaturasServices.lsPagosColegiaturasViewModel;
                 gvPagos.DataBind();
-                lblAlumno.Text = "";
 
-                ViewState["RowSelectUidColegiatura"] = null;
-                ViewState["RowSelectUidAlumno"] = null;
-                colegiaturasServices.lsColegiaturasAlumnosViewModel.Clear();
-                gvColegiaturasAlumnos.DataSource = colegiaturasServices.lsColegiaturasAlumnosViewModel;
-                gvColegiaturasAlumnos.DataBind();
-
-                CargarAlumnosSlider(UidCliente);
-
+                alumnosServices.lsAlumnosFiltrosGridViewModel.Clear();
+                alumnosServices.CargarFiltroAlumnosPA(UidCliente, Guid.Parse(ViewState["UidUsuarioLocal"].ToString()));
+                LBFiltroAlumnos.DataSource = alumnosServices.lsAlumnosFiltrosGridViewModel;
+                LBFiltroAlumnos.DataTextField = "Alumno";
+                LBFiltroAlumnos.DataValueField = "UidAlumno";
+                LBFiltroAlumnos.DataBind();
             }
         }
-        private void CargarAlumnosSlider(Guid UidCliente)
+
+        private void CargarReporteColegiaturasPadre(Guid UidCliente, Guid UidUsuarioLocal, DateTime hoy)
         {
-            alumnosServices.CargarAlumnosSliderPA(alumnosServices.lsSelectAlumnosSliderGridViewModel, UidCliente, Guid.Parse(ViewState["UidUsuarioLocal"].ToString()));
-
-            int lscount = alumnosServices.lsAlumnosSliderGridViewModel.Count;
-            ViewState["AlumnosSliderGetRange"] = "0";
-
-            if (lscount == 1)
-            {
-                rpListAlumnos.DataSource = alumnosServices.lsAlumnosSliderGridViewModel.GetRange(0, 1);
-                rpListAlumnos.DataBind();
-
-                ViewState["AlumnosSliderGetRangeCount"] = 1;
-
-                lblPagAluSlider.Text = "Del " + 1 + " al " + 1 + " de " + lscount;
-            }
-            else if (lscount == 2)
-            {
-                rpListAlumnos.DataSource = alumnosServices.lsAlumnosSliderGridViewModel.GetRange(0, 2);
-                rpListAlumnos.DataBind();
-
-                ViewState["AlumnosSliderGetRangeCount"] = 2;
-
-                lblPagAluSlider.Text = "Del " + 1 + " al " + 2 + " de " + lscount;
-            }
-            else
-            {
-                rpListAlumnos.DataSource = alumnosServices.lsAlumnosSliderGridViewModel.GetRange(0, 3);
-                rpListAlumnos.DataBind();
-
-                ViewState["AlumnosSliderGetRangeCount"] = 3;
-
-                lblPagAluSlider.Text = "Del " + 1 + " al " + 3 + " de " + lscount;
-            }
+            colegiaturasServices.CargarReporteColegiaturasPadre(UidCliente, UidUsuarioLocal);
+            gvPagos.DataSource = colegiaturasServices.lsPagosColegiaturasViewModel;
+            gvPagos.DataBind();
         }
-        private void ActualizarDatosAvatar(Guid UidCliente, int AlumnosSliderGetRange, int AlumnosSliderGetRangeCount)
-        {
-            alumnosServices.CargarAlumnosSliderPA(alumnosServices.lsSelectAlumnosSliderGridViewModel, UidCliente, Guid.Parse(ViewState["UidUsuarioLocal"].ToString()));
 
-            int lscount = alumnosServices.lsAlumnosSliderGridViewModel.Count;
-
-            if (lscount == 1)
-            {
-                rpListAlumnos.DataSource = alumnosServices.lsAlumnosSliderGridViewModel.GetRange(AlumnosSliderGetRange, AlumnosSliderGetRangeCount);
-                rpListAlumnos.DataBind();
-
-                lblPagAluSlider.Text = "Del " + (AlumnosSliderGetRange + 1) + " al " + (AlumnosSliderGetRange + 1) + " de " + lscount;
-            }
-            else if (lscount == 2)
-            {
-                rpListAlumnos.DataSource = alumnosServices.lsAlumnosSliderGridViewModel.GetRange(AlumnosSliderGetRange, AlumnosSliderGetRangeCount);
-                rpListAlumnos.DataBind();
-
-                lblPagAluSlider.Text = "Del " + (AlumnosSliderGetRange + 1) + " al " + (AlumnosSliderGetRange + 2) + " de " + lscount;
-            }
-            else
-            {
-                rpListAlumnos.DataSource = alumnosServices.lsAlumnosSliderGridViewModel.GetRange(AlumnosSliderGetRange, AlumnosSliderGetRangeCount);
-                rpListAlumnos.DataBind();
-
-                lblPagAluSlider.Text = "Del " + (AlumnosSliderGetRange + 1) + " al " + (AlumnosSliderGetRange + 3) + " de " + lscount;
-            }
-
-            lblCantSeleccionado.Text = alumnosServices.lsSelectAlumnosSliderGridViewModel.Count.ToString();
-
-            colegiaturasServices.BuscarColegiaturasAlumnos(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), GetItemList(alumnosServices.lsSelectAlumnosSliderGridViewModel));
-            gvColegiaturasAlumnos.DataSource = colegiaturasServices.lsColegiaturasAlumnosViewModel;
-            gvColegiaturasAlumnos.DataBind();
-
-            if (ViewState["RowSelectUidAlumno"] != null && ViewState["RowSelectUidColegiatura"] != null)
-            {
-                CargarPagosColegiaturasDashboard(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), Guid.Parse(ViewState["RowSelectUidColegiatura"].ToString()), Guid.Parse(ViewState["RowSelectUidAlumno"].ToString()));
-            }
-
-        }
         protected void btnRegresar_Click(object sender, EventArgs e)
         {
             pnlComercios.Visible = true;
@@ -356,7 +241,9 @@ namespace PagaLaEscuela.Views
             DateTime HoraDelServidor = DateTime.Now;
             DateTime hoy = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(HoraDelServidor, TimeZoneInfo.Local.Id, "Eastern Standard Time (Mexico)");
 
-            CargarPagosColegiaturasDashboard(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), Guid.Parse(ViewState["RowSelectUidColegiatura"].ToString()), Guid.Parse(ViewState["RowSelectUidAlumno"].ToString()));
+            CargarReporteColegiaturasPadre(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), hoy);
+            gvPagos.DataSource = colegiaturasServices.lsPagosColegiaturasViewModel;
+            gvPagos.DataBind();
 
             pnlAlert.Visible = true;
             lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha sincronizado exitosamente.";
@@ -1433,7 +1320,9 @@ namespace PagaLaEscuela.Views
                                     lblMensajeAlert.Text = "<b>Felicidades,</b> la referencia se ha creado exitosamente, pase al establecimiento más cercano para pagar.";
                                     divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
 
-                                    CargarPagosColegiaturasDashboard(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), Guid.Parse(ViewState["RowSelectUidColegiatura"].ToString()), Guid.Parse(ViewState["RowSelectUidAlumno"].ToString()));
+                                    CargarReporteColegiaturasPadre(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), thisDay);
+                                    gvPagos.DataSource = colegiaturasServices.lsPagosColegiaturasViewModel;
+                                    gvPagos.DataBind();
 
                                     ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModalPagar()", true);
 
@@ -1844,7 +1733,9 @@ namespace PagaLaEscuela.Views
                         lblMensajeAlert.Text = "<b>Felicidades,</b> su pago se proceso exitosamente.";
                         divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
 
-                        CargarPagosColegiaturasDashboard(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), Guid.Parse(ViewState["RowSelectUidColegiatura"].ToString()), Guid.Parse(ViewState["RowSelectUidAlumno"].ToString()));
+                        CargarReporteColegiaturasPadre(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), hoy);
+                        gvPagos.DataSource = colegiaturasServices.lsPagosColegiaturasViewModel;
+                        gvPagos.DataBind();
 
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModalPagar()", true);
                     }
@@ -1870,7 +1761,9 @@ namespace PagaLaEscuela.Views
                     lblMensajeAlert.Text = "<b>Lo sentimos,</b> no se ha podido procesar su pago.";
                     divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
 
-                    CargarPagosColegiaturasDashboard(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), Guid.Parse(ViewState["RowSelectUidColegiatura"].ToString()), Guid.Parse(ViewState["RowSelectUidAlumno"].ToString()));
+                    CargarReporteColegiaturasPadre(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), hoy);
+                    gvPagos.DataSource = colegiaturasServices.lsPagosColegiaturasViewModel;
+                    gvPagos.DataBind();
 
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModalPagar()", true);
                 }
@@ -1896,7 +1789,9 @@ namespace PagaLaEscuela.Views
                         lblMensajeAlert.Text = "<b>Felicidades,</b> su pago se proceso exitosamente.";
                         divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
 
-                        CargarPagosColegiaturasDashboard(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), Guid.Parse(ViewState["RowSelectUidColegiatura"].ToString()), Guid.Parse(ViewState["RowSelectUidAlumno"].ToString()));
+                        CargarReporteColegiaturasPadre(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), hoy);
+                        gvPagos.DataSource = colegiaturasServices.lsPagosColegiaturasViewModel;
+                        gvPagos.DataBind();
 
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModalPagar()", true);
                     }
@@ -1922,7 +1817,9 @@ namespace PagaLaEscuela.Views
                     lblMensajeAlert.Text = "<b>Lo sentimos,</b> no se ha podido procesar su pago.";
                     divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
 
-                    CargarPagosColegiaturasDashboard(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), Guid.Parse(ViewState["RowSelectUidColegiatura"].ToString()), Guid.Parse(ViewState["RowSelectUidAlumno"].ToString()));
+                    CargarReporteColegiaturasPadre(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), hoy);
+                    gvPagos.DataSource = colegiaturasServices.lsPagosColegiaturasViewModel;
+                    gvPagos.DataBind();
 
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModalPagar()", true);
                 }
@@ -2222,16 +2119,7 @@ namespace PagaLaEscuela.Views
         #region GridViewPagosColegiatura
         protected void btnFiltroPagos_Click(object sender, EventArgs e)
         {
-            if (gvColegiaturasAlumnos.SelectedIndex != -1)
-            {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalBusqueda()", true);
-            }
-            else
-            {
-                pnlAlert.Visible = true;
-                lblMensajeAlert.Text = "Por favor seleccione una colegiatura.";
-                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
-            }
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalBusqueda()", true);
         }
         protected void btnFiltros_Click(object sender, EventArgs e)
         {
@@ -2242,93 +2130,37 @@ namespace PagaLaEscuela.Views
             DateTime HoraDelServidor = DateTime.Now;
             DateTime hoy = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(HoraDelServidor, TimeZoneInfo.Local.Id, "Eastern Standard Time (Mexico)");
 
-            decimal ImportePagoMayor = 0;
-            decimal ImportePagoMenor = 0;
+            decimal ImporteMayor = 0;
+            decimal ImporteMenor = 0;
 
-            decimal AbonadoPagoMayor = 0;
-            decimal AbonadoPagoMenor = 0;
-
-            decimal SaldoPagoMayor = 0;
-            decimal SaldoPagoMenor = 0;
-
-            //if (txtImportePagoMayor.Text != string.Empty)
+            //if (txtImporteMayor.Text != string.Empty)
             //{
-            //    switch (ddlImportePagoMayor.SelectedValue)
+            //    switch (ddlImporteMayor.SelectedValue)
             //    {
             //        case ">":
-            //            ImportePagoMayor = Convert.ToDecimal(txtImportePagoMayor.Text) + 1;
+            //            ImporteMayor = Convert.ToDecimal(txtImporteMayor.Text) + 1;
             //            break;
             //        case ">=":
-            //            ImportePagoMayor = Convert.ToDecimal(txtImportePagoMayor.Text);
+            //            ImporteMayor = Convert.ToDecimal(txtImporteMayor.Text);
             //            break;
             //    }
             //}
-            //if (txtImportePagoMenor.Text != string.Empty)
+            //if (txtImporteMenor.Text != string.Empty)
             //{
-            //    switch (ddlImportePagoMenor.SelectedValue)
+            //    switch (ddlImporteMenor.SelectedValue)
             //    {
             //        case "<":
-            //            ImportePagoMenor = Convert.ToDecimal(txtImportePagoMenor.Text) - 1;
+            //            ImporteMenor = Convert.ToDecimal(txtImporteMenor.Text) - 1;
             //            break;
             //        case "<=":
-            //            ImportePagoMenor = Convert.ToDecimal(txtImportePagoMenor.Text);
-            //            break;
-            //    }
-            //}
-
-            //if (txtAbonadoPagoMayor.Text != string.Empty)
-            //{
-            //    switch (ddlAbonadoPagoMayor.SelectedValue)
-            //    {
-            //        case ">":
-            //            AbonadoPagoMayor = Convert.ToDecimal(txtAbonadoPagoMayor.Text) + 1;
-            //            break;
-            //        case ">=":
-            //            AbonadoPagoMayor = Convert.ToDecimal(txtAbonadoPagoMayor.Text);
-            //            break;
-            //    }
-            //}
-            //if (txtAbonadoPagoMenor.Text != string.Empty)
-            //{
-            //    switch (ddlAbonadoPagoMenor.SelectedValue)
-            //    {
-            //        case "<":
-            //            AbonadoPagoMenor = Convert.ToDecimal(txtAbonadoPagoMenor.Text) - 1;
-            //            break;
-            //        case "<=":
-            //            AbonadoPagoMenor = Convert.ToDecimal(txtAbonadoPagoMenor.Text);
-            //            break;
-            //    }
-            //}
-
-            //if (txtSaldoPagoMayor.Text != string.Empty)
-            //{
-            //    switch (ddlSaldoPagoMayor.SelectedValue)
-            //    {
-            //        case ">":
-            //            SaldoPagoMayor = Convert.ToDecimal(txtSaldoPagoMayor.Text) + 1;
-            //            break;
-            //        case ">=":
-            //            SaldoPagoMayor = Convert.ToDecimal(txtSaldoPagoMayor.Text);
-            //            break;
-            //    }
-            //}
-            //if (txtSaldoPagoMenor.Text != string.Empty)
-            //{
-            //    switch (ddlSaldoPagoMenor.SelectedValue)
-            //    {
-            //        case "<":
-            //            SaldoPagoMenor = Convert.ToDecimal(txtSaldoPagoMenor.Text) - 1;
-            //            break;
-            //        case "<=":
-            //            SaldoPagoMenor = Convert.ToDecimal(txtSaldoPagoMenor.Text);
+            //            ImporteMenor = Convert.ToDecimal(txtImporteMenor.Text);
             //            break;
             //    }
             //}
 
             ViewState["NewPageIndex"] = null;
 
-            colegiaturasServices.BuscarPagosColegiaturasDashboard(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), Guid.Parse(ViewState["RowSelectUidColegiatura"].ToString()), Guid.Parse(ViewState["RowSelectUidAlumno"].ToString()), txtNumPago.Text, GetItemListBox(LBFiltroEstatusCole), GetItemListBox(LBFiltroEstatusPago), ImportePagoMayor, ImportePagoMenor, AbonadoPagoMayor, AbonadoPagoMenor, SaldoPagoMayor, SaldoPagoMenor, txtInicioDesde.Text, txtInicioHasta.Text);
+            colegiaturasServices.BuscarColegiaturaPadre(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), hoy, GetItemListBox(LBFiltroAlumnos), txtColegiatura.Text, txtNumPago.Text, GetItemListBox(LBFiltroEstatusCole), GetItemListBox(LBFiltroEstatusPago));
             gvPagos.DataSource = colegiaturasServices.lsPagosColegiaturasViewModel;
             gvPagos.DataBind();
 
@@ -2352,11 +2184,11 @@ namespace PagaLaEscuela.Views
 
         protected void btnLimpiar_Click(object sender, EventArgs e)
         {
+            LBFiltroAlumnos.SelectedIndex = -1;
+            txtColegiatura.Text = string.Empty;
             txtNumPago.Text = string.Empty;
             foreach (ListItem item in LBFiltroEstatusCole.Items) { if (item.Value == "76c8793b-4493-44c8-b274-696a61358bdf") { item.Selected = true; } else { item.Selected = false; } }
             LBFiltroEstatusPago.SelectedIndex = -1;
-            txtInicioDesde.Text = string.Empty;
-            txtInicioHasta.Text = string.Empty;
 
             ScriptManager.RegisterStartupScript(this, this.GetType(), "MultFiltro", "multiFiltro()", true);
         }
@@ -2470,7 +2302,9 @@ namespace PagaLaEscuela.Views
                     gvPagosColegiaturas.DataSource = pagosColegiaturasServices.lsReportePadresFechasPagosColeViewModel;
                     gvPagosColegiaturas.DataBind();
 
-                    CargarPagosColegiaturasDashboard(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), Guid.Parse(ViewState["RowSelectUidColegiatura"].ToString()), Guid.Parse(ViewState["RowSelectUidAlumno"].ToString()));
+                    CargarReporteColegiaturasPadre(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), hoy);
+                    gvPagos.DataSource = colegiaturasServices.lsPagosColegiaturasViewModel;
+                    gvPagos.DataBind();
                 }
 
             }
@@ -3444,7 +3278,9 @@ namespace PagaLaEscuela.Views
                     DateTime HoraDelServidor = DateTime.Now;
                     DateTime hoy = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(HoraDelServidor, TimeZoneInfo.Local.Id, "Eastern Standard Time (Mexico)");
 
-                    CargarPagosColegiaturasDashboard(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), Guid.Parse(ViewState["RowSelectUidColegiatura"].ToString()), Guid.Parse(ViewState["RowSelectUidAlumno"].ToString()));
+                    CargarReporteColegiaturasPadre(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), hoy);
+                    gvPagos.DataSource = colegiaturasServices.lsPagosColegiaturasViewModel;
+                    gvPagos.DataBind();
 
                     pnlAlert.Visible = true;
                     lblMensajeAlert.Text = "<b>Felicidades,</b> su pago se registró exitosamente. Ahora solo falta que la escuela lo verifique.";
@@ -3604,537 +3440,5 @@ namespace PagaLaEscuela.Views
             string _open = "window.open('Excel/ExportarAExcelPagosColegiaturas.aspx', '_blank');";
             ScriptManager.RegisterStartupScript(this, this.GetType(), Guid.NewGuid().ToString(), _open, true);
         }
-
-        #region Slider
-
-        #region RepeaterListAlumnos
-        protected void rpListAlumnos_ItemCommand(object source, RepeaterCommandEventArgs e)
-        {
-            if (e.CommandName == "btnSeleAlumno")
-            {
-                Guid UidAlumno = Guid.Parse((string)e.CommandArgument);
-                ViewState["ItemCommand-UidAlumno"] = UidAlumno;
-
-                bool cbAluSeleccionado = ((CheckBox)e.Item.FindControl("cbAluSeleccionado")).Checked;
-
-                if (cbAluSeleccionado)
-                {
-                    ((CheckBox)e.Item.FindControl("cbAluSeleccionado")).Checked = false;
-                    cbAluSeleccionado = false;
-                }
-                else
-                {
-                    ((CheckBox)e.Item.FindControl("cbAluSeleccionado")).Checked = true;
-                    cbAluSeleccionado = true;
-                }
-
-                if (cbAluSeleccionado)
-                {
-                    alumnosServices.SeleccionarAlumnosSliderPA(alumnosServices.lsAlumnosSliderGridViewModel, UidAlumno, true);
-                }
-                else
-                {
-                    alumnosServices.SeleccionarAlumnosSliderPA(alumnosServices.lsAlumnosSliderGridViewModel, UidAlumno, false);
-                }
-
-                int index = int.Parse(ViewState["AlumnosSliderGetRange"].ToString());
-                int count = int.Parse(ViewState["AlumnosSliderGetRangeCount"].ToString());
-
-                lblCantSeleccionado.Text = alumnosServices.lsSelectAlumnosSliderGridViewModel.Count.ToString();
-                rpListAlumnos.DataSource = alumnosServices.lsAlumnosSliderGridViewModel.GetRange(index, count);
-                rpListAlumnos.DataBind();
-
-                //Cargar colegiaturas
-
-                colegiaturasServices.BuscarColegiaturasAlumnos(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), GetItemList(alumnosServices.lsSelectAlumnosSliderGridViewModel));
-                //colegiaturasServices.CargarColegiaturasAlumno(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), UidAlumno);
-                gvColegiaturasAlumnos.DataSource = colegiaturasServices.lsColegiaturasAlumnosViewModel;
-                gvColegiaturasAlumnos.DataBind();
-
-                //Limpiamos gridviews de pagos
-                colegiaturasServices.lsPagosColegiaturasViewModel.Clear();
-                gvPagos.DataSource = colegiaturasServices.lsPagosColegiaturasViewModel;
-                gvPagos.DataBind();
-                lblAlumno.Text = "";
-
-                gvColegiaturasAlumnos.SelectedIndex = -1;
-                ViewState["RowSelectUidColegiatura"] = null;
-                ViewState["RowSelectUidAlumno"] = null;
-                gvColegiaturasAlumnos.DataSource = colegiaturasServices.lsColegiaturasAlumnosViewModel;
-                gvColegiaturasAlumnos.DataBind();
-            }
-
-            if (e.CommandName == "btnAvatar")
-            {
-                Guid UidAlumno = Guid.Parse((string)e.CommandArgument);
-                ViewState["ItemCommand-UidAlumno"] = UidAlumno;
-
-                int index = int.Parse(ViewState["AlumnosSliderGetRange"].ToString());
-                int count = int.Parse(ViewState["AlumnosSliderGetRangeCount"].ToString());
-
-                lblCantSeleccionado.Text = alumnosServices.lsSelectAlumnosSliderGridViewModel.Count.ToString();
-                rpListAlumnos.DataSource = alumnosServices.lsAlumnosSliderGridViewModel.GetRange(index, count);
-                rpListAlumnos.DataBind();
-
-                if (((Label)e.Item.FindControl("lblValidarAvatar")).Text != string.Empty)
-                {
-                    ViewState["AccionAvatar"] = "Actualizar";
-                }
-                else
-                {
-                    ViewState["AccionAvatar"] = "Asignar";
-                }
-
-                ViewState["ItemCommand-UidAvatar"] = null;
-                avatarsServices.CargarAvatars();
-                rpAvatars.DataSource = avatarsServices.lsAvatars;
-                rpAvatars.DataBind();
-
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalAvatar()", true);
-            }
-        }
-        private string GetItemList(List<AlumnosSliderGridViewModel> ls)
-        {
-            string Values = string.Empty;
-
-            if (ls.Count == 0)
-            {
-                Values = "00000000-0000-0000-0000-000000000000";
-            }
-            else
-            {
-                foreach (var item in ls)
-                {
-                    if (Values == string.Empty)
-                        Values = item.UidAlumno.ToString();
-                    else
-                        Values += "," + item.UidAlumno.ToString();
-                }
-            }
-
-            return Values;
-        }
-        protected void rpListAlumnos_ItemDataBound(object sender, RepeaterItemEventArgs e)
-        {
-            if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
-            {
-                //    if (ViewState["ItemCommand-UidAlumno"] == null)
-                //    {
-                //        ViewState["ItemCommand-UidAlumno"] = Guid.Empty;
-                //    }
-
-                //    if (((AlumnosSliderGridViewModel)e.Item.DataItem).UidAlumno == Guid.Parse(ViewState["ItemCommand-UidAlumno"].ToString()))
-                //    {
-                //        ((CheckBox)e.Item.FindControl("cbAluSeleccionado")).Checked = true;
-
-                //    }
-
-                //if (((Label)e.Item.FindControl("lblValidarAvatar")).Text != string.Empty)
-                //{
-                //    ((Label)e.Item.FindControl("imgAvatar")).Visible = true;
-                //    ((Label)e.Item.FindControl("lblIniciales")).Visible = false;
-                //}
-                //else
-                //{
-                //    ((Label)e.Item.FindControl("lblIniciales")).Visible = true;
-                //    ((Label)e.Item.FindControl("imgAvatar")).Visible = false;
-                //}
-            }
-        }
-        #endregion
-
-        protected void btnSliderBack_Click(object sender, EventArgs e)
-        {
-            int index = int.Parse(ViewState["AlumnosSliderGetRange"].ToString()) - 3;
-            ViewState["AlumnosSliderGetRange"] = index;
-
-            int lscount = alumnosServices.lsAlumnosSliderGridViewModel.Count;
-
-            if (index != -3)
-            {
-                rpListAlumnos.DataSource = alumnosServices.lsAlumnosSliderGridViewModel.GetRange(index, 3);
-                rpListAlumnos.DataBind();
-
-                ViewState["AlumnosSliderGetRangeCount"] = 3;
-
-                lblPagAluSlider.Text = "Del " + (index + 1) + " al " + (index + 3) + " de " + lscount;
-            }
-            else
-            {
-                ViewState["AlumnosSliderGetRange"] = 0;
-            }
-        }
-
-        protected void btnSliderForward_Click(object sender, EventArgs e)
-        {
-            int index = int.Parse(ViewState["AlumnosSliderGetRange"].ToString()) + 3;
-            ViewState["AlumnosSliderGetRange"] = index;
-
-            int lscount = alumnosServices.lsAlumnosSliderGridViewModel.Count;
-
-            int rest = lscount - index;
-
-            if (lscount <= index)
-            {
-                ViewState["AlumnosSliderGetRange"] = int.Parse(ViewState["AlumnosSliderGetRange"].ToString()) - 3;
-            }
-            else
-            {
-                if (rest == 1)
-                {
-                    rpListAlumnos.DataSource = alumnosServices.lsAlumnosSliderGridViewModel.GetRange(index, 1);
-                    rpListAlumnos.DataBind();
-
-                    ViewState["AlumnosSliderGetRangeCount"] = 1;
-
-                    lblPagAluSlider.Text = "Del " + (index + 1) + " al " + (index + 1) + " de " + lscount;
-                }
-                else if (rest == 2)
-                {
-                    rpListAlumnos.DataSource = alumnosServices.lsAlumnosSliderGridViewModel.GetRange(index, 2);
-                    rpListAlumnos.DataBind();
-
-                    ViewState["AlumnosSliderGetRangeCount"] = 2;
-
-                    lblPagAluSlider.Text = "Del " + (index + 1) + " al " + (index + 2) + " de " + lscount;
-                }
-                else
-                {
-                    rpListAlumnos.DataSource = alumnosServices.lsAlumnosSliderGridViewModel.GetRange(index, 3);
-                    rpListAlumnos.DataBind();
-
-                    ViewState["AlumnosSliderGetRangeCount"] = 3;
-
-                    lblPagAluSlider.Text = "Del " + (index + 1) + " al " + (index + 3) + " de " + lscount;
-                }
-            }
-        }
-
-        #endregion
-
-        protected void gvColegiaturasAlumnos_RowCreated(object sender, GridViewRowEventArgs e)
-        {
-            SortDirection direccion = (SortDirection)ViewState["gvColegiaturasAlumnos"];
-            string SortExpression = ViewState["SoExgvColegiaturasAlumnos"].ToString();
-
-            if (e.Row.RowType == DataControlRowType.Header)
-            {
-                foreach (TableCell tc in e.Row.Cells)
-                {
-                    if (tc.HasControls())
-                    {
-                        // Buscar el enlace de la cabecera
-                        LinkButton lnk = tc.Controls[0] as LinkButton;
-                        if (lnk != null && SortExpression == lnk.CommandArgument)
-                        {
-                            // Verificar que se está ordenando por el campo indicado en el comando de ordenación
-                            // Crear una imagen
-                            System.Web.UI.WebControls.Image img = new System.Web.UI.WebControls.Image();
-                            img.Height = 20;
-                            img.Width = 20;
-                            // Ajustar dinámicamente el icono adecuado
-                            img.ImageUrl = "~/Images/SortingGv/" + (direccion == SortDirection.Ascending ? "desc" : "asc") + ".png";
-                            img.ImageAlign = ImageAlign.AbsMiddle;
-                            // Le metemos un espacio delante de la imagen para que no se pegue al enlace
-                            tc.Controls.Add(new LiteralControl(""));
-                            tc.Controls.Add(img);
-                        }
-                    }
-                }
-            }
-        }
-        protected void gvColegiaturasAlumnos_PageIndexChanging(object sender, GridViewPageEventArgs e)
-        {
-            gvColegiaturasAlumnos.PageIndex = e.NewPageIndex;
-            gvColegiaturasAlumnos.DataSource = colegiaturasServices.lsColegiaturasAlumnosViewModel;
-            gvColegiaturasAlumnos.DataBind();
-        }
-        protected void gvColegiaturasAlumnos_Sorting(object sender, GridViewSortEventArgs e)
-        {
-            string SortExpression = e.SortExpression;
-            ViewState["SoExgvColegiaturasAlumnos"] = e.SortExpression;
-            SortDirection direccion;
-            string Orden = string.Empty;
-
-            if (ViewState["gvColegiaturasAlumnos"] != null)
-            {
-                direccion = (SortDirection)ViewState["gvColegiaturasAlumnos"];
-                if (direccion == SortDirection.Ascending)
-                {
-                    ViewState["gvColegiaturasAlumnos"] = SortDirection.Descending;
-                    Orden = "ASC";
-                }
-                else
-                {
-                    ViewState["gvColegiaturasAlumnos"] = SortDirection.Ascending;
-                    Orden = "DESC";
-                }
-
-                switch (SortExpression)
-                {
-                    case "VchIdentificador":
-                        if (Orden == "ASC")
-                        {
-                            colegiaturasServices.lsColegiaturasAlumnosViewModel = colegiaturasServices.lsColegiaturasAlumnosViewModel.OrderBy(x => x.VchIdentificador).ToList();
-                        }
-                        else
-                        {
-                            colegiaturasServices.lsColegiaturasAlumnosViewModel = colegiaturasServices.lsColegiaturasAlumnosViewModel.OrderByDescending(x => x.VchIdentificador).ToList();
-                        }
-                        break;
-                    case "DcmImporte":
-                        if (Orden == "ASC")
-                        {
-                            colegiaturasServices.lsColegiaturasAlumnosViewModel = colegiaturasServices.lsColegiaturasAlumnosViewModel.OrderBy(x => x.DcmImporte).ToList();
-                        }
-                        else
-                        {
-                            colegiaturasServices.lsColegiaturasAlumnosViewModel = colegiaturasServices.lsColegiaturasAlumnosViewModel.OrderByDescending(x => x.DcmImporte).ToList();
-                        }
-                        break;
-                    case "IntCantPagos":
-                        if (Orden == "ASC")
-                        {
-                            colegiaturasServices.lsColegiaturasAlumnosViewModel = colegiaturasServices.lsColegiaturasAlumnosViewModel.OrderBy(x => x.IntCantPagos).ToList();
-                        }
-                        else
-                        {
-                            colegiaturasServices.lsColegiaturasAlumnosViewModel = colegiaturasServices.lsColegiaturasAlumnosViewModel.OrderByDescending(x => x.IntCantPagos).ToList();
-                        }
-                        break;
-                }
-
-                gvColegiaturasAlumnos.DataSource = colegiaturasServices.lsColegiaturasAlumnosViewModel;
-                gvColegiaturasAlumnos.DataBind();
-            }
-        }
-        protected void gvColegiaturasAlumnos_RowCommand(object sender, GridViewCommandEventArgs e)
-        {
-
-        }
-        protected void gvColegiaturasAlumnos_RowDataBound(object sender, GridViewRowEventArgs e)
-        {
-            if (e.Row.RowType == DataControlRowType.DataRow)
-            {
-                e.Row.Attributes["onclick"] = Page.ClientScript.GetPostBackClientHyperlink(gvColegiaturasAlumnos, "Select$" + e.Row.RowIndex);
-
-                GridView valor = (GridView)sender;
-                Guid dataKeys = Guid.Parse(valor.DataKeys[e.Row.RowIndex].Value.ToString());
-
-                TextBox txtGvUidAlumno = (TextBox)e.Row.FindControl("txtGvUidAlumno");
-
-                if (ViewState["RowSelectUidColegiatura"] != null && ViewState["RowSelectUidAlumno"] != null)
-                {
-                    if (dataKeys == Guid.Parse(ViewState["RowSelectUidColegiatura"].ToString()) && Guid.Parse(txtGvUidAlumno.Text) == Guid.Parse(ViewState["RowSelectUidAlumno"].ToString()))
-                    {
-                        e.Row.BackColor = Color.FromName("#dff0d8");
-                    }
-                }
-            }
-        }
-        protected void gvColegiaturasAlumnos_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            Guid UidColegiatura = new Guid(gvColegiaturasAlumnos.SelectedDataKey.Value.ToString());
-            ViewState["RowSelectUidColegiatura"] = UidColegiatura;
-
-            GridViewRow row = gvColegiaturasAlumnos.SelectedRow;
-
-            TextBox txtGvUidAlumno = (TextBox)row.FindControl("txtGvUidAlumno");
-            TextBox txtGvAlumno = (TextBox)row.FindControl("txtGvAlumno");
-
-            ViewState["RowSelectUidAlumno"] = txtGvUidAlumno.Text;
-
-            lblAlumno.Text = txtGvAlumno.Text;
-
-            CargarPagosColegiaturasDashboard(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), UidColegiatura, Guid.Parse(txtGvUidAlumno.Text));
-            
-            gvColegiaturasAlumnos.DataSource = colegiaturasServices.lsColegiaturasAlumnosViewModel;
-            gvColegiaturasAlumnos.DataBind();
-        }
-
-        private void CargarPagosColegiaturasDashboard(Guid UidCliente, Guid UidUsuarioLocal, Guid UidColegiatura, Guid UidAlumno)
-        {
-            colegiaturasServices.CargarPagosColegiaturasDashboard(UidCliente, UidUsuarioLocal, UidColegiatura, UidAlumno);
-            gvPagos.DataSource = colegiaturasServices.lsPagosColegiaturasViewModel;
-            gvPagos.DataBind();
-        }
-
-        protected void btnFiltroColegiatura_Click(object sender, EventArgs e)
-        {
-            if (alumnosServices.lsSelectAlumnosSliderGridViewModel.Count != 0)
-            {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalBusquedaColegiatura()", true);
-            }
-            else
-            {
-                pnlAlert.Visible = true;
-                lblMensajeAlert.Text = "Por favor seleccione al menos un alumno.";
-                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
-            }
-        }
-        protected void btnBuscarColegiatura_Click(object sender, EventArgs e)
-        {
-            decimal ImporteMayor = 0;
-            decimal ImporteMenor = 0;
-
-            if (txtImporteMayor.Text != string.Empty)
-            {
-                switch (ddlImporteMayor.SelectedValue)
-                {
-                    case ">":
-                        ImporteMayor = Convert.ToDecimal(txtImporteMayor.Text) + 1;
-                        break;
-                    case ">=":
-                        ImporteMayor = Convert.ToDecimal(txtImporteMayor.Text);
-                        break;
-                }
-            }
-            if (txtImporteMenor.Text != string.Empty)
-            {
-                switch (ddlImporteMenor.SelectedValue)
-                {
-                    case "<":
-                        ImporteMenor = Convert.ToDecimal(txtImporteMenor.Text) - 1;
-                        break;
-                    case "<=":
-                        ImporteMenor = Convert.ToDecimal(txtImporteMenor.Text);
-                        break;
-                }
-            }
-
-            colegiaturasServices.BuscarColegiaturaAlumno(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), GetItemList(alumnosServices.lsSelectAlumnosSliderGridViewModel), txtColegiatura.Text, txtNumPagoCole.Text, ImporteMayor, ImporteMenor);
-            gvColegiaturasAlumnos.DataSource = colegiaturasServices.lsColegiaturasAlumnosViewModel;
-            gvColegiaturasAlumnos.DataBind();
-
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModalBusquedaColegiatura()", true);
-        }
-        protected void btnLimpiarColegiatura_Click(object sender, EventArgs e)
-        {
-            txtColegiatura.Text = string.Empty;
-            txtNumPagoCole.Text = string.Empty;
-
-            txtImporteMayor.Text = string.Empty;
-            txtImporteMenor.Text = string.Empty;
-            ddlImporteMayor.SelectedIndex = -1;
-            ddlImporteMenor.SelectedIndex = -1;
-        }
-        protected void cbAluSeleccionado_CheckedChanged(object sender, EventArgs e)
-        {
-            var chk = (CheckBox)sender;
-
-            var UidAlumno = Guid.Parse(chk.Attributes["CommandArgument"].ToString());
-
-            ViewState["ItemCommand-UidAlumno"] = UidAlumno;
-
-
-            if (chk.Checked)
-            {
-                alumnosServices.SeleccionarAlumnosSliderPA(alumnosServices.lsAlumnosSliderGridViewModel, UidAlumno, true);
-            }
-            else
-            {
-                alumnosServices.SeleccionarAlumnosSliderPA(alumnosServices.lsAlumnosSliderGridViewModel, UidAlumno, false);
-            }
-
-            int index = int.Parse(ViewState["AlumnosSliderGetRange"].ToString());
-            int count = int.Parse(ViewState["AlumnosSliderGetRangeCount"].ToString());
-
-            lblCantSeleccionado.Text = alumnosServices.lsSelectAlumnosSliderGridViewModel.Count.ToString();
-            rpListAlumnos.DataSource = alumnosServices.lsAlumnosSliderGridViewModel.GetRange(index, count);
-            rpListAlumnos.DataBind();
-
-            //Cargar colegiaturas
-
-            colegiaturasServices.BuscarColegiaturasAlumnos(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), GetItemList(alumnosServices.lsSelectAlumnosSliderGridViewModel));
-            //colegiaturasServices.CargarColegiaturasAlumno(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString()), UidAlumno);
-            gvColegiaturasAlumnos.DataSource = colegiaturasServices.lsColegiaturasAlumnosViewModel;
-            gvColegiaturasAlumnos.DataBind();
-
-            //Limpiamos gridviews de pagos
-            colegiaturasServices.lsPagosColegiaturasViewModel.Clear();
-            gvPagos.DataSource = colegiaturasServices.lsPagosColegiaturasViewModel;
-            gvPagos.DataBind();
-            lblAlumno.Text = "";
-
-            ViewState["RowSelectUidColegiatura"] = null;
-            ViewState["RowSelectUidAlumno"] = null;
-            gvColegiaturasAlumnos.DataSource = colegiaturasServices.lsColegiaturasAlumnosViewModel;
-            gvColegiaturasAlumnos.DataBind();
-
-        }
-
-        #region RepeaterListAvatars
-        protected void rpAvatars_ItemCommand(object source, RepeaterCommandEventArgs e)
-        {
-            if (e.CommandName == "btnSelectAvatar")
-            {
-                Guid UidAvatar = Guid.Parse((string)e.CommandArgument);
-                ViewState["ItemCommand-UidAvatar"] = UidAvatar;
-
-                rpAvatars.DataSource = avatarsServices.lsAvatars;
-                rpAvatars.DataBind();
-            }
-        }
-        protected void rpAvatars_ItemDataBound(object sender, RepeaterItemEventArgs e)
-        {
-            if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
-            {
-                if (ViewState["ItemCommand-UidAvatar"] == null)
-                {
-                    ViewState["ItemCommand-UidAvatar"] = Guid.Empty;
-                }
-
-                if (((Avatars)e.Item.DataItem).UidAvatar == Guid.Parse(ViewState["ItemCommand-UidAvatar"].ToString()))
-                {
-                    ((CheckBox)e.Item.FindControl("cbAvatar")).Checked = true;
-
-                }
-            }
-        }
-        protected void btnAsigAvatar_Click(object sender, EventArgs e)
-        {
-            int index = int.Parse(ViewState["AlumnosSliderGetRange"].ToString());
-            int count = int.Parse(ViewState["AlumnosSliderGetRangeCount"].ToString());
-
-            if (ViewState["AccionAvatar"].ToString() == "Asignar")
-            {
-                if (alumnosServices.AsignarAvatarAlumno(Guid.Parse(ViewState["ItemCommand-UidAvatar"].ToString()), Guid.Parse(ViewState["ItemCommand-UidAlumno"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString())))
-                {
-                    ActualizarDatosAvatar(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), index, count);
-
-                    pnlAlert.Visible = true;
-                    lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha asignado el avatar exitosamente.";
-                    divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
-                }
-                else
-                {
-                    pnlAlertPago.Visible = true;
-                    lblMensajeAlertPago.Text = "<b>¡Lo sentimos! </b> no se ha podido asignar el avatar, intelo más tarde, si el problema persiste contacte a los administrados.";
-                    divAlertPago.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
-                }
-            }
-            else if (ViewState["AccionAvatar"].ToString() == "Actualizar")
-            {
-                if (alumnosServices.ActualizarAvatarAlumno(Guid.Parse(ViewState["ItemCommand-UidAvatar"].ToString()), Guid.Parse(ViewState["ItemCommand-UidAlumno"].ToString()), Guid.Parse(ViewState["UidUsuarioLocal"].ToString())))
-                {
-                    ActualizarDatosAvatar(Guid.Parse(ViewState["ItemCommand-UidCliente"].ToString()), index, count);
-
-                    pnlAlert.Visible = true;
-                    lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha asignado el avatar exitosamente.";
-                    divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
-                }
-                else
-                {
-                    pnlAlertPago.Visible = true;
-                    lblMensajeAlertPago.Text = "<b>¡Lo sentimos! </b> no se ha podido asignar el avatar, intelo más tarde, si el problema persiste contacte a los administrados.";
-                    divAlertPago.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
-                }
-            }
-
-            ViewState["ItemCommand-UidAvatar"] = null;
-
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModalAvatar()", true);
-        }
-        #endregion
     }
 }

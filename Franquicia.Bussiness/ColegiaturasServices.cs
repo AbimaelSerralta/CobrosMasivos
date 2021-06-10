@@ -29,7 +29,7 @@ namespace Franquicia.Bussiness
         public List<PagosReporteLigaPadreViewModels> lsPagosReporteLigaPadreViewModels = new List<PagosReporteLigaPadreViewModels>();
 
         public List<ColegiaturasFechasGridViewModel> lsFechasColegiaturas = new List<ColegiaturasFechasGridViewModel>();
-        
+
         public List<ColegiaturasAlumnosViewModel> lsColegiaturasAlumnosViewModel = new List<ColegiaturasAlumnosViewModel>();
 
 
@@ -252,6 +252,11 @@ namespace Franquicia.Bussiness
             lsColegiaturasAlumnosViewModel = new List<ColegiaturasAlumnosViewModel>();
             return lsColegiaturasAlumnosViewModel = colegiaturasRepository.BuscarColegiaturasAlumnos(UidCliente, UidUsuario, UidAlumno);
         }
+        public List<ColegiaturasAlumnosViewModel> BuscarColegiaturaAlumno(Guid UidCliente, Guid UidUsuario, string UidAlumno, string Colegiatura, string NumPago, decimal ImporteMayor, decimal ImporteMenor)
+        {
+            lsColegiaturasAlumnosViewModel = new List<ColegiaturasAlumnosViewModel>();
+            return lsColegiaturasAlumnosViewModel = colegiaturasRepository.BuscarColegiaturaAlumno(UidCliente, UidUsuario, UidAlumno, Colegiatura, NumPago, ImporteMayor, ImporteMenor);
+        }
 
         public List<PagosColegiaturasViewModel> CargarPagosColegiaturas(Guid UidCliente, Guid UidUsuario, DateTime FechaInicio)
         {
@@ -262,6 +267,11 @@ namespace Franquicia.Bussiness
         {
             lsPagosColegiaturasViewModel = new List<PagosColegiaturasViewModel>();
             return lsPagosColegiaturasViewModel = colegiaturasRepository.CargarPagosColegiaturasDashboard(UidCliente, UidUsuario, UidColegiatura, UidAlumno);
+        }
+        public List<PagosColegiaturasViewModel> BuscarPagosColegiaturasDashboard(Guid UidCliente, Guid UidUsuario, Guid UidColegiatura, Guid UidAlumno, string NumPago, string EstatusCole, string EstatusPago, decimal ImportePagoMayor, decimal ImportePagoMenor, decimal AbonadoPagoMayor, decimal AbonadoPagoMenor, decimal SaldoPagoMayor, decimal SaldoPagoMenor, string InicioDesde, string InicioHasta)
+        {
+            lsPagosColegiaturasViewModel = new List<PagosColegiaturasViewModel>();
+            return lsPagosColegiaturasViewModel = colegiaturasRepository.BuscarPagosColegiaturasDashboard(UidCliente, UidUsuario, UidColegiatura, UidAlumno, NumPago, EstatusCole, EstatusPago, ImportePagoMayor, ImportePagoMenor, AbonadoPagoMayor, AbonadoPagoMenor, SaldoPagoMayor, SaldoPagoMenor, InicioDesde, InicioHasta);
         }
         public void ObtenerPagosColegiaturas(Guid UidCliente, Guid UidUsuario, Guid UidFechaColegiatura, string VchMatricula)
         {
@@ -431,6 +441,7 @@ namespace Franquicia.Bussiness
         #endregion
 
         #region Metodos ReporteColegiaturas
+
         public List<PagosColegiaturasViewModel> CargarReporteColegiaturas(Guid UidCliente)
         {
             lsPagosColegiaturasViewModel = new List<PagosColegiaturasViewModel>();
@@ -440,6 +451,14 @@ namespace Franquicia.Bussiness
         {
             lsPagosColegiaturasViewModel = new List<PagosColegiaturasViewModel>();
             return lsPagosColegiaturasViewModel = colegiaturasRepository.BuscarReporteColegiaturas(UidCliente, Colegiatura, NumPago, EstatusCole, EstatusPago, Matricula, AlNombre, AlApePaterno, AlApeMaterno, TuNombre, TuApePaterno, TuApeMaterno);
+        }
+        #endregion
+
+        #region Metodos ReporteColegiaturasPadres
+        public List<PagosColegiaturasViewModel> CargarReporteColegiaturasPadre(Guid UidCliente, Guid UidUsuario)
+        {
+            lsPagosColegiaturasViewModel = new List<PagosColegiaturasViewModel>();
+            return lsPagosColegiaturasViewModel = colegiaturasRepository.CargarReporteColegiaturasPadre(UidCliente, UidUsuario);
         }
         #endregion
 

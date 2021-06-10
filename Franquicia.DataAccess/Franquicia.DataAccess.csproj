@@ -78,6 +78,7 @@
     <Compile Include="Repository\ClubPago\ConsultarReferenciasRepository.cs" />
     <Compile Include="Repository\EstatusFechasColegiaturasRepository.cs" />
     <Compile Include="Repository\EstatusColegiaturasAlumnosRepository.cs" />
+    <Compile Include="Repository\AvatarsRepository.cs" />
     <Compile Include="Repository\IntegracionesClubPago\EndPointClubPagoRepository.cs" />
     <Compile Include="Repository\IntegracionesClubPago\RefClubPagoRepository.cs" />
     <Compile Include="Repository\IntegracionesClubPago\RefPagosClubPagoRepository.cs" />
@@ -87,7 +88,6 @@
     <Compile Include="Repository\IntegracionesPraga\PagosTarjetaPragaIntegracionRepository.cs" />
     <Compile Include="Repository\PagosTarjetaPragaRepository.cs" />
     <Compile Include="Repository\ParametrosPragaRepository.cs" />
-    <Compile Include="Repository\RandomColorRepository.cs" />
     <Compile Include="Repository\SuperComisionesTarjetasPragaRepository.cs" />
     <Compile Include="Repository\ComisionesTarjetasPragaRepository.cs" />
     <Compile Include="Repository\ComisionesTarjetasClubPagoRepository.cs" />

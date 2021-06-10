@@ -949,7 +949,7 @@ namespace Franquicia.DataAccess.Repository
 
             return lsAlumnosFiltrosGridViewModel.OrderBy(x => x.Alumno).ToList();
         }
-        public List<AlumnosSliderGridViewModel> CargarAlumnosSliderPA(Guid UidCliente, Guid UidUsuario)
+        public List<AlumnosSliderGridViewModel> CargarAlumnosSliderPA(List<AlumnosSliderGridViewModel> lsSelectAlumnosSlider, Guid UidCliente, Guid UidUsuario)
         {
             List<AlumnosSliderGridViewModel> lsAlumnosSliderGridViewModel = new List<AlumnosSliderGridViewModel>();
 
@@ -967,6 +967,36 @@ namespace Franquicia.DataAccess.Repository
 
             foreach (DataRow item in dt.Rows)
             {
+                //Asignar alumnos seleccionados
+                bool alumSelect = false;
+                foreach (var item2 in lsSelectAlumnosSlider)
+                {
+                    if (Guid.Parse(item["UidAlumno"].ToString()) == item2.UidAlumno)
+                    {
+                        alumSelect = true;
+                        break;
+                    }
+                }
+
+                bool blActivarCorto = true;
+                bool blActivarAvatar = false;
+
+                SqlCommand query2 = new SqlCommand();
+                query2.CommandType = CommandType.Text;
+
+                query2.CommandText = "select av.VchUrl from Avatars av, AvatarsAlumnos aa where av.UidAvatar = aa.UidAvatar and UidAlumno = '" + Guid.Parse(item["UidAlumno"].ToString()) + "' and UidUsuario = '" + UidUsuario + "'";
+
+                DataTable dt2 = this.Busquedas(query2);
+
+                string avatar = string.Empty;
+
+                foreach (DataRow item2 in dt2.Rows)
+                {
+                    avatar = item2["VchUrl"].ToString();
+                    blActivarCorto = false;
+                    blActivarAvatar = true;
+                }
+
                 num = num + 1;
                 lsAlumnosSliderGridViewModel.Add(new AlumnosSliderGridViewModel()
                 {
@@ -975,12 +1005,72 @@ namespace Franquicia.DataAccess.Repository
                     VchApePaterno = item["VchApePaterno"].ToString(),
                     VchApeMaterno = item["VchApeMaterno"].ToString(),
                     VchMatricula = item["VchMatricula"].ToString(),
-                    blSelect = false,
-                    VchColor = colors[num]
+                    blSelect = alumSelect,
+                    VchColor = colors[num],
+                    Avatar = avatar,
+                    blActivarCorto = blActivarCorto,
+                    blActivarAvatar = blActivarAvatar
                 });
             }
 
             return lsAlumnosSliderGridViewModel.OrderBy(x => x.Alumno).ToList();
+        }
+
+        public bool AsignarAvatarAlumno(Guid UidAvatar, Guid UidAlumno, Guid UidUsuario)
+        {
+            bool Resultado = false;
+
+            SqlCommand comando = new SqlCommand();
+            try
+            {
+                comando.CommandType = System.Data.CommandType.StoredProcedure;
+                comando.CommandText = "sp_AlumnosAvatarAsignar";
+
+                comando.Parameters.Add("@UidAvatar", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidAvatar"].Value = UidAvatar;
+
+                comando.Parameters.Add("@UidAlumno", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidAlumno"].Value = UidAlumno;
+
+                comando.Parameters.Add("@UidUsuario", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidUsuario"].Value = UidUsuario;
+
+                Resultado = this.ManipulacionDeDatos(comando);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return Resultado;
+        }
+        public bool ActualizarAvatarAlumno(Guid UidAvatar, Guid UidAlumno, Guid UidUsuario)
+        {
+            bool Resultado = false;
+
+            SqlCommand comando = new SqlCommand();
+            try
+            {
+                comando.CommandType = System.Data.CommandType.StoredProcedure;
+                comando.CommandText = "sp_AlumnosAvatarActualizar";
+
+                comando.Parameters.Add("@UidAvatar", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidAvatar"].Value = UidAvatar;
+
+                comando.Parameters.Add("@UidAlumno", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidAlumno"].Value = UidAlumno;
+
+                comando.Parameters.Add("@UidUsuario", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidUsuario"].Value = UidUsuario;
+
+                Resultado = this.ManipulacionDeDatos(comando);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return Resultado;
         }
         #endregion
         #region ReporteLigasPadre

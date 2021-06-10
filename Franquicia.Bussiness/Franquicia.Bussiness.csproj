@@ -67,6 +67,7 @@
     <Compile Include="EnviarIntegracionesServices.cs" />
     <Compile Include="EstatusColegiaturasAlumnosServices.cs" />
     <Compile Include="EstatusFechasColegiaturasServices.cs" />
+    <Compile Include="AvatarsServices.cs" />
     <Compile Include="IntegracionesClubPago\EndPointClubPagoServices.cs" />
     <Compile Include="IntegracionesClubPago\RefClubPagoServices.cs" />
     <Compile Include="IntegracionesClubPago\RefPagosClubPagoServices.cs" />
