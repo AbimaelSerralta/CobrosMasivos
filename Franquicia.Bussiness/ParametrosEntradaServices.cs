@@ -17,8 +17,8 @@ namespace Franquicia.Bussiness
             get { return _parametrosEntradaRepository; }
             set { _parametrosEntradaRepository = value; }
         }
-        
-        
+
+
         #region Metodos Franquicia
         public void ObtenerParametrosEntradaFraquicia(Guid UidFranquiciatario)
         {
@@ -74,6 +74,70 @@ namespace Franquicia.Bussiness
 
         #endregion
 
+        #region CobrosMasivos
+        #region Metodos Cliente
+        public void ObtenerParametrosEntradaClienteCM(Guid UidCliente)
+        {
+            parametrosEntradaRepository.ObtenerParametrosEntradaClienteCM(UidCliente);
+        }
+
+        public bool RegistrarParametrosEntradaClienteCM(string IdCompany, string IdBranch, string VchModena, string VchUsuario, string VchPassword, string VchCanal, string VchData0, string VchUrl, string VchSemillaAES, Guid UidPropietario, bool BitImporteLiga, decimal DcmImporteMin, decimal DcmImporteMax)
+        {
+            bool result = false;
+            if (parametrosEntradaRepository.RegistrarParametrosEntradaClienteCM(
+                new ParametrosEntrada
+                {
+                    UidParametroEntrada = Guid.NewGuid(),
+                    IdCompany = IdCompany,
+                    IdBranch = IdBranch,
+                    VchModena = VchModena,
+                    VchUsuario = VchUsuario,
+                    VchPassword = VchPassword,
+                    VchCanal = VchCanal,
+                    VchData0 = VchData0,
+                    VchUrl = VchUrl,
+                    VchSemillaAES = VchSemillaAES,
+                    UidPropietario = UidPropietario,
+                    BitImporteLiga = BitImporteLiga,
+                    DcmImporteMin = DcmImporteMin,
+                    DcmImporteMax = DcmImporteMax
+                }))
+            {
+                result = true;
+            }
+            return result;
+        }
+
+        public bool ActualizarParametrosEntradaClienteCM(string IdCompany, string IdBranch, string VchModena, string VchUsuario, string VchPassword, string VchCanal, string VchData0, string VchUrl, string VchSemillaAES, Guid UidPropietario, bool BitImporteLiga, decimal DcmImporteMin, decimal DcmImporteMax)
+        {
+            bool result = false;
+            if (parametrosEntradaRepository.ActualizarParametrosEntradaClienteCM(
+                new ParametrosEntrada
+                {
+                    IdCompany = IdCompany,
+                    IdBranch = IdBranch,
+                    VchModena = VchModena,
+                    VchUsuario = VchUsuario,
+                    VchPassword = VchPassword,
+                    VchCanal = VchCanal,
+                    VchData0 = VchData0,
+                    VchUrl = VchUrl,
+                    VchSemillaAES = VchSemillaAES,
+                    UidPropietario = UidPropietario,
+                    BitImporteLiga = BitImporteLiga,
+                    DcmImporteMin = DcmImporteMin,
+                    DcmImporteMax = DcmImporteMax
+                }))
+            {
+                result = true;
+            }
+            return result;
+        }
+
+        #endregion
+        #endregion
+
+        #region PagaLaEscuela
         #region Metodos Cliente
         public void ObtenerParametrosEntradaCliente(Guid UidCliente)
         {
@@ -127,6 +191,7 @@ namespace Franquicia.Bussiness
             return result;
         }
 
+        #endregion
         #endregion
     }
 }

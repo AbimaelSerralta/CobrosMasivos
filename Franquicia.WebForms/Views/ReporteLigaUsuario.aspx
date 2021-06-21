@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="ReporteLigaUsuario.aspx.cs" Inherits="Franquicia.WebForms.Views.ReporteLigaUsuario" %>
+﻿<%@ Page Title="Reporte Ligas" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="ReporteLigaUsuario.aspx.cs" Inherits="Franquicia.WebForms.Views.ReporteLigaUsuario" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 
@@ -49,18 +49,30 @@
                                                     <div class="alert alert-info">No hay ligas registradas</div>
                                                 </EmptyDataTemplate>
                                                 <Columns>
-                                                    <asp:BoundField SortExpression="VchIdentificador" DataField="VchIdentificador" HeaderText="IDENTIFICADOR" />
+                                                    <asp:BoundField SortExpression="VchIdentificador" DataField="VchIdentificador" HeaderText="IDENTI." />
                                                     <asp:BoundField SortExpression="VchNombreComercial" DataField="VchNombreComercial" HeaderText="COMERCIO" />
                                                     <asp:BoundField SortExpression="VchAsunto" DataField="VchAsunto" HeaderText="ASUNTO" />
                                                     <asp:BoundField SortExpression="VchConcepto" DataField="VchConcepto" HeaderText="CONCEPTO" />
-                                                    <asp:BoundField SortExpression="DcmImporte" DataField="DcmImporte" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:C}" HeaderText="SUBTOTAL" />
                                                     <asp:BoundField SortExpression="DtVencimiento" DataField="DtVencimiento" DataFormatString="{0:d}" HeaderText="VENCIMIENTO" />
-                                                    <asp:BoundField SortExpression="VchPromocion" DataField="VchPromocion" HeaderText="PROMOCIÓN" />
-                                                    <asp:BoundField SortExpression="DcmImportePromocion" DataField="DcmImportePromocion" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:C}" HeaderText="TOTAL" />
+                                                    <asp:BoundField SortExpression="DcmImporte" DataField="DcmImporte" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:C}" HeaderText="SUBTOTAL" />
+                                                    <asp:BoundField SortExpression="Comisiones" DataField="Comisiones" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:C}" HeaderText="COMI." />
+                                                    <asp:BoundField SortExpression="DcmImportePromocion" DataField="DcmImportePromocion" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:C}" HeaderText="PAGADO" />
+                                                    <asp:TemplateField SortExpression="VchPromocion" ItemStyle-HorizontalAlign="Center" HeaderText="PROMO.">
+                                                        <ItemTemplate>
+                                                            <asp:Label Text='<%#Eval("VchPromocionIcono")%>' ToolTip='<%#Eval("VchPromocion")%>' Font-Size="Larger" Font-Bold="true" runat="server"></asp:Label>
+                                                        </ItemTemplate>
+                                                    </asp:TemplateField>
                                                     <%--<asp:BoundField SortExpression="VchEstatus" DataField="VchEstatus" HeaderText="ESTATUS" />--%>
                                                     <asp:TemplateField SortExpression="VchEstatus" HeaderText="ESTATUS">
                                                         <ItemTemplate>
-                                                            <asp:Label Text='<%#Eval("VchEstatus")%>' ForeColor='<%# System.Drawing.ColorTranslator.FromHtml(Eval("VchColor").ToString()) %>' Font-Size="Larger" Font-Names="Comic Sans MS" Font-Bold="true" runat="server"></asp:Label>
+                                                            <div class="col-md-6">
+                                                                <asp:Label ToolTip='<%#Eval("VchEstatus")%>' runat="server">
+                                                                <i class="large material-icons" style="color:<%#Eval("VchColor")%>;">
+                                                                    <%#Eval("VchEstatusIcono")%>
+                                                                </i>
+                                                                </asp:Label>
+                                                            </div>
+                                                            <%--<asp:Label Text='<%#Eval("VchEstatus")%>' ForeColor='<%# System.Drawing.ColorTranslator.FromHtml(Eval("VchColor").ToString()) %>' Font-Size="Larger" Font-Names="Comic Sans MS" Font-Bold="true" runat="server"></asp:Label>--%>
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                     <asp:TemplateField>
@@ -74,15 +86,6 @@
                                                                                         <i class="material-icons">info_outline</i>
                                                                                 </asp:Label>
                                                                             </asp:LinkButton>
-                                                                        </td>
-                                                                        <td style="border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
-                                                                            <asp:Panel Visible='<%#Eval("blPagar")%>' runat="server">
-                                                                                <asp:LinkButton ToolTip="Pagar" CommandArgument="<%# ((GridViewRow)Container).RowIndex %>" CommandName="btnPagar" Style="margin-left: 5px;" runat="server">
-                                                                                <asp:Label class="btn btn-sm btn-warning btn-fab btn-fab-mini btn-round" runat="server">
-                                                                                        <i class="material-icons" style="color:black;">payment</i>
-                                                                                </asp:Label>
-                                                                                </asp:LinkButton>
-                                                                            </asp:Panel>
                                                                         </td>
                                                                     </tr>
                                                                 </tbody>
@@ -182,6 +185,215 @@
             </div>
         </div>
     </div>
+    <div id="ModalPagoDetalle" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <asp:UpdatePanel runat="server">
+                    <ContentTemplate>
+                        <div class="modal-header" style="padding-top: 0px; padding-bottom: 0px;">
+                            <h5 class="modal-title" runat="server">
+                                <asp:Label Text="Detalle de la liga" runat="server" /></h5>
+                            <asp:LinkButton data-dismiss="modal" aria-label="Close" CssClass="close" runat="server">
+                            <i class="material-icons">close</i>
+                            </asp:LinkButton>
+                        </div>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+                <div class="modal-body pt-0" style="padding-bottom: 0px; padding-left: 15px; padding-right: 15px;">
+                    <div class="tab-content">
+                        <asp:UpdatePanel runat="server">
+                            <ContentTemplate>
+                                <div class="row">
+                                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                        <tbody>
+                                            <tr>
+                                                <td bgcolor="#b62322" align="center">
+                                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td align="center" valign="top" style="padding-top: 40px;"></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td bgcolor="#b62322" align="center" style="padding: 0px 10px 0px 10px;">
+                                                    <table bgcolor="#ffffff" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td bgcolor="#ffffff" align="left" valign="top" style="border-radius: 4px 4px 0px 0px; padding-left: 10px; padding-right: 10px;"></td>
+                                                                                <td bgcolor="#ffffff" align="right" valign="top" style="border-radius: 4px 4px 0px 0px; padding-left: 10px; padding-right: 10px;">
+                                                                                    <img height="80" width="250" src="https://pagalaescuela.mx/Images/logo-cobroscontarjetas.png" alt="PagaLaEscuela" />
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td bgcolor="#ffffff" valign="top" style="border-radius: 4px 4px 0px 0px; padding-left: 10px; padding-right: 10px;">
+                                                                                    <br />
+                                                                                    <asp:Label ID="lblDetaCliente" Text="Cliente: " runat="server" />
+                                                                                    <br />
+                                                                                    <asp:Label ID="lblDetaIdentificador" Text="Identificador: " runat="server" />
+                                                                                    <br />
+                                                                                    <br />
+
+                                                                                </td>
+                                                                                <td bgcolor="#ffffff" valign="top" style="border-radius: 4px 4px 0px 0px; padding-left: 10px; padding-right: 10px;">
+                                                                                    <br />
+                                                                                    <asp:Label ID="lblDetaFHpago" Text="Fecha de pago: " runat="server" />
+                                                                                    <br />
+                                                                                    <asp:Label ID="lblDetaAsunto" Text="Asunto: " runat="server" />
+                                                                                    <br />
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td bgcolor="#b62322" align="center" style="padding: 0px 10px 0px 10px;">
+                                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td bgcolor="#ffffff" align="left" style="padding: 10px 10px 10px 10px;">
+                                                                    <table border="0" cellpadding="5" cellspacing="0" width="100%">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th style="text-align: center; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">N°</th>
+                                                                                <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">CONCEPTO</th>
+                                                                                <th style="text-align: right; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">IMPORTE</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <asp:Repeater ID="rpDetalleLiga" runat="server">
+                                                                                <ItemTemplate>
+                                                                                    <tr>
+                                                                                        <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="center"><%#Eval("IntNum")%></td>
+                                                                                        <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff"><%#Eval("VchConcepto")%></td>
+                                                                                        <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="right">$<%#Eval("DcmImporte")%> </td>
+                                                                                    </tr>
+                                                                                </ItemTemplate>
+                                                                            </asp:Repeater>
+
+                                                                            <tr id="trsubtotal" runat="server">
+                                                                                <td style="font-weight: bold; padding-top: 15px; padding-bottom: 0px;" bgcolor="#ffffff" align="center"></td>
+                                                                                <td style="font-weight: bold; padding-top: 15px; padding-bottom: 0px;" bgcolor="#ffffff" align="right">Subtotal:</td>
+                                                                                <td style="font-weight: bold; padding-top: 15px; padding-bottom: 0px;" bgcolor="#ffffff" align="right">
+                                                                                    <asp:Label ID="DcmSubtotal" runat="server" />
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr id="trcomicion" runat="server">
+                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px;" bgcolor="#ffffff" align="center"></td>
+                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">
+                                                                                    <asp:Label ID="VchComisionBancaria" runat="server" />
+                                                                                </td>
+                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">
+                                                                                    <asp:Label ID="DcmImpComisionBancaria" Style="color: #f55145;" runat="server" />
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr id="trpromocion" runat="server">
+                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px;" bgcolor="#ffffff" align="center"></td>
+                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">
+                                                                                    <asp:Label ID="VchPromocion" runat="server" />
+                                                                                </td>
+                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">
+                                                                                    <asp:Label ID="DcmImpPromocion" Style="color: #f55145;" runat="server" />
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px;" bgcolor="#ffffff" align="center"></td>
+                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">Importe pagado:</td>
+                                                                                <td style="border-color: white; padding-top: 0px; padding-bottom: 0px; font-weight: bold;" bgcolor="#ffffff" align="right">
+                                                                                    <asp:Label ID="DcmTotal" runat="server" />
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <%--Movimientos de la liga--%>
+                                                <tr>
+                                                    <%--Movimientos de la liga--%>
+                                                    <td bgcolor="#b62322" align="center" style="padding: 30px 10px 0px 10px;">
+                                                        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td bgcolor="#ffffff" align="left" style="padding: 10px 10px 10px 10px;">
+                                                                        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th colspan="3" style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px; padding-left: 8px;" align="left">MOVIMIENTOS DE LA LIGA
+                                                                                    </th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                <tr>
+                                                                                    <td bgcolor="#ffffff" align="left" style="padding: 10px 0px 30px 0px; border-radius: 4px 4px 4px 4px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 25px;">
+                                                                                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                                                                            <tbody>
+                                                                                                <tr>
+                                                                                                    <td bgcolor="#ffffff" align="left" style="padding: 10px 0px 10px 0px;">
+                                                                                                        <table border="0" cellpadding="5" cellspacing="0" width="100%">
+                                                                                                            <thead>
+                                                                                                                <tr>
+                                                                                                                    <th style="text-align: center; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">N°</th>
+                                                                                                                    <th style="border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">FECHA</th>
+                                                                                                                    <th style="text-align: right; border-collapse: collapse; background-color: #00adee; color: white; padding-top: 4px; padding-bottom: 4px;">ESTATUS</th>
+                                                                                                                </tr>
+                                                                                                            </thead>
+                                                                                                            <tbody>
+                                                                                                                <asp:Repeater ID="rptMovimientosLiga" runat="server">
+                                                                                                                    <ItemTemplate>
+                                                                                                                        <tr>
+                                                                                                                            <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff" align="center"><%#Eval("IntNum")%></td>
+                                                                                                                            <td style="border-bottom: 1px solid #ddd;" bgcolor="#ffffff"><%#Eval("DtmFechaDeRegistro")%></td>
+                                                                                                                            <td style="border-bottom: 1px solid #ddd; color: <%#Eval("VchColor")%>; font-family: Comic Sans MS; font-weight: bold;" bgcolor="#ffffff" align="right"><%#Eval("VchEstatus")%> </td>
+                                                                                                                        </tr>
+                                                                                                                    </ItemTemplate>
+                                                                                                                </asp:Repeater>
+                                                                                                            </tbody>
+                                                                                                        </table>
+                                                                                                    </td>
+                                                                                                </tr>
+                                                                                            </tbody>
+                                                                                        </table>
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </tr>
+                                            <tr>
+                                                <td bgcolor="#b62322" align="center" style="padding: 30px 10px 0px 10px;"></td>
+                                                <%--#f4f4f4--%>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </ContentTemplate>
+                        </asp:UpdatePanel>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div id="ModalBusqueda" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -231,7 +443,7 @@
                                                                 <asp:TextBox ID="txtConcepto" CssClass="form-control" aria-label="Search" runat="server" />
                                                             </div>
                                                             <div class="form-group col-md-3">
-                                                                <label for="ddlImporteMayor" style="color: black;">Importe</label>
+                                                                <label for="ddlImporteMayor" style="color: black;">Subtotal</label>
                                                                 <asp:DropDownList ID="ddlImporteMayor" CssClass="form-control" runat="server">
                                                                     <asp:ListItem Text="(>=) Mayor o igual que" Value=">=" />
                                                                     <asp:ListItem Text="(>) Mayor que" Value=">" />
@@ -277,7 +489,7 @@
                                                                     <asp:ListItem Text="approved" Value="approved" />
                                                                     <asp:ListItem Text="denied" Value="denied" />
                                                                     <asp:ListItem Text="error" Value="error" />
-                                                                    <asp:ListItem Text="Pendiente" Value="Pendiente" />
+                                                                    <%--<asp:ListItem Text="Pendiente" Value="Pendiente" />--%>
                                                                 </asp:DropDownList>
                                                             </div>
                                                         </div>
@@ -459,6 +671,15 @@
 
         function hideModalPagar() {
             $('#ModalPagar').modal('hide');
+        }
+    </script>
+    <script>
+        function showModalPagoDetalle() {
+            $('#ModalPagoDetalle').modal('show');
+        }
+
+        function hideModalPagoDetalle() {
+            $('#ModalPagoDetalle').modal('hide');
         }
     </script>
 </asp:Content>

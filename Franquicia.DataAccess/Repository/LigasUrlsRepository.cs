@@ -84,7 +84,9 @@ namespace Franquicia.DataAccess.Repository
             foreach (DataRow item in dt.Rows)
             {
                 string VchColor = "#007bff";
+                string VchEstatusIcono = "pending_actions";
                 decimal ImporteReal = 0;
+                decimal ImportePromocion = 0;
 
                 if (!string.IsNullOrEmpty(item["VchEstatus"].ToString()))
                 {
@@ -92,12 +94,15 @@ namespace Franquicia.DataAccess.Repository
                     {
                         case "approved":
                             VchColor = "#4caf50";
+                            VchEstatusIcono = "payment";
                             break;
                         case "denied":
                             VchColor = "#ff9800";
+                            VchEstatusIcono = "report_gmailerrorred";
                             break;
                         case "error":
                             VchColor = "#f55145";
+                            VchEstatusIcono = "highlight_off";
                             break;
                     }
                 }
@@ -111,6 +116,15 @@ namespace Franquicia.DataAccess.Repository
                     ImporteReal = decimal.Parse(item.IsNull("DcmImporte") ? "0.00" : item["DcmImporte"].ToString());
                 }
 
+                if (!string.IsNullOrEmpty(item["DcmTotal"].ToString()))
+                {
+                    ImportePromocion = item.IsNull("DcmTotal") ? 0 : decimal.Parse(item["DcmTotal"].ToString());
+                }
+                else
+                {
+                    ImportePromocion = decimal.Parse(item.IsNull("DcmImportePromocion") ? "0.00" : item["DcmImportePromocion"].ToString());
+                }
+
                 ligasUrlsGridViewModel = new LigasUrlsGridViewModel()
                 {
                     IdReferencia = item["IdReferencia"].ToString(),
@@ -118,13 +132,18 @@ namespace Franquicia.DataAccess.Repository
                     VchIdentificador = item["VchIdentificador"].ToString(),
                     VchConcepto = item["VchConcepto"].ToString(),
                     DcmImporte = ImporteReal,
+                    DcmComisionBancaria = item.IsNull("DcmComisionBancaria") ? 0 : decimal.Parse(item["DcmComisionBancaria"].ToString()),
+                    DcmPromocionDePago = item.IsNull("DcmPromocionDePago") ? 0 : decimal.Parse(item["DcmPromocionDePago"].ToString()),
+                    DcmTotal = item.IsNull("DcmTotal") ? 0 : decimal.Parse(item["DcmTotal"].ToString()),
                     DtVencimiento = DateTime.Parse(item.IsNull("DtVencimiento") ? "2020-02-18 16:57:39.113" : item["DtVencimiento"].ToString()),
                     VchEstatus = item.IsNull("VchEstatus") ? "Pendiente" : item["VchEstatus"].ToString(),
+                    VchEstatusIcono = VchEstatusIcono,
                     VchAsunto = item["VchAsunto"].ToString(),
                     VchColor = VchColor,
                     DtRegistro = DateTime.Parse(item["DtRegistro"].ToString()),
-                    DcmImportePromocion = decimal.Parse(item.IsNull("DcmImportePromocion") ? "0.00" : item["DcmImportePromocion"].ToString()),
+                    DcmImportePromocion = ImportePromocion,
                     VchPromocion = item.IsNull("VchPromocion") ? "CONTADO" : item["VchPromocion"].ToString(),
+                    VchPromocionIcono = item.IsNull("VchPromocion") ? "C" : item["VchPromocion"].ToString().Substring(0, 1),
                     UidLigaAsociado = item.IsNull("UidLigaAsociado") ? Guid.Empty : Guid.Parse(item["UidLigaAsociado"].ToString()),
                     VchNombre = item["VchNombre"].ToString(),
                     VchApePaterno = item["VchApePaterno"].ToString(),
@@ -298,6 +317,64 @@ namespace Franquicia.DataAccess.Repository
                 ligasUrlsConstruirLigaModel.UidLigaAsociado = item.IsNull("UidLigaAsociado") ? Guid.Empty : Guid.Parse(item["UidLigaAsociado"].ToString());
             }
         }
+
+        public List<LigasUrlsDetalleGridViewModel> FormarCabeceraDetalle(string IdReferencia)
+        {
+            List<LigasUrlsDetalleGridViewModel> lsLigasUrlsDetalleGridViewModel = new List<LigasUrlsDetalleGridViewModel>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+            //query.CommandText = "select lu.VchIdentificador, lu.VchAsunto, us.VchNombre, us.VchApePaterno, VchApeMaterno, (select max(pate.DtmFechaDeRegistro) from PagosTarjeta pate where pate.IdReferencia = lu.IdReferencia) as FechaPago from LigasUrls lu, Usuarios us where lu.UidUsuario = us.UidUsuario and lu.IdReferencia = '" + IdReferencia + "'";
+            query.CommandText = "select (select max(pate.DtmFechaDeRegistro) from PagosTarjeta pate where pate.IdReferencia = lu.IdReferencia) as FechaPago, lu.*, us.UidUsuario, us.VchNombre, us.VchApePaterno, us.VchApeMaterno, lu.DcmImporte as DcmImportePromocion, pr.VchDescripcion as VchPromocion, (select DcmImporte from LigasUrls where UidLigaAsociado = lu.UidLigaAsociado and UidPromocion IS NULL) as ImporteReal from LigasUrls lu left join usuarios us on us.UidUsuario = lu.UidUsuario left join Promociones pr on pr.UidPromocion = lu.UidPromocion where lu.IdReferencia = '" + IdReferencia + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            int IntNum = 0;
+            foreach (DataRow item in dt.Rows)
+            {
+                decimal ImporteReal = 0;
+                decimal ImportePromocion = 0;
+                IntNum = IntNum + 1;
+
+                if (item["VchPromocion"].ToString() != "")
+                {
+                    ImporteReal = decimal.Parse(item.IsNull("ImporteReal") ? "0.00" : item["ImporteReal"].ToString());
+                }
+                else
+                {
+                    ImporteReal = decimal.Parse(item.IsNull("DcmImporte") ? "0.00" : item["DcmImporte"].ToString());
+                }
+
+                if (!string.IsNullOrEmpty(item["DcmTotal"].ToString()))
+                {
+                    ImportePromocion = item.IsNull("DcmTotal") ? 0 : decimal.Parse(item["DcmTotal"].ToString());
+                }
+                else
+                {
+                    ImportePromocion = decimal.Parse(item.IsNull("DcmImportePromocion") ? "0.00" : item["DcmImportePromocion"].ToString());
+                }
+
+                lsLigasUrlsDetalleGridViewModel.Add(new LigasUrlsDetalleGridViewModel()
+                {
+                    VchIdentificador = item["VchIdentificador"].ToString(),
+                    DcmImporte = ImporteReal,
+                    DcmComisionBancaria = item.IsNull("DcmComisionBancaria") ? 0 : decimal.Parse(item["DcmComisionBancaria"].ToString()),
+                    DcmPromocionDePago = item.IsNull("DcmPromocionDePago") ? 0 : decimal.Parse(item["DcmPromocionDePago"].ToString()),
+                    DcmImportePromocion = ImportePromocion,
+                    DcmTotal = item.IsNull("DcmTotal") ? 0 : decimal.Parse(item["DcmTotal"].ToString()),
+                    VchAsunto = item["VchAsunto"].ToString(),
+                    VchConcepto = item["VchConcepto"].ToString(),
+                    VchNombre = item["VchNombre"].ToString(),
+                    VchApePaterno = item["VchApePaterno"].ToString(),
+                    VchApeMaterno = item["VchApeMaterno"].ToString(),
+                    FechaPago = item.IsNull("FechaPago") ? "Sin pago" : DateTime.Parse(item["FechaPago"].ToString()).ToString("dd/MM/yyyy"),
+                    VchPromocion = item.IsNull("VchPromocion") ? "AL CONTADO" : item["VchPromocion"].ToString(),
+                    IntNum = IntNum
+                });
+            }
+
+            return lsLigasUrlsDetalleGridViewModel;
+        }
         #endregion
 
 
@@ -332,8 +409,11 @@ namespace Franquicia.DataAccess.Repository
             foreach (DataRow item in dt.Rows)
             {
                 string VchColor = "#007bff";
+                string VchEstatusIcono = "pending_actions";
                 decimal ImporteReal = 0;
+                decimal ImportePromocion = 0;
                 bool blPagar = true;
+                bool blOcultarPagar = false;
 
                 if (!string.IsNullOrEmpty(item["VchEstatus"].ToString()))
                 {
@@ -341,14 +421,18 @@ namespace Franquicia.DataAccess.Repository
                     {
                         case "approved":
                             VchColor = "#4caf50 ";
+                            VchEstatusIcono = "payment";
                             blPagar = false;
+                            blOcultarPagar = true;
                             break;
                         case "denied":
                             VchColor = "#ff9800 ";
+                            VchEstatusIcono = "report_gmailerrorred";
                             blPagar = true;
                             break;
                         case "error":
                             VchColor = "#f55145 ";
+                            VchEstatusIcono = "highlight_off";
                             blPagar = true;
                             break;
                     }
@@ -363,6 +447,15 @@ namespace Franquicia.DataAccess.Repository
                     ImporteReal = decimal.Parse(item.IsNull("DcmImporte") ? "0.00" : item["DcmImporte"].ToString());
                 }
 
+                if (!string.IsNullOrEmpty(item["DcmTotal"].ToString()))
+                {
+                    ImportePromocion = item.IsNull("DcmTotal") ? 0 : decimal.Parse(item["DcmTotal"].ToString());
+                }
+                else
+                {
+                    ImportePromocion = decimal.Parse(item.IsNull("DcmImportePromocion") ? "0.00" : item["DcmImportePromocion"].ToString());
+                }
+
                 ligasUsuariosFinalGridViewModel = new LigasUsuariosFinalGridViewModel()
                 {
                     UidLigaUrl = Guid.Parse(item["UidLigaUrl"].ToString()),
@@ -371,16 +464,22 @@ namespace Franquicia.DataAccess.Repository
                     VchIdentificador = item["VchIdentificador"].ToString(),
                     VchConcepto = item["VchConcepto"].ToString(),
                     DcmImporte = ImporteReal,
+                    DcmComisionBancaria = item.IsNull("DcmComisionBancaria") ? 0 : decimal.Parse(item["DcmComisionBancaria"].ToString()),
+                    DcmPromocionDePago = item.IsNull("DcmPromocionDePago") ? 0 : decimal.Parse(item["DcmPromocionDePago"].ToString()),
+                    DcmTotal = item.IsNull("DcmTotal") ? 0 : decimal.Parse(item["DcmTotal"].ToString()),
                     DtVencimiento = DateTime.Parse(item.IsNull("DtVencimiento") ? "2020-02-18 16:57:39.113" : item["DtVencimiento"].ToString()),
                     VchEstatus = item.IsNull("VchEstatus") ? "Pendiente" : item["VchEstatus"].ToString(),
+                    VchEstatusIcono = VchEstatusIcono,
                     VchAsunto = item["VchAsunto"].ToString(),
                     VchColor = VchColor,
                     DtRegistro = DateTime.Parse(item["DtRegistro"].ToString()),
-                    DcmImportePromocion = decimal.Parse(item.IsNull("DcmImportePromocion") ? "0.00" : item["DcmImportePromocion"].ToString()),
+                    DcmImportePromocion = ImportePromocion,
                     VchPromocion = item.IsNull("VchPromocion") ? "CONTADO" : item["VchPromocion"].ToString(),
+                    VchPromocionIcono = item.IsNull("VchPromocion") ? "C" : item["VchPromocion"].ToString().Substring(0, 1),
                     UidLigaAsociado = item.IsNull("UidLigaAsociado") ? Guid.Empty : Guid.Parse(item["UidLigaAsociado"].ToString()),
                     VchNombreComercial = item["VchNombreComercial"].ToString(),
-                    blPagar = blPagar
+                    blPagar = blPagar,
+                    blOcultarPagar = blOcultarPagar
                 };
 
                 lsLigasUsuariosFinalGridViewModel.Add(ligasUsuariosFinalGridViewModel);
@@ -454,8 +553,11 @@ namespace Franquicia.DataAccess.Repository
                 foreach (DataRow item in this.Busquedas(comando).Rows)
                 {
                     string VchColor = "#007bff";
+                    string VchEstatusIcono = "pending_actions";
                     decimal ImporteReal = 0;
+                    decimal ImportePromocion = 0;
                     bool blPagar = true;
+                    bool blOcultarPagar = false;
 
                     if (!string.IsNullOrEmpty(item["VchEstatus"].ToString()))
                     {
@@ -463,14 +565,18 @@ namespace Franquicia.DataAccess.Repository
                         {
                             case "approved":
                                 VchColor = "#4caf50 ";
+                                VchEstatusIcono = "payment";
                                 blPagar = false;
+                                blOcultarPagar = true;
                                 break;
                             case "denied":
                                 VchColor = "#ff9800 ";
+                                VchEstatusIcono = "report_gmailerrorred";
                                 blPagar = true;
                                 break;
                             case "error":
                                 VchColor = "#f55145 ";
+                                VchEstatusIcono = "highlight_off";
                                 blPagar = true;
                                 break;
                         }
@@ -485,6 +591,15 @@ namespace Franquicia.DataAccess.Repository
                         ImporteReal = decimal.Parse(item.IsNull("DcmImporte") ? "0.00" : item["DcmImporte"].ToString());
                     }
 
+                    if (!string.IsNullOrEmpty(item["DcmTotal"].ToString()))
+                    {
+                        ImportePromocion = item.IsNull("DcmTotal") ? 0 : decimal.Parse(item["DcmTotal"].ToString());
+                    }
+                    else
+                    {
+                        ImportePromocion = decimal.Parse(item.IsNull("DcmImportePromocion") ? "0.00" : item["DcmImportePromocion"].ToString());
+                    }
+
                     ligasUsuariosFinalGridViewModel = new LigasUsuariosFinalGridViewModel()
                     {
                         UidLigaUrl = Guid.Parse(item["UidLigaUrl"].ToString()),
@@ -493,16 +608,22 @@ namespace Franquicia.DataAccess.Repository
                         VchIdentificador = item["VchIdentificador"].ToString(),
                         VchConcepto = item["VchConcepto"].ToString(),
                         DcmImporte = ImporteReal,
+                        DcmComisionBancaria = item.IsNull("DcmComisionBancaria") ? 0 : decimal.Parse(item["DcmComisionBancaria"].ToString()),
+                        DcmPromocionDePago = item.IsNull("DcmPromocionDePago") ? 0 : decimal.Parse(item["DcmPromocionDePago"].ToString()),
+                        DcmTotal = item.IsNull("DcmTotal") ? 0 : decimal.Parse(item["DcmTotal"].ToString()),
                         DtVencimiento = DateTime.Parse(item.IsNull("DtVencimiento") ? "2020-02-18 16:57:39.113" : item["DtVencimiento"].ToString()),
                         VchEstatus = item.IsNull("VchEstatus") ? "Pendiente" : item["VchEstatus"].ToString(),
+                        VchEstatusIcono = VchEstatusIcono,
                         VchAsunto = item["VchAsunto"].ToString(),
                         VchColor = VchColor,
                         DtRegistro = DateTime.Parse(item["DtRegistro"].ToString()),
-                        DcmImportePromocion = decimal.Parse(item.IsNull("DcmImportePromocion") ? "0.00" : item["DcmImportePromocion"].ToString()),
+                        DcmImportePromocion = ImportePromocion,
                         VchPromocion = item.IsNull("VchPromocion") ? "CONTADO" : item["VchPromocion"].ToString(),
+                        VchPromocionIcono = item.IsNull("VchPromocion") ? "C" : item["VchPromocion"].ToString().Substring(0, 1),
                         UidLigaAsociado = item.IsNull("UidLigaAsociado") ? Guid.Empty : Guid.Parse(item["UidLigaAsociado"].ToString()),
                         VchNombreComercial = item["VchNombreComercial"].ToString(),
-                        blPagar = blPagar
+                        blPagar = blPagar,
+                        blOcultarPagar = blOcultarPagar
                     };
 
                     lsLigasUsuariosFinalGridViewModel.Add(ligasUsuariosFinalGridViewModel);
@@ -550,6 +671,160 @@ namespace Franquicia.DataAccess.Repository
 
             return result;
         }
+
+        public List<LigasUrlsDetalleGridViewModel> FormarCabeceraDetalleFinal(Guid UidLigaUrl)
+        {
+            List<LigasUrlsDetalleGridViewModel> lsLigasUrlsDetalleGridViewModel = new List<LigasUrlsDetalleGridViewModel>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+            //query.CommandText = "select lu.VchIdentificador, lu.VchAsunto, us.VchNombre, us.VchApePaterno, VchApeMaterno, (select max(pate.DtmFechaDeRegistro) from PagosTarjeta pate where pate.IdReferencia = lu.IdReferencia) as FechaPago from LigasUrls lu, Usuarios us where lu.UidUsuario = us.UidUsuario and lu.IdReferencia = '" + IdReferencia + "'";
+            query.CommandText = "select (select max(pate.DtmFechaDeRegistro) from PagosTarjeta pate where pate.IdReferencia = lu.IdReferencia) as FechaPago, lu.*, us.UidUsuario, us.VchNombre, us.VchApePaterno, us.VchApeMaterno, lu.DcmImporte as DcmImportePromocion, pr.VchDescripcion as VchPromocion, (select DcmImporte from LigasUrls where UidLigaAsociado = lu.UidLigaAsociado and UidPromocion IS NULL) as ImporteReal from LigasUrls lu left join usuarios us on us.UidUsuario = lu.UidUsuario left join Promociones pr on pr.UidPromocion = lu.UidPromocion where lu.UidLigaUrl = '" + UidLigaUrl + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            int IntNum = 0;
+            foreach (DataRow item in dt.Rows)
+            {
+                decimal ImporteReal = 0;
+                decimal ImportePromocion = 0;
+                IntNum = IntNum + 1;
+
+                if (item["VchPromocion"].ToString() != "")
+                {
+                    ImporteReal = decimal.Parse(item.IsNull("ImporteReal") ? "0.00" : item["ImporteReal"].ToString());
+                }
+                else
+                {
+                    ImporteReal = decimal.Parse(item.IsNull("DcmImporte") ? "0.00" : item["DcmImporte"].ToString());
+                }
+
+                if (!string.IsNullOrEmpty(item["DcmTotal"].ToString()))
+                {
+                    ImportePromocion = item.IsNull("DcmTotal") ? 0 : decimal.Parse(item["DcmTotal"].ToString());
+                }
+                else
+                {
+                    ImportePromocion = decimal.Parse(item.IsNull("DcmImportePromocion") ? "0.00" : item["DcmImportePromocion"].ToString());
+                }
+
+                lsLigasUrlsDetalleGridViewModel.Add(new LigasUrlsDetalleGridViewModel()
+                {
+                    VchIdentificador = item["VchIdentificador"].ToString(),
+                    DcmImporte = ImporteReal,
+                    DcmComisionBancaria = item.IsNull("DcmComisionBancaria") ? 0 : decimal.Parse(item["DcmComisionBancaria"].ToString()),
+                    DcmPromocionDePago = item.IsNull("DcmPromocionDePago") ? 0 : decimal.Parse(item["DcmPromocionDePago"].ToString()),
+                    DcmImportePromocion = ImportePromocion,
+                    DcmTotal = item.IsNull("DcmTotal") ? 0 : decimal.Parse(item["DcmTotal"].ToString()),
+                    VchAsunto = item["VchAsunto"].ToString(),
+                    VchConcepto = item["VchConcepto"].ToString(),
+                    VchNombre = item["VchNombre"].ToString(),
+                    VchApePaterno = item["VchApePaterno"].ToString(),
+                    VchApeMaterno = item["VchApeMaterno"].ToString(),
+                    FechaPago = item.IsNull("FechaPago") ? "Sin pago" : DateTime.Parse(item["FechaPago"].ToString()).ToString("dd/MM/yyyy"),
+                    VchPromocion = item.IsNull("VchPromocion") ? "AL CONTADO" : item["VchPromocion"].ToString(),
+                    IntNum = IntNum
+                });
+            }
+
+            return lsLigasUrlsDetalleGridViewModel;
+        }
+
+        #region Reporte Ligas
+        public List<LigasUsuariosFinalGridViewModel> ReporteLigaUsuarioFinal(Guid UidUsuario)
+        {
+            List<LigasUsuariosFinalGridViewModel> lsLigasUsuariosFinalGridViewModel = new List<LigasUsuariosFinalGridViewModel>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+            //Tiene las ligas pendientes query.CommandText = "select lu.*, cl.VchNombreComercial, us.UidUsuario, us.VchNombre, us.VchApePaterno, us.VchApeMaterno, pt.VchEstatus, lu.DcmImporte as DcmImportePromocion, pr.VchDescripcion as VchPromocion, (select DcmImporte from LigasUrls where UidLigaAsociado = lu.UidLigaAsociado and UidPromocion IS NULL) as ImporteReal from LigasUrls lu left join PagosTarjeta pt  on pt.IdReferencia = lu.IdReferencia left join Usuarios us on us.UidUsuario = lu.UidUsuario left join ClientesUsuarios cu on cu.UidUsuario = us.UidUsuario left join Clientes cl on cl.UidCliente = cu.UidCliente left join Promociones pr on pr.UidPromocion = lu.UidPromocion left join AuxiliarPago ap on ap.IdReferencia = lu.IdReferencia where ap.IdReferencia IS NULL and pt.VchEstatus IS NULL and lu.UidPromocion IS NULL and lu.UidEvento IS NULL and lu.UidPropietario = cl.UidCliente and us.UidUsuario = '" + UidUsuario + "' UNION select lu.*, cl.VchNombreComercial, us.UidUsuario, us.VchNombre, us.VchApePaterno, us.VchApeMaterno, pt.VchEstatus, lu.DcmImporte as DcmImportePromocion, pr.VchDescripcion as VchPromocion, (select DcmImporte from LigasUrls where UidLigaAsociado = lu.UidLigaAsociado and UidPromocion IS NULL) as ImporteReal from LigasUrls lu left join PagosTarjeta pt  on pt.IdReferencia = lu.IdReferencia left join Usuarios us on us.UidUsuario = lu.UidUsuario left join ClientesUsuarios cu on cu.UidUsuario = us.UidUsuario left join Clientes cl on cl.UidCliente = cu.UidCliente left join Promociones pr on pr.UidPromocion = lu.UidPromocion left join AuxiliarPago ap on ap.IdReferencia = lu.IdReferencia where ap.IdReferencia IS NULL and lu.UidPropietario = cl.UidCliente and lu.UidLigaAsociado IS NULL AND pt.DtmFechaDeRegistro = (select MAX(DtmFechaDeRegistro) from PagosTarjeta where IdReferencia = lu.IdReferencia) and us.UidUsuario = '" + UidUsuario + "' UNION select lu.*, cl.VchNombreComercial, us.UidUsuario, us.VchNombre, us.VchApePaterno, us.VchApeMaterno, pt.VchEstatus, lu.DcmImporte as DcmImportePromocion, pr.VchDescripcion as VchPromocion, (select DcmImporte from LigasUrls where UidLigaAsociado = lu.UidLigaAsociado and UidPromocion IS NULL) as ImporteReal from LigasUrls lu left join PagosTarjeta pt  on pt.IdReferencia = lu.IdReferencia left join Usuarios us on us.UidUsuario = lu.UidUsuario left join ClientesUsuarios cu on cu.UidUsuario = us.UidUsuario left join Clientes cl on cl.UidCliente = cu.UidCliente left join Promociones pr on pr.UidPromocion = lu.UidPromocion where lu.UidPropietario = cl.UidCliente and lu.UidLigaAsociado IS NOT NULL AND pt.DtmFechaDeRegistro = (select MAX(pata.DtmFechaDeRegistro) from PagosTarjeta pata, LigasUrls ls where pata.IdReferencia = ls.IdReferencia and ls.UidLigaAsociado = lu.UidLigaAsociado) and us.UidUsuario = '" + UidUsuario + "'";
+            query.CommandText = "select lu.*, cl.VchNombreComercial, us.UidUsuario, us.VchNombre, us.VchApePaterno, us.VchApeMaterno, pt.VchEstatus, lu.DcmImporte as DcmImportePromocion, pr.VchDescripcion as VchPromocion, (select DcmImporte from LigasUrls where UidLigaAsociado = lu.UidLigaAsociado and UidPromocion IS NULL) as ImporteReal from LigasUrls lu left join PagosTarjeta pt  on pt.IdReferencia = lu.IdReferencia left join Usuarios us on us.UidUsuario = lu.UidUsuario left join ClientesUsuarios cu on cu.UidUsuario = us.UidUsuario left join Clientes cl on cl.UidCliente = cu.UidCliente left join Promociones pr on pr.UidPromocion = lu.UidPromocion left join AuxiliarPago ap on ap.IdReferencia = lu.IdReferencia where ap.IdReferencia IS NULL and lu.UidPropietario = cl.UidCliente and lu.UidLigaAsociado IS NULL AND pt.DtmFechaDeRegistro = (select MAX(DtmFechaDeRegistro) from PagosTarjeta where IdReferencia = lu.IdReferencia) and us.UidUsuario = '" + UidUsuario + "' UNION select lu.*, cl.VchNombreComercial, us.UidUsuario, us.VchNombre, us.VchApePaterno, us.VchApeMaterno, pt.VchEstatus, lu.DcmImporte as DcmImportePromocion, pr.VchDescripcion as VchPromocion, (select DcmImporte from LigasUrls where UidLigaAsociado = lu.UidLigaAsociado and UidPromocion IS NULL) as ImporteReal from LigasUrls lu left join PagosTarjeta pt  on pt.IdReferencia = lu.IdReferencia left join Usuarios us on us.UidUsuario = lu.UidUsuario left join ClientesUsuarios cu on cu.UidUsuario = us.UidUsuario left join Clientes cl on cl.UidCliente = cu.UidCliente left join Promociones pr on pr.UidPromocion = lu.UidPromocion where lu.UidPropietario = cl.UidCliente and lu.UidLigaAsociado IS NOT NULL AND pt.DtmFechaDeRegistro = (select MAX(pata.DtmFechaDeRegistro) from PagosTarjeta pata, LigasUrls ls where pata.IdReferencia = ls.IdReferencia and ls.UidLigaAsociado = lu.UidLigaAsociado) and us.UidUsuario = '" + UidUsuario + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                string VchColor = "#007bff";
+                string VchEstatusIcono = "pending_actions";
+                decimal ImporteReal = 0;
+                decimal ImportePromocion = 0;
+                bool blPagar = true;
+                bool blOcultarPagar = false;
+
+                if (!string.IsNullOrEmpty(item["VchEstatus"].ToString()))
+                {
+                    switch (item["VchEstatus"].ToString())
+                    {
+                        case "approved":
+                            VchColor = "#4caf50 ";
+                            VchEstatusIcono = "payment";
+                            blPagar = false;
+                            blOcultarPagar = true;
+                            break;
+                        case "denied":
+                            VchColor = "#ff9800 ";
+                            VchEstatusIcono = "report_gmailerrorred";
+                            blPagar = true;
+                            break;
+                        case "error":
+                            VchColor = "#f55145 ";
+                            VchEstatusIcono = "highlight_off";
+                            blPagar = true;
+                            break;
+                    }
+                }
+
+                if (item["VchPromocion"].ToString() != "")
+                {
+                    ImporteReal = decimal.Parse(item.IsNull("ImporteReal") ? "0.00" : item["ImporteReal"].ToString());
+                }
+                else
+                {
+                    ImporteReal = decimal.Parse(item.IsNull("DcmImporte") ? "0.00" : item["DcmImporte"].ToString());
+                }
+
+                if (!string.IsNullOrEmpty(item["DcmTotal"].ToString()))
+                {
+                    ImportePromocion = item.IsNull("DcmTotal") ? 0 : decimal.Parse(item["DcmTotal"].ToString());
+                }
+                else
+                {
+                    ImportePromocion = decimal.Parse(item.IsNull("DcmImportePromocion") ? "0.00" : item["DcmImportePromocion"].ToString());
+                }
+
+                ligasUsuariosFinalGridViewModel = new LigasUsuariosFinalGridViewModel()
+                {
+                    UidLigaUrl = Guid.Parse(item["UidLigaUrl"].ToString()),
+                    IdReferencia = item["IdReferencia"].ToString(),
+                    VchUrl = item["VchUrl"].ToString(),
+                    VchIdentificador = item["VchIdentificador"].ToString(),
+                    VchConcepto = item["VchConcepto"].ToString(),
+                    DcmImporte = ImporteReal,
+                    DcmComisionBancaria = item.IsNull("DcmComisionBancaria") ? 0 : decimal.Parse(item["DcmComisionBancaria"].ToString()),
+                    DcmPromocionDePago = item.IsNull("DcmPromocionDePago") ? 0 : decimal.Parse(item["DcmPromocionDePago"].ToString()),
+                    DcmTotal = item.IsNull("DcmTotal") ? 0 : decimal.Parse(item["DcmTotal"].ToString()),
+                    DtVencimiento = DateTime.Parse(item.IsNull("DtVencimiento") ? "2020-02-18 16:57:39.113" : item["DtVencimiento"].ToString()),
+                    VchEstatus = item.IsNull("VchEstatus") ? "Pendiente" : item["VchEstatus"].ToString(),
+                    VchEstatusIcono = VchEstatusIcono,
+                    VchAsunto = item["VchAsunto"].ToString(),
+                    VchColor = VchColor,
+                    DtRegistro = DateTime.Parse(item["DtRegistro"].ToString()),
+                    DcmImportePromocion = ImportePromocion,
+                    VchPromocion = item.IsNull("VchPromocion") ? "CONTADO" : item["VchPromocion"].ToString(),
+                    VchPromocionIcono = item.IsNull("VchPromocion") ? "C" : item["VchPromocion"].ToString().Substring(0, 1),
+                    UidLigaAsociado = item.IsNull("UidLigaAsociado") ? Guid.Empty : Guid.Parse(item["UidLigaAsociado"].ToString()),
+                    VchNombreComercial = item["VchNombreComercial"].ToString(),
+                    blPagar = blPagar,
+                    blOcultarPagar = blOcultarPagar
+                };
+
+                lsLigasUsuariosFinalGridViewModel.Add(ligasUsuariosFinalGridViewModel);
+            }
+
+            return lsLigasUsuariosFinalGridViewModel.OrderByDescending(x => x.DtRegistro).ToList();
+        }
+        #endregion
+
         #endregion
 
         #region LigasUrlFranquicias
@@ -1009,7 +1284,7 @@ namespace Franquicia.DataAccess.Repository
                     VchNombre = item["VchNombre"].ToString(),
                     VchApePaterno = item["VchApePaterno"].ToString(),
                     VchApeMaterno = item["VchApeMaterno"].ToString(),
-                    
+
                     VchNombreAlumno = item["NombresAlumno"].ToString(),
                     VchApePaternoAlumno = item["ApePaternoAlumno"].ToString(),
                     VchApeMaternoAlumno = item["ApeMaternoAlumno"].ToString()
@@ -1079,7 +1354,7 @@ namespace Franquicia.DataAccess.Repository
                     comando.Parameters.Add("@ImporteMenor", SqlDbType.Decimal);
                     comando.Parameters["@ImporteMenor"].Value = ImporteMenor;
                 }
-                
+
                 foreach (DataRow item in this.Busquedas(comando).Rows)
                 {
                     string VchColor = "#007bff";

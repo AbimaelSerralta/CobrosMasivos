@@ -19,5 +19,8 @@ namespace Franquicia.Domain.Models
         public string VchUrl { get; set; }
         public string VchSemillaAES { get; set; }
         public Guid UidPropietario { get; set; }
+        public bool BitImporteLiga { get; set; }
+        public decimal DcmImporteMin { get; set; }
+        public decimal DcmImporteMax { get; set; }
     }
 }

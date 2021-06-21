@@ -20,7 +20,11 @@ namespace Franquicia.WebForms.Views
         ValidacionesServices validacionesServices = new ValidacionesServices();
         TicketsServices ticketsServices = new TicketsServices();
         WhatsAppPendientesServices whatsAppPendientesServices = new WhatsAppPendientesServices();
+        ComisionesTarjetasServices comisionesTarjetasServices = new ComisionesTarjetasServices();
+        ImporteLigaMinMaxServices importeLigaMinMaxServices = new ImporteLigaMinMaxServices();
 
+        decimal ImporteMin = 0;
+        decimal ImporteMax = 0;
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Session["UidClienteMaster"] != null)
@@ -45,24 +49,42 @@ namespace Franquicia.WebForms.Views
 
                 Session["historialPagosServices"] = historialPagosServices;
                 Session["usuariosCompletosServices"] = usuariosCompletosServices;
+                Session["importeLigaMinMaxServices"] = importeLigaMinMaxServices;
                 Session["ticketsServices"] = ticketsServices;
                 tmValidar.Enabled = false;
 
                 historialPagosServices.CargarMovimientos(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
                 gvHistorial.DataSource = historialPagosServices.lsHistorialPagosGridViewModel;
                 gvHistorial.DataBind();
+
+                importeLigaMinMaxServices.CargarImporteLigaMinMax();
+                AsignarImporteLigaMinMax();
             }
             else
             {
                 historialPagosServices = (HistorialPagosServices)Session["historialPagosServices"];
                 usuariosCompletosServices = (UsuariosCompletosServices)Session["usuariosCompletosServices"];
+                importeLigaMinMaxServices = (ImporteLigaMinMaxServices)Session["importeLigaMinMaxServices"];
                 ticketsServices = (TicketsServices)Session["ticketsServices"];
 
                 pnlAlert.Visible = false;
                 lblMensajeAlert.Text = "";
                 divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
+
+                AsignarImporteLigaMinMax();
             }
         }
+
+        private void AsignarImporteLigaMinMax()
+        {
+            //Asigna los importes min y max del sistema
+            foreach (var item in importeLigaMinMaxServices.lsImporteLigaMinMax)
+            {
+                ImporteMin = item.DcmImporteMin;
+                ImporteMax = item.DcmImporteMax;
+            }
+        }
+
         private string GenLigaPara(string id_company, string id_branch, string user, string pwd, string Referencia, decimal Importe,
             string moneda, string canal, string promocion, string Correo, string semillaAES, string data0, string urlGen)
         {
@@ -216,6 +238,26 @@ namespace Franquicia.WebForms.Views
 
             foreach (var item in usuariosCompletosServices.lsPagoLiga)
             {
+                decimal SubTotal = decimal.Parse(txtImporte.Text);
+                decimal ComisionTC = 0;
+                decimal ComisionP = 0;
+                decimal Total = 0;
+
+                //Calcula la comicion
+                comisionesTarjetasServices.CargarComisionesTarjeta();
+                if (comisionesTarjetasServices.lsComisionesTarjetas.Count >= 1)
+                {
+                    foreach (var itComi in comisionesTarjetasServices.lsComisionesTarjetas)
+                    {
+                        if (itComi.BitComision)
+                        {
+                            ComisionTC = itComi.DcmComision * SubTotal / (100 - itComi.DcmComision);
+                        }
+                    }
+                }
+
+                Total = SubTotal + ComisionTC;
+
                 string ReferenciaCobro = item.IdCliente.ToString() + item.IdUsuario.ToString() + DateTime.Now.ToString("ddMMyyyyHHmmssfff");
 
                 pnlSeleccion.Visible = false;
@@ -226,14 +268,14 @@ namespace Franquicia.WebForms.Views
                 btnGenerar.Visible = false;
                 btnCancelar.Visible = false;
 
-                string urlCobro = GenLigaPara(id_company, id_branch, user, pwd, ReferenciaCobro, decimal.Parse(txtImporte.Text), moneda, canal, "C", item.StrCorreo, semillaAES, data0, urlGen);
+                string urlCobro = GenLigaPara(id_company, id_branch, user, pwd, ReferenciaCobro, Total, moneda, canal, "C", item.StrCorreo, semillaAES, data0, urlGen);
 
                 if (urlCobro.Contains("https://"))
                 {
-                    if (usuariosCompletosServices.GenerarLigasPagos(urlCobro, "Recarga para Whatsapp y sms", decimal.Parse(txtImporte.Text), ReferenciaCobro, item.UidUsuario, "Recarga para Whatsapp y sms", DateTime.Now, DateTime.Parse(txtVencimiento.Text), "Recarga para Whatsapp y sms", Guid.Empty, Guid.Empty, Guid.Parse(ViewState["UidClienteLocal"].ToString())))
+                    if (usuariosCompletosServices.GenerarLigasPagos(urlCobro, "Recarga para Whatsapp y sms", SubTotal, ReferenciaCobro, item.UidUsuario, "Recarga para Whatsapp y sms", DateTime.Now, DateTime.Parse(txtVencimiento.Text), "Recarga para Whatsapp y sms", Guid.Empty, Guid.Empty, Guid.Parse(ViewState["UidClienteLocal"].ToString()), ComisionTC, ComisionP, Total))
                     {
                         //clienteCuentaServices.RegistrarDineroCuentaCliente(decimal.Parse(txtImporte.Text), Guid.Parse(ViewState["UidClienteLocal"].ToString()), ReferenciaCobro);
-                        historialPagosServices.RegistrarHistorialPago(decimal.Parse(txtSaldo.Text), decimal.Parse(txtImporte.Text), decimal.Parse(txtNuevoSaldo.Text), ReferenciaCobro);
+                        historialPagosServices.RegistrarHistorialPago(decimal.Parse(txtSaldo.Text), SubTotal, decimal.Parse(txtNuevoSaldo.Text), ReferenciaCobro);
                         ViewState["IdReferenciaCobro"] = ReferenciaCobro;
                         ifrLiga.Src = urlCobro;
                     }
@@ -261,13 +303,13 @@ namespace Franquicia.WebForms.Views
 
                 ViewState["val2"] = val2.ToString("N2");
 
-                if (val2 >= 50)
+                if (val2 >= ImporteMin && val2 <= ImporteMax)
                 {
                     btnGenerar.Enabled = true;
                 }
                 else
                 {
-                    lblValidar.Text = "Lo sentimos, el monto minimo es de $50";
+                    lblValidar.Text = "Lo sentimos, el importe mínimo es de $" + ImporteMin.ToString("N2") + " y el máximo es de $" + ImporteMax.ToString("N2");
                 }
             }
             else

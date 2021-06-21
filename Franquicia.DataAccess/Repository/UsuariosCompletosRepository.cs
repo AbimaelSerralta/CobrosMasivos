@@ -2841,7 +2841,7 @@ namespace Franquicia.DataAccess.Repository
                             string LigaUrl = URLBase + "Views/Login.aspx";
 
                             var Crden = validacionesRepository.Creden(UidUsuario, UidCliente);
-                            string mnsj = correosRepository.CorreoEnvioCredenciales(item.NombreCompleto, Asunto, Crden.Item1, Crden.Item2, LigaUrl, item.StrCorreo, Crden.Item3);
+                            //string mnsj = correosRepository.CorreoEnvioCredenciales(item.NombreCompleto, Asunto, Crden.Item1, Crden.Item2, LigaUrl, item.StrCorreo, Crden.Item3);
                         }
                     }
                 }
@@ -3317,7 +3317,7 @@ namespace Franquicia.DataAccess.Repository
                             string LigaUrl = URLBase + "Views/Login.aspx";
 
                             var Crden = validacionesRepository.Creden(UidUsuario, UidCliente);
-                            string mnsj = correosRepository.CorreoEnvioCredenciales(item.NombreCompleto, Asunto, Crden.Item1, Crden.Item2, LigaUrl, item.StrCorreo, Crden.Item3);
+                            //string mnsj = correosRepository.CorreoEnvioCredenciales(item.NombreCompleto, Asunto, Crden.Item1, Crden.Item2, LigaUrl, item.StrCorreo, Crden.Item3);
                         }
                     }
                 }
@@ -4152,7 +4152,7 @@ namespace Franquicia.DataAccess.Repository
         #endregion
         #endregion
 
-        public bool GenerarLigasPagos(Guid UidLigaUrl, string VchUrl, string VchConcepto, decimal DcmImporte, string IdReferencia, Guid UidUsuario, string VchIdentificador, DateTime DtRegistro, DateTime DtVencimiento, string VchAsunto, Guid UidLigaAsociado, Guid UidPromocion, Guid UidPropietario)
+        public bool GenerarLigasPagos(Guid UidLigaUrl, string VchUrl, string VchConcepto, decimal DcmImporte, string IdReferencia, Guid UidUsuario, string VchIdentificador, DateTime DtRegistro, DateTime DtVencimiento, string VchAsunto, Guid UidLigaAsociado, Guid UidPromocion, Guid UidPropietario, decimal DcmComisionBancaria, decimal DcmPromocionDePago, decimal DcmTotal)
         {
             bool Resultado = false;
 
@@ -4210,6 +4210,15 @@ namespace Franquicia.DataAccess.Repository
                     comando.Parameters["@UidPropietario"].Value = UidPropietario;
                 }
 
+                comando.Parameters.Add("@DcmComisionBancaria", SqlDbType.Decimal);
+                comando.Parameters["@DcmComisionBancaria"].Value = DcmComisionBancaria;
+
+                comando.Parameters.Add("@DcmPromocionDePago", SqlDbType.Decimal);
+                comando.Parameters["@DcmPromocionDePago"].Value = DcmPromocionDePago;
+
+                comando.Parameters.Add("@DcmTotal", SqlDbType.Decimal);
+                comando.Parameters["@DcmTotal"].Value = DcmTotal;
+
                 Resultado = this.ManipulacionDeDatos(comando);
             }
             catch (Exception)
@@ -4218,7 +4227,7 @@ namespace Franquicia.DataAccess.Repository
             }
             return Resultado;
         }
-        public bool GenerarLigasPagosEvento(Guid UidLigaUrl, string VchUrl, string VchConcepto, decimal DcmImporte, string IdReferencia, Guid UidUsuario, string VchIdentificador, DateTime DtRegistro, DateTime DtVencimiento, string VchAsunto, Guid UidLigaAsociado, Guid UidPromocion, Guid UidEvento, Guid UidPropietario)
+        public bool GenerarLigasPagosEvento(Guid UidLigaUrl, string VchUrl, string VchConcepto, decimal DcmImporte, string IdReferencia, Guid UidUsuario, string VchIdentificador, DateTime DtRegistro, DateTime DtVencimiento, string VchAsunto, Guid UidLigaAsociado, Guid UidPromocion, Guid UidEvento, Guid UidPropietario, decimal DcmComisionBancaria, decimal DcmPromocionDePago, decimal DcmTotal)
         {
             bool Resultado = false;
 
@@ -4275,6 +4284,15 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@UidPropietario", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidPropietario"].Value = UidPropietario;
+
+                comando.Parameters.Add("@DcmComisionBancaria", SqlDbType.Decimal);
+                comando.Parameters["@DcmComisionBancaria"].Value = DcmComisionBancaria;
+
+                comando.Parameters.Add("@DcmPromocionDePago", SqlDbType.Decimal);
+                comando.Parameters["@DcmPromocionDePago"].Value = DcmPromocionDePago;
+
+                comando.Parameters.Add("@DcmTotal", SqlDbType.Decimal);
+                comando.Parameters["@DcmTotal"].Value = DcmTotal;
 
                 Resultado = this.ManipulacionDeDatos(comando);
             }

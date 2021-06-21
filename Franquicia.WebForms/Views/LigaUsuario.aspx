@@ -1,4 +1,4 @@
-﻿<%@ Page Title="ReporteLigas" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="ReporteLigas.aspx.cs" Inherits="Franquicia.WebForms.Views.ReporteLigas" %>
+﻿<%@ Page Title="Ligas" Language="C#" MasterPageFile="~/Views/MasterPage.Master" AutoEventWireup="true" CodeBehind="LigaUsuario.aspx.cs" Inherits="Franquicia.WebForms.Views.LigaUsuario" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 
@@ -22,7 +22,7 @@
                     <div class="row">
                         <div class="col-lg-12 col-md-12">
                             <div class="card">
-                                <div class="card-header card-header-tabs card-header-primary" style="padding-top: 0px; padding-bottom: 0px;">
+                                <div class="card-header card-header-tabs card-header-primary" style="background: #5b3c64; padding-top: 0px; padding-bottom: 0px;">
                                     <div class="nav-tabs-navigation">
                                         <div class="nav-tabs-wrapper">
                                             <div class="form-group" style="margin-top: 0px; padding-bottom: 0px;">
@@ -34,9 +34,9 @@
                                                 <asp:LinkButton ID="btnActualizarLista" OnClick="btnActualizarLista_Click" ToolTip="Actualizar tabla." class="btn btn-lg btn-success btn-fab btn-fab-mini btn-round pull-right" runat="server">
                                                         <i class="material-icons">sync</i>
                                                 </asp:LinkButton>
-                                                <asp:LinkButton ID="btnExportarLista" OnClick="btnExportarLista_Click" ToolTip="Exportar tabla a excel." class="btn btn-lg btn-warning btn-fab btn-fab-mini btn-round pull-right" runat="server">
+                                                <%--<asp:LinkButton ID="btnExportarLista" OnClick="btnExportarLista_Click" ToolTip="Exportar tabla a excel." class="btn btn-lg btn-warning btn-fab btn-fab-mini btn-round pull-right" runat="server">
                                                         <i class="material-icons">file_download</i>
-                                                </asp:LinkButton>
+                                                </asp:LinkButton>--%>
                                             </div>
                                         </div>
                                     </div>
@@ -44,25 +44,16 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="table-responsive">
-                                            <asp:GridView ID="gvLigasGeneradas" OnSorting="gvLigasGeneradas_Sorting" OnRowCommand="gvLigasGeneradas_RowCommand" OnRowDataBound="gvLigasGeneradas_RowDataBound" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="IdReferencia" GridLines="None" border="0" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvLigasGeneradas_PageIndexChanging" runat="server">
+                                            <asp:GridView ID="gvLigasGeneradas" OnSorting="gvLigasGeneradas_Sorting" OnRowCommand="gvLigasGeneradas_RowCommand" OnRowDataBound="gvLigasGeneradas_RowDataBound" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidLigaUrl" GridLines="None" border="0" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvLigasGeneradas_PageIndexChanging" runat="server">
                                                 <EmptyDataTemplate>
                                                     <div class="alert alert-info">No hay ligas registradas</div>
                                                 </EmptyDataTemplate>
                                                 <Columns>
                                                     <asp:BoundField SortExpression="VchIdentificador" DataField="VchIdentificador" HeaderText="IDENTI." />
-                                                    <asp:BoundField SortExpression="NombreCompleto" ItemStyle-Width="200px" DataField="NombreCompleto" HeaderText="CLIENTE" />
-                                                    <asp:TemplateField HeaderText="LIGA">
-                                                        <ItemTemplate>
-                                                            <asp:LinkButton ID="btnCopiarLiga" data-text='<%#Eval("VchUrl")%>' CssClass="copyboard" ToolTip='<%# string.Concat("Copiar: ", Eval("VchUrl"))%>' Style="margin-left: 5px;" runat="server">
-                                                                <asp:Label ID="lblCopiar" class="btn btn-sm btn-dark btn-fab btn-fab-mini btn-round" runat="server">
-                                                                                        <i class="material-icons">content_copy</i>
-                                                                            </asp:Label>
-                                                            </asp:LinkButton>
-                                                        </ItemTemplate>
-                                                    </asp:TemplateField>
+                                                    <asp:BoundField SortExpression="VchNombreComercial" DataField="VchNombreComercial" HeaderText="COMERCIO" />
                                                     <asp:BoundField SortExpression="VchAsunto" DataField="VchAsunto" HeaderText="ASUNTO" />
                                                     <asp:BoundField SortExpression="VchConcepto" DataField="VchConcepto" HeaderText="CONCEPTO" />
-                                                    <asp:BoundField SortExpression="DtVencimiento" DataField="DtVencimiento" ItemStyle-HorizontalAlign="Center" DataFormatString="{0:d}" HeaderText="VENCIMIENTO" />
+                                                    <asp:BoundField SortExpression="DtVencimiento" DataField="DtVencimiento" DataFormatString="{0:d}" HeaderText="VENCIMIENTO" />
                                                     <asp:BoundField SortExpression="DcmImporte" DataField="DcmImporte" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:C}" HeaderText="SUBTOTAL" />
                                                     <asp:BoundField SortExpression="Comisiones" DataField="Comisiones" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:C}" HeaderText="COMI." />
                                                     <asp:BoundField SortExpression="DcmImportePromocion" DataField="DcmImportePromocion" ItemStyle-HorizontalAlign="Right" DataFormatString="{0:C}" HeaderText="PAGADO" />
@@ -89,6 +80,20 @@
                                                             <table>
                                                                 <tbody>
                                                                     <tr style="background: transparent;">
+                                                                        <td style="border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
+                                                                            <asp:Panel Visible='<%#Eval("blOcultarPagar")%>' runat="server">
+                                                                                <div style="width: 38px; height: 38px; border-radius: 50%; display: flex; justify-content: center; align-items: center; text-align: center; margin: 0px auto; padding: 3%"></div>
+                                                                            </asp:Panel>
+                                                                        </td>
+                                                                        <td style="border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
+                                                                            <asp:Panel Visible='<%#Eval("blPagar")%>' runat="server">
+                                                                                <asp:LinkButton ToolTip="Pagar" CommandArgument="<%# ((GridViewRow)Container).RowIndex %>" CommandName="btnPagar" Style="margin-left: 5px;" runat="server">
+                                                                                <asp:Label class="btn btn-sm btn-success btn-fab btn-fab-mini btn-round" runat="server">
+                                                                                        <i class="material-icons">attach_money</i>
+                                                                                </asp:Label>
+                                                                                </asp:LinkButton>
+                                                                            </asp:Panel>
+                                                                        </td>
                                                                         <td style="border: none; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;">
                                                                             <asp:LinkButton ID="btnInfoMovimiento" ToolTip="Detalle" CommandArgument="<%# ((GridViewRow)Container).RowIndex %>" CommandName="btnInfoMovimiento" Style="margin-left: 5px;" runat="server">
                                                                                 <asp:Label class="btn btn-sm btn-info btn-fab btn-fab-mini btn-round" runat="server">
@@ -403,6 +408,7 @@
             </div>
         </div>
     </div>
+
     <div id="ModalBusqueda" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -411,9 +417,9 @@
                         <div class="modal-header">
                             <h5 class="modal-title" runat="server">
                                 <asp:Label ID="lblTittleLigas" Text="Filtro de busqueda" runat="server" /></h5>
-                            <%--<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
-                            </button>--%>
+                            </button>
                         </div>
                     </ContentTemplate>
                 </asp:UpdatePanel>
@@ -441,18 +447,6 @@
                                                             <div class="form-group col-md-4">
                                                                 <label for="txtIdentificador" style="color: black;">Identificador</label>
                                                                 <asp:TextBox ID="txtIdentificador" CssClass="form-control" aria-label="Search" runat="server" />
-                                                            </div>
-                                                            <div class="form-group col-md-4">
-                                                                <label for="txtNombre" style="color: black;">Nombre(s)</label>
-                                                                <asp:TextBox ID="txtNombre" CssClass="form-control" aria-label="Search" runat="server" />
-                                                            </div>
-                                                            <div class="form-group col-md-4">
-                                                                <label for="txtApePaterno" style="color: black;">Ape Paterno</label>
-                                                                <asp:TextBox ID="txtApePaterno" CssClass="form-control" aria-label="Search" runat="server" />
-                                                            </div>
-                                                            <div class="form-group col-md-4">
-                                                                <label for="txtApeMaterno" style="color: black;">Ape Materno</label>
-                                                                <asp:TextBox ID="txtApeMaterno" CssClass="form-control" aria-label="Search" runat="server" />
                                                             </div>
                                                             <div class="form-group col-md-4">
                                                                 <label for="txtAsunto" style="color: black;">Asunto</label>
@@ -541,6 +535,131 @@
             </div>
         </div>
     </div>
+
+    <div id="ModalPagar" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <asp:UpdatePanel runat="server">
+                    <ContentTemplate>
+                        <div class="modal-header" style="padding-bottom: 0px; padding-top: 0px;">
+                            <h5 class="modal-title" runat="server">
+                                <asp:Label ID="lblTitlePagar" Text="Pagar" runat="server" /></h5>
+
+                            <asp:LinkButton ID="btnCerrar" Visible="false" class="close" data-dismiss="modal" aria-label="Close" runat="server">
+                                <span aria-hidden="true">&times;</span>
+                            </asp:LinkButton>
+                            <asp:LinkButton ID="btnFinalizar" OnClick="btnFinalizar_Click" Visible="false" CssClass="btn btn-info btn-round" Style="padding-bottom: 5px; padding-top: 5px; padding-left: 5px; padding-right: 5px;" runat="server">
+                            <i class="material-icons">close</i> Finalizar
+                            </asp:LinkButton>
+                        </div>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+                <div class="modal-body pt-0" style="padding-bottom: 0px;">
+                    <div class="tab-content">
+                        <asp:UpdatePanel runat="server">
+                            <ContentTemplate>
+                                <asp:Panel ID="pnlPromociones" runat="server">
+                                    <div style="position: absolute; width: 100%; height: 50%; background-color: #b62322; left: 0px;"></div>
+                                    <div class="row">
+                                        <div style="width: 100%;">
+                                            <div style="width: 80%; margin: 0 auto; display: block;">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <div class="form-group col-md-12">
+                                                            <label for="lblConcepto" style="color: black;">Concepto</label>
+                                                            <div class="input-group">
+                                                                <div class="input-group-prepend">
+                                                                    <span class="input-group-text" style="padding-left: 0px;">
+                                                                        <i class="material-icons">assignment</i>
+                                                                    </span>
+                                                                </div>
+                                                                <asp:Label ID="lblConcepto" Text="Concepto" CssClass="form-control" runat="server" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-12">
+                                                            <label for="lblVencimiento" style="color: black;">F/H Vencimiento</label>
+                                                            <div class="input-group">
+                                                                <div class="input-group-prepend">
+                                                                    <span class="input-group-text" style="padding-left: 0px;">
+                                                                        <i class="material-icons">date_range</i>
+                                                                    </span>
+                                                                </div>
+                                                                <asp:Label ID="lblVencimiento" Text="12/09/2020" CssClass="form-control" runat="server" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-12">
+                                                            <label for="ddlFormasPago" style="color: #ff9800;">Forma de pago</label>
+                                                            <div class="input-group">
+                                                                <div class="input-group-prepend">
+                                                                    <span class="input-group-text" style="padding-left: 0px;">
+                                                                        <i class="material-icons">format_list_numbered</i>
+                                                                    </span>
+                                                                </div>
+                                                                <asp:DropDownList ID="ddlFormasPago" OnSelectedIndexChanged="ddlFormasPago_SelectedIndexChanged" AutoPostBack="true" CssClass="form-control" runat="server">
+                                                                </asp:DropDownList>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group col-md-12">
+                                                            <label for="lblTotal" style="color: black;">Total a pagar</label>
+                                                            <div class="input-group">
+                                                                <div class="input-group-prepend">
+                                                                    <span class="input-group-text" style="padding-left: 0px;">
+                                                                        <i class="material-icons">payment</i>
+                                                                    </span>
+                                                                </div>
+                                                                <asp:Label ID="lblTotal" Text="$150.00" CssClass="form-control" runat="server" />
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="pull-right">
+                                                            <asp:LinkButton ID="btnGenerarLiga" OnClick="btnGenerarLiga_Click" ToolTip="Generar pago" runat="server">
+                                                                <asp:Label class="btn btn-success btn-round" runat="server">
+                                                                    <asp:Label ID="lblTotalPago" Text="Generar pago $0.00" runat="server" /><i class="material-icons">arrow_forward</i>
+                                                                </asp:Label>
+                                                            </asp:LinkButton>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </asp:Panel>
+                                <asp:Panel ID="pnlIframe" Visible="false" runat="server">
+                                    <div class="row">
+                                        <div style="width: 100%;">
+                                            <iframe id="ifrLiga" style="width: 80%; margin: 0 auto; display: block;" width="450px" height="650px" class="centrado" src="https://u.mitec.com.mx/p/i/S3SEJ1IO" frameborder="0" seamless="seamless" runat="server"></iframe>
+                                        </div>
+                                    </div>
+                                </asp:Panel>
+                                <asp:Panel ID="pnlValidar" Visible="false" runat="server">
+                                    <asp:Timer ID="tmValidar" OnTick="tmValidar_Tick" runat="server" Interval="1000" />
+                                    <asp:UpdatePanel ID="upValidar" UpdateMode="Conditional" runat="server">
+                                        <ContentTemplate>
+                                            <div style="height: 100%; width: 100%; display: flex; justify-content: center; align-items: center;">
+                                                <div>
+                                                    <img height="150" width="150" src="../CSSPropio/loader.gif" alt="imgCobrosMasivos" />
+                                                    <%--<div class="loader"></div>--%>
+                                                    <br />
+                                                    <strong>
+                                                        <asp:Literal ID="ltMnsj" Text="Verificando..." runat="server" /></strong>
+                                                </div>
+                                            </div>
+                                        </ContentTemplate>
+                                        <Triggers>
+                                            <asp:AsyncPostBackTrigger ControlID="tmValidar" EventName="tick" />
+                                        </Triggers>
+                                    </asp:UpdatePanel>
+                                </asp:Panel>
+                            </ContentTemplate>
+                        </asp:UpdatePanel>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-center">
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!--END MODAL-->
 
     <script>
@@ -551,14 +670,21 @@
         function hideModalBusqueda() {
             $('#ModalBusqueda').modal('hide');
         }
-    </script>
-    <script>
+
         function showModalDetalle() {
             $('#ModalDetalle').modal('show');
         }
 
         function hideModalDetalle() {
             $('#ModalDetalle').modal('hide');
+        }
+
+        function showModalPagar() {
+            $('#ModalPagar').modal({ backdrop: 'static', keyboard: false, show: true });
+        }
+
+        function hideModalPagar() {
+            $('#ModalPagar').modal('hide');
         }
     </script>
     <script>
@@ -568,20 +694,6 @@
 
         function hideModalPagoDetalle() {
             $('#ModalPagoDetalle').modal('hide');
-        }
-    </script>
-
-    <script>
-        function shot() {
-            $('.copyboard').on('click', function (e) {
-                e.preventDefault();
-
-                var copyText = $(this).attr('data-text');
-                var el = $('<input style="position: absolute; bottom: -120%" type="text" value="' + copyText + '" />').appendTo('body');
-                el[0].select();
-                document.execCommand("copy");
-                el.remove();
-            })
         }
     </script>
 </asp:Content>

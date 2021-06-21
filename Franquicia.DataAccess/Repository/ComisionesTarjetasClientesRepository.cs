@@ -100,5 +100,32 @@ namespace Franquicia.DataAccess.Repository
             }
             return Resultado;
         }
+
+        #region COBROS MASIVOS
+        public List<ComisionesTarjetasClientes> CargarComisionesTarjetaCM(Guid UidCliente)
+        {
+            List<ComisionesTarjetasClientes> lsComisionesTarjetasClientes = new List<ComisionesTarjetasClientes>();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select * from ComisionesTarjetasClientes where UidCliente = '" + UidCliente + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                lsComisionesTarjetasClientes.Add(new ComisionesTarjetasClientes()
+                {
+                    UidComicionTarjetaCliente = new Guid(item["UidComicionTarjetaCliente"].ToString()),
+                    BitComision = bool.Parse(item["BitComision"].ToString()),
+                    DcmComision = decimal.Parse(item["DcmComision"].ToString()),
+                    UidCliente = new Guid(item["UidCliente"].ToString())
+                });
+            }
+
+            return lsComisionesTarjetasClientes;
+        }
+        #endregion
     }
 }

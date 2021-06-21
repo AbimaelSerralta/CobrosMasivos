@@ -14,10 +14,24 @@ namespace Franquicia.WebForms.Views
     public partial class EventosUsuario : System.Web.UI.Page
     {
         EventosServices eventosServices = new EventosServices();
+        ImporteLigaMinMaxServices importeLigaMinMaxServices = new ImporteLigaMinMaxServices();
         ParametrosEntradaServices parametrosEntradaServices = new ParametrosEntradaServices();
         UsuariosCompletosServices usuariosCompletosServices = new UsuariosCompletosServices();
         PromocionesServices promocionesServices = new PromocionesServices();
         EstatusServices estatusServices = new EstatusServices();
+        ComisionesTarjetasClientesServices comisionesTarjetasCl = new ComisionesTarjetasClientesServices();
+
+        string id_company = "";
+        string id_branch = "";
+        string user = "";
+        string pwd = "";
+        string moneda = "";
+        string canal = "";
+        string semillaAES = "";
+        string urlGen = "";
+        string data0 = "";
+        decimal ImporteMin = 0;
+        decimal ImporteMax = 0;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -36,9 +50,11 @@ namespace Franquicia.WebForms.Views
             {
                 Session["EventosUsuarioseventosServices"] = eventosServices;
                 Session["EventosUsuariosusuariosCompletosServices"] = usuariosCompletosServices;
+                Session["importeLigaMinMaxServices"] = importeLigaMinMaxServices;
                 Session["EventosUsuariosparametrosEntradaServices"] = parametrosEntradaServices;
                 Session["EventosUsuariospromocionesServices"] = promocionesServices;
                 Session["EventosUsuariosestatusServices"] = estatusServices;
+                Session["comisionesTarjetasCl"] = comisionesTarjetasCl;
 
                 eventosServices.CargarEventosUsuariosFinal(Guid.Parse(ViewState["UidUsuarioLocal"].ToString()));
                 gvEventos.DataSource = eventosServices.lsEventosUsuarioFinalGridViewModel;
@@ -50,18 +66,52 @@ namespace Franquicia.WebForms.Views
                 ddlFiltroEstatus.DataTextField = "VchDescripcion";
                 ddlFiltroEstatus.DataValueField = "UidEstatus";
                 ddlFiltroEstatus.DataBind();
+
             }
             else
             {
                 eventosServices = (EventosServices)Session["EventosUsuarioseventosServices"];
                 usuariosCompletosServices = (UsuariosCompletosServices)Session["EventosUsuariosusuariosCompletosServices"];
+                importeLigaMinMaxServices = (ImporteLigaMinMaxServices)Session["importeLigaMinMaxServices"];
                 parametrosEntradaServices = (ParametrosEntradaServices)Session["EventosUsuariosparametrosEntradaServices"];
                 promocionesServices = (PromocionesServices)Session["EventosUsuariospromocionesServices"];
                 estatusServices = (EstatusServices)Session["EventosUsuariosestatusServices"];
+                comisionesTarjetasCl = (ComisionesTarjetasClientesServices)Session["comisionesTarjetasCl"];
 
                 pnlAlert.Visible = false;
                 lblMensajeAlert.Text = "";
                 divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
+
+                AsignarParametrosEntradaCliente();
+            }
+        }
+
+        private void AsignarParametrosEntradaCliente()
+        {
+            id_company = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.IdCompany;
+            id_branch = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.IdBranch;
+            user = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchUsuario;
+            pwd = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchPassword;
+            moneda = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchModena;
+            canal = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchCanal;
+            semillaAES = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchSemillaAES;
+            urlGen = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchUrl;
+            data0 = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchData0;
+
+            if (parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.BitImporteLiga)
+            {
+                //Asigna los importes min y max del cliente
+                ImporteMin = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.DcmImporteMin;
+                ImporteMax = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.DcmImporteMax;
+            }
+            else
+            {
+                //Asigna los importes min y max del sistema
+                foreach (var item in importeLigaMinMaxServices.lsImporteLigaMinMax)
+                {
+                    ImporteMin = item.DcmImporteMin;
+                    ImporteMax = item.DcmImporteMax;
+                }
             }
         }
 
@@ -88,6 +138,10 @@ namespace Franquicia.WebForms.Views
                     {
                         ViewState["UidClienteLocal"] = Guid.Empty;
                     }
+
+                    parametrosEntradaServices.ObtenerParametrosEntradaClienteCM(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+                    importeLigaMinMaxServices.CargarImporteLigaMinMax();
+                    AsignarParametrosEntradaCliente();
 
                     if (eventosServices.eventosRepository.eventosGridViewModel.UidEstatus == Guid.Parse("65E46BC9-1864-4145-AD1A-70F5B5F69739"))
                     {
@@ -335,9 +389,6 @@ namespace Franquicia.WebForms.Views
         }
         protected void btnGenerarPago_Click(object sender, EventArgs e)
         {
-            string MontoMin = "50.00";
-            string MontoMax = "15000.00";
-
             if (txtImporte.EmptyTextBox())
             {
                 pnlAlert.Visible = true;
@@ -353,7 +404,7 @@ namespace Franquicia.WebForms.Views
                 return;
             }
 
-            if (decimal.Parse(txtImporte.Text) >= decimal.Parse(MontoMin) && decimal.Parse(txtImporte.Text) <= decimal.Parse(MontoMax))
+            if (decimal.Parse(txtImporte.Text) >= ImporteMin && decimal.Parse(txtImporte.Text) <= ImporteMax)
             {
 
             }
@@ -361,7 +412,7 @@ namespace Franquicia.WebForms.Views
             {
                 txtImporte.BackColor = System.Drawing.Color.FromName("#f2dede");
                 pnlAlert.Visible = true;
-                lblMensajeAlert.Text = "El importe mínimo es de <b>$50.00</b> y el máximo es de <b>$15,000.00.</b>";
+                lblMensajeAlert.Text = "El importe mínimo es de <b>$" + ImporteMin.ToString("N2") + "</b> y el máximo es de <b>$" + ImporteMax.ToString("N2") + "</b>";
                 divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                 return;
             }
@@ -386,22 +437,13 @@ namespace Franquicia.WebForms.Views
             }
 
             int intCorreo = 1;
-            decimal importeTotal = decimal.Parse(txtImporte.Text);
+            decimal subtotal = decimal.Parse(txtImporte.Text);
+            decimal comisionTC = decimal.Parse(ViewState["ComisionTC"].ToString());
+            decimal comisionP = decimal.Parse(ViewState["ComisionP"].ToString());
+            decimal importeTotal = decimal.Parse(txtImporteTotal.Text);
 
             string url = string.Empty;
             bool resu = false;
-
-            parametrosEntradaServices.ObtenerParametrosEntradaCliente(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
-
-            string id_company = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.IdCompany;
-            string id_branch = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.IdBranch;
-            string user = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchUsuario;
-            string pwd = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchPassword;
-            string moneda = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchModena;
-            string canal = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchCanal;
-            string semillaAES = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchSemillaAES;
-            string urlGen = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchUrl;
-            string data0 = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchData0;
 
             if (!string.IsNullOrEmpty(id_company) && !string.IsNullOrEmpty(id_branch) && !string.IsNullOrEmpty(user) && !string.IsNullOrEmpty(pwd) && !string.IsNullOrEmpty(moneda) && !string.IsNullOrEmpty(canal) && !string.IsNullOrEmpty(semillaAES) && !string.IsNullOrEmpty(urlGen) && !string.IsNullOrEmpty(data0))
             {
@@ -419,19 +461,19 @@ namespace Franquicia.WebForms.Views
 
                         foreach (var itPromo in promocionesServices.lsEventosGenerarLigasModel.Where(x => x.UidPromocion == Guid.Parse(ddlFormasPago.SelectedValue)).ToList())
                         {
-                            decimal Valor = itPromo.DcmComicion * importeTotal / 100;
-                            decimal Importe = Valor + importeTotal;
+                            //decimal Valor = itPromo.DcmComicion * importeTotal / 100;
+                            //decimal Importe = Valor + importeTotal;
 
                             string promocion = itPromo.VchDescripcion.Replace(" MESES", "");
 
                             DateTime thisDay2 = DateTime.Now;
                             string Referencia = item.IdCliente.ToString() + item.IdUsuario.ToString() + thisDay2.ToString("ddMMyyyyHHmmssfff");
 
-                            url = GenLigaPara(id_company, id_branch, user, pwd, Referencia, Importe, moneda, canal, promocion, intCorreo, vencimiento, item.StrCorreo, concepto, semillaAES, data0, urlGen);
+                            url = GenLigaPara(id_company, id_branch, user, pwd, Referencia, importeTotal, moneda, canal, promocion, intCorreo, vencimiento, item.StrCorreo, concepto, semillaAES, data0, urlGen);
 
                             if (url.Contains("https://"))
                             {
-                                if (usuariosCompletosServices.GenerarLigasPagosEvento(url, concepto, Importe, Referencia, item.UidUsuario, identificador, thisDay, DateTime.Parse(vencimiento), "EVENTO", UidLigaAsociado, itPromo.UidPromocion, Guid.Parse(ViewState["UidEvento"].ToString()), Guid.Parse(ViewState["UidClienteLocal"].ToString())))
+                                if (usuariosCompletosServices.GenerarLigasPagosEvento(url, concepto, subtotal, Referencia, item.UidUsuario, identificador, thisDay, DateTime.Parse(vencimiento), "EVENTO", UidLigaAsociado, itPromo.UidPromocion, Guid.Parse(ViewState["UidEvento"].ToString()), Guid.Parse(ViewState["UidClienteLocal"].ToString()), comisionTC, comisionP, importeTotal))
                                 {
                                     ViewState["IdReferenciaCobroEvento"] = Referencia;
                                     pnlAcordiones.Visible = false;
@@ -463,7 +505,7 @@ namespace Franquicia.WebForms.Views
 
                         if (urlCobro.Contains("https://"))
                         {
-                            if (usuariosCompletosServices.GenerarLigasPagosEvento(urlCobro, concepto, importeTotal, ReferenciaCobro, item.UidUsuario, identificador, thisDay, DateTime.Parse(vencimiento), "EVENTO", Guid.Empty, Guid.Empty, Guid.Parse(ViewState["UidEvento"].ToString()), Guid.Parse(ViewState["UidClienteLocal"].ToString())))
+                            if (usuariosCompletosServices.GenerarLigasPagosEvento(urlCobro, concepto, subtotal, ReferenciaCobro, item.UidUsuario, identificador, thisDay, DateTime.Parse(vencimiento), "EVENTO", Guid.Empty, Guid.Empty, Guid.Parse(ViewState["UidEvento"].ToString()), Guid.Parse(ViewState["UidClienteLocal"].ToString()), comisionTC, comisionP, importeTotal))
                             {
                                 ViewState["IdReferenciaCobroEvento"] = ReferenciaCobro;
                                 pnlAcordiones.Visible = false;
@@ -592,26 +634,45 @@ namespace Franquicia.WebForms.Views
         }
         protected void ddlFormasPago_SelectedIndexChanged(object sender, EventArgs e)
         {
+            decimal CTC = 0;
+            ViewState["ComisionTC"] = 0;
+            ViewState["ComisionP"] = 0;
+
             if (!string.IsNullOrEmpty(txtImporte.Text) && decimal.Parse(txtImporte.Text) != 0)
             {
+                //Calcula la comicion
+                comisionesTarjetasCl.CargarComisionesTarjetaCM(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+                if (comisionesTarjetasCl.lsComisionesTarjetasClientes.Count >= 1)
+                {
+                    foreach (var itComi in comisionesTarjetasCl.lsComisionesTarjetasClientes)
+                    {
+                        if (itComi.BitComision)
+                        {
+                            CTC = itComi.DcmComision * decimal.Parse(txtImporte.Text) / (100 - itComi.DcmComision);
+                            ViewState["ComisionTC"] = CTC;
+                        }
+                    }
+                }
+
                 if (ddlFormasPago.SelectedValue == "contado")
                 {
                     decimal importe = decimal.Parse(txtImporte.Text);
 
                     txtImporte.Text = importe.ToString("N2");
-                    txtImporteTotal.Text = importe.ToString("N2");
-                    ViewState["txtImporteTotal.Text"] = importe.ToString("N2");
+                    txtImporteTotal.Text = (importe + CTC).ToString("N2");
+                    ViewState["txtImporteTotal.Text"] = (importe + CTC).ToString("N2");
                 }
                 else
                 {
-                    decimal importeTotal = decimal.Parse(txtImporte.Text);
+                    decimal importeTotal = decimal.Parse(txtImporte.Text) + CTC;
 
                     //promocionesServices.CargarPromocionesEvento(Guid.Parse(ViewState["UidClienteLocal"].ToString()), Guid.Parse(ViewState["UidEvento"].ToString()));
 
                     foreach (var itPromo in promocionesServices.lsEventosGenerarLigasModel.Where(x => x.UidPromocion == Guid.Parse(ddlFormasPago.SelectedValue)).ToList())
                     {
-                        decimal Valor = itPromo.DcmComicion * importeTotal / 100;
+                        decimal Valor = itPromo.DcmComicion * importeTotal / (100 - itPromo.DcmComicion);
                         decimal Importe = Valor + importeTotal;
+                        ViewState["ComisionP"] = Valor;
 
                         txtImporteTotal.Text = Importe.ToString("N2");
                         ViewState["txtImporteTotal.Text"] = Importe.ToString("N2");

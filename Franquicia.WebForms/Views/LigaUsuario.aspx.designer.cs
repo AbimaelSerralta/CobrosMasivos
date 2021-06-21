@@ -11,7 +11,7 @@ namespace Franquicia.WebForms.Views
 {
 
 
-    public partial class ReporteLigaUsuario
+    public partial class LigaUsuario
     {
 
         /// <summary>

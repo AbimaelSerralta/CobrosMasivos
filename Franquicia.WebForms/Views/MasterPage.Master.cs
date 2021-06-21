@@ -185,7 +185,7 @@ namespace Franquicia.WebForms.Views
                             liMenuFranquicia.Visible = false;
                             liMenuCliente.Visible = false;
 
-                            dlMenu.DataSource = manejoSesionServices.lsAccesosPermitidos.Where(x => x.UidAppWeb == new Guid("9C8AD059-A37B-42EE-BF37-FEB7ACA84088")).ToList();
+                            dlMenu.DataSource = manejoSesionServices.lsAccesosPermitidos.Where(x => x.UidAppWeb == new Guid("9C8AD059-A37B-42EE-BF37-FEB7ACA84088")).ToList().OrderBy(x => x.IntGerarquia);
                             dlMenu.DataBind();
 
                             //manejoSesionServices.ObtenerFranquiciaClienteUsuario();

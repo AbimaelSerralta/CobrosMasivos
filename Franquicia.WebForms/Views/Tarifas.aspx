@@ -51,6 +51,11 @@
                                             <i class="material-icons">credit_card</i>Comisión<div class="ripple-container"></div>
                                         </a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#importeLiga" data-toggle="tab">
+                                            <i class="material-icons">attach_money</i>Importe Liga<div class="ripple-container"></div>
+                                        </a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -349,6 +354,80 @@
                                             <ContentTemplate>
                                                 <div class="modal-footer justify-content-center">
                                                     <asp:LinkButton ID="btnGuardarComision" OnClick="btnGuardarComision_Click" CssClass="btn btn-success btn-round" runat="server">
+                                                                <i class="material-icons">check</i> Guardar
+                                                    </asp:LinkButton>
+                                                </div>
+                                            </ContentTemplate>
+                                        </asp:UpdatePanel>
+                                    </ContentTemplate>
+                                </asp:UpdatePanel>
+                            </div>
+
+                            <div class="tab-pane" id="importeLiga">
+                                <asp:UpdatePanel runat="server">
+                                    <ContentTemplate>
+                                        <div class="row">
+                                            <div class="form-group col-sm-12 col-md-12 col-lg-6">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-4">
+                                                                <img class="card-img-top" style="height: 100px; width: 100px" src="../Images/importeMin.png" alt="porcentaje">
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <h5 class="card-title">
+                                                                    Importe Mínimo
+                                                                </h5>
+                                                                <div class="form-group col-md-12" style="padding-left: 0px;">
+                                                                    <div class="input-group">
+                                                                        <div class="input-group-prepend">
+                                                                            <span class="input-group-text" style="padding-left: 0px; padding-right: 5px;">
+                                                                                <i class="material-icons">$</i>
+                                                                            </span>
+                                                                        </div>
+                                                                        <asp:TextBox ID="txtImporteMin" Text="0.00" CssClass="form-control" TextMode="Phone" Font-Size="Large" runat="server" />
+                                                                    </div>
+
+                                                                    <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtImporteMin" runat="server" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-sm-12 col-md-12 col-lg-6">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <div class="col-4">
+                                                                <img class="card-img-top" style="height: 100px; width: 100px" src="../Images/importeMax.png" alt="porcentaje">
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <h5 class="card-title">
+                                                                    Importe Máximo
+                                                                </h5>
+                                                                <div class="form-group col-md-12" style="padding-left: 0px;">
+                                                                    <div class="input-group">
+                                                                        <div class="input-group-prepend">
+                                                                            <span class="input-group-text" style="padding-left: 0px; padding-right: 5px;">
+                                                                                <i class="material-icons">$</i>
+                                                                            </span>
+                                                                        </div>
+                                                                        <asp:TextBox ID="txtImporteMax" Text="0.00" CssClass="form-control" TextMode="Phone" Font-Size="Large" runat="server" />
+                                                                    </div>
+
+                                                                    <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtImporteMax" runat="server" />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <asp:UpdatePanel runat="server">
+                                            <ContentTemplate>
+                                                <div class="modal-footer justify-content-center">
+                                                    <asp:LinkButton ID="btnGuardarImporteLiga" OnClick="btnGuardarImporteLiga_Click" CssClass="btn btn-success btn-round" runat="server">
                                                                 <i class="material-icons">check</i> Guardar
                                                     </asp:LinkButton>
                                                 </div>

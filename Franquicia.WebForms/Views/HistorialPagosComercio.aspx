@@ -243,7 +243,7 @@
                                                                 <i class="material-icons">$</i>
                                                             </span>
                                                         </div>
-                                                        <asp:TextBox ID="txtImporte" PlaceHolder="Monto minimo $50" CssClass="form-control" TextMode="Phone" runat="server" />
+                                                        <asp:TextBox ID="txtImporte" CssClass="form-control" TextMode="Phone" runat="server" />
                                                         <asp:LinkButton ID="btnCalcular" OnClick="btnCalcular_Click" runat="server" />
                                                     </div>
 

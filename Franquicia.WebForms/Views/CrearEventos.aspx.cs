@@ -39,6 +39,11 @@ namespace Franquicia.WebForms.Views
         EstatusServices estatusServices = new EstatusServices();
         UsuariosCompletosServices usuariosCompletosServices = new UsuariosCompletosServices();
         TiposEventosServices tiposEventosServices = new TiposEventosServices();
+        ImporteLigaMinMaxServices importeLigaMinMaxServices = new ImporteLigaMinMaxServices();
+        ParametrosEntradaServices parametrosEntradaServices = new ParametrosEntradaServices();
+
+        decimal ImporteMin = 0;
+        decimal ImporteMax = 0;
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -79,6 +84,8 @@ namespace Franquicia.WebForms.Views
                 Session["estatusServices"] = estatusServices;
                 Session["CrearEventousuariosCompletosServices"] = usuariosCompletosServices;
                 Session["CrearEventotiposEventosServices"] = tiposEventosServices;
+                Session["importeLigaMinMaxServices"] = importeLigaMinMaxServices;
+                Session["parametrosEntradaServices"] = parametrosEntradaServices;
 
                 eventosServices.CargarEventos(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
                 gvEventos.DataSource = eventosServices.lsEventosGridViewModel;
@@ -103,6 +110,10 @@ namespace Franquicia.WebForms.Views
                 ddlTipoEvento.DataBind();
 
                 ddlTipoEvento_SelectedIndexChanged(null, null);
+
+                parametrosEntradaServices.ObtenerParametrosEntradaClienteCM(Guid.Parse(ViewState["UidClienteLocal"].ToString()));
+                importeLigaMinMaxServices.CargarImporteLigaMinMax();
+                AsignarParametrosEntradaCliente();
             }
             else
             {
@@ -111,6 +122,8 @@ namespace Franquicia.WebForms.Views
                 estatusServices = (EstatusServices)Session["estatusServices"];
                 usuariosCompletosServices = (UsuariosCompletosServices)Session["CrearEventousuariosCompletosServices"];
                 tiposEventosServices = (TiposEventosServices)Session["CrearEventotiposEventosServices"];
+                importeLigaMinMaxServices = (ImporteLigaMinMaxServices)Session["importeLigaMinMaxServices"];
+                parametrosEntradaServices = (ParametrosEntradaServices)Session["parametrosEntradaServices"];
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Sh", "shot()", true);
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Mult", "multi()", true);
@@ -119,6 +132,26 @@ namespace Franquicia.WebForms.Views
                 pnlAlert.Visible = false;
                 lblMensajeAlert.Text = "";
                 divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
+
+                AsignarParametrosEntradaCliente();
+            }
+        }
+        private void AsignarParametrosEntradaCliente()
+        {
+            if (parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.BitImporteLiga)
+            {
+                //Asigna los importes min y max del cliente
+                ImporteMin = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.DcmImporteMin;
+                ImporteMax = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.DcmImporteMax;
+            }
+            else
+            {
+                //Asigna los importes min y max del sistema
+                foreach (var item in importeLigaMinMaxServices.lsImporteLigaMinMax)
+                {
+                    ImporteMin = item.DcmImporteMin;
+                    ImporteMax = item.DcmImporteMax;
+                }
             }
         }
 
@@ -153,10 +186,6 @@ namespace Franquicia.WebForms.Views
         {
             DateTime HoraDelServidor = DateTime.Now;
             DateTime hoy = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(HoraDelServidor, TimeZoneInfo.Local.Id, "Eastern Standard Time (Mexico)");
-
-            string MontoMin = "50.00";
-            string MontoMax = "15000.00";
-
 
             DateTime hoyIgual = DateTime.Parse(hoy.ToString("dd/MM/yyyy"));
             DateTime hoyMas = DateTime.Parse(hoy.AddDays(89).ToString("dd/MM/yyyy"));
@@ -245,14 +274,14 @@ namespace Franquicia.WebForms.Views
                     return;
                 }
 
-                if (decimal.Parse(txtImporte.Text) >= decimal.Parse(MontoMin) && decimal.Parse(txtImporte.Text) <= decimal.Parse(MontoMax))
+                if (decimal.Parse(txtImporte.Text) >= ImporteMin && decimal.Parse(txtImporte.Text) <= ImporteMax)
                 {
 
                 }
                 else
                 {
                     txtImporte.BackColor = System.Drawing.Color.FromName("#f2dede");
-                    lblValidar.Text = "El importe mínimo es de $50.00 y el máximo es de $15,000.00.";
+                    lblValidar.Text = "El importe mínimo es de $" + ImporteMin.ToString("N2") + " y el máximo es de $" + ImporteMax.ToString("N2");
                     return;
                 }
             }

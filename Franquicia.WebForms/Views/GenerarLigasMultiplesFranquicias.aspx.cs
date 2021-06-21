@@ -689,7 +689,7 @@ namespace Franquicia.WebForms.Views
 
                         if (urlCobro.Contains("https://"))
                         {
-                            if (usuariosCompletosServices.GenerarLigasPagos(urlCobro, item.StrConcepto, item.DcmImporte, ReferenciaCobro, item.UidUsuario, txtIdentificador.Text, thisDay, item.DtVencimiento, item.StrAsunto, UidLigaAsociado, Guid.Empty, Guid.Parse(ViewState["UidFranquiciaLocal"].ToString())))
+                            if (usuariosCompletosServices.GenerarLigasPagos(urlCobro, item.StrConcepto, item.DcmImporte, ReferenciaCobro, item.UidUsuario, txtIdentificador.Text, thisDay, item.DtVencimiento, item.StrAsunto, UidLigaAsociado, Guid.Empty, Guid.Parse(ViewState["UidFranquiciaLocal"].ToString()), 0, 0, 0))
                             {
                                 resu = true;
                                 foreach (var itPromo in promocionesServices.lsLigasMultiplePromocionesModel.Where(x => x.IdUsuario == item.IdUsuario).ToList())
@@ -709,7 +709,7 @@ namespace Franquicia.WebForms.Views
 
                                     if (url.Contains("https://"))
                                     {
-                                        if (usuariosCompletosServices.GenerarLigasPagos(url, item.StrConcepto, Importe, Referencia, item.UidUsuario, txtIdentificador.Text, thisDay, item.DtVencimiento, item.StrAsunto, UidLigaAsociado, itPromo.UidPromocion, Guid.Parse(ViewState["UidFranquiciaLocal"].ToString())))
+                                        if (usuariosCompletosServices.GenerarLigasPagos(url, item.StrConcepto, Importe, Referencia, item.UidUsuario, txtIdentificador.Text, thisDay, item.DtVencimiento, item.StrAsunto, UidLigaAsociado, itPromo.UidPromocion, Guid.Parse(ViewState["UidFranquiciaLocal"].ToString()), 0, 0, 0))
                                         {
                                             resu = true;
                                         }
@@ -766,7 +766,7 @@ namespace Franquicia.WebForms.Views
 
                         if (urlCobro.Contains("https://"))
                         {
-                            if (usuariosCompletosServices.GenerarLigasPagos(urlCobro, item.StrConcepto, item.DcmImporte, ReferenciaCobro, item.UidUsuario, txtIdentificador.Text, thisDay, item.DtVencimiento, item.StrAsunto, Guid.Empty, Guid.Empty, Guid.Parse(ViewState["UidFranquiciaLocal"].ToString())))
+                            if (usuariosCompletosServices.GenerarLigasPagos(urlCobro, item.StrConcepto, item.DcmImporte, ReferenciaCobro, item.UidUsuario, txtIdentificador.Text, thisDay, item.DtVencimiento, item.StrAsunto, Guid.Empty, Guid.Empty, Guid.Parse(ViewState["UidFranquiciaLocal"].ToString()), 0, 0, 0))
                             {
                                 correosServices.CorreoLiga(item.NombreCompleto, item.StrAsunto, item.StrConcepto, item.DcmImporte, item.DtVencimiento, urlCobro, item.StrCorreo, "", false, item.VchNombreComercial);
                                 resu = true;

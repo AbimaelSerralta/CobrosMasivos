@@ -58,5 +58,12 @@ namespace Franquicia.Bussiness
             }
             return result;
         }
+
+        #region COBROS MASIVOS
+        public List<ComisionesTarjetasClientes> CargarComisionesTarjetaCM(Guid UidCliente)
+        {
+            return lsComisionesTarjetasClientes = comisionesTarjetasClientesRepository.CargarComisionesTarjetaCM(UidCliente);
+        }
+        #endregion
     }
 }

@@ -557,7 +557,7 @@ namespace Franquicia.WebForms.Views
 
                         if (urlCobro.Contains("https://"))
                         {
-                            if (usuariosCompletosServices.GenerarLigasPagos(urlCobro, txtConcepto.Text, decimal.Parse(txtImporte.Text), ReferenciaCobro, item.UidUsuario, txtIdentificador.Text, thisDay, DateTime.Parse(txtVencimiento.Text), txtAsunto.Text, UidLigaAsociado, Guid.Empty, Guid.Parse(ViewState["UidFranquiciaLocal"].ToString())))
+                            if (usuariosCompletosServices.GenerarLigasPagos(urlCobro, txtConcepto.Text, decimal.Parse(txtImporte.Text), ReferenciaCobro, item.UidUsuario, txtIdentificador.Text, thisDay, DateTime.Parse(txtVencimiento.Text), txtAsunto.Text, UidLigaAsociado, Guid.Empty, Guid.Parse(ViewState["UidFranquiciaLocal"].ToString()), 0, 0, 0))
                             {
                                 resu = true;
                                 foreach (ListItem itPromo in cblPromociones.Items)
@@ -579,7 +579,7 @@ namespace Franquicia.WebForms.Views
 
                                         if (url.Contains("https://"))
                                         {
-                                            if (usuariosCompletosServices.GenerarLigasPagos(url, txtConcepto.Text, Importe, Referencia, item.UidUsuario, txtIdentificador.Text, thisDay, DateTime.Parse(txtVencimiento.Text), txtAsunto.Text, UidLigaAsociado, Guid.Parse(itPromo.Value), Guid.Parse(ViewState["UidFranquiciaLocal"].ToString())))
+                                            if (usuariosCompletosServices.GenerarLigasPagos(url, txtConcepto.Text, Importe, Referencia, item.UidUsuario, txtIdentificador.Text, thisDay, DateTime.Parse(txtVencimiento.Text), txtAsunto.Text, UidLigaAsociado, Guid.Parse(itPromo.Value), Guid.Parse(ViewState["UidFranquiciaLocal"].ToString()), 0, 0, 0))
                                             {
                                                 resu = true;
                                             }
@@ -637,7 +637,7 @@ namespace Franquicia.WebForms.Views
 
                         if (urlCobro.Contains("https://"))
                         {
-                            if (usuariosCompletosServices.GenerarLigasPagos(urlCobro, txtConcepto.Text, decimal.Parse(txtImporte.Text), ReferenciaCobro, item.UidUsuario, txtIdentificador.Text, thisDay, DateTime.Parse(txtVencimiento.Text), txtAsunto.Text, Guid.Empty, Guid.Empty, Guid.Parse(ViewState["UidFranquiciaLocal"].ToString())))
+                            if (usuariosCompletosServices.GenerarLigasPagos(urlCobro, txtConcepto.Text, decimal.Parse(txtImporte.Text), ReferenciaCobro, item.UidUsuario, txtIdentificador.Text, thisDay, DateTime.Parse(txtVencimiento.Text), txtAsunto.Text, Guid.Empty, Guid.Empty, Guid.Parse(ViewState["UidFranquiciaLocal"].ToString()), 0, 0, 0))
                             {
                                 correosServices.CorreoLiga(item.NombreCompleto, txtAsunto.Text, txtConcepto.Text, decimal.Parse(txtImporte.Text), DateTime.Parse(txtVencimiento.Text), urlCobro, item.StrCorreo, "", false, item.VchNombreComercial);
                                 resu = true;

@@ -232,6 +232,8 @@
     <Content Include="Images\face.png" />
     <Content Include="Images\icoSms.jpg" />
     <Content Include="Images\icoWhats.png" />
+    <Content Include="Images\importeMax.png" />
+    <Content Include="Images\importeMin.png" />
     <Content Include="Images\LigaSimple.PNG" />
     <Content Include="Images\llave.png" />
     <Content Include="Images\logo-cobroscontarjetas.png" />
@@ -270,6 +272,7 @@
     <Content Include="Views\GenerarLigasMultiplesFranquicias.aspx" />
     <Content Include="Views\GenerarLigasMultiples.aspx" />
     <Content Include="Views\HistorialPagosComercio.aspx" />
+    <Content Include="Views\LigaUsuario.aspx" />
     <Content Include="Views\Multiselect.aspx" />
     <Content Include="Views\PageNoFound.aspx" />
     <Content Include="Views\Promociones.aspx" />
@@ -456,6 +459,13 @@
     </Compile>
     <Compile Include="Views\HistorialPagosComercio.aspx.designer.cs">
       <DependentUpon>HistorialPagosComercio.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Views\LigaUsuario.aspx.cs">
+      <DependentUpon>LigaUsuario.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Views\LigaUsuario.aspx.designer.cs">
+      <DependentUpon>LigaUsuario.aspx</DependentUpon>
     </Compile>
     <Compile Include="Views\Multiselect.aspx.cs">
       <DependentUpon>Multiselect.aspx</DependentUpon>

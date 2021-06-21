@@ -14,6 +14,11 @@ namespace Franquicia.WebForms.Views
         ParametrosEntradaServices parametrosEntradaServices = new ParametrosEntradaServices();
         ValidacionesServices validacionesServices = new ValidacionesServices();
         PromocionesServices promocionesServices = new PromocionesServices();
+        ImporteLigaMinMaxServices importeLigaMinMaxServices = new ImporteLigaMinMaxServices();
+
+        decimal ImporteMin = 0;
+        decimal ImporteMax = 0;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -21,17 +26,21 @@ namespace Franquicia.WebForms.Views
                 Session["clientesServices"] = clientesServices;
                 Session["parametrosEntradaServices"] = parametrosEntradaServices;
                 Session["promocionesServices"] = promocionesServices;
+                Session["importeLigaMinMaxServices"] = importeLigaMinMaxServices;
 
                 clientesServices.CargarTodosClientes();
                 gvEmpresas.DataSource = clientesServices.lsClientesGridViewEmpresasModel;
                 gvEmpresas.DataBind();
 
+                importeLigaMinMaxServices.CargarImporteLigaMinMax();
+                AsignarImporteLigaMinMax();
             }
             else
             {
                 clientesServices = (ClientesServices)Session["clientesServices"];
                 parametrosEntradaServices = (ParametrosEntradaServices)Session["parametrosEntradaServices"];
                 promocionesServices = (PromocionesServices)Session["promocionesServices"];
+                importeLigaMinMaxServices = (ImporteLigaMinMaxServices)Session["importeLigaMinMaxServices"];
 
                 pnlAlert.Visible = false;
                 lblMensajeAlert.Text = "";
@@ -44,6 +53,18 @@ namespace Franquicia.WebForms.Views
                 pnlAlertPromociones.Visible = false;
                 lblMnsjAlertPromociones.Text = "";
                 divAlertPromociones.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
+
+                AsignarImporteLigaMinMax();
+            }
+        }
+
+        private void AsignarImporteLigaMinMax()
+        {
+            //Asigna los importes min y max del sistema
+            foreach (var item in importeLigaMinMaxServices.lsImporteLigaMinMax)
+            {
+                ImporteMin = item.DcmImporteMin;
+                ImporteMax = item.DcmImporteMax;
             }
         }
 
@@ -53,11 +74,38 @@ namespace Franquicia.WebForms.Views
             {
                 if (validacionesServices.isUrl(txtUrl.Text))
                 {
+                    ValidacionesServices validacionesServices = new ValidacionesServices();
+                    if (!validacionesServices.IsNumeric(txtImpMin.Text))
+                    {
+                        pnlAlertCredenciales.Visible = true;
+                        lblMnsjAlertCredenciales.Text = "El Importe Mínimo no es un formato correcto.";
+                        divAlertCredenciales.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                        return;
+                    }
+                    if (!validacionesServices.IsNumeric(txtImpMax.Text))
+                    {
+                        pnlAlertCredenciales.Visible = true;
+                        lblMnsjAlertCredenciales.Text = "El Importe Máximo no es un formato correcto.";
+                        divAlertCredenciales.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                        return;
+                    }
+
+                    if (decimal.Parse(txtImpMin.Text) >= ImporteMin)
+                    {
+                    }
+                    else
+                    {
+                        pnlAlertCredenciales.Visible = true;
+                        lblMnsjAlertCredenciales.Text = "El importe mínimo es de $" + ImporteMin.ToString("N2");
+                        divAlertCredenciales.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                        return;
+                    }
+
                     switch (ViewState["AccionParametros"].ToString())
                     {
 
                         case "ActualizarParametros":
-                            if (parametrosEntradaServices.ActualizarParametrosEntradaCliente(txtIdCompany.Text, txtIdBranch.Text, txtMoneda.Text, txtUsuario.Text, txtPassword.Text, txtCanal.Text, txtData.Text, txtUrl.Text, txtSemillaAES.Text, Guid.Parse(ViewState["UidCliente"].ToString())))
+                            if (parametrosEntradaServices.ActualizarParametrosEntradaClienteCM(txtIdCompany.Text, txtIdBranch.Text, txtMoneda.Text, txtUsuario.Text, txtPassword.Text, txtCanal.Text, txtData.Text, txtUrl.Text, txtSemillaAES.Text, Guid.Parse(ViewState["UidCliente"].ToString()), cbActivarImp.Checked, decimal.Parse(txtImpMin.Text), decimal.Parse(txtImpMax.Text)))
                             {
                                 pnlAlert.Visible = true;
                                 lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha actualizado exitosamente.";
@@ -73,7 +121,7 @@ namespace Franquicia.WebForms.Views
                             }
                             break;
                         case "GuardarParametros":
-                            if (parametrosEntradaServices.RegistrarParametrosEntradaCliente(txtIdCompany.Text, txtIdBranch.Text, txtMoneda.Text, txtUsuario.Text, txtPassword.Text, txtCanal.Text, txtData.Text, txtUrl.Text, txtSemillaAES.Text, Guid.Parse(ViewState["UidCliente"].ToString())))
+                            if (parametrosEntradaServices.RegistrarParametrosEntradaClienteCM(txtIdCompany.Text, txtIdBranch.Text, txtMoneda.Text, txtUsuario.Text, txtPassword.Text, txtCanal.Text, txtData.Text, txtUrl.Text, txtSemillaAES.Text, Guid.Parse(ViewState["UidCliente"].ToString()), cbActivarImp.Checked, decimal.Parse(txtImpMin.Text), decimal.Parse(txtImpMax.Text)))
                             {
                                 pnlAlert.Visible = true;
                                 lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
@@ -117,11 +165,14 @@ namespace Franquicia.WebForms.Views
 
                 //lblTituloModal.Text = "Visualización de la Franquicia";
 
-                parametrosEntradaServices.ObtenerParametrosEntradaCliente(dataKeys);
+                parametrosEntradaServices.ObtenerParametrosEntradaClienteCM(dataKeys);
                 txtIdCompany.Text = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.IdCompany;
                 txtIdBranch.Text = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.IdBranch;
                 txtUsuario.Text = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchUsuario;
                 txtPassword.Text = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.VchPassword;
+                cbActivarImp.Checked = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.BitImporteLiga;
+                txtImpMin.Text = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.DcmImporteMin.ToString("N2");
+                txtImpMax.Text = parametrosEntradaServices.parametrosEntradaRepository.parametrosEntrada.DcmImporteMax.ToString("N2");
 
                 if (!string.IsNullOrEmpty(txtIdCompany.Text) && !string.IsNullOrEmpty(txtIdBranch.Text))
                 {
@@ -136,10 +187,18 @@ namespace Franquicia.WebForms.Views
                 }
                 else
                 {
-                    ViewState["AccionParametros"] = "GuardarParametros";
-                    btnGuardarCredenciales.Text = "<i class=" + "material-icons>" + "check </i> Guardar";
+                    if (decimal.Parse(txtImpMin.Text) != 0 && decimal.Parse(txtImpMax.Text) != 0)
+                    {
+                        ViewState["AccionParametros"] = "ActualizarParametros";
+                        btnGuardarCredenciales.Text = "<i class=" + "material-icons>" + "refresh </i> Actualizar";
+                    }
+                    else
+                    {
+                        ViewState["AccionParametros"] = "GuardarParametros";
+                        btnGuardarCredenciales.Text = "<i class=" + "material-icons>" + "check </i> Guardar";
+                    }
                 }
-                
+
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalCredenciales()", true);
             }
 
@@ -219,7 +278,7 @@ namespace Franquicia.WebForms.Views
                     {
                         DcmComicion = decimal.Parse(txtComicion.Text);
                     }
-                    
+
                     if (!string.IsNullOrEmpty(txtApartirDe.Text))
                     {
                         DcmApartirDe = decimal.Parse(txtApartirDe.Text);

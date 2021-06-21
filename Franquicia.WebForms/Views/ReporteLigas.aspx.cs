@@ -39,6 +39,8 @@ namespace Franquicia.WebForms.Views
                 ligasUrlsServices = (LigasUrlsServices)Session["ligasUrlsServices"];
                 pagosTarjetaServices = (PagosTarjetaServices)Session["pagosTarjetaServices"];
 
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "Sh", "shot()", true);
+
                 pnlAlert.Visible = false;
                 lblMensajeAlert.Text = "";
                 divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade");
@@ -53,6 +55,31 @@ namespace Franquicia.WebForms.Views
                 GridViewRow Seleccionado = gvLigasGeneradas.Rows[index];
                 GridView valor = (GridView)sender;
                 string dataKey = valor.DataKeys[Seleccionado.RowIndex].Value.ToString();
+
+                ligasUrlsServices.FormarCabeceraDetalle(dataKey);
+                foreach (var item in ligasUrlsServices.lsLigasUrlsDetalleGridViewModel)
+                {
+                    lblDetaCliente.Text = "Cliente: " + item.NombreCompleto;
+                    lblDetaFHpago.Text = "Fecha Pago: " + item.FechaPago;
+                    lblDetaIdentificador.Text = "Identificador: " + item.VchIdentificador;
+                    lblDetaAsunto.Text = "Asunto: " + item.VchAsunto;
+                }
+                
+                rpDetalleLiga.DataSource = ligasUrlsServices.lsLigasUrlsDetalleGridViewModel;
+                rpDetalleLiga.DataBind();
+
+                foreach (var item in ligasUrlsServices.lsLigasUrlsDetalleGridViewModel)
+                {
+                    DcmSubtotal.Text = "$" + item.DcmImporte.ToString("N2");
+                    
+                    VchComisionBancaria.Text = "COMISIÓN BANCARIA";
+                    DcmImpComisionBancaria.Text = "$" + item.DcmComisionBancaria.ToString("N2");
+                    
+                    VchPromocion.Text = "COMISIÓN " + item.VchPromocion;
+                    DcmImpPromocion.Text = "$" + item.DcmPromocionDePago.ToString("N2");
+
+                    DcmTotal.Text = "$" + item.DcmImportePromocion.ToString("n2");
+                }
 
                 int i = ligasUrlsServices.lsLigasUrlsGridViewModel.IndexOf(ligasUrlsServices.lsLigasUrlsGridViewModel.First(x => x.IdReferencia == dataKey));
                 Guid UidLigaAsociado = ligasUrlsServices.lsLigasUrlsGridViewModel[i].UidLigaAsociado;
@@ -69,7 +96,10 @@ namespace Franquicia.WebForms.Views
                 gvDetalleLiga.DataSource = pagosTarjetaServices.lsPagosTarjetaDetalleGridViewModel;
                 gvDetalleLiga.DataBind();
 
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalDetalle()", true);
+                rptMovimientosLiga.DataSource = pagosTarjetaServices.lsPagosTarjetaDetalleGridViewModel;
+                rptMovimientosLiga.DataBind();
+
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalPagoDetalle()", true);
             }
         }
 

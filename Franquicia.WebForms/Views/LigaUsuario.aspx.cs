@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 namespace Franquicia.WebForms.Views
 {
-    public partial class ReporteLigaUsuario : System.Web.UI.Page
+    public partial class LigaUsuario : System.Web.UI.Page
     {
         LigasUrlsServices ligasUrlsServices = new LigasUrlsServices();
         PagosTarjetaServices pagosTarjetaServices = new PagosTarjetaServices();
@@ -35,7 +35,7 @@ namespace Franquicia.WebForms.Views
                 Session["ReporteLigasUsuariospagosTarjetaServices"] = pagosTarjetaServices;
                 Session["ReporteLigasUsuariospromocionesServices"] = promocionesServices;
 
-                ligasUrlsServices.ReporteLigaUsuarioFinal(Guid.Parse(ViewState["UidUsuarioLocal"].ToString()));
+                ligasUrlsServices.ConsultarLigaUsuarioFinal(Guid.Parse(ViewState["UidUsuarioLocal"].ToString()));
                 gvLigasGeneradas.DataSource = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel;
                 gvLigasGeneradas.DataBind();
             }
@@ -105,7 +105,7 @@ namespace Franquicia.WebForms.Views
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalPagoDetalle()", true);
             }
-            
+
             if (e.CommandName == "btnPagar")
             {
                 int index = Convert.ToInt32(e.CommandArgument.ToString());
@@ -346,7 +346,7 @@ namespace Franquicia.WebForms.Views
                             ligasUrlsServices.lsLigasUsuariosFinalGridViewModel = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel.OrderByDescending(x => x.VchEstatus).ToList();
                         }
                         break;
-                    
+
                 }
 
                 gvLigasGeneradas.DataSource = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel;
@@ -363,7 +363,7 @@ namespace Franquicia.WebForms.Views
 
         protected void btnActualizarLista_Click(object sender, EventArgs e)
         {
-            ligasUrlsServices.ReporteLigaUsuarioFinal(Guid.Parse(ViewState["UidUsuarioLocal"].ToString()));
+            ligasUrlsServices.ConsultarLigaUsuarioFinal(Guid.Parse(ViewState["UidUsuarioLocal"].ToString()));
             gvLigasGeneradas.DataSource = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel;
             gvLigasGeneradas.DataBind();
 
@@ -441,7 +441,7 @@ namespace Franquicia.WebForms.Views
                     lblMensajeAlert.Text = "<b>Felicidades,</b> su pago se proceso exitosamente.";
                     divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
 
-                    ligasUrlsServices.ReporteLigaUsuarioFinal(Guid.Parse(ViewState["UidUsuarioLocal"].ToString()));
+                    ligasUrlsServices.ConsultarLigaUsuarioFinal(Guid.Parse(ViewState["UidUsuarioLocal"].ToString()));
                     gvLigasGeneradas.DataSource = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel;
                     gvLigasGeneradas.DataBind();
 

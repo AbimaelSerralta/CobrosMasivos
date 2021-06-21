@@ -20,6 +20,7 @@ namespace Franquicia.Bussiness
 
         public List<LigasUrlsListViewModel> lsLigasUrlsListViewModel = new List<LigasUrlsListViewModel>();
         public List<LigasUrlsGridViewModel> lsLigasUrlsGridViewModel = new List<LigasUrlsGridViewModel>();
+        public List<LigasUrlsDetalleGridViewModel> lsLigasUrlsDetalleGridViewModel = new List<LigasUrlsDetalleGridViewModel>();
 
         public List<LigasUsuariosFinalGridViewModel> lsLigasUsuariosFinalGridViewModel = new List<LigasUsuariosFinalGridViewModel>();
 
@@ -48,6 +49,12 @@ namespace Franquicia.Bussiness
             ligasUrlsRepository.ContruirLiga(UidLigaUrl);
         }
 
+        public List<LigasUrlsDetalleGridViewModel> FormarCabeceraDetalle(string IdReferencia)
+        {
+            lsLigasUrlsDetalleGridViewModel = new List<LigasUrlsDetalleGridViewModel>();
+
+            return lsLigasUrlsDetalleGridViewModel = ligasUrlsRepository.FormarCabeceraDetalle(IdReferencia);
+        }
         #endregion
 
         #region ClientePayCard
@@ -78,6 +85,22 @@ namespace Franquicia.Bussiness
 
             return lsLigasUsuariosFinalGridViewModel = ligasUrlsRepository.BuscarLigasUsuarioFinal(UidUsuario, Identificador, Asunto, Concepto, ImporteMayor, ImporteMenor, RegistroDesde, RegistroHasta, VencimientoDesde, VencimientoHasta, Estatus);
         }
+
+        public List<LigasUrlsDetalleGridViewModel> FormarCabeceraDetalleFinal(Guid UidLigaUrl)
+        {
+            lsLigasUrlsDetalleGridViewModel = new List<LigasUrlsDetalleGridViewModel>();
+
+            return lsLigasUrlsDetalleGridViewModel = ligasUrlsRepository.FormarCabeceraDetalleFinal(UidLigaUrl);
+        }
+
+        #region Reporte Ligas
+        public List<LigasUsuariosFinalGridViewModel> ReporteLigaUsuarioFinal(Guid UidCliente)
+        {
+            lsLigasUsuariosFinalGridViewModel = new List<LigasUsuariosFinalGridViewModel>();
+
+            return lsLigasUsuariosFinalGridViewModel = ligasUrlsRepository.ReporteLigaUsuarioFinal(UidCliente);
+        }
+        #endregion
         #endregion
 
         #region LigasUrlFranquicias

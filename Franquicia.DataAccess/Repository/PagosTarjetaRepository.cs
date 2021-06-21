@@ -70,12 +70,14 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select pt.* from PagosTarjeta pt, LigasUrls lu where pt.IdReferencia = lu.IdReferencia and lu.IdReferencia = '" + IdReferencia + "' order by DtmFechaDeRegistro asc";
+            query.CommandText = "select pt.* from PagosTarjeta pt, LigasUrls lu where pt.IdReferencia = lu.IdReferencia and lu.IdReferencia = '" + IdReferencia + "' order by DtmFechaDeRegistro desc";
 
             DataTable dt = this.Busquedas(query);
 
+            int IntNum = 0;
             foreach (DataRow item in dt.Rows)
             {
+                IntNum = IntNum + 1;
                 string VchColor = "#007bff";
 
                 if (!string.IsNullOrEmpty(item["VchEstatus"].ToString()))
@@ -100,7 +102,8 @@ namespace Franquicia.DataAccess.Repository
                     IdReferencia = item["IdReferencia"].ToString(),
                     DtmFechaDeRegistro = DateTime.Parse(item["DtmFechaDeRegistro"].ToString()),
                     VchEstatus = item["VchEstatus"].ToString(),
-                    VchColor = VchColor
+                    VchColor = VchColor,
+                    IntNum = IntNum
                 };
 
                 lsPagosTarjetaDetalleGridViewModel.Add(pagosTarjetaDetalleGridViewModel);
@@ -115,12 +118,15 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select pt.* from PagosTarjeta pt, LigasUrls lu where pt.IdReferencia = lu.IdReferencia and lu.UidLigaAsociado = '" + UidLigaAsociado + "' order by DtmFechaDeRegistro asc";
+            query.CommandText = "select pt.* from PagosTarjeta pt, LigasUrls lu where pt.IdReferencia = lu.IdReferencia and lu.UidLigaAsociado = '" + UidLigaAsociado + "' order by DtmFechaDeRegistro desc";
 
             DataTable dt = this.Busquedas(query);
 
+            int IntNum = 0;
             foreach (DataRow item in dt.Rows)
             {
+                IntNum = IntNum + 1;
+
                 string VchColor = "#007bff";
 
                 if (!string.IsNullOrEmpty(item["VchEstatus"].ToString()))
@@ -145,7 +151,8 @@ namespace Franquicia.DataAccess.Repository
                     IdReferencia = item["IdReferencia"].ToString(),
                     DtmFechaDeRegistro = DateTime.Parse(item["DtmFechaDeRegistro"].ToString()),
                     VchEstatus = item["VchEstatus"].ToString(),
-                    VchColor = VchColor
+                    VchColor = VchColor,
+                    IntNum = IntNum
                 };
 
                 lsPagosTarjetaDetalleGridViewModel.Add(pagosTarjetaDetalleGridViewModel);
@@ -181,12 +188,14 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select pt.* from PagosTarjeta pt, LigasUrls lu where pt.IdReferencia = lu.IdReferencia and lu.UidLigaUrl = '" + UidLigaUrl + "' order by DtmFechaDeRegistro asc";
+            query.CommandText = "select pt.* from PagosTarjeta pt, LigasUrls lu where pt.IdReferencia = lu.IdReferencia and lu.UidLigaUrl = '" + UidLigaUrl + "' order by DtmFechaDeRegistro desc";
 
             DataTable dt = this.Busquedas(query);
 
+            int IntNum = 0;
             foreach (DataRow item in dt.Rows)
             {
+                IntNum = IntNum + 1;
                 string VchColor = "#007bff";
 
                 if (!string.IsNullOrEmpty(item["VchEstatus"].ToString()))
@@ -211,7 +220,8 @@ namespace Franquicia.DataAccess.Repository
                     IdReferencia = item["IdReferencia"].ToString(),
                     DtmFechaDeRegistro = DateTime.Parse(item["DtmFechaDeRegistro"].ToString()),
                     VchEstatus = item["VchEstatus"].ToString(),
-                    VchColor = VchColor
+                    VchColor = VchColor,
+                    IntNum = IntNum
                 };
 
                 lsPagTarjDetalUsFinalGridViewModel.Add(pagTarjDetalUsFinalGridViewModel);
@@ -226,12 +236,14 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select pt.* from PagosTarjeta pt, LigasUrls lu where pt.IdReferencia = lu.IdReferencia and lu.UidLigaAsociado = '" + UidLigaAsociado + "' order by DtmFechaDeRegistro asc";
+            query.CommandText = "select pt.* from PagosTarjeta pt, LigasUrls lu where pt.IdReferencia = lu.IdReferencia and lu.UidLigaAsociado = '" + UidLigaAsociado + "' order by DtmFechaDeRegistro desc";
 
             DataTable dt = this.Busquedas(query);
 
+            int IntNum = 0;
             foreach (DataRow item in dt.Rows)
             {
+                IntNum = IntNum + 1;
                 string VchColor = "#007bff";
 
                 if (!string.IsNullOrEmpty(item["VchEstatus"].ToString()))
@@ -256,7 +268,8 @@ namespace Franquicia.DataAccess.Repository
                     IdReferencia = item["IdReferencia"].ToString(),
                     DtmFechaDeRegistro = DateTime.Parse(item["DtmFechaDeRegistro"].ToString()),
                     VchEstatus = item["VchEstatus"].ToString(),
-                    VchColor = VchColor
+                    VchColor = VchColor,
+                    IntNum = IntNum
                 };
 
                 lsPagTarjDetalUsFinalGridViewModel.Add(pagTarjDetalUsFinalGridViewModel);

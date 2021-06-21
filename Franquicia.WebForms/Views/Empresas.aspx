@@ -96,7 +96,7 @@
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                 </Columns>
-                                                <PagerStyle CssClass="pagination-ys" />
+                                                <PagerStyle HorizontalAlign="Center" CssClass="pagination-ys" />
                                             </asp:GridView>
                                         </div>
                                     </div>
@@ -185,6 +185,49 @@
                                                             <div class="form-group col-md-6">
                                                                 <label for="txtSemillaAES" style="color: black;">Semilla AES *</label>
                                                                 <asp:TextBox ID="txtSemillaAES" Text="7AACFE849FABD796F6DCB947FD4D5268" Enabled="false" CssClass="form-control" required="required" runat="server" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="card" style="margin-top: 15px; margin-bottom: 0px;">
+                                                                <div class="card-header card-header-text card-header-primary">
+                                                                    <div class="card-text" style="padding-top: 0px; padding-bottom: 0px;">
+                                                                        <h4 class="card-title">Importe liga</h4>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="card-body">
+                                                                    <div class="row">
+                                                                        <div class="form-group col-md-4">
+                                                                            <label for="cbActivarImp" style="color: black;">Activar importe *</label>
+                                                                            <div class="input-group" style="padding-left: 10px;">
+                                                                                <asp:CheckBox ID="cbActivarImp" Style="margin-top: 12px;" runat="server" />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group col-md-4">
+                                                                            <label for="txtImpMin" style="color: black;">Importe mínimo *</label>
+                                                                            <div class="input-group">
+                                                                                <div class="input-group-prepend">
+                                                                                    <span class="input-group-text" style="padding-left: 0px; padding-right: 5px;">
+                                                                                        <i class="material-icons">$</i>
+                                                                                    </span>
+                                                                                </div>
+                                                                                <asp:TextBox ID="txtImpMin" Text="0.00" CssClass="form-control" runat="server" />
+                                                                                <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtImpMin" runat="server" />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group col-md-4">
+                                                                            <label for="txtImpMax" style="color: black;">Importe máximo *</label>
+                                                                            <div class="input-group">
+                                                                                <div class="input-group-prepend">
+                                                                                    <span class="input-group-text" style="padding-left: 0px; padding-right: 5px;">
+                                                                                        <i class="material-icons">$</i>
+                                                                                    </span>
+                                                                                </div>
+                                                                                <asp:TextBox ID="txtImpMax" Text="0.00" CssClass="form-control" runat="server" />
+                                                                                <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtImpMax" runat="server" />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>

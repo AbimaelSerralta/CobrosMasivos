@@ -1690,26 +1690,26 @@ namespace Franquicia.Bussiness
         #endregion
         #endregion
 
-        public bool GenerarLigasPagos(string VchUrl, string VchConcepto, decimal DcmImporte, string IdReferencia, Guid UidUsuario, string VchIdentificador, DateTime DtRegistro, DateTime DtVencimiento, string VchAsunto, Guid UidLigaAsociado, Guid UidPromocion, Guid UidPropietario)
+        public bool GenerarLigasPagos(string VchUrl, string VchConcepto, decimal DcmImporte, string IdReferencia, Guid UidUsuario, string VchIdentificador, DateTime DtRegistro, DateTime DtVencimiento, string VchAsunto, Guid UidLigaAsociado, Guid UidPromocion, Guid UidPropietario, decimal DcmComisionBancaria, decimal DcmPromocionDePago, decimal DcmTotal)
         {
             Guid UidLigaUrl = Guid.NewGuid();
 
             bool result = false;
             if (usuariosCompletosRepository.GenerarLigasPagos(
-               UidLigaUrl, VchUrl, VchConcepto, DcmImporte, IdReferencia, UidUsuario, VchIdentificador, DtRegistro, DtVencimiento, VchAsunto, UidLigaAsociado, UidPromocion, UidPropietario
+               UidLigaUrl, VchUrl, VchConcepto, DcmImporte, IdReferencia, UidUsuario, VchIdentificador, DtRegistro, DtVencimiento, VchAsunto, UidLigaAsociado, UidPromocion, UidPropietario, DcmComisionBancaria, DcmPromocionDePago, DcmTotal
                 ))
             {
                 result = true;
             }
             return result;
         }
-        public bool GenerarLigasPagosEvento(string VchUrl, string VchConcepto, decimal DcmImporte, string IdReferencia, Guid UidUsuario, string VchIdentificador, DateTime DtRegistro, DateTime DtVencimiento, string VchAsunto, Guid UidLigaAsociado, Guid UidPromocion, Guid UidEvento, Guid UidPropietario)
+        public bool GenerarLigasPagosEvento(string VchUrl, string VchConcepto, decimal DcmImporte, string IdReferencia, Guid UidUsuario, string VchIdentificador, DateTime DtRegistro, DateTime DtVencimiento, string VchAsunto, Guid UidLigaAsociado, Guid UidPromocion, Guid UidEvento, Guid UidPropietario, decimal DcmComisionBancaria, decimal DcmPromocionDePago, decimal DcmTotal)
         {
             Guid UidLigaUrl = Guid.NewGuid();
 
             bool result = false;
             if (usuariosCompletosRepository.GenerarLigasPagosEvento(
-               UidLigaUrl, VchUrl, VchConcepto, DcmImporte, IdReferencia, UidUsuario, VchIdentificador, DtRegistro, DtVencimiento, VchAsunto, UidLigaAsociado, UidPromocion, UidEvento, UidPropietario
+               UidLigaUrl, VchUrl, VchConcepto, DcmImporte, IdReferencia, UidUsuario, VchIdentificador, DtRegistro, DtVencimiento, VchAsunto, UidLigaAsociado, UidPromocion, UidEvento, UidPropietario, DcmComisionBancaria, DcmPromocionDePago, DcmTotal
                 ))
             {
                 result = true;
@@ -1717,11 +1717,11 @@ namespace Franquicia.Bussiness
             return result;
         }
 
-        public bool GenerarLigasPagosTemp(Guid UidLigaUrl, string VchUrl, string VchConcepto, decimal DcmImporte, string IdReferencia, Guid UidUsuario, string VchIdentificador, DateTime DtRegistro, DateTime DtVencimiento, string VchAsunto, Guid UidLigaAsociado, Guid UidPromocion, Guid UidPropietario)
+        public bool GenerarLigasPagosTemp(Guid UidLigaUrl, string VchUrl, string VchConcepto, decimal DcmImporte, string IdReferencia, Guid UidUsuario, string VchIdentificador, DateTime DtRegistro, DateTime DtVencimiento, string VchAsunto, Guid UidLigaAsociado, Guid UidPromocion, Guid UidPropietario, decimal DcmComisionBancaria, decimal DcmPromocionDePago, decimal DcmTotal)
         {
             bool result = false;
             if (usuariosCompletosRepository.GenerarLigasPagos(
-               UidLigaUrl, VchUrl, VchConcepto, DcmImporte, IdReferencia, UidUsuario, VchIdentificador, DtRegistro, DtVencimiento, VchAsunto, UidLigaAsociado, UidPromocion, UidPropietario
+               UidLigaUrl, VchUrl, VchConcepto, DcmImporte, IdReferencia, UidUsuario, VchIdentificador, DtRegistro, DtVencimiento, VchAsunto, UidLigaAsociado, UidPromocion, UidPropietario, DcmComisionBancaria, DcmPromocionDePago, DcmTotal
                 ))
             {
                 result = true;

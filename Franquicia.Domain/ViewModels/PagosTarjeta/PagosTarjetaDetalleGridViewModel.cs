@@ -10,5 +10,6 @@ namespace Franquicia.Domain.ViewModels
     public class PagosTarjetaDetalleGridViewModel : PagosTarjeta
     {
         public string VchColor { get; set; }
+        public int IntNum { get; set; }
     }
 }

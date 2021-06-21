@@ -76,6 +76,7 @@
     <Compile Include="Repository\ClubPago\AutorizacionPagoRepository.cs" />
     <Compile Include="Repository\ClubPago\CancelacionPagoRepository.cs" />
     <Compile Include="Repository\ClubPago\ConsultarReferenciasRepository.cs" />
+    <Compile Include="Repository\ImporteLigaMinMaxRepository.cs" />
     <Compile Include="Repository\EstatusFechasColegiaturasRepository.cs" />
     <Compile Include="Repository\EstatusColegiaturasAlumnosRepository.cs" />
     <Compile Include="Repository\AvatarsRepository.cs" />

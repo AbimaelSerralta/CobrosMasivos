@@ -51,6 +51,7 @@
     <Compile Include="Models\ClubPago\ConsultarReferencia.cs" />
     <Compile Include="Models\ClubPago\GenerarRefereciaPago.cs" />
     <Compile Include="Models\ClubPago\ObtenerRefereciaPago.cs" />
+    <Compile Include="Models\ImporteLigaMinMax.cs" />
     <Compile Include="Models\EliminarPagos.cs" />
     <Compile Include="Models\Avatars.cs" />
     <Compile Include="Models\EstatusColegiaturasAlumnos.cs" />
@@ -149,6 +150,7 @@
     <Compile Include="ViewModels\ClubPago\GenerarRefereciaPagoIntegraciones.cs" />
     <Compile Include="ViewModels\Colegiaturas\ColegiaturasAlumnosViewModel.cs" />
     <Compile Include="ViewModels\Integraciones\IntegracionesCompleto.cs" />
+    <Compile Include="ViewModels\LigasUrls\LigasUrlsDetalleGridViewModel.cs" />
     <Compile Include="ViewModels\PagosColegiaturas\PagosReporteLigaPadreViewModels.cs" />
     <Compile Include="ViewModels\PagosIntegracion\ReporteGeneradosGridViewModel.cs" />
     <Compile Include="ViewModels\PagosTarjetaPraga\PagosTarjetaPragaColeDetalleGridViewModel.cs" />

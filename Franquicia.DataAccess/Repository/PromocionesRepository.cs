@@ -348,19 +348,31 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
 
-            query.CommandText = "select lu.IdReferencia, lu.VchConcepto, lu.DtVencimiento, lu.VchUrl, lu.DcmImporte, pr.* from LigasUrls lu, Promociones pr where lu.UidPromocion = pr.UidPromocion and lu.UidLigaAsociado = '" + UidLigaAsociado + "'";
+            //No tiene campos de comision query.CommandText = "select lu.IdReferencia, lu.VchConcepto, lu.DtVencimiento, lu.VchUrl, lu.DcmImporte, pr.* from LigasUrls lu, Promociones pr where lu.UidPromocion = pr.UidPromocion and lu.UidLigaAsociado = '" + UidLigaAsociado + "'";
+            query.CommandText = "select lu.IdReferencia, lu.VchConcepto, lu.DtVencimiento, lu.VchUrl, lu.DcmImporte, lu.DcmComisionBancaria, lu.DcmPromocionDePago, lu.DcmTotal, pr.* from LigasUrls lu, Promociones pr where lu.UidPromocion = pr.UidPromocion and lu.UidLigaAsociado = '" + UidLigaAsociado + "'";
 
             DataTable dt = this.Busquedas(query);
 
             foreach (DataRow item in dt.Rows)
             {
+                decimal DcmImporte = 0;
+
+                if (!string.IsNullOrEmpty(item["DcmTotal"].ToString()))
+                {
+                    DcmImporte = item.IsNull("DcmTotal") ? 0 : decimal.Parse(item["DcmTotal"].ToString());
+                }
+                else
+                {
+                    DcmImporte = decimal.Parse(item.IsNull("DcmImporte") ? "0" : item["DcmImporte"].ToString());
+                }
+
                 lsSelectPagoLigaModel.Add(new SelectPagoLigaModel()
                 {
                     IdReferencia = item["IdReferencia"].ToString(),
                     VchConcepto = item["VchConcepto"].ToString(),
                     DtVencimiento = DateTime.Parse(item["DtVencimiento"].ToString()),
                     VchUrl = item["VchUrl"].ToString(),
-                    DcmImporte = decimal.Parse(item["DcmImporte"].ToString()),
+                    DcmImporte = DcmImporte,
                     UidPromocion = new Guid(item["UidPromocion"].ToString()),
                     VchDescripcion = item["VchDescripcion"].ToString(),
                     IntGerarquia = int.Parse(item["IntGerarquia"].ToString())
@@ -370,19 +382,30 @@ namespace Franquicia.DataAccess.Repository
             SqlCommand query2 = new SqlCommand();
             query2.CommandType = CommandType.Text;
 
-            query2.CommandText = "select IdReferencia, VchConcepto, DtVencimiento, VchUrl, DcmImporte from LigasUrls where UidPromocion IS NULL AND UidLigaAsociado = '" + UidLigaAsociado + "'";
+            query2.CommandText = "select IdReferencia, VchConcepto, DtVencimiento, VchUrl, DcmImporte, DcmComisionBancaria, DcmPromocionDePago, DcmTotal from LigasUrls where UidPromocion IS NULL AND UidLigaAsociado = '" + UidLigaAsociado + "'";
 
             DataTable dt2 = this.Busquedas(query2);
 
             foreach (DataRow item in dt2.Rows)
             {
+                decimal DcmImporte = 0;
+
+                if (!string.IsNullOrEmpty(item["DcmTotal"].ToString()))
+                {
+                    DcmImporte = item.IsNull("DcmTotal") ? 0 : decimal.Parse(item["DcmTotal"].ToString());
+                }
+                else
+                {
+                    DcmImporte = decimal.Parse(item.IsNull("DcmImporte") ? "0" : item["DcmImporte"].ToString());
+                }
+
                 lsSelectPagoLigaModel.Add(new SelectPagoLigaModel()
                 {
                     IdReferencia = item["IdReferencia"].ToString(),
                     VchConcepto = item["VchConcepto"].ToString(),
                     DtVencimiento = DateTime.Parse(item["DtVencimiento"].ToString()),
                     VchUrl = item["VchUrl"].ToString(),
-                    DcmImporte = decimal.Parse(item["DcmImporte"].ToString()),
+                    DcmImporte = DcmImporte,
                     UidPromocion = Guid.Empty,
                     VchDescripcion = "Al contado",
                     IntGerarquia = 0
@@ -415,7 +438,10 @@ namespace Franquicia.DataAccess.Repository
                     IdReferencia = item["IdReferencia"].ToString(),
                     DtVencimiento = DateTime.Parse(item["DtVencimiento"].ToString()),
                     DcmImporte = decimal.Parse(item["DcmImporte"].ToString()),
-                    VchDescripcion = item["VchDescripcion"].ToString()
+                    VchDescripcion = item["VchDescripcion"].ToString(),
+                    DcmComisionBancaria = decimal.Parse(item["DcmComisionBancaria"].ToString()),
+                    DcmPromocionDePago = decimal.Parse(item["DcmPromocionDePago"].ToString()),
+                    DcmTotal = decimal.Parse(item["DcmTotal"].ToString())
                 });
             }
 

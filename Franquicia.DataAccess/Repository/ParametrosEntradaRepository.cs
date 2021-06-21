@@ -148,6 +148,159 @@ namespace Franquicia.DataAccess.Repository
         }
         #endregion
 
+
+        #region CobrosMasivos
+        #region MetodosClientes
+        public void ObtenerParametrosEntradaClienteCM(Guid UidCliente)
+        {
+            parametrosEntrada = new ParametrosEntrada();
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select pe.* from Clientes cl, ParametrosEntrada pe where cl.UidCliente = pe.UidPropietario and cl.UidCliente = '" + UidCliente + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            foreach (DataRow item in dt.Rows)
+            {
+                parametrosEntrada.UidParametroEntrada = Guid.Parse(item["UidParametroEntrada"].ToString());
+                parametrosEntrada.IdCompany = item["IdCompany"].ToString();
+                parametrosEntrada.IdBranch = item["IdBranch"].ToString();
+                parametrosEntrada.VchModena = item["VchModena"].ToString();
+                parametrosEntrada.VchUsuario = item["VchUsuario"].ToString();
+                parametrosEntrada.VchPassword = item["VchPassword"].ToString();
+                parametrosEntrada.VchCanal = item["VchCanal"].ToString();
+                parametrosEntrada.VchData0 = item["VchData0"].ToString();
+                parametrosEntrada.VchUrl = item["VchUrl"].ToString();
+                parametrosEntrada.VchSemillaAES = item["VchSemillaAES"].ToString();
+                parametrosEntrada.UidPropietario = Guid.Parse(item["UidPropietario"].ToString());
+                parametrosEntrada.BitImporteLiga = bool.Parse(item["BitImporteLiga"].ToString());
+                parametrosEntrada.DcmImporteMin = item.IsNull("DcmImporteMin") ? 0 : decimal.Parse(item["DcmImporteMin"].ToString());
+                parametrosEntrada.DcmImporteMax = item.IsNull("DcmImporteMax") ? 0 : decimal.Parse(item["DcmImporteMax"].ToString());
+            }
+        }
+
+        public bool RegistrarParametrosEntradaClienteCM(ParametrosEntrada parametrosEntrada)
+        {
+            bool Resultado = false;
+
+            SqlCommand comando = new SqlCommand();
+            try
+            {
+                comando.CommandType = System.Data.CommandType.StoredProcedure;
+                comando.CommandText = "sp_ParametrosEntradaRegistrarCliente";
+
+                comando.Parameters.Add("@IdCompany", SqlDbType.VarChar, 50);
+                comando.Parameters["@IdCompany"].Value = parametrosEntrada.IdCompany;
+
+                comando.Parameters.Add("@IdBranch", SqlDbType.VarChar, 50);
+                comando.Parameters["@IdBranch"].Value = parametrosEntrada.IdBranch;
+
+                comando.Parameters.Add("@VchModena", SqlDbType.VarChar, 50);
+                comando.Parameters["@VchModena"].Value = parametrosEntrada.VchModena;
+
+                comando.Parameters.Add("@VchUsuario", SqlDbType.VarChar, 50);
+                comando.Parameters["@VchUsuario"].Value = parametrosEntrada.VchUsuario;
+
+                comando.Parameters.Add("@VchPassword", SqlDbType.VarChar, 50);
+                comando.Parameters["@VchPassword"].Value = parametrosEntrada.VchPassword;
+
+                comando.Parameters.Add("@VchCanal", SqlDbType.VarChar, 50);
+                comando.Parameters["@VchCanal"].Value = parametrosEntrada.VchCanal;
+
+                comando.Parameters.Add("@VchData0", SqlDbType.VarChar, 50);
+                comando.Parameters["@VchData0"].Value = parametrosEntrada.VchData0;
+
+                comando.Parameters.Add("@VchUrl", SqlDbType.VarChar, 50);
+                comando.Parameters["@VchUrl"].Value = parametrosEntrada.VchUrl;
+
+                comando.Parameters.Add("@VchSemillaAES", SqlDbType.VarChar, 50);
+                comando.Parameters["@VchSemillaAES"].Value = parametrosEntrada.VchSemillaAES;
+
+                comando.Parameters.Add("@UidPropietario", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidPropietario"].Value = parametrosEntrada.UidPropietario;
+
+                comando.Parameters.Add("@BitImporteLiga", SqlDbType.Bit);
+                comando.Parameters["@BitImporteLiga"].Value = parametrosEntrada.BitImporteLiga;
+
+                comando.Parameters.Add("@DcmImporteMin", SqlDbType.Decimal);
+                comando.Parameters["@DcmImporteMin"].Value = parametrosEntrada.DcmImporteMin;
+
+                comando.Parameters.Add("@DcmImporteMax", SqlDbType.Decimal);
+                comando.Parameters["@DcmImporteMax"].Value = parametrosEntrada.DcmImporteMax;
+
+                Resultado = this.ManipulacionDeDatos(comando);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return Resultado;
+        }
+
+        public bool ActualizarParametrosEntradaClienteCM(ParametrosEntrada parametrosEntrada)
+        {
+            bool Resultado = false;
+
+            SqlCommand comando = new SqlCommand();
+            try
+            {
+                comando.CommandType = System.Data.CommandType.StoredProcedure;
+                comando.CommandText = "sp_ParametrosEntradaActualizarCliente";
+
+                comando.Parameters.Add("@IdCompany", SqlDbType.VarChar, 50);
+                comando.Parameters["@IdCompany"].Value = parametrosEntrada.IdCompany;
+
+                comando.Parameters.Add("@IdBranch", SqlDbType.VarChar, 50);
+                comando.Parameters["@IdBranch"].Value = parametrosEntrada.IdBranch;
+
+                comando.Parameters.Add("@VchModena", SqlDbType.VarChar, 50);
+                comando.Parameters["@VchModena"].Value = parametrosEntrada.VchModena;
+
+                comando.Parameters.Add("@VchUsuario", SqlDbType.VarChar, 50);
+                comando.Parameters["@VchUsuario"].Value = parametrosEntrada.VchUsuario;
+
+                comando.Parameters.Add("@VchPassword", SqlDbType.VarChar, 50);
+                comando.Parameters["@VchPassword"].Value = parametrosEntrada.VchPassword;
+
+                comando.Parameters.Add("@VchCanal", SqlDbType.VarChar, 50);
+                comando.Parameters["@VchCanal"].Value = parametrosEntrada.VchCanal;
+
+                comando.Parameters.Add("@VchData0", SqlDbType.VarChar, 50);
+                comando.Parameters["@VchData0"].Value = parametrosEntrada.VchData0;
+
+                comando.Parameters.Add("@VchUrl", SqlDbType.VarChar, 50);
+                comando.Parameters["@VchUrl"].Value = parametrosEntrada.VchUrl;
+
+                comando.Parameters.Add("@VchSemillaAES", SqlDbType.VarChar, 50);
+                comando.Parameters["@VchSemillaAES"].Value = parametrosEntrada.VchSemillaAES;
+
+                comando.Parameters.Add("@UidPropietario", SqlDbType.UniqueIdentifier);
+                comando.Parameters["@UidPropietario"].Value = parametrosEntrada.UidPropietario;
+
+                comando.Parameters.Add("@BitImporteLiga", SqlDbType.Bit);
+                comando.Parameters["@BitImporteLiga"].Value = parametrosEntrada.BitImporteLiga;
+
+                comando.Parameters.Add("@DcmImporteMin", SqlDbType.Decimal);
+                comando.Parameters["@DcmImporteMin"].Value = parametrosEntrada.DcmImporteMin;
+
+                comando.Parameters.Add("@DcmImporteMax", SqlDbType.Decimal);
+                comando.Parameters["@DcmImporteMax"].Value = parametrosEntrada.DcmImporteMax;
+
+                Resultado = this.ManipulacionDeDatos(comando);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return Resultado;
+        }
+
+        #endregion
+        #endregion
+
+        #region PagaLaEscuela
         #region MetodosClientes
         public void ObtenerParametrosEntradaCliente(Guid UidCliente)
         {
@@ -274,6 +427,7 @@ namespace Franquicia.DataAccess.Repository
             return Resultado;
         }
 
+        #endregion
         #endregion
     }
 }

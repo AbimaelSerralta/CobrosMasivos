@@ -22,5 +22,8 @@ namespace Franquicia.Domain.Models
         public Guid UidPromocion { get; set; }
         public Guid UidEvento { get; set; }
         public Guid UidPropietario { get; set; }
+        public decimal DcmComisionBancaria { get; set; }
+        public decimal DcmPromocionDePago { get; set; }
+        public decimal DcmTotal { get; set; }
     }
 }

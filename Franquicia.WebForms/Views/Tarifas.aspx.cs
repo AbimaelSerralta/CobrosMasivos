@@ -14,6 +14,8 @@ namespace Franquicia.WebForms.Views
         TarifasServices tarifasServices = new TarifasServices();
         SuperPromocionesServices superPromocionesServices = new SuperPromocionesServices();
         ComisionesTarjetasServices comisionesTarjetasServices = new ComisionesTarjetasServices();
+        ImporteLigaMinMaxServices importeLigaMinMaxServices = new ImporteLigaMinMaxServices();
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -21,10 +23,12 @@ namespace Franquicia.WebForms.Views
                 Session["tarifasServices"] = tarifasServices;
 
                 CargarTarifas();
-               
+
                 CargarSuperPromociones();
 
                 CargarComision();
+
+                CargarImporteLigaMinMax();
             }
             else
             {
@@ -414,12 +418,12 @@ namespace Franquicia.WebForms.Views
 
             if (comisionesTarjetasServices.lsComisionesTarjetas.Count >= 1)
             {
-                ViewState["Accion"] = "Actualizar";
+                ViewState["AccionComision"] = "Actualizar";
                 btnGuardarComision.Text = "<i class=" + "material-icons>" + "refresh </i> Actualizar";
             }
             else
             {
-                ViewState["Accion"] = "Guardar";
+                ViewState["AccionComision"] = "Guardar";
                 btnGuardarComision.Text = "<i class=" + "material-icons>" + "check </i> Guardar";
             }
 
@@ -451,7 +455,7 @@ namespace Franquicia.WebForms.Views
                 txtComisionTarjeta.Text = "0";
             }
 
-            if (ViewState["Accion"].ToString() == "Guardar")
+            if (ViewState["AccionComision"].ToString() == "Guardar")
             {
                 if (comisionesTarjetasServices.RegistrarComisionesTarjeta(cbActivarComision.Checked, decimal.Parse(txtComisionTarjeta.Text)))
                 {
@@ -468,7 +472,7 @@ namespace Franquicia.WebForms.Views
                     divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
                 }
             }
-            else if (ViewState["Accion"].ToString() == "Actualizar")
+            else if (ViewState["AccionComision"].ToString() == "Actualizar")
             {
                 if (comisionesTarjetasServices.ActualizarComisionesTarjeta(cbActivarComision.Checked, decimal.Parse(txtComisionTarjeta.Text), Guid.Parse(ViewState["item.UidComicionTarjeta"].ToString())))
                 {
@@ -489,6 +493,101 @@ namespace Franquicia.WebForms.Views
         protected void cbActivarComision_CheckedChanged(object sender, EventArgs e)
         {
             txtComisionTarjeta.Enabled = cbActivarComision.Checked;
+        }
+        #endregion
+
+        #region ImporteLigaMinMax
+        private void CargarImporteLigaMinMax()
+        {
+            importeLigaMinMaxServices.CargarImporteLigaMinMax();
+
+            foreach (var item in importeLigaMinMaxServices.lsImporteLigaMinMax)
+            {
+                ViewState["item.UidImporteLiga"] = item.UidImporteLiga;
+
+                txtImporteMin.Text = item.DcmImporteMin.ToString("N2");
+                txtImporteMax.Text = item.DcmImporteMax.ToString("N2");
+            }
+
+            if (importeLigaMinMaxServices.lsImporteLigaMinMax.Count >= 1)
+            {
+                ViewState["AccionImporteLigaMinMax"] = "Actualizar";
+                btnGuardarImporteLiga.Text = "<i class=" + "material-icons>" + "refresh </i> Actualizar";
+            }
+            else
+            {
+                ViewState["AccionImporteLigaMinMax"] = "Guardar";
+                btnGuardarImporteLiga.Text = "<i class=" + "material-icons>" + "check </i> Guardar";
+            }
+        }
+        protected void btnGuardarImporteLiga_Click(object sender, EventArgs e)
+        {
+            if (txtImporteMin.EmptyTextBox())
+            {
+                pnlAlert.Visible = true;
+                lblMensajeAlert.Text = "El campo Importe Mínimo es obligatorio.";
+                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                return;
+            }
+            
+            if (txtImporteMax.EmptyTextBox())
+            {
+                pnlAlert.Visible = true;
+                lblMensajeAlert.Text = "El campo Importe Máximo es obligatorio.";
+                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                return;
+            }
+
+            ValidacionesServices validacionesServices = new ValidacionesServices();
+            if (!validacionesServices.IsNumeric(txtImporteMin.Text))
+            {
+                pnlAlert.Visible = true;
+                lblMensajeAlert.Text = "El Importe Mínimo no es un formato correcto.";
+                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                return;
+            }
+            if (!validacionesServices.IsNumeric(txtImporteMax.Text))
+            {
+                pnlAlert.Visible = true;
+                lblMensajeAlert.Text = "El Importe Máximo no es un formato correcto.";
+                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                return;
+            }
+
+            if (ViewState["AccionImporteLigaMinMax"].ToString() == "Guardar")
+            {
+                if (importeLigaMinMaxServices.RegistrarImporteLigaMinMax(decimal.Parse(txtImporteMin.Text), decimal.Parse(txtImporteMax.Text)))
+                {
+                    pnlAlert.Visible = true;
+                    lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
+                    divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+
+                    CargarImporteLigaMinMax();
+                }
+                else
+                {
+                    pnlAlert.Visible = true;
+                    lblMensajeAlert.Text = "<b>¡Lo sentimos! </b> no se ha podido registar, por favor intentelo de nuevo, si el problema persiste, favor de contactar a los admnistradores.";
+                    divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                }
+            }
+            else if (ViewState["AccionImporteLigaMinMax"].ToString() == "Actualizar")
+            {
+                if (importeLigaMinMaxServices.ActualizarImporteLigaMinMax(decimal.Parse(txtImporteMin.Text), decimal.Parse(txtImporteMax.Text), Guid.Parse(ViewState["item.UidImporteLiga"].ToString())))
+                {
+                    pnlAlert.Visible = true;
+                    lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha actualizado exitosamente.";
+                    divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+
+                    CargarImporteLigaMinMax();
+                }
+                else
+                {
+                    pnlAlert.Visible = true;
+                    lblMensajeAlert.Text = "<b>¡Lo sentimos! </b> no se ha podido actualizar, por favor intentelo de nuevo, si el problema persiste, favor de contactar a los admnistradores.";
+                    divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                }
+            }
         }
         #endregion
     }

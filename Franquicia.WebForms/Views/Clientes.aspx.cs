@@ -30,6 +30,8 @@ namespace Franquicia.WebForms.Views
         PromocionesServices promocionesServices = new PromocionesServices();
         ComisionesTarjetasClientesServices comisionesTarjetasClServices = new ComisionesTarjetasClientesServices();
         ComisionesTarjetasServices comisionesTarjetasServices = new ComisionesTarjetasServices();
+        ImporteLigaMinMaxServices importeLigaMinMaxServices = new ImporteLigaMinMaxServices();
+        ParametrosEntradaServices parametrosEntradaServices = new ParametrosEntradaServices();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -303,6 +305,19 @@ namespace Franquicia.WebForms.Views
                                 catch (Exception ex)
                                 {
                                     var s = ex.Message;                                    
+                                }
+                            }
+
+                            importeLigaMinMaxServices.CargarImporteLigaMinMax();
+                            foreach (var itComi in importeLigaMinMaxServices.lsImporteLigaMinMax)
+                            {
+                                try
+                                {
+                                    parametrosEntradaServices.RegistrarParametrosEntradaClienteCM("", "", "", "", "", "", "", "", "", UidCliente, false, itComi.DcmImporteMin, itComi.DcmImporteMax);
+                                }
+                                catch (Exception ex)
+                                {
+                                    var s = ex.Message;
                                 }
                             }
 

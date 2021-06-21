@@ -138,7 +138,7 @@
                                                             <i class="material-icons">$</i>
                                                         </span>
                                                     </div>
-                                                    <asp:TextBox ID="txtImporte" Text="50" PlaceHolder="Min $50" CssClass="form-control" TextMode="Phone" runat="server" />
+                                                    <asp:TextBox ID="txtImporte" Text="0.00" CssClass="form-control" TextMode="Phone" runat="server" />
                                                 </div>
 
                                                 <asp:FilteredTextBoxExtender FilterType="Numbers, Custom" ValidChars=".," TargetControlID="txtImporte" runat="server" />

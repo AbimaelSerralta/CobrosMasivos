@@ -9,6 +9,7 @@ namespace Franquicia.Domain.ViewModels
 {
     public class PagTarjDetalUsFinalGridViewModel : PagosTarjeta
     {
+        public int IntNum { get; set; }
         public string VchColor { get; set; }
     }
 }
