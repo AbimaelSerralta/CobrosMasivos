@@ -110,6 +110,11 @@ namespace Franquicia.WebForms.Views
                     {
                         dr[header] = HttpUtility.HtmlDecode(row.Cells[j].Text.Replace("&nbsp;", ""));
                     }
+
+                    if (header == "PROMOCION(ES)")
+                    {
+                        dr[header] = HttpUtility.HtmlDecode(row.Cells[j].Text.Replace(" ", "").Replace("MESES", ""));
+                    }
                 }
 
                 data.Rows.Add(dr);

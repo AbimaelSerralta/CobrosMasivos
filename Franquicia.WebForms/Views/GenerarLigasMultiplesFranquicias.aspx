@@ -115,7 +115,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="table-responsive">
-                                            <asp:GridView ID="gvUsuariosSeleccionados" OnRowDataBound="gvUsuariosSeleccionados_RowDataBound" OnSorting="gvUsuariosSeleccionados_Sorting" OnRowCommand="gvUsuariosSeleccionados_RowCommand" AllowSorting="true" AutoGenerateColumns="false" CssClass="table-hover" DataKeyNames="IdUsuario" GridLines="None" border="0" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvUsuariosSeleccionados_PageIndexChanging" runat="server">
+                                            <asp:GridView ID="gvUsuariosSeleccionados" OnRowCreated="gvUsuariosSeleccionados_RowCreated" OnRowDataBound="gvUsuariosSeleccionados_RowDataBound" OnSorting="gvUsuariosSeleccionados_Sorting" OnRowCommand="gvUsuariosSeleccionados_RowCommand" AllowSorting="true" AutoGenerateColumns="false" CssClass="table-hover" DataKeyNames="IdUsuario" GridLines="None" border="0" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvUsuariosSeleccionados_PageIndexChanging" runat="server">
                                                 <EmptyDataTemplate>
                                                     <div class="alert alert-info">No hay usuarios</div>
                                                 </EmptyDataTemplate>
@@ -202,7 +202,7 @@
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                 </Columns>
-                                                <PagerStyle CssClass="pagination-ys" />
+                                                <PagerStyle HorizontalAlign="Center" CssClass="pagination-ys" />
                                             </asp:GridView>
 
                                             <asp:GridView ID="gridview" AutoGenerateColumns="false" CssClass="table table-hover" GridLines="None" border="0" runat="server">
@@ -572,7 +572,7 @@
                                         <div class="card-body">
                                             <div class="row">
                                                 <div class="table-responsive">
-                                                    <asp:GridView ID="gvUsuarios" OnSorting="gvUsuarios_Sorting" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="IdUsuario" GridLines="None" border="0" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvUsuarios_PageIndexChanging" runat="server">
+                                                    <asp:GridView ID="gvUsuarios" OnRowCreated="gvUsuarios_RowCreated" OnSorting="gvUsuarios_Sorting" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="IdUsuario" GridLines="None" border="0" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvUsuarios_PageIndexChanging" runat="server">
                                                         <EmptyDataTemplate>
                                                             <div class="alert alert-info">No hay usuarios</div>
                                                         </EmptyDataTemplate>
@@ -594,7 +594,7 @@
                                                             <asp:BoundField SortExpression="StrCorreo" DataField="StrCorreo" HeaderText="CORREO" />
                                                             <asp:BoundField SortExpression="StrTelefono" DataField="StrTelefono" HeaderText="TELEFONO" />
                                                         </Columns>
-                                                        <PagerStyle CssClass="pagination-ys" />
+                                                        <PagerStyle HorizontalAlign="Center" CssClass="pagination-ys" />
                                                     </asp:GridView>
                                                 </div>
                                             </div>

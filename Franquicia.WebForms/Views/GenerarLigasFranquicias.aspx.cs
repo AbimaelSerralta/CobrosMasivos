@@ -68,7 +68,10 @@ namespace Franquicia.WebForms.Views
             if (!IsPostBack)
             {
                 ViewState["gvUsuariosSeleccionados"] = SortDirection.Ascending;
+                ViewState["SoExgvUsuariosSeleccionados"] = "";
+
                 ViewState["gvUsuarios"] = SortDirection.Ascending;
+                ViewState["SoExgvUsuarios"] = "";
 
                 btnCargarExcel.Attributes.Add("onclick", "document.getElementById('" + fuSelecionarExcel.ClientID + "').click(); return false;");
                 fuSelecionarExcel.Attributes["onchange"] = "UploadFile(this)";
@@ -500,6 +503,96 @@ namespace Franquicia.WebForms.Views
             gvUsuarios.DataSource = usuariosCompletosServices.lsLigasUsuariosGridViewModel.Where(x => x.blSeleccionado == false).ToList();
             gvUsuarios.DataBind();
         }
+        protected void gvUsuarios_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            string SortExpression = e.SortExpression;
+            ViewState["SoExgvUsuarios"] = e.SortExpression;
+            SortDirection direccion;
+            string Orden = string.Empty;
+
+            if (ViewState["gvUsuarios"] != null)
+            {
+                direccion = (SortDirection)ViewState["gvUsuarios"];
+                if (direccion == SortDirection.Ascending)
+                {
+                    ViewState["gvUsuarios"] = SortDirection.Descending;
+                    Orden = "ASC";
+                }
+                else
+                {
+                    ViewState["gvUsuarios"] = SortDirection.Ascending;
+                    Orden = "DESC";
+                }
+
+                switch (SortExpression)
+                {
+                    case "NombreCompleto":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsLigasUsuariosGridViewModel = usuariosCompletosServices.lsLigasUsuariosGridViewModel.OrderBy(x => x.NombreCompleto).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsLigasUsuariosGridViewModel = usuariosCompletosServices.lsLigasUsuariosGridViewModel.OrderByDescending(x => x.NombreCompleto).ToList();
+                        }
+                        break;
+                    case "StrCorreo":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsLigasUsuariosGridViewModel = usuariosCompletosServices.lsLigasUsuariosGridViewModel.OrderBy(x => x.StrCorreo).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsLigasUsuariosGridViewModel = usuariosCompletosServices.lsLigasUsuariosGridViewModel.OrderByDescending(x => x.StrCorreo).ToList();
+                        }
+                        break;
+                    case "StrTelefono":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsLigasUsuariosGridViewModel = usuariosCompletosServices.lsLigasUsuariosGridViewModel.OrderBy(x => x.StrTelefono).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsLigasUsuariosGridViewModel = usuariosCompletosServices.lsLigasUsuariosGridViewModel.OrderByDescending(x => x.StrTelefono).ToList();
+                        }
+                        break;
+                }
+
+                gvUsuarios.DataSource = usuariosCompletosServices.lsLigasUsuariosGridViewModel.Where(x => x.blSeleccionado == false).ToList();
+                gvUsuarios.DataBind();
+            }
+        }
+        protected void gvUsuarios_RowCreated(object sender, GridViewRowEventArgs e)
+        {
+            SortDirection direccion = (SortDirection)ViewState["gvUsuarios"];
+            string SortExpression = ViewState["SoExgvUsuarios"].ToString();
+
+            if (e.Row.RowType == DataControlRowType.Header)
+            {
+                foreach (TableCell tc in e.Row.Cells)
+                {
+                    if (tc.HasControls())
+                    {
+                        // Buscar el enlace de la cabecera
+                        LinkButton lnk = tc.Controls[0] as LinkButton;
+                        if (lnk != null && SortExpression == lnk.CommandArgument)
+                        {
+                            // Verificar que se está ordenando por el campo indicado en el comando de ordenación
+                            // Crear una imagen
+                            System.Web.UI.WebControls.Image img = new System.Web.UI.WebControls.Image();
+                            img.Height = 20;
+                            img.Width = 20;
+                            // Ajustar dinámicamente el icono adecuado
+                            img.ImageUrl = "~/Images/SortingGv/" + (direccion == SortDirection.Ascending ? "desc" : "asc") + ".png";
+                            img.ImageAlign = ImageAlign.AbsMiddle;
+                            // Le metemos un espacio delante de la imagen para que no se pegue al enlace
+                            tc.Controls.Add(new LiteralControl(""));
+                            tc.Controls.Add(img);
+                        }
+                    }
+                }
+            }
+        }
 
         protected void gvUsuariosSeleccionados_RowCommand(object sender, GridViewCommandEventArgs e)
         {
@@ -513,6 +606,102 @@ namespace Franquicia.WebForms.Views
                 usuariosCompletosServices.EliminarItemgvUsuariosSeleccionadosFranquicia(dataKey);
                 gvUsuariosSeleccionados.DataSource = usuariosCompletosServices.lsgvUsuariosSeleccionados;
                 gvUsuariosSeleccionados.DataBind();
+            }
+        }
+        protected void gvUsuariosSeleccionados_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvUsuariosSeleccionados.PageIndex = e.NewPageIndex;
+            gvUsuariosSeleccionados.DataSource = usuariosCompletosServices.lsLigasUsuariosGridViewModel.Where(x => x.blSeleccionado == true).ToList();
+            gvUsuariosSeleccionados.DataBind();
+        }
+        protected void gvUsuariosSeleccionados_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            string SortExpression = e.SortExpression;
+            ViewState["SoExgvUsuariosSeleccionados"] = e.SortExpression;
+            SortDirection direccion;
+            string Orden = string.Empty;
+
+            if (ViewState["gvUsuariosSeleccionados"] != null)
+            {
+                direccion = (SortDirection)ViewState["gvUsuariosSeleccionados"];
+                if (direccion == SortDirection.Ascending)
+                {
+                    ViewState["gvUsuariosSeleccionados"] = SortDirection.Descending;
+                    Orden = "ASC";
+                }
+                else
+                {
+                    ViewState["gvUsuariosSeleccionados"] = SortDirection.Ascending;
+                    Orden = "DESC";
+                }
+
+                switch (SortExpression)
+                {
+                    case "NombreCompleto":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsLigasUsuariosGridViewModel = usuariosCompletosServices.lsLigasUsuariosGridViewModel.OrderBy(x => x.NombreCompleto).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsLigasUsuariosGridViewModel = usuariosCompletosServices.lsLigasUsuariosGridViewModel.OrderByDescending(x => x.NombreCompleto).ToList();
+                        }
+                        break;
+                    case "StrCorreo":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsLigasUsuariosGridViewModel = usuariosCompletosServices.lsLigasUsuariosGridViewModel.OrderBy(x => x.StrCorreo).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsLigasUsuariosGridViewModel = usuariosCompletosServices.lsLigasUsuariosGridViewModel.OrderByDescending(x => x.StrCorreo).ToList();
+                        }
+                        break;
+                    case "StrTelefono":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsLigasUsuariosGridViewModel = usuariosCompletosServices.lsLigasUsuariosGridViewModel.OrderBy(x => x.StrTelefono).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsLigasUsuariosGridViewModel = usuariosCompletosServices.lsLigasUsuariosGridViewModel.OrderByDescending(x => x.StrTelefono).ToList();
+                        }
+                        break;
+                }
+
+                gvUsuariosSeleccionados.DataSource = usuariosCompletosServices.lsLigasUsuariosGridViewModel.Where(x => x.blSeleccionado == true).ToList(); ;
+                gvUsuariosSeleccionados.DataBind();
+            }
+        }
+        protected void gvUsuariosSeleccionados_RowCreated(object sender, GridViewRowEventArgs e)
+        {
+            SortDirection direccion = (SortDirection)ViewState["gvUsuariosSeleccionados"];
+            string SortExpression = ViewState["SoExgvUsuariosSeleccionados"].ToString();
+
+            if (e.Row.RowType == DataControlRowType.Header)
+            {
+                foreach (TableCell tc in e.Row.Cells)
+                {
+                    if (tc.HasControls())
+                    {
+                        // Buscar el enlace de la cabecera
+                        LinkButton lnk = tc.Controls[0] as LinkButton;
+                        if (lnk != null && SortExpression == lnk.CommandArgument)
+                        {
+                            // Verificar que se está ordenando por el campo indicado en el comando de ordenación
+                            // Crear una imagen
+                            System.Web.UI.WebControls.Image img = new System.Web.UI.WebControls.Image();
+                            img.Height = 20;
+                            img.Width = 20;
+                            // Ajustar dinámicamente el icono adecuado
+                            img.ImageUrl = "~/Images/SortingGv/" + (direccion == SortDirection.Ascending ? "desc" : "asc") + ".png";
+                            img.ImageAlign = ImageAlign.AbsMiddle;
+                            // Le metemos un espacio delante de la imagen para que no se pegue al enlace
+                            tc.Controls.Add(new LiteralControl(""));
+                            tc.Controls.Add(img);
+                        }
+                    }
+                }
             }
         }
 
@@ -759,131 +948,6 @@ namespace Franquicia.WebForms.Views
             lblResumen.Text = "";
             divAlertModal.Attributes.Add("class", "alert alert-success alert-dismissible fade");
             ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
-        }
-
-        protected void gvUsuariosSeleccionados_PageIndexChanging(object sender, GridViewPageEventArgs e)
-        {
-            gvUsuariosSeleccionados.PageIndex = e.NewPageIndex;
-            gvUsuariosSeleccionados.DataSource = usuariosCompletosServices.lsLigasUsuariosGridViewModel.Where(x => x.blSeleccionado == true).ToList();
-            gvUsuariosSeleccionados.DataBind();
-        }
-
-        protected void gvUsuariosSeleccionados_Sorting(object sender, GridViewSortEventArgs e)
-        {
-            string SortExpression = e.SortExpression;
-            SortDirection direccion;
-            string Orden = string.Empty;
-
-            if (ViewState["gvUsuariosSeleccionados"] != null)
-            {
-                direccion = (SortDirection)ViewState["gvUsuariosSeleccionados"];
-                if (direccion == SortDirection.Ascending)
-                {
-                    ViewState["gvUsuariosSeleccionados"] = SortDirection.Descending;
-                    Orden = "ASC";
-                }
-                else
-                {
-                    ViewState["gvUsuariosSeleccionados"] = SortDirection.Ascending;
-                    Orden = "DESC";
-                }
-
-                switch (SortExpression)
-                {
-                    case "NombreCompleto":
-                        if (Orden == "ASC")
-                        {
-                            usuariosCompletosServices.lsLigasUsuariosGridViewModel = usuariosCompletosServices.lsLigasUsuariosGridViewModel.OrderBy(x => x.NombreCompleto).ToList();
-                        }
-                        else
-                        {
-                            usuariosCompletosServices.lsLigasUsuariosGridViewModel = usuariosCompletosServices.lsLigasUsuariosGridViewModel.OrderByDescending(x => x.NombreCompleto).ToList();
-                        }
-                        break;
-                    case "StrCorreo":
-                        if (Orden == "ASC")
-                        {
-                            usuariosCompletosServices.lsLigasUsuariosGridViewModel = usuariosCompletosServices.lsLigasUsuariosGridViewModel.OrderBy(x => x.StrCorreo).ToList();
-                        }
-                        else
-                        {
-                            usuariosCompletosServices.lsLigasUsuariosGridViewModel = usuariosCompletosServices.lsLigasUsuariosGridViewModel.OrderByDescending(x => x.StrCorreo).ToList();
-                        }
-                        break;
-                    case "StrTelefono":
-                        if (Orden == "ASC")
-                        {
-                            usuariosCompletosServices.lsLigasUsuariosGridViewModel = usuariosCompletosServices.lsLigasUsuariosGridViewModel.OrderBy(x => x.StrTelefono).ToList();
-                        }
-                        else
-                        {
-                            usuariosCompletosServices.lsLigasUsuariosGridViewModel = usuariosCompletosServices.lsLigasUsuariosGridViewModel.OrderByDescending(x => x.StrTelefono).ToList();
-                        }
-                        break;
-                }
-
-                gvUsuariosSeleccionados.DataSource = usuariosCompletosServices.lsLigasUsuariosGridViewModel.Where(x => x.blSeleccionado == true).ToList(); ;
-                gvUsuariosSeleccionados.DataBind();
-            }
-        }
-
-        protected void gvUsuarios_Sorting(object sender, GridViewSortEventArgs e)
-        {
-            string SortExpression = e.SortExpression;
-            SortDirection direccion;
-            string Orden = string.Empty;
-
-            if (ViewState["gvUsuarios"] != null)
-            {
-                direccion = (SortDirection)ViewState["gvUsuarios"];
-                if (direccion == SortDirection.Ascending)
-                {
-                    ViewState["gvUsuarios"] = SortDirection.Descending;
-                    Orden = "ASC";
-                }
-                else
-                {
-                    ViewState["gvUsuarios"] = SortDirection.Ascending;
-                    Orden = "DESC";
-                }
-
-                switch (SortExpression)
-                {
-                    case "NombreCompleto":
-                        if (Orden == "ASC")
-                        {
-                            usuariosCompletosServices.lsLigasUsuariosGridViewModel = usuariosCompletosServices.lsLigasUsuariosGridViewModel.OrderBy(x => x.NombreCompleto).ToList();
-                        }
-                        else
-                        {
-                            usuariosCompletosServices.lsLigasUsuariosGridViewModel = usuariosCompletosServices.lsLigasUsuariosGridViewModel.OrderByDescending(x => x.NombreCompleto).ToList();
-                        }
-                        break;
-                    case "StrCorreo":
-                        if (Orden == "ASC")
-                        {
-                            usuariosCompletosServices.lsLigasUsuariosGridViewModel = usuariosCompletosServices.lsLigasUsuariosGridViewModel.OrderBy(x => x.StrCorreo).ToList();
-                        }
-                        else
-                        {
-                            usuariosCompletosServices.lsLigasUsuariosGridViewModel = usuariosCompletosServices.lsLigasUsuariosGridViewModel.OrderByDescending(x => x.StrCorreo).ToList();
-                        }
-                        break;
-                    case "StrTelefono":
-                        if (Orden == "ASC")
-                        {
-                            usuariosCompletosServices.lsLigasUsuariosGridViewModel = usuariosCompletosServices.lsLigasUsuariosGridViewModel.OrderBy(x => x.StrTelefono).ToList();
-                        }
-                        else
-                        {
-                            usuariosCompletosServices.lsLigasUsuariosGridViewModel = usuariosCompletosServices.lsLigasUsuariosGridViewModel.OrderByDescending(x => x.StrTelefono).ToList();
-                        }
-                        break;
-                }
-
-                gvUsuarios.DataSource = usuariosCompletosServices.lsLigasUsuariosGridViewModel.Where(x => x.blSeleccionado == false).ToList();
-                gvUsuarios.DataBind();
-            }
         }
 
         protected void btnReiniciar_Click(object sender, EventArgs e)

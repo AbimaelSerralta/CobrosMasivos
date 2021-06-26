@@ -41,7 +41,7 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="table-responsive">
-                                            <asp:GridView ID="gvAdministradores" OnSorting="gvAdministradores_Sorting" OnRowCommand="gvAdministradores_RowCommand" OnRowDataBound="gvAdministradores_RowDataBound" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidUsuario" GridLines="None" border="0" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvAdministradores_PageIndexChanging" runat="server">
+                                            <asp:GridView ID="gvAdministradores" OnRowCreated="gvAdministradores_RowCreated" OnSorting="gvAdministradores_Sorting" OnRowCommand="gvAdministradores_RowCommand" OnRowDataBound="gvAdministradores_RowDataBound" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidUsuario" GridLines="None" border="0" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvAdministradores_PageIndexChanging" runat="server">
                                                 <EmptyDataTemplate>
                                                     <div class="alert alert-info">No hay usuarios registrados</div>
                                                 </EmptyDataTemplate>
@@ -86,7 +86,7 @@
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                 </Columns>
-                                                <PagerStyle CssClass="pagination-ys" />
+                                                <PagerStyle HorizontalAlign="Center" CssClass="pagination-ys" />
                                             </asp:GridView>
                                         </div>
                                     </div>
@@ -266,7 +266,7 @@
                                                         <div class="form-group col-md-4">
                                                             <label for="ddlPais" style="color: black;">Pais *</label>
                                                             <asp:DropDownList ID="ddlPais" AutoPostBack="true" AppendDataBoundItems="true" OnSelectedIndexChanged="ddlPais_SelectedIndexChanged" CssClass="form-control" runat="server">
-                                                                <asp:ListItem Text="Seleccione" />
+                                                                <asp:ListItem Text="Seleccione" Value="00000000-0000-0000-0000-000000000000" />
                                                             </asp:DropDownList>
                                                         </div>
                                                         <div class="form-group col-md-4">

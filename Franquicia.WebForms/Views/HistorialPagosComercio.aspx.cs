@@ -46,6 +46,7 @@ namespace Franquicia.WebForms.Views
             if (!IsPostBack)
             {
                 ViewState["gvHistorial"] = SortDirection.Ascending;
+                ViewState["SoExgvHistorial"] = "";
 
                 Session["historialPagosServices"] = historialPagosServices;
                 Session["usuariosCompletosServices"] = usuariosCompletosServices;
@@ -478,6 +479,7 @@ namespace Franquicia.WebForms.Views
         protected void gvHistorial_Sorting(object sender, GridViewSortEventArgs e)
         {
             string SortExpression = e.SortExpression;
+            ViewState["SoExgvHistorial"] = e.SortExpression;
             SortDirection direccion;
             string Orden = string.Empty;
 
@@ -553,14 +555,12 @@ namespace Franquicia.WebForms.Views
                 gvHistorial.DataBind();
             }
         }
-
         protected void gvHistorial_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             gvHistorial.PageIndex = e.NewPageIndex;
             gvHistorial.DataSource = historialPagosServices.lsHistorialPagosGridViewModel;
             gvHistorial.DataBind();
         }
-
         protected void gvHistorial_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandName == "Detalle")
@@ -590,6 +590,37 @@ namespace Franquicia.WebForms.Views
                 lblPendienteWA.Text = whatsAppPendientesServices.WhatsPendientes(dataKeys).ToString();
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalHistorialDetalle()", true);
+            }
+        }
+        protected void gvHistorial_RowCreated(object sender, GridViewRowEventArgs e)
+        {
+            SortDirection direccion = (SortDirection)ViewState["gvHistorial"];
+            string SortExpression = ViewState["SoExgvHistorial"].ToString();
+
+            if (e.Row.RowType == DataControlRowType.Header)
+            {
+                foreach (TableCell tc in e.Row.Cells)
+                {
+                    if (tc.HasControls())
+                    {
+                        // Buscar el enlace de la cabecera
+                        LinkButton lnk = tc.Controls[0] as LinkButton;
+                        if (lnk != null && SortExpression == lnk.CommandArgument)
+                        {
+                            // Verificar que se está ordenando por el campo indicado en el comando de ordenación
+                            // Crear una imagen
+                            System.Web.UI.WebControls.Image img = new System.Web.UI.WebControls.Image();
+                            img.Height = 20;
+                            img.Width = 20;
+                            // Ajustar dinámicamente el icono adecuado
+                            img.ImageUrl = "~/Images/SortingGv/" + (direccion == SortDirection.Ascending ? "desc" : "asc") + ".png";
+                            img.ImageAlign = ImageAlign.AbsMiddle;
+                            // Le metemos un espacio delante de la imagen para que no se pegue al enlace
+                            tc.Controls.Add(new LiteralControl(""));
+                            tc.Controls.Add(img);
+                        }
+                    }
+                }
             }
         }
     }

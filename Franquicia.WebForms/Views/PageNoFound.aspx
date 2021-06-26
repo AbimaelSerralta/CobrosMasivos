@@ -2,7 +2,6 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="CPHCaja" runat="server">
-    <asp:Label Text="text" runat="server" />
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="cBodyBottom" runat="server">
 </asp:Content>

@@ -33,6 +33,10 @@ namespace Franquicia.WebForms.Views
             if (!IsPostBack)
             {
                 ViewState["gvAdministradores"] = SortDirection.Ascending;
+                ViewState["SoExgvAdministradores"] = "";
+
+                ViewState["gvFranquicias"] = SortDirection.Ascending;
+                ViewState["SoExgvFranquicias"] = "";
 
                 #region Direccion
                 Session["paisesServices"] = paisesServices;
@@ -105,6 +109,11 @@ namespace Franquicia.WebForms.Views
         #region Dirección
         protected void ddlPais_SelectedIndexChanged(object sender, EventArgs e)
         {
+            ddlEstado.Items.Clear();
+            ddlMunicipio.Items.Clear();
+            ddlColonia.Items.Clear();
+            ddlCiudad.Items.Clear();
+
             //llena el combo Estados
             estadosServices.CargarEstados(ddlPais.SelectedItem.Value.ToString());
             ddlEstado.Items.Insert(0, new ListItem("Seleccione", "00000000-0000-0000-0000-000000000000"));
@@ -112,8 +121,6 @@ namespace Franquicia.WebForms.Views
             ddlEstado.DataTextField = "VchEstado";
             ddlEstado.DataValueField = "UidEstado";
             ddlEstado.DataBind();
-
-
         }
         protected void ddlEstado_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -181,6 +188,20 @@ namespace Franquicia.WebForms.Views
         #endregion
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
+            string Identificador = string.Empty;
+            Guid Pais = Guid.Empty;
+            Guid Estado = Guid.Empty;
+            Guid Municipio = Guid.Empty;
+            Guid Ciudad = Guid.Empty;
+            Guid Colonia = Guid.Empty;
+            string Calle = string.Empty;
+            string EntreCalle = string.Empty;
+            string YCalle = string.Empty;
+            string NumeroExterior = string.Empty;
+            string NumeroInterior = string.Empty;
+            string CodigoPostal = string.Empty;
+            string Referencia = string.Empty;
+
             #region ValidarCampos
             if (FiltroRFC.EmptyTextBox())
             {
@@ -221,7 +242,11 @@ namespace Franquicia.WebForms.Views
                 lblValidar.Text = "El campo Correo Eléctronico es obligatorio";
                 return;
             }
-
+            if (txtNumero.EmptyTextBox())
+            {
+                lblValidar.Text = "El campo Número es obligatorio";
+                return;
+            }
             if (txtUsuario.EmptyTextBox())
             {
                 lblValidar.Text = "El campo Usuario es obligatorio";
@@ -245,51 +270,59 @@ namespace Franquicia.WebForms.Views
                 return;
             }
 
-            if (ddlPais.EmptyDropDownList())
+            if (ddlIncluirDir.SelectedValue == "SI")
             {
-                lblValidar.Text = "El campo Pais es obligatorio";
-                return;
+                if (ddlPais.EmptyDropDownList())
+                {
+                    lblValidar.Text = "El campo Pais es obligatorio";
+                    return;
+                }
+                if (ddlEstado.EmptyDropDownList())
+                {
+                    lblValidar.Text = "El campo Estado es obligatorio";
+                    return;
+                }
+                if (ddlMunicipio.EmptyDropDownList())
+                {
+                    lblValidar.Text = "El campo Municipio es obligatorio";
+                    return;
+                }
+                if (ddlCiudad.EmptyDropDownList())
+                {
+                    lblValidar.Text = "El campo Ciudad es obligatorio";
+                    return;
+                }
+                if (ddlColonia.EmptyDropDownList())
+                {
+                    lblValidar.Text = "El campo Colonia es obligatorio";
+                    return;
+                }
+                if (txtCalle.EmptyTextBox())
+                {
+                    lblValidar.Text = "El campo Calle es obligatorio";
+                    return;
+                }
+                if (txtCodigoPostal.EmptyTextBox())
+                {
+                    lblValidar.Text = "El campo Código Postal es obligatorio";
+                    return;
+                }
+
+                Identificador = string.Empty;
+                Pais = Guid.Parse(ddlPais.SelectedValue);
+                Estado = Guid.Parse(ddlEstado.SelectedValue);
+                Municipio = Guid.Parse(ddlMunicipio.SelectedValue);
+                Ciudad = Guid.Parse(ddlCiudad.SelectedValue);
+                Colonia = Guid.Parse(ddlColonia.SelectedValue);
+                Calle = txtCalle.Text.Trim().ToUpper();
+                EntreCalle = txtEntreCalle.Text.Trim().ToUpper();
+                YCalle = txtYCalle.Text.Trim().ToUpper();
+                NumeroExterior = txtNumeroExterior.Text.Trim().ToUpper();
+                NumeroInterior = txtNumeroInterior.Text.Trim().ToUpper();
+                CodigoPostal = txtCodigoPostal.Text.Trim().ToUpper();
+                Referencia = txtReferencia.Text.Trim().ToUpper();
             }
-            if (ddlEstado.EmptyDropDownList())
-            {
-                lblValidar.Text = "El campo Estado es obligatorio";
-                return;
-            }
-            if (ddlMunicipio.EmptyDropDownList())
-            {
-                lblValidar.Text = "El campo Municipio es obligatorio";
-                return;
-            }
-            if (ddlCiudad.EmptyDropDownList())
-            {
-                lblValidar.Text = "El campo Ciudad es obligatorio";
-                return;
-            }
-            if (ddlColonia.EmptyDropDownList())
-            {
-                lblValidar.Text = "El campo Colonia es obligatorio";
-                return;
-            }
-            if (txtCalle.EmptyTextBox())
-            {
-                lblValidar.Text = "El campo Calle es obligatorio";
-                return;
-            }
-            if (txtCodigoPostal.EmptyTextBox())
-            {
-                lblValidar.Text = "El campo Código Postal es obligatorio";
-                return;
-            }
-            if (ddlTipoTelefono.EmptyDropDownList())
-            {
-                lblValidar.Text = "El campo Tipo Telefono es obligatorio";
-                return;
-            }
-            if (txtNumero.EmptyTextBox())
-            {
-                lblValidar.Text = "El campo Número es obligatorio";
-                return;
-            }
+
             if (!string.IsNullOrEmpty(lblValidar.Text))
             {
                 lblValidar.Text = string.Empty;
@@ -310,18 +343,37 @@ namespace Franquicia.WebForms.Views
                             {
                                 if (!validacionesServices.ExisteCorreo(txtCorreo.Text.Trim()))
                                 {
-                                    if (usuariosCompletosServices.RegistrarAdministradores(
+                                    Guid UidUsuario = Guid.NewGuid();
+
+                                    if (usuariosCompletosServices.RegistrarAdministradores(UidUsuario,
                                     txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), txtUsuario.Text.Trim().ToUpper(), txtPassword.Text.Trim(), Guid.Parse("18523b2b-c671-44ae-a3f6-f0255c4d11a8"), Guid.Parse("D0B10017-5701-4B1D-B72F-8458AA6F7ADE"),
-                                    txtIdentificador.Text.Trim().ToUpper(), Guid.Parse(ddlPais.SelectedValue), Guid.Parse(ddlEstado.SelectedValue), Guid.Parse(ddlMunicipio.SelectedValue), Guid.Parse(ddlCiudad.SelectedValue), Guid.Parse(ddlColonia.SelectedValue), txtCalle.Text.Trim().ToUpper(), txtEntreCalle.Text.Trim().ToUpper(), txtYCalle.Text.Trim().ToUpper(), txtNumeroExterior.Text.Trim().ToUpper(), txtNumeroInterior.Text.Trim().ToUpper(), txtCodigoPostal.Text.Trim().ToUpper(), txtReferencia.Text.Trim().ToUpper(),
-                                    txtNumero.Text.Trim(), Guid.Parse(ddlTipoTelefono.SelectedValue), Guid.Parse(ViewState["UidFranquicia"].ToString())))
+                                    txtNumero.Text.Trim(), Guid.Parse("B1055882-BCBA-4AB7-94FA-90E57647E607"), Guid.Parse(ViewState["UidFranquicia"].ToString())))
                                     {
+                                        if (ddlIncluirDir.SelectedValue == "SI")
+                                        {
+                                            if (usuariosCompletosServices.RegistrarDireccionUsuarios(UidUsuario, Identificador, Pais, Estado, Municipio, Ciudad, Colonia, Calle, EntreCalle, YCalle, NumeroExterior, NumeroInterior, CodigoPostal, Referencia))
+                                            {
+                                                pnlAlert.Visible = true;
+                                                lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
+                                                divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                                            }
+                                            else
+                                            {
+                                                pnlAlert.Visible = true;
+                                                lblMensajeAlert.Text = "<b>Lo sentimos, </b> el usuario se ha registrado exitosamente, sin embargo la dirección no se pudo registrar.";
+                                                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                                            }
+                                        }
+                                        else
+                                        {
+                                            pnlAlert.Visible = true;
+                                            lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
+                                            divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                                        }
+
                                         usuariosCompletosServices.CargarAdministradores(Guid.Parse("7F5587BF-10C7-4164-A3F8-3D17962AB17E"));
                                         gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
                                         gvAdministradores.DataBind();
-
-                                        pnlAlert.Visible = true;
-                                        lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
-                                        divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
 
                                         ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
                                     }
@@ -378,16 +430,51 @@ namespace Franquicia.WebForms.Views
                             {
                                 if (usuariosCompletosServices.ActualizarAdministradores(
                                 Guid.Parse(ViewState["UidRequerido"].ToString()), txtNombre.Text.Trim().ToUpper(), txtApePaterno.Text.Trim().ToUpper(), txtApeMaterno.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), Guid.Parse(ddlEstatus.SelectedValue), txtUsuario.Text.Trim().ToUpper(), txtPassword.Text.Trim(), Guid.Parse("18523b2b-c671-44ae-a3f6-f0255c4d11a8"),
-                                txtIdentificador.Text.Trim().ToUpper(), Guid.Parse(ddlPais.SelectedValue), Guid.Parse(ddlEstado.SelectedValue), Guid.Parse(ddlMunicipio.SelectedValue), Guid.Parse(ddlCiudad.SelectedValue), Guid.Parse(ddlColonia.SelectedValue), txtCalle.Text.Trim().ToUpper(), txtEntreCalle.Text.Trim().ToUpper(), txtYCalle.Text.Trim().ToUpper(), txtNumeroExterior.Text.Trim().ToUpper(), txtNumeroInterior.Text.Trim().ToUpper(), txtCodigoPostal.Text.Trim().ToUpper(), txtReferencia.Text.Trim().ToUpper(),
                                 txtNumero.Text.Trim(), Guid.Parse(ddlTipoTelefono.SelectedValue), Guid.Parse(ViewState["UidFranquicia"].ToString())))
                                 {
+                                    if (ddlIncluirDir.SelectedValue == "SI")
+                                    {
+                                        if (validacionesServices.ExisteDireccionUsuario(Guid.Parse(ViewState["UidRequerido"].ToString())))
+                                        {
+                                            if (usuariosCompletosServices.ActualizarDireccionUsuarios(Guid.Parse(ViewState["UidRequerido"].ToString()), Identificador, Pais, Estado, Municipio, Ciudad, Colonia, Calle, EntreCalle, YCalle, NumeroExterior, NumeroInterior, CodigoPostal, Referencia))
+                                            {
+                                                pnlAlert.Visible = true;
+                                                lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha actualizado exitosamente.";
+                                                divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                                            }
+                                            else
+                                            {
+                                                pnlAlert.Visible = true;
+                                                lblMensajeAlert.Text = "<b>Lo sentimos, </b> los datos del usuario se ha actualizado exitosamente, sin embargo la dirección no se pudo registrar.";
+                                                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (usuariosCompletosServices.RegistrarDireccionUsuarios(Guid.Parse(ViewState["UidRequerido"].ToString()), Identificador, Pais, Estado, Municipio, Ciudad, Colonia, Calle, EntreCalle, YCalle, NumeroExterior, NumeroInterior, CodigoPostal, Referencia))
+                                            {
+                                                pnlAlert.Visible = true;
+                                                lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
+                                                divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                                            }
+                                            else
+                                            {
+                                                pnlAlert.Visible = true;
+                                                lblMensajeAlert.Text = "<b>Lo sentimos, </b> el usuario se ha registrado exitosamente, sin embargo la dirección no se pudo registrar.";
+                                                divAlert.Attributes.Add("class", "alert alert-danger alert-dismissible fade show");
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        pnlAlert.Visible = true;
+                                        lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha actualizado exitosamente.";
+                                        divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                                    }
+
                                     usuariosCompletosServices.CargarAdministradores(Guid.Parse("7F5587BF-10C7-4164-A3F8-3D17962AB17E"));
                                     gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
                                     gvAdministradores.DataBind();
-
-                                    pnlAlert.Visible = true;
-                                    lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha actualizado exitosamente.";
-                                    divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
 
                                     ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
                                 }
@@ -410,6 +497,13 @@ namespace Franquicia.WebForms.Views
         }
         protected void btnNuevo_Click(object sender, EventArgs e)
         {
+            ddlIncluirDir.SelectedIndex = 0;
+            ddlIncluirDir.Enabled = true;
+            pnlIncluirDir.Visible = false;
+
+            gvFranquicias.SelectedIndex = -1;
+            panelFranquicias.Visible = false;
+
             lblValidar.Text = string.Empty;
             ViewState["Accion"] = "Guardar";
             LimpiarCampos();
@@ -500,11 +594,20 @@ namespace Franquicia.WebForms.Views
         }
         private void LimpiarCampos()
         {
+            FiltroRFC.Text = string.Empty;
+            FiltroRazonSocial.Text = string.Empty;
+            FiltroNombreComercial.Text = string.Empty;
+            ViewState["UidFranquicia"] = Guid.Empty;
+
             txtNombre.Text = string.Empty;
             txtApePaterno.Text = string.Empty;
             txtApeMaterno.Text = string.Empty;
             txtCorreo.Text = string.Empty;
+            lblExiste.Text = "";
+            lblNoExiste.Text = "";
             txtUsuario.Text = string.Empty;
+            lblExisteUsuario.Text = "";
+            lblNoExisteUsuario.Text = "";
             txtPassword.Attributes.Add("value", string.Empty);
             txtRepetirPassword.Attributes.Add("value", string.Empty);
             ddlPerfil.SelectedIndex = -1;
@@ -528,6 +631,37 @@ namespace Franquicia.WebForms.Views
             txtNumero.Text = string.Empty;
         }
 
+        protected void gvAdministradores_RowCreated(object sender, GridViewRowEventArgs e)
+        {
+            SortDirection direccion = (SortDirection)ViewState["gvAdministradores"];
+            string SortExpression = ViewState["SoExgvAdministradores"].ToString();
+
+            if (e.Row.RowType == DataControlRowType.Header)
+            {
+                foreach (TableCell tc in e.Row.Cells)
+                {
+                    if (tc.HasControls())
+                    {
+                        // Buscar el enlace de la cabecera
+                        LinkButton lnk = tc.Controls[0] as LinkButton;
+                        if (lnk != null && SortExpression == lnk.CommandArgument)
+                        {
+                            // Verificar que se está ordenando por el campo indicado en el comando de ordenación
+                            // Crear una imagen
+                            System.Web.UI.WebControls.Image img = new System.Web.UI.WebControls.Image();
+                            img.Height = 20;
+                            img.Width = 20;
+                            // Ajustar dinámicamente el icono adecuado
+                            img.ImageUrl = "~/Images/SortingGv/" + (direccion == SortDirection.Ascending ? "desc" : "asc") + ".png";
+                            img.ImageAlign = ImageAlign.AbsMiddle;
+                            // Le metemos un espacio delante de la imagen para que no se pegue al enlace
+                            tc.Controls.Add(new LiteralControl(""));
+                            tc.Controls.Add(img);
+                        }
+                    }
+                }
+            }
+        }
         protected void gvAdministradores_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
@@ -535,7 +669,6 @@ namespace Franquicia.WebForms.Views
                 e.Row.Attributes["onclick"] = Page.ClientScript.GetPostBackClientHyperlink(gvAdministradores, "Select$" + e.Row.RowIndex);
             }
         }
-
         protected void gvAdministradores_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandName == "Editar")
@@ -557,6 +690,19 @@ namespace Franquicia.WebForms.Views
 
                 ManejoDatos(dataKeys);
 
+                if (!string.IsNullOrEmpty(txtCalle.Text) && !string.IsNullOrEmpty(txtEntreCalle.Text))
+                {
+                    ddlIncluirDir.SelectedIndex = 1;
+                    ddlIncluirDir.Enabled = false;
+                    pnlIncluirDir.Visible = true;
+                }
+                else
+                {
+                    ddlIncluirDir.SelectedIndex = 0;
+                    ddlIncluirDir.Enabled = true;
+                    pnlIncluirDir.Visible = false;
+                }
+
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
             }
 
@@ -576,14 +722,107 @@ namespace Franquicia.WebForms.Views
 
                 ManejoDatos(dataKeys);
 
+                if (!string.IsNullOrEmpty(txtCalle.Text) && !string.IsNullOrEmpty(txtEntreCalle.Text))
+                {
+                    ddlIncluirDir.SelectedIndex = 1;
+                    ddlIncluirDir.Enabled = false;
+                    pnlIncluirDir.Visible = true;
+                }
+                else
+                {
+                    ddlIncluirDir.SelectedIndex = 0;
+                    ddlIncluirDir.Enabled = true;
+                    pnlIncluirDir.Visible = false;
+                }
+
                 lblTituloModal.Text = "Visualización de Administrador";
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
             }
         }
+        protected void gvAdministradores_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvAdministradores.PageIndex = e.NewPageIndex;
+            gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
+            gvAdministradores.DataBind();
+        }
+        protected void gvAdministradores_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            string SortExpression = e.SortExpression;
+            ViewState["SoExgvAdministradores"] = e.SortExpression;
+            SortDirection direccion;
+            string Orden = string.Empty;
+
+            if (ViewState["gvAdministradores"] != null)
+            {
+                direccion = (SortDirection)ViewState["gvAdministradores"];
+                if (direccion == SortDirection.Ascending)
+                {
+                    ViewState["gvAdministradores"] = SortDirection.Descending;
+                    Orden = "ASC";
+                }
+                else
+                {
+                    ViewState["gvAdministradores"] = SortDirection.Ascending;
+                    Orden = "DESC";
+                }
+
+                switch (SortExpression)
+                {
+                    case "NombreCompleto":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderBy(x => x.NombreCompleto).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.NombreCompleto).ToList();
+                        }
+                        break;
+                    case "VchUsuario":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderBy(x => x.VchUsuario).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.VchUsuario).ToList();
+                        }
+                        break;
+                    case "VchNombreComercial":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderBy(x => x.VchNombreComercial).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.VchNombreComercial).ToList();
+                        }
+                        break;
+                    case "UidEstatus":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderBy(x => x.UidEstatus).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.UidEstatus).ToList();
+                        }
+                        break;
+                }
+
+                gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
+                gvAdministradores.DataBind();
+            }
+        }
 
         private void ManejoDatos(Guid dataKeys)
         {
+            lblExiste.Text = "";
+            lblNoExiste.Text = "";
+            lblExisteUsuario.Text = "";
+            lblNoExisteUsuario.Text = "";
+
             //==================FRANQUICIA============================
             franquiciatariosServices.ObtenerFranquicia(dataKeys);
             ViewState["UidFranquicia"] = franquiciatariosServices.franquiciatariosRepository.franquiciasGridViewModel.UidFranquiciatarios;
@@ -638,15 +877,111 @@ namespace Franquicia.WebForms.Views
         }
         protected void gvFranquicias_SelectedIndexChanged(object sender, EventArgs e)
         {
+            GridViewRow row = gvFranquicias.SelectedRow;
+
             Guid UidFranquicia = Guid.Parse(gvFranquicias.SelectedDataKey.Value.ToString());
 
             ViewState["UidFranquicia"] = UidFranquicia;
 
-            FiltroRFC.Text = gvFranquicias.Rows[gvFranquicias.SelectedRow.RowIndex].Cells[1].Text;
-            FiltroRazonSocial.Text = gvFranquicias.Rows[gvFranquicias.SelectedRow.RowIndex].Cells[2].Text;
-            FiltroNombreComercial.Text = gvFranquicias.Rows[gvFranquicias.SelectedRow.RowIndex].Cells[3].Text;
+            FiltroRFC.Text = franquiciatariosServices.lsFranquiciasGridViewModel[row.RowIndex].VchRFC;
+            FiltroRazonSocial.Text = franquiciatariosServices.lsFranquiciasGridViewModel[row.RowIndex].VchRazonSocial;
+            FiltroNombreComercial.Text = franquiciatariosServices.lsFranquiciasGridViewModel[row.RowIndex].VchNombreComercial;
+
+            //FiltroRFC.Text = gvFranquicias.Rows[gvFranquicias.SelectedRow.RowIndex].Cells[1].Text;
+            //FiltroRazonSocial.Text = gvFranquicias.Rows[gvFranquicias.SelectedRow.RowIndex].Cells[2].Text;
+            //FiltroNombreComercial.Text = gvFranquicias.Rows[gvFranquicias.SelectedRow.RowIndex].Cells[3].Text;
 
             panelFranquicias.Visible = false;
+        }
+        protected void gvFranquicias_RowCreated(object sender, GridViewRowEventArgs e)
+        {
+            SortDirection direccion = (SortDirection)ViewState["gvFranquicias"];
+            string SortExpression = ViewState["SoExgvFranquicias"].ToString();
+
+            if (e.Row.RowType == DataControlRowType.Header)
+            {
+                foreach (TableCell tc in e.Row.Cells)
+                {
+                    if (tc.HasControls())
+                    {
+                        // Buscar el enlace de la cabecera
+                        LinkButton lnk = tc.Controls[0] as LinkButton;
+                        if (lnk != null && SortExpression == lnk.CommandArgument)
+                        {
+                            // Verificar que se está ordenando por el campo indicado en el comando de ordenación
+                            // Crear una imagen
+                            System.Web.UI.WebControls.Image img = new System.Web.UI.WebControls.Image();
+                            img.Height = 20;
+                            img.Width = 20;
+                            // Ajustar dinámicamente el icono adecuado
+                            img.ImageUrl = "~/Images/SortingGv/" + (direccion == SortDirection.Ascending ? "desc" : "asc") + ".png";
+                            img.ImageAlign = ImageAlign.AbsMiddle;
+                            // Le metemos un espacio delante de la imagen para que no se pegue al enlace
+                            tc.Controls.Add(new LiteralControl(""));
+                            tc.Controls.Add(img);
+                        }
+                    }
+                }
+            }
+        }
+        protected void gvFranquicias_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            string SortExpression = e.SortExpression;
+            ViewState["SoExgvFranquicias"] = e.SortExpression;
+            SortDirection direccion;
+            string Orden = string.Empty;
+
+            if (ViewState["gvFranquicias"] != null)
+            {
+                direccion = (SortDirection)ViewState["gvFranquicias"];
+                if (direccion == SortDirection.Ascending)
+                {
+                    ViewState["gvFranquicias"] = SortDirection.Descending;
+                    Orden = "ASC";
+                }
+                else
+                {
+                    ViewState["gvFranquicias"] = SortDirection.Ascending;
+                    Orden = "DESC";
+                }
+
+                switch (SortExpression)
+                {
+                    case "VchRFC":
+                        if (Orden == "ASC")
+                        {
+                            franquiciatariosServices.lsFranquiciasGridViewModel = franquiciatariosServices.lsFranquiciasGridViewModel.OrderBy(x => x.VchRFC).ToList();
+                        }
+                        else
+                        {
+                            franquiciatariosServices.lsFranquiciasGridViewModel = franquiciatariosServices.lsFranquiciasGridViewModel.OrderByDescending(x => x.VchRFC).ToList();
+                        }
+                        break;
+                    case "VchRazonSocial":
+                        if (Orden == "ASC")
+                        {
+                            franquiciatariosServices.lsFranquiciasGridViewModel = franquiciatariosServices.lsFranquiciasGridViewModel.OrderBy(x => x.VchRazonSocial).ToList();
+                        }
+                        else
+                        {
+                            franquiciatariosServices.lsFranquiciasGridViewModel = franquiciatariosServices.lsFranquiciasGridViewModel.OrderByDescending(x => x.VchRazonSocial).ToList();
+                        }
+                        break;
+                    case "VchNombreComercial":
+                        if (Orden == "ASC")
+                        {
+                            franquiciatariosServices.lsFranquiciasGridViewModel = franquiciatariosServices.lsFranquiciasGridViewModel.OrderBy(x => x.VchNombreComercial).ToList();
+                        }
+                        else
+                        {
+                            franquiciatariosServices.lsFranquiciasGridViewModel = franquiciatariosServices.lsFranquiciasGridViewModel.OrderByDescending(x => x.VchNombreComercial).ToList();
+                        }
+                        break;
+                }
+
+                gvFranquicias.DataSource = franquiciatariosServices.lsFranquiciasGridViewModel;
+                gvFranquicias.DataBind();
+            }
         }
 
         #region Combobox de Direcciones
@@ -771,79 +1106,16 @@ namespace Franquicia.WebForms.Views
             }
         }
 
-        protected void gvAdministradores_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        protected void ddlIncluirDir_SelectedIndexChanged(object sender, EventArgs e)
         {
-            gvAdministradores.PageIndex = e.NewPageIndex;
-            gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
-            gvAdministradores.DataBind();
-        }
 
-        protected void gvAdministradores_Sorting(object sender, GridViewSortEventArgs e)
-        {
-            string SortExpression = e.SortExpression;
-            SortDirection direccion;
-            string Orden = string.Empty;
-
-            if (ViewState["gvAdministradores"] != null)
+            if (ddlIncluirDir.SelectedValue == "SI")
             {
-                direccion = (SortDirection)ViewState["gvAdministradores"];
-                if (direccion == SortDirection.Ascending)
-                {
-                    ViewState["gvAdministradores"] = SortDirection.Descending;
-                    Orden = "ASC";
-                }
-                else
-                {
-                    ViewState["gvAdministradores"] = SortDirection.Ascending;
-                    Orden = "DESC";
-                }
-
-                switch (SortExpression)
-                {
-                    case "NombreCompleto":
-                        if (Orden == "ASC")
-                        {
-                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderBy(x => x.NombreCompleto).ToList();
-                        }
-                        else
-                        {
-                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.NombreCompleto).ToList();
-                        }
-                        break;
-                    case "VchUsuario":
-                        if (Orden == "ASC")
-                        {
-                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderBy(x => x.VchUsuario).ToList();
-                        }
-                        else
-                        {
-                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.VchUsuario).ToList();
-                        }
-                        break;
-                    case "VchNombreComercial":
-                        if (Orden == "ASC")
-                        {
-                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderBy(x => x.VchNombreComercial).ToList();
-                        }
-                        else
-                        {
-                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.VchNombreComercial).ToList();
-                        }
-                        break;
-                    case "UidEstatus":
-                        if (Orden == "ASC")
-                        {
-                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderBy(x => x.UidEstatus).ToList();
-                        }
-                        else
-                        {
-                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.UidEstatus).ToList();
-                        }
-                        break;
-                }
-
-                gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
-                gvAdministradores.DataBind();
+                pnlIncluirDir.Visible = true;
+            }
+            else
+            {
+                pnlIncluirDir.Visible = false;
             }
         }
     }

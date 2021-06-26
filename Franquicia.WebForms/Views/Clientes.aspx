@@ -41,7 +41,7 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="table-responsive">
-                                            <asp:GridView ID="gvClientes" OnSelectedIndexChanged="gvClientes_SelectedIndexChanged" OnRowCommand="gvClientes_RowCommand" OnRowDataBound="gvClientes_RowDataBound" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidCliente" GridLines="None" border="0" runat="server">
+                                            <asp:GridView ID="gvClientes" OnPageIndexChanging="gvClientes_PageIndexChanging" OnRowCreated="gvClientes_RowCreated" OnSorting="gvClientes_Sorting" OnSelectedIndexChanged="gvClientes_SelectedIndexChanged" OnRowCommand="gvClientes_RowCommand" OnRowDataBound="gvClientes_RowDataBound" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidCliente" GridLines="None" AllowPaging="true" PageSize="10" border="0" runat="server">
                                                 <EmptyDataTemplate>
                                                     <div class="alert alert-info">No hay comercios registrados</div>
                                                 </EmptyDataTemplate>
@@ -88,6 +88,8 @@
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                 </Columns>
+                                                <SelectedRowStyle BackColor="#dff0d8" />
+                                                <PagerStyle HorizontalAlign="Center" CssClass="pagination-ys" />
                                             </asp:GridView>
                                         </div>
                                     </div>
@@ -148,11 +150,11 @@
                                                     <i class="material-icons">directions</i>Dirección<div class="ripple-container"></div>
                                                 </a>
                                             </li>
-                                            <li class="nav-item">
+                                            <%--<li class="nav-item">
                                                 <a class="nav-link" href="#telefono" data-toggle="tab">
                                                     <i class="material-icons">phone</i>Teléfono<div class="ripple-container"></div>
                                                 </a>
-                                            </li>
+                                            </li>--%>
                                         </ul>
                                     </div>
                                 </div>
@@ -169,46 +171,53 @@
                                         <asp:UpdatePanel runat="server">
                                             <ContentTemplate>
                                                 <div class="row">
-                                                    <div class="form-group col-md-6">
+                                                    <div class="form-group col-md-4">
                                                         <label for="txtRFC" style="color: black;">Descripcion para Whats y SMS</label>
                                                         <asp:TextBox ID="txtIdentificadorWASMS" PlaceHolder="Max 20 caracteres" MaxLength="20" CssClass="form-control" runat="server" />
                                                     </div>
-                                                    <div class="form-group col-md-6">
+                                                    <div class="form-group col-md-4">
                                                         <label for="txtRFC" style="color: black;">RFC</label>
                                                         <asp:TextBox ID="txtRFC" CssClass="form-control" runat="server" />
                                                     </div>
-                                                    <div class="form-group col-md-6">
+                                                    <div class="form-group col-md-4">
                                                         <label for="txtRazonSocial" style="color: black;">Razón Social</label>
                                                         <asp:TextBox ID="txtRazonSocial" CssClass="form-control" runat="server" />
                                                     </div>
-                                                    <div class="form-group col-md-6">
+                                                    <div class="form-group col-md-4">
                                                         <label for="txtNombreComercial" style="color: black;">Nombre Comercial</label>
                                                         <asp:TextBox ID="txtNombreComercial" CssClass="form-control" runat="server" />
                                                     </div>
-                                                    <div class="form-group col-md-6">
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label for="txtNumero" style="color: black;">Numero</label>
+                                                            <asp:TextBox ID="txtNumero" TextMode="Phone" CssClass="form-control" runat="server" />
+                                                            <asp:RegularExpressionValidator ID="REVNumero" runat="server" ControlToValidate="txtNumero" ErrorMessage="* Valores númericos" ForeColor="Red" ValidationExpression="^[0-9]*"></asp:RegularExpressionValidator>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-md-4">
                                                         <label for="txtFechaAlta" style="color: black;">Fecha Alta</label>
                                                         <asp:TextBox ID="txtFechaAlta" Enabled="false" CssClass="form-control" runat="server" />
                                                     </div>
-                                                    <div class="form-group col-md-6">
+                                                    <div class="form-group col-md-4">
                                                         <label for="txtCorreo" style="color: black; margin-bottom: 12px;">Correo Eléctronico</label>
                                                         <asp:TextBox ID="txtCorreo" CssClass="form-control" required="required" runat="server" />
                                                         <asp:Label CssClass="text-danger" runat="server" ID="lblExiste" />
                                                         <asp:Label CssClass="text-success" runat="server" ID="lblNoExiste" />
                                                         <asp:LinkButton ID="btnValidarCorreo" CssClass="pull-right" Text="Validar" OnClick="btnValidarCorreo_Click" runat="server" />
                                                     </div>
-                                                    <div class="form-group col-md-6">
-                                                        <label for="ddlZonaHoraria" style="color: black;">Zona horaria</label>
-                                                        <asp:DropDownList ID="ddlZonaHoraria" CssClass="form-control" runat="server">
-                                                        </asp:DropDownList>
-                                                    </div>
                                                     <div visible="false" class="form-group col-md-3" runat="server">
-                                                        <label for="ddlEscuela" style="font-weight:bold; color: black;">¿Es una escuela?</label>
+                                                        <label for="ddlEscuela" style="font-weight: bold; color: black;">¿Es una escuela?</label>
                                                         <asp:DropDownList ID="ddlEscuela" CssClass="form-control" runat="server">
                                                             <asp:ListItem Text="NO" Value="false" />
                                                             <asp:ListItem Text="SI" Value="true" />
                                                         </asp:DropDownList>
                                                     </div>
-                                                    <div class="form-group col-md-3">
+                                                    <div class="form-group col-md-6">
+                                                        <label for="ddlZonaHoraria" style="color: black;">Zona horaria</label>
+                                                        <asp:DropDownList ID="ddlZonaHoraria" CssClass="form-control" runat="server">
+                                                        </asp:DropDownList>
+                                                    </div>
+                                                    <div class="form-group col-md-2">
                                                         <label for="ddlEstatus" style="color: black;">Estatus</label>
                                                         <asp:DropDownList ID="ddlEstatus" CssClass="form-control" runat="server">
                                                         </asp:DropDownList>
@@ -229,7 +238,7 @@
                                                     <div class="form-group col-md-4">
                                                         <label for="ddlPais" style="color: black;">Pais</label>
                                                         <asp:DropDownList ID="ddlPais" AutoPostBack="true" AppendDataBoundItems="true" OnSelectedIndexChanged="ddlPais_SelectedIndexChanged" CssClass="form-control" runat="server">
-                                                            <asp:ListItem Text="Seleccione" />
+                                                            <asp:ListItem Text="Seleccione" Value="00000000-0000-0000-0000-000000000000" />
                                                         </asp:DropDownList>
                                                     </div>
                                                     <div class="form-group col-md-4">
@@ -293,13 +302,6 @@
                                                             <label for="ddlTipoTelefono" style="color: black;">Tipo Teléfono</label>
                                                             <asp:DropDownList ID="ddlTipoTelefono" CssClass="form-control" runat="server">
                                                             </asp:DropDownList>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <div class="form-group">
-                                                                <label for="txtNumero" style="color: black;">Numero</label>
-                                                                <asp:TextBox ID="txtNumero" TextMode="Phone" CssClass="form-control" runat="server" />
-                                                                <asp:RegularExpressionValidator ID="REVNumero" runat="server" ControlToValidate="txtNumero" ErrorMessage="* Valores númericos" ForeColor="Red" ValidationExpression="^[0-9]*"></asp:RegularExpressionValidator>
-                                                            </div>
                                                         </div>
                                                     </div>
                                                 </ContentTemplate>

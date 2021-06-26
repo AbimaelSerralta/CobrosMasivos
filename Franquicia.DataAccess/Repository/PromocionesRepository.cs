@@ -430,6 +430,17 @@ namespace Franquicia.DataAccess.Repository
 
             foreach (DataRow item in dt.Rows)
             {
+                decimal DcmTotal = 0;
+
+                if (!string.IsNullOrEmpty(item["DcmTotal"].ToString()))
+                {
+                    DcmTotal = item.IsNull("DcmTotal") ? 0 : decimal.Parse(item["DcmTotal"].ToString());
+                }
+                else
+                {
+                    DcmTotal = decimal.Parse(item.IsNull("DcmImporte") ? "0.00" : item["DcmImporte"].ToString());
+                }
+
                 lsLigasUrlsPromocionesModel.Add(new LigasUrlsPromocionesModel()
                 {
                     UidLigaUrl = Guid.Parse(item["UidLigaUrl"].ToString()),
@@ -439,9 +450,9 @@ namespace Franquicia.DataAccess.Repository
                     DtVencimiento = DateTime.Parse(item["DtVencimiento"].ToString()),
                     DcmImporte = decimal.Parse(item["DcmImporte"].ToString()),
                     VchDescripcion = item["VchDescripcion"].ToString(),
-                    DcmComisionBancaria = decimal.Parse(item["DcmComisionBancaria"].ToString()),
-                    DcmPromocionDePago = decimal.Parse(item["DcmPromocionDePago"].ToString()),
-                    DcmTotal = decimal.Parse(item["DcmTotal"].ToString())
+                    DcmComisionBancaria = item.IsNull("DcmComisionBancaria") ? 0 : decimal.Parse(item["DcmComisionBancaria"].ToString()),
+                    DcmPromocionDePago = item.IsNull("DcmPromocionDePago") ? 0 : decimal.Parse(item["DcmPromocionDePago"].ToString()),
+                    DcmTotal = DcmTotal
                 });
             }
 

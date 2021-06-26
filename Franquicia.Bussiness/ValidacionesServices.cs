@@ -83,6 +83,14 @@ namespace Franquicia.Bussiness
         {
             return validacionesRepository.ExisteCorreo(Correo);
         }
+        public bool ExisteCorreoCliente(string Correo)
+        {
+            return validacionesRepository.ExisteCorreoCliente(Correo);
+        }
+        public bool ExisteCorreoFranquiciatario(string Correo)
+        {
+            return validacionesRepository.ExisteCorreoFranquiciatario(Correo);
+        }
 
         public bool ExisteUsuario(string Usuario)
         {

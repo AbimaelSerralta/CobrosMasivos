@@ -56,7 +56,7 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="table-responsive">
-                                            <asp:GridView ID="gvEventos" OnRowCommand="gvEventos_RowCommand" OnSorting="gvEventos_Sorting" AllowSorting="true" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvEventos_PageIndexChanging" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidEvento" GridLines="None" border="0" runat="server">
+                                            <asp:GridView ID="gvEventos" OnRowCreated="gvEventos_RowCreated" OnRowCommand="gvEventos_RowCommand" OnSorting="gvEventos_Sorting" AllowSorting="true" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvEventos_PageIndexChanging" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidEvento" GridLines="None" border="0" runat="server">
                                                 <EmptyDataTemplate>
                                                     <div class="alert alert-info">No hay eventos registrados</div>
                                                 </EmptyDataTemplate>

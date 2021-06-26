@@ -30,6 +30,42 @@ namespace Franquicia.DataAccess.Repository
 
             return result;
         }
+        public bool ExisteCorreoCliente(string Correo)
+        {
+            bool result = false;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select VchCorreoElectronico from Clientes where VchCorreoElectronico = '" + Correo + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            if (dt.Rows.Count >= 1)
+            {
+                result = true;
+            }
+
+            return result;
+        }
+        public bool ExisteCorreoFranquiciatario(string Correo)
+        {
+            bool result = false;
+
+            SqlCommand query = new SqlCommand();
+            query.CommandType = CommandType.Text;
+
+            query.CommandText = "select VchCorreoElectronico from Franquiciatarios where VchCorreoElectronico = '" + Correo + "'";
+
+            DataTable dt = this.Busquedas(query);
+
+            if (dt.Rows.Count >= 1)
+            {
+                result = true;
+            }
+
+            return result;
+        }
 
         public bool ExisteUsuario(string Usuario)
         {

@@ -299,15 +299,27 @@ namespace Franquicia.DataAccess.Repository
         {
             SqlCommand query = new SqlCommand();
             query.CommandType = CommandType.Text;
-            query.CommandText = "select lu.VchUrl, lu.VchConcepto, lu.DcmImporte, lu.DtVencimiento, us.VchNombre, us.VchApePaterno, us.VchApeMaterno, cl.VchIdWAySMS, lu.UidPromocion, lu.UidLigaAsociado from LigasUrls lu, Usuarios us, Clientes cl where lu.UidUsuario = us.UidUsuario and cl.UidCliente = lu.UidPropietario and lu.UidLigaUrl = '" + UidLigaUrl + "'";
+            query.CommandText = "select lu.VchUrl, lu.VchConcepto, lu.DcmImporte, lu.DcmTotal, lu.DtVencimiento, us.VchNombre, us.VchApePaterno, us.VchApeMaterno, cl.VchIdWAySMS, lu.UidPromocion, lu.UidLigaAsociado from LigasUrls lu, Usuarios us, Clientes cl where lu.UidUsuario = us.UidUsuario and cl.UidCliente = lu.UidPropietario and lu.UidLigaUrl = '" + UidLigaUrl + "'";
 
             DataTable dt = this.Busquedas(query);
 
             foreach (DataRow item in dt.Rows)
             {
+                decimal DcmTotal = 0;
+
+                if (!string.IsNullOrEmpty(item["DcmTotal"].ToString()))
+                {
+                    DcmTotal = item.IsNull("DcmTotal") ? 0 : decimal.Parse(item["DcmTotal"].ToString());
+                }
+                else
+                {
+                    DcmTotal = decimal.Parse(item.IsNull("DcmImporte") ? "0.00" : item["DcmImporte"].ToString());
+                }
+
                 ligasUrlsConstruirLigaModel.VchUrl = item["VchUrl"].ToString();
                 ligasUrlsConstruirLigaModel.VchConcepto = item["VchConcepto"].ToString();
                 ligasUrlsConstruirLigaModel.DcmImporte = decimal.Parse(item["DcmImporte"].ToString());
+                ligasUrlsConstruirLigaModel.DcmTotal = DcmTotal;
                 ligasUrlsConstruirLigaModel.DtVencimiento = DateTime.Parse(item["DtVencimiento"].ToString());
                 ligasUrlsConstruirLigaModel.VchNombre = item["VchNombre"].ToString();
                 ligasUrlsConstruirLigaModel.VchApePaterno = item["VchApePaterno"].ToString();

@@ -90,10 +90,10 @@
                                                             <asp:Label ID="lblGvSaldo" CssClass="text-center" runat="server" /></td>
                                                         <td style="width: 40%">
                                                             <div class="pull-right">
-                                                                <asp:LinkButton ID="btnCargarExcel" ToolTip="Importar usuarios a excel." class="btn btn-lg btn-ligh btn-fab btn-fab-mini btn-round" runat="server">
+                                                                <asp:LinkButton ID="btnCargarExcel" ToolTip="Importar usuarios de excel." class="btn btn-lg btn-ligh btn-fab btn-fab-mini btn-round" runat="server">
                                                         <i class="material-icons">file_upload</i>
                                                                 </asp:LinkButton>
-                                                                <asp:LinkButton ID="btnExportarLista" OnClick="btnExportarLista_Click" ToolTip="Exportar usuarios de excel." class="btn btn-lg btn-warning btn-fab btn-fab-mini btn-round" runat="server">
+                                                                <asp:LinkButton ID="btnExportarLista" OnClick="btnExportarLista_Click" ToolTip="Exportar usuarios a excel." class="btn btn-lg btn-warning btn-fab btn-fab-mini btn-round" runat="server">
                                                         <i class="material-icons">file_download</i>
                                                                 </asp:LinkButton>
                                                                 ||
@@ -163,7 +163,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="table-responsive">
-                                            <asp:GridView ID="gvUsuariosSeleccionados" OnSorting="gvUsuariosSeleccionados_Sorting" OnRowCommand="gvUsuariosSeleccionados_RowCommand" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="IdUsuario" GridLines="None" border="0" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvUsuariosSeleccionados_PageIndexChanging" runat="server">
+                                            <asp:GridView ID="gvUsuariosSeleccionados" OnRowCreated="gvUsuariosSeleccionados_RowCreated" OnSorting="gvUsuariosSeleccionados_Sorting" OnRowCommand="gvUsuariosSeleccionados_RowCommand" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="IdUsuario" GridLines="None" border="0" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvUsuariosSeleccionados_PageIndexChanging" runat="server">
                                                 <EmptyDataTemplate>
                                                     <div class="alert alert-info">No hay usuarios</div>
                                                 </EmptyDataTemplate>
@@ -566,7 +566,7 @@
                                         <div class="card-body">
                                             <div class="row">
                                                 <div class="table-responsive">
-                                                    <asp:GridView ID="gvUsuarios" OnSorting="gvUsuarios_Sorting" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="IdUsuario" GridLines="None" border="0" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvUsuarios_PageIndexChanging" runat="server">
+                                                    <asp:GridView ID="gvUsuarios" OnRowCreated="gvUsuarios_RowCreated" OnSorting="gvUsuarios_Sorting" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="IdUsuario" GridLines="None" border="0" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvUsuarios_PageIndexChanging" runat="server">
                                                         <EmptyDataTemplate>
                                                             <div class="alert alert-info">No hay usuarios</div>
                                                         </EmptyDataTemplate>

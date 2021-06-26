@@ -48,7 +48,7 @@ namespace Franquicia.WebForms.Util
 
         public static bool EmptyDropDownList(this DropDownList dropDownList)
         {
-            if (dropDownList.SelectedValue == "Seleccione" || dropDownList.SelectedValue == string.Empty)
+            if (dropDownList.SelectedValue == "Seleccione" || dropDownList.SelectedValue == string.Empty || Guid.Parse(dropDownList.SelectedValue) == Guid.Empty)
             {
                 // set border to red
                 dropDownList.BackColor = System.Drawing.Color.FromName("#f2dede");

@@ -26,7 +26,9 @@ namespace Franquicia.WebForms.Views
             if (!IsPostBack)
             {
                 ViewState["gvLigasGeneradas"] = SortDirection.Ascending;
-                
+                ViewState["SoExgvLigasGeneradas"] = "";
+
+
                 Session["ligasUrlsServices"] = ligasUrlsServices;
                 Session["pagosTarjetaServices"] = pagosTarjetaServices;
 
@@ -68,88 +70,20 @@ namespace Franquicia.WebForms.Views
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalDetalle()", true);
             }
         }
-
         protected void gvLigasGeneradas_RowDataBound(object sender, GridViewRowEventArgs e)
         {
 
         }
-
         protected void gvLigasGeneradas_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             gvLigasGeneradas.PageIndex = e.NewPageIndex;
             gvLigasGeneradas.DataSource = ligasUrlsServices.lsLigasUrlsGridViewModel;
             gvLigasGeneradas.DataBind();
         }
-
-        protected void btnFiltros_Click(object sender, EventArgs e)
-        {
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalBusqueda()", true);
-        }
-
-        protected void gvDetalleLiga_PageIndexChanging(object sender, GridViewPageEventArgs e)
-        {
-            gvDetalleLiga.PageIndex = e.NewPageIndex;
-            gvDetalleLiga.DataSource = pagosTarjetaServices.lsPagosTarjetaDetalleGridViewModel;
-            gvDetalleLiga.DataBind();
-        }
-
-        protected void btnLimpiar_Click(object sender, EventArgs e)
-        {
-            txtIdentificador.Text = string.Empty;
-            txtNombre.Text = string.Empty;
-            txtApePaterno.Text = string.Empty;
-            txtApeMaterno.Text = string.Empty;
-            txtAsunto.Text = string.Empty;
-            txtConcepto.Text = string.Empty;
-            txtImporteMayor.Text = string.Empty;
-            txtImporteMenor.Text = string.Empty;
-            ddlImporteMayor.SelectedIndex = -1;
-            ddlImporteMenor.SelectedIndex = -1;
-            txtVencimientoDesde.Text = string.Empty;
-            txtVencimientoHasta.Text = string.Empty;
-            ddlEstatus.SelectedIndex = -1;
-        }
-
-        protected void btnBuscar_Click(object sender, EventArgs e)
-        {
-            decimal ImporteMayor = 0;
-            decimal ImporteMenor = 0;
-
-            if (txtImporteMayor.Text != string.Empty)
-            {
-                switch (ddlImporteMayor.SelectedValue)
-                {
-                    case ">":
-                        ImporteMayor = Convert.ToDecimal(txtImporteMayor.Text) + 1;
-                        break;
-                    case ">=":
-                        ImporteMayor = Convert.ToDecimal(txtImporteMayor.Text);
-                        break;
-                }
-            }
-            if (txtImporteMenor.Text != string.Empty)
-            {
-                switch (ddlImporteMenor.SelectedValue)
-                {
-                    case "<":
-                        ImporteMenor = Convert.ToDecimal(txtImporteMenor.Text) - 1;
-                        break;
-                    case "<=":
-                        ImporteMenor = Convert.ToDecimal(txtImporteMenor.Text);
-                        break;
-                }
-            }
-
-            ligasUrlsServices.BuscarLigasFranquicia(Guid.Parse(ViewState["UidFranquiciaLocal"].ToString()), txtIdentificador.Text, txtNombre.Text, txtApePaterno.Text, txtApeMaterno.Text, txtAsunto.Text, txtConcepto.Text, ImporteMayor, ImporteMenor, txtRegistroDesde.Text, txtRegistroHasta.Text, txtVencimientoDesde.Text, txtVencimientoHasta.Text, ddlEstatus.SelectedValue);
-            gvLigasGeneradas.DataSource = ligasUrlsServices.lsLigasUrlsGridViewModel;
-            gvLigasGeneradas.DataBind();
-
-            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModalBusqueda()", true);
-        }
-
         protected void gvLigasGeneradas_Sorting(object sender, GridViewSortEventArgs e)
         {
             string SortExpression = e.SortExpression;
+            ViewState["SoExgvLigasGeneradas"] = e.SortExpression;
             SortDirection direccion;
             string Orden = string.Empty;
 
@@ -244,6 +178,103 @@ namespace Franquicia.WebForms.Views
                 gvLigasGeneradas.DataSource = ligasUrlsServices.lsLigasUrlsGridViewModel;
                 gvLigasGeneradas.DataBind();
             }
+        }
+        protected void gvLigasGeneradas_RowCreated(object sender, GridViewRowEventArgs e)
+        {
+            SortDirection direccion = (SortDirection)ViewState["gvLigasGeneradas"];
+            string SortExpression = ViewState["SoExgvLigasGeneradas"].ToString();
+
+            if (e.Row.RowType == DataControlRowType.Header)
+            {
+                foreach (TableCell tc in e.Row.Cells)
+                {
+                    if (tc.HasControls())
+                    {
+                        // Buscar el enlace de la cabecera
+                        LinkButton lnk = tc.Controls[0] as LinkButton;
+                        if (lnk != null && SortExpression == lnk.CommandArgument)
+                        {
+                            // Verificar que se está ordenando por el campo indicado en el comando de ordenación
+                            // Crear una imagen
+                            System.Web.UI.WebControls.Image img = new System.Web.UI.WebControls.Image();
+                            img.Height = 20;
+                            img.Width = 20;
+                            // Ajustar dinámicamente el icono adecuado
+                            img.ImageUrl = "~/Images/SortingGv/" + (direccion == SortDirection.Ascending ? "desc" : "asc") + ".png";
+                            img.ImageAlign = ImageAlign.AbsMiddle;
+                            // Le metemos un espacio delante de la imagen para que no se pegue al enlace
+                            tc.Controls.Add(new LiteralControl(""));
+                            tc.Controls.Add(img);
+                        }
+                    }
+                }
+            }
+        }
+
+        protected void btnFiltros_Click(object sender, EventArgs e)
+        {
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalBusqueda()", true);
+        }
+
+        protected void gvDetalleLiga_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvDetalleLiga.PageIndex = e.NewPageIndex;
+            gvDetalleLiga.DataSource = pagosTarjetaServices.lsPagosTarjetaDetalleGridViewModel;
+            gvDetalleLiga.DataBind();
+        }
+
+        protected void btnLimpiar_Click(object sender, EventArgs e)
+        {
+            txtIdentificador.Text = string.Empty;
+            txtNombre.Text = string.Empty;
+            txtApePaterno.Text = string.Empty;
+            txtApeMaterno.Text = string.Empty;
+            txtAsunto.Text = string.Empty;
+            txtConcepto.Text = string.Empty;
+            txtImporteMayor.Text = string.Empty;
+            txtImporteMenor.Text = string.Empty;
+            ddlImporteMayor.SelectedIndex = -1;
+            ddlImporteMenor.SelectedIndex = -1;
+            txtVencimientoDesde.Text = string.Empty;
+            txtVencimientoHasta.Text = string.Empty;
+            ddlEstatus.SelectedIndex = -1;
+        }
+
+        protected void btnBuscar_Click(object sender, EventArgs e)
+        {
+            decimal ImporteMayor = 0;
+            decimal ImporteMenor = 0;
+
+            if (txtImporteMayor.Text != string.Empty)
+            {
+                switch (ddlImporteMayor.SelectedValue)
+                {
+                    case ">":
+                        ImporteMayor = Convert.ToDecimal(txtImporteMayor.Text) + 1;
+                        break;
+                    case ">=":
+                        ImporteMayor = Convert.ToDecimal(txtImporteMayor.Text);
+                        break;
+                }
+            }
+            if (txtImporteMenor.Text != string.Empty)
+            {
+                switch (ddlImporteMenor.SelectedValue)
+                {
+                    case "<":
+                        ImporteMenor = Convert.ToDecimal(txtImporteMenor.Text) - 1;
+                        break;
+                    case "<=":
+                        ImporteMenor = Convert.ToDecimal(txtImporteMenor.Text);
+                        break;
+                }
+            }
+
+            ligasUrlsServices.BuscarLigasFranquicia(Guid.Parse(ViewState["UidFranquiciaLocal"].ToString()), txtIdentificador.Text, txtNombre.Text, txtApePaterno.Text, txtApeMaterno.Text, txtAsunto.Text, txtConcepto.Text, ImporteMayor, ImporteMenor, txtRegistroDesde.Text, txtRegistroHasta.Text, txtVencimientoDesde.Text, txtVencimientoHasta.Text, ddlEstatus.SelectedValue);
+            gvLigasGeneradas.DataSource = ligasUrlsServices.lsLigasUrlsGridViewModel;
+            gvLigasGeneradas.DataBind();
+
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModalBusqueda()", true);
         }
 
         protected void btnExportarLista_Click(object sender, EventArgs e)

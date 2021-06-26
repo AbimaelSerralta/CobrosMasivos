@@ -50,7 +50,7 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="table-responsive">
-                                            <asp:GridView ID="gvPerfiles" DataKeyNames="UidSegPerfil" OnRowCommand="gvPerfiles_RowCommand" OnRowDataBound="gvPerfiles_RowDataBound" OnSorting="gvPerfiles_Sorting" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" GridLines="None" border="0" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvPerfiles_PageIndexChanging" runat="server">
+                                            <asp:GridView ID="gvPerfiles" OnRowCreated="gvPerfiles_RowCreated" DataKeyNames="UidSegPerfil" OnRowCommand="gvPerfiles_RowCommand" OnRowDataBound="gvPerfiles_RowDataBound" OnSorting="gvPerfiles_Sorting" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" GridLines="None" border="0" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvPerfiles_PageIndexChanging" runat="server">
                                                 <EmptyDataTemplate>
                                                     <div class="alert alert-info">No hay accesos registrados</div>
                                                 </EmptyDataTemplate>
@@ -115,7 +115,7 @@
 <asp:Content ID="Content3" ContentPlaceHolderID="cBodyBottom" runat="server">
     <!--MODAL-->
     <div class="modal fade" id="ModalNuevo" tabindex="-1" role="dialog" data-backdrop="static" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <asp:UpdatePanel runat="server">
                     <ContentTemplate>

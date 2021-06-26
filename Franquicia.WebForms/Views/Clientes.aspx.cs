@@ -39,6 +39,9 @@ namespace Franquicia.WebForms.Views
             {
                 //ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideAlert()", true);
 
+                ViewState["gvClientes"] = SortDirection.Ascending;
+                ViewState["SoExgvClientes"] = "";
+
                 #region Direccion
                 Session["paisesServices"] = paisesServices;
                 Session["estadosServices"] = estadosServices;
@@ -111,6 +114,11 @@ namespace Franquicia.WebForms.Views
         #region Dirección
         protected void ddlPais_SelectedIndexChanged(object sender, EventArgs e)
         {
+            ddlEstado.Items.Clear();
+            ddlMunicipio.Items.Clear();
+            ddlColonia.Items.Clear();
+            ddlCiudad.Items.Clear();
+
             //llena el combo Estados
             estadosServices.CargarEstados(ddlPais.SelectedItem.Value.ToString());
             ddlEstado.Items.Insert(0, new ListItem("Seleccione", "00000000-0000-0000-0000-000000000000"));
@@ -273,64 +281,72 @@ namespace Franquicia.WebForms.Views
                 {
                     if (item.Agregar)
                     {
-                        Guid UidCliente = Guid.NewGuid();
-
-                        if (clientesServices.RegistrarClientes(UidCliente,
-                            txtRFC.Text.Trim(), txtRazonSocial.Text.Trim(), txtNombreComercial.Text.Trim(), DateTime.Parse(thisDay.ToString("dd/MM/yyyy HH:mm:ss")), txtCorreo.Text.Trim(), txtIdentificadorWASMS.Text.Trim(), ddlZonaHoraria.SelectedValue, bool.Parse(ddlEscuela.SelectedValue),
-                            txtIdentificador.Text.Trim(), Guid.Parse(ddlPais.SelectedValue), Guid.Parse(ddlEstado.SelectedValue), Guid.Parse(ddlMunicipio.SelectedValue), Guid.Parse(ddlCiudad.SelectedValue), Guid.Parse(ddlColonia.SelectedValue), txtCalle.Text.Trim(), txtEntreCalle.Text.Trim(), txtYCalle.Text.Trim(), txtNumeroExterior.Text.Trim(), txtNumeroInterior.Text.Trim(), txtCodigoPostal.Text.Trim(), txtReferencia.Text.Trim(),
-                            txtNumero.Text.Trim(), Guid.Parse(ddlTipoTelefono.SelectedValue), Guid.Parse(ViewState["UidFranquiciaLocal"].ToString())
-                            ))
+                        if (!validacionesServices.ExisteCorreoCliente(txtCorreo.Text.Trim()))
                         {
+                            Guid UidCliente = Guid.NewGuid();
 
-                            superPromocionesServices.CargarSuperPromociones();
-                            foreach (var itPromo in superPromocionesServices.lsCBLSuperPromociones)
+                            if (clientesServices.RegistrarClientes(UidCliente,
+                                txtRFC.Text.Trim(), txtRazonSocial.Text.Trim(), txtNombreComercial.Text.Trim(), DateTime.Parse(thisDay.ToString("dd/MM/yyyy HH:mm:ss")), txtCorreo.Text.Trim(), txtIdentificadorWASMS.Text.Trim(), ddlZonaHoraria.SelectedValue, bool.Parse(ddlEscuela.SelectedValue),
+                                txtIdentificador.Text.Trim(), Guid.Parse(ddlPais.SelectedValue), Guid.Parse(ddlEstado.SelectedValue), Guid.Parse(ddlMunicipio.SelectedValue), Guid.Parse(ddlCiudad.SelectedValue), Guid.Parse(ddlColonia.SelectedValue), txtCalle.Text.Trim(), txtEntreCalle.Text.Trim(), txtYCalle.Text.Trim(), txtNumeroExterior.Text.Trim(), txtNumeroInterior.Text.Trim(), txtCodigoPostal.Text.Trim(), txtReferencia.Text.Trim(),
+                                txtNumero.Text.Trim(), Guid.Parse("B1055882-BCBA-4AB7-94FA-90E57647E607"), Guid.Parse(ViewState["UidFranquiciaLocal"].ToString())
+                                ))
                             {
-                                try
+
+                                superPromocionesServices.CargarSuperPromociones();
+                                foreach (var itPromo in superPromocionesServices.lsCBLSuperPromociones)
                                 {
-                                    promocionesServices.RegistrarPromociones(UidCliente, itPromo.UidPromocion, itPromo.DcmComicion, itPromo.DcmApartirDe);
+                                    try
+                                    {
+                                        promocionesServices.RegistrarPromociones(UidCliente, itPromo.UidPromocion, itPromo.DcmComicion, itPromo.DcmApartirDe);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        var s = ex.Message;
+                                    }
                                 }
-                                catch (Exception ex)
+
+                                comisionesTarjetasServices.CargarComisionesTarjeta();
+                                foreach (var itComi in comisionesTarjetasServices.lsComisionesTarjetas)
                                 {
-                                    var s = ex.Message;
+                                    try
+                                    {
+                                        comisionesTarjetasClServices.RegistrarComisionesTarjeta(itComi.BitComision, itComi.DcmComision, UidCliente);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        var s = ex.Message;
+                                    }
                                 }
+
+                                importeLigaMinMaxServices.CargarImporteLigaMinMax();
+                                foreach (var itComi in importeLigaMinMaxServices.lsImporteLigaMinMax)
+                                {
+                                    try
+                                    {
+                                        parametrosEntradaServices.RegistrarParametrosEntradaClienteCM("", "", "", "", "", "", "", "", "", UidCliente, false, itComi.DcmImporteMin, itComi.DcmImporteMax);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        var s = ex.Message;
+                                    }
+                                }
+
+
+                                clientesServices.CargarClientes(Guid.Parse(ViewState["UidFranquiciaLocal"].ToString()));
+                                gvClientes.DataSource = clientesServices.lsClientesGridViewModel;
+                                gvClientes.DataBind();
+
+                                pnlAlert.Visible = true;
+                                lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
+                                divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+
+                                ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
                             }
 
-                            comisionesTarjetasServices.CargarComisionesTarjeta();
-                            foreach (var itComi in comisionesTarjetasServices.lsComisionesTarjetas)
-                            {
-                                try
-                                {
-                                    comisionesTarjetasClServices.RegistrarComisionesTarjeta(itComi.BitComision, itComi.DcmComision, UidCliente);
-                                }
-                                catch (Exception ex)
-                                {
-                                    var s = ex.Message;                                    
-                                }
-                            }
-
-                            importeLigaMinMaxServices.CargarImporteLigaMinMax();
-                            foreach (var itComi in importeLigaMinMaxServices.lsImporteLigaMinMax)
-                            {
-                                try
-                                {
-                                    parametrosEntradaServices.RegistrarParametrosEntradaClienteCM("", "", "", "", "", "", "", "", "", UidCliente, false, itComi.DcmImporteMin, itComi.DcmImporteMax);
-                                }
-                                catch (Exception ex)
-                                {
-                                    var s = ex.Message;
-                                }
-                            }
-
-
-                            clientesServices.CargarClientes(Guid.Parse(ViewState["UidFranquiciaLocal"].ToString()));
-                            gvClientes.DataSource = clientesServices.lsClientesGridViewModel;
-                            gvClientes.DataBind();
-
-                            pnlAlert.Visible = true;
-                            lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha registrado exitosamente.";
-                            divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
-
-                            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
+                        }
+                        else
+                        {
+                            lblValidar.Text = "El correo ingresado ya existe por favor intente con otro.";
                         }
                     }
                     else
@@ -345,27 +361,49 @@ namespace Franquicia.WebForms.Views
                 {
                     if (item.Actualizar)
                     {
-                        if (clientesServices.ActualizarClientes(
-                        Guid.Parse(ViewState["UidFranquiciatario"].ToString()), txtRFC.Text.Trim().ToUpper(), txtRazonSocial.Text.Trim().ToUpper(), txtNombreComercial.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), Guid.Parse(ddlEstatus.SelectedValue), txtIdentificadorWASMS.Text.Trim(), ddlZonaHoraria.SelectedValue, bool.Parse(ddlEscuela.SelectedValue),
-                        txtIdentificador.Text.Trim().ToUpper(), Guid.Parse(ddlPais.SelectedValue), Guid.Parse(ddlEstado.SelectedValue), Guid.Parse(ddlMunicipio.SelectedValue), Guid.Parse(ddlCiudad.SelectedValue), Guid.Parse(ddlColonia.SelectedValue), txtCalle.Text.Trim().ToUpper(), txtEntreCalle.Text.Trim().ToUpper(), txtYCalle.Text.Trim().ToUpper(), txtNumeroExterior.Text.Trim().ToUpper(), txtNumeroInterior.Text.Trim().ToUpper(), txtCodigoPostal.Text.Trim(), txtReferencia.Text.Trim().ToUpper(),
-                        txtNumero.Text.Trim(), Guid.Parse(ddlTipoTelefono.SelectedValue)))
+                        bool Actualizar = false;
+
+                        if (ViewState["ActualizarCorreo"].ToString() != txtCorreo.Text)
                         {
-                            //Actualizar perfil de usuario para PAGALAESCUELA
-                            usuariosCompletosServices.CargarAdminCliente(Guid.Parse(ViewState["UidFranquiciaLocal"].ToString()), Guid.Parse(ViewState["UidFranquiciatario"].ToString()), Guid.Parse("4EF31BD5-95AB-4172-AF94-E25A3CADAD74"));
-                            foreach (var itUsu in usuariosCompletosServices.lsActualizarUsuarios)
+                            if (validacionesServices.ExisteCorreoCliente(txtCorreo.Text))
                             {
-                                usuariosCompletosServices.ActualizarAdminClientePerfilEscu(itUsu.UidSegUsuario, bool.Parse(ddlEscuela.SelectedValue), Guid.Parse("85b6ce16-bace-489e-8e75-2280f72605f1"));
+                                lblValidar.Text = "El correo ingresado ya existe por favor intente con otro.";
+                                return;
                             }
+                            else
+                            {
+                                Actualizar = true;
+                            }
+                        }
+                        else
+                        {
+                            Actualizar = true;
+                        }
 
-                            clientesServices.CargarClientes(Guid.Parse(ViewState["UidFranquiciaLocal"].ToString()));
-                            gvClientes.DataSource = clientesServices.lsClientesGridViewModel;
-                            gvClientes.DataBind();
+                        if (Actualizar)
+                        {
+                            if (clientesServices.ActualizarClientes(
+                                Guid.Parse(ViewState["UidFranquiciatario"].ToString()), txtRFC.Text.Trim().ToUpper(), txtRazonSocial.Text.Trim().ToUpper(), txtNombreComercial.Text.Trim().ToUpper(), txtCorreo.Text.Trim().ToUpper(), Guid.Parse(ddlEstatus.SelectedValue), txtIdentificadorWASMS.Text.Trim(), ddlZonaHoraria.SelectedValue, bool.Parse(ddlEscuela.SelectedValue),
+                                txtIdentificador.Text.Trim().ToUpper(), Guid.Parse(ddlPais.SelectedValue), Guid.Parse(ddlEstado.SelectedValue), Guid.Parse(ddlMunicipio.SelectedValue), Guid.Parse(ddlCiudad.SelectedValue), Guid.Parse(ddlColonia.SelectedValue), txtCalle.Text.Trim().ToUpper(), txtEntreCalle.Text.Trim().ToUpper(), txtYCalle.Text.Trim().ToUpper(), txtNumeroExterior.Text.Trim().ToUpper(), txtNumeroInterior.Text.Trim().ToUpper(), txtCodigoPostal.Text.Trim(), txtReferencia.Text.Trim().ToUpper(),
+                                txtNumero.Text.Trim(), Guid.Parse(ddlTipoTelefono.SelectedValue)))
+                            {
+                                //Actualizar perfil de usuario para PAGALAESCUELA
+                                usuariosCompletosServices.CargarAdminCliente(Guid.Parse(ViewState["UidFranquiciaLocal"].ToString()), Guid.Parse(ViewState["UidFranquiciatario"].ToString()), Guid.Parse("4EF31BD5-95AB-4172-AF94-E25A3CADAD74"));
+                                foreach (var itUsu in usuariosCompletosServices.lsActualizarUsuarios)
+                                {
+                                    usuariosCompletosServices.ActualizarAdminClientePerfilEscu(itUsu.UidSegUsuario, bool.Parse(ddlEscuela.SelectedValue), Guid.Parse("85b6ce16-bace-489e-8e75-2280f72605f1"));
+                                }
 
-                            pnlAlert.Visible = true;
-                            lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha actualizado exitosamente.";
-                            divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+                                clientesServices.CargarClientes(Guid.Parse(ViewState["UidFranquiciaLocal"].ToString()));
+                                gvClientes.DataSource = clientesServices.lsClientesGridViewModel;
+                                gvClientes.DataBind();
 
-                            ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
+                                pnlAlert.Visible = true;
+                                lblMensajeAlert.Text = "<b>¡Felicidades! </b> se ha actualizado exitosamente.";
+                                divAlert.Attributes.Add("class", "alert alert-success alert-dismissible fade show");
+
+                                ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
+                            }
                         }
                     }
                     else
@@ -463,6 +501,8 @@ namespace Franquicia.WebForms.Views
             txtNombreComercial.Text = string.Empty;
             txtFechaAlta.Text = string.Empty;
             txtCorreo.Text = string.Empty;
+            lblExiste.Text = "";
+            lblNoExiste.Text = "";
 
             ddlEstatus.SelectedIndex = -1;
             ddlEscuela.SelectedIndex = 0;
@@ -485,6 +525,37 @@ namespace Franquicia.WebForms.Views
             txtNumero.Text = string.Empty;
         }
 
+        protected void gvClientes_RowCreated(object sender, GridViewRowEventArgs e)
+        {
+            SortDirection direccion = (SortDirection)ViewState["gvClientes"];
+            string SortExpression = ViewState["SoExgvClientes"].ToString();
+
+            if (e.Row.RowType == DataControlRowType.Header)
+            {
+                foreach (TableCell tc in e.Row.Cells)
+                {
+                    if (tc.HasControls())
+                    {
+                        // Buscar el enlace de la cabecera
+                        LinkButton lnk = tc.Controls[0] as LinkButton;
+                        if (lnk != null && SortExpression == lnk.CommandArgument)
+                        {
+                            // Verificar que se está ordenando por el campo indicado en el comando de ordenación
+                            // Crear una imagen
+                            System.Web.UI.WebControls.Image img = new System.Web.UI.WebControls.Image();
+                            img.Height = 20;
+                            img.Width = 20;
+                            // Ajustar dinámicamente el icono adecuado
+                            img.ImageUrl = "~/Images/SortingGv/" + (direccion == SortDirection.Ascending ? "desc" : "asc") + ".png";
+                            img.ImageAlign = ImageAlign.AbsMiddle;
+                            // Le metemos un espacio delante de la imagen para que no se pegue al enlace
+                            tc.Controls.Add(new LiteralControl(""));
+                            tc.Controls.Add(img);
+                        }
+                    }
+                }
+            }
+        }
         protected void gvClientes_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
@@ -551,8 +622,96 @@ namespace Franquicia.WebForms.Views
                 Master.MenuCliente.Attributes.Add("class", "dropdown-toggle font-weight-bold");
             }
         }
+        protected void gvClientes_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            string SortExpression = e.SortExpression;
+            ViewState["SoExgvClientes"] = e.SortExpression;
+            SortDirection direccion;
+            string Orden = string.Empty;
+
+            if (ViewState["gvClientes"] != null)
+            {
+                direccion = (SortDirection)ViewState["gvClientes"];
+                if (direccion == SortDirection.Ascending)
+                {
+                    ViewState["gvClientes"] = SortDirection.Descending;
+                    Orden = "ASC";
+                }
+                else
+                {
+                    ViewState["gvClientes"] = SortDirection.Ascending;
+                    Orden = "DESC";
+                }
+
+                switch (SortExpression)
+                {
+                    case "VchRFC":
+                        if (Orden == "ASC")
+                        {
+                            clientesServices.lsClientesGridViewModel = clientesServices.lsClientesGridViewModel.OrderBy(x => x.VchRFC).ToList();
+                        }
+                        else
+                        {
+                            clientesServices.lsClientesGridViewModel = clientesServices.lsClientesGridViewModel.OrderByDescending(x => x.VchRFC).ToList();
+                        }
+                        break;
+                    case "VchRazonSocial":
+                        if (Orden == "ASC")
+                        {
+                            clientesServices.lsClientesGridViewModel = clientesServices.lsClientesGridViewModel.OrderBy(x => x.VchRazonSocial).ToList();
+                        }
+                        else
+                        {
+                            clientesServices.lsClientesGridViewModel = clientesServices.lsClientesGridViewModel.OrderByDescending(x => x.VchRazonSocial).ToList();
+                        }
+                        break;
+                    case "VchNombreComercial":
+                        if (Orden == "ASC")
+                        {
+                            clientesServices.lsClientesGridViewModel = clientesServices.lsClientesGridViewModel.OrderBy(x => x.VchNombreComercial).ToList();
+                        }
+                        else
+                        {
+                            clientesServices.lsClientesGridViewModel = clientesServices.lsClientesGridViewModel.OrderByDescending(x => x.VchNombreComercial).ToList();
+                        }
+                        break;
+                    case "VchIdWAySMS":
+                        if (Orden == "ASC")
+                        {
+                            clientesServices.lsClientesGridViewModel = clientesServices.lsClientesGridViewModel.OrderBy(x => x.VchIdWAySMS).ToList();
+                        }
+                        else
+                        {
+                            clientesServices.lsClientesGridViewModel = clientesServices.lsClientesGridViewModel.OrderByDescending(x => x.VchIdWAySMS).ToList();
+                        }
+                        break;
+                    case "UidEstatus":
+                        if (Orden == "ASC")
+                        {
+                            clientesServices.lsClientesGridViewModel = clientesServices.lsClientesGridViewModel.OrderBy(x => x.UidEstatus).ToList();
+                        }
+                        else
+                        {
+                            clientesServices.lsClientesGridViewModel = clientesServices.lsClientesGridViewModel.OrderByDescending(x => x.UidEstatus).ToList();
+                        }
+                        break;
+                }
+
+                gvClientes.DataSource = clientesServices.lsClientesGridViewModel;
+                gvClientes.DataBind();
+            }
+        }
+        protected void gvClientes_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvClientes.PageIndex = e.NewPageIndex;
+            gvClientes.DataSource = clientesServices.lsClientesGridViewModel;
+            gvClientes.DataBind();
+        }
         private void ManejoDatos(Guid dataKeys)
         {
+            lblExiste.Text = "";
+            lblNoExiste.Text = "";
+
             //==================FRANQUICIATARIO============================
             clientesServices.ObtenerCliente(dataKeys);
             txtIdentificadorWASMS.Text = clientesServices.clientes.VchIdWAySMS;
@@ -561,6 +720,7 @@ namespace Franquicia.WebForms.Views
             txtNombreComercial.Text = clientesServices.clientes.VchNombreComercial;
             txtFechaAlta.Text = clientesServices.clientes.DtFechaAlta.ToString("dd/MM/yyyy");
             txtCorreo.Text = clientesServices.clientes.VchCorreoElectronico;
+            ViewState["ActualizarCorreo"] = clientesServices.clientes.VchCorreoElectronico;
             ddlZonaHoraria.SelectedIndex = ddlZonaHoraria.Items.IndexOf(ddlZonaHoraria.Items.FindByValue(clientesServices.clientes.VchZonaHoraria));
             ddlEstatus.SelectedIndex = ddlEstatus.Items.IndexOf(ddlEstatus.Items.FindByValue(clientesServices.clientes.UidEstatus.ToString()));
 
@@ -665,7 +825,7 @@ namespace Franquicia.WebForms.Views
         {
             if (!string.IsNullOrEmpty(txtCorreo.Text))
             {
-                if (validacionesServices.ExisteCorreo(txtCorreo.Text))
+                if (validacionesServices.ExisteCorreoCliente(txtCorreo.Text))
                 {
                     lblExiste.Text = "Correo existente";
                     lblNoExiste.Text = string.Empty;

@@ -23,6 +23,9 @@ namespace Franquicia.WebForms.Views
         {
             if (!IsPostBack)
             {
+                ViewState["gvEmpresas"] = SortDirection.Ascending;
+                ViewState["SoExgvEmpresas"] = "";
+
                 Session["clientesServices"] = clientesServices;
                 Session["parametrosEntradaServices"] = parametrosEntradaServices;
                 Session["promocionesServices"] = promocionesServices;
@@ -153,6 +156,37 @@ namespace Franquicia.WebForms.Views
             }
         }
 
+        protected void gvEmpresas_RowCreated(object sender, GridViewRowEventArgs e)
+        {
+            SortDirection direccion = (SortDirection)ViewState["gvEmpresas"];
+            string SortExpression = ViewState["SoExgvEmpresas"].ToString();
+
+            if (e.Row.RowType == DataControlRowType.Header)
+            {
+                foreach (TableCell tc in e.Row.Cells)
+                {
+                    if (tc.HasControls())
+                    {
+                        // Buscar el enlace de la cabecera
+                        LinkButton lnk = tc.Controls[0] as LinkButton;
+                        if (lnk != null && SortExpression == lnk.CommandArgument)
+                        {
+                            // Verificar que se está ordenando por el campo indicado en el comando de ordenación
+                            // Crear una imagen
+                            System.Web.UI.WebControls.Image img = new System.Web.UI.WebControls.Image();
+                            img.Height = 20;
+                            img.Width = 20;
+                            // Ajustar dinámicamente el icono adecuado
+                            img.ImageUrl = "~/Images/SortingGv/" + (direccion == SortDirection.Ascending ? "desc" : "asc") + ".png";
+                            img.ImageAlign = ImageAlign.AbsMiddle;
+                            // Le metemos un espacio delante de la imagen para que no se pegue al enlace
+                            tc.Controls.Add(new LiteralControl(""));
+                            tc.Controls.Add(img);
+                        }
+                    }
+                }
+            }
+        }
         protected void gvEmpresas_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandName == "btnCredencialesLigas")
@@ -234,6 +268,91 @@ namespace Franquicia.WebForms.Views
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalPromociones()", true);
             }
         }
+        protected void gvEmpresas_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvEmpresas.PageIndex = e.NewPageIndex;
+            gvEmpresas.DataSource = clientesServices.lsClientesGridViewEmpresasModel;
+            gvEmpresas.DataBind();
+        }
+        protected void gvEmpresas_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            string SortExpression = e.SortExpression;
+            ViewState["SoExgvEmpresas"] = e.SortExpression;
+            SortDirection direccion;
+            string Orden = string.Empty;
+
+            if (ViewState["gvEmpresas"] != null)
+            {
+                direccion = (SortDirection)ViewState["gvEmpresas"];
+                if (direccion == SortDirection.Ascending)
+                {
+                    ViewState["gvEmpresas"] = SortDirection.Descending;
+                    Orden = "ASC";
+                }
+                else
+                {
+                    ViewState["gvEmpresas"] = SortDirection.Ascending;
+                    Orden = "DESC";
+                }
+
+                switch (SortExpression)
+                {
+                    case "VchIdCliente":
+                        if (Orden == "ASC")
+                        {
+                            clientesServices.lsClientesGridViewEmpresasModel = clientesServices.lsClientesGridViewEmpresasModel.OrderBy(x => x.VchIdCliente).ToList();
+                        }
+                        else
+                        {
+                            clientesServices.lsClientesGridViewEmpresasModel = clientesServices.lsClientesGridViewEmpresasModel.OrderByDescending(x => x.VchIdCliente).ToList();
+                        }
+                        break;
+                    case "VchRFC":
+                        if (Orden == "ASC")
+                        {
+                            clientesServices.lsClientesGridViewEmpresasModel = clientesServices.lsClientesGridViewEmpresasModel.OrderBy(x => x.VchRFC).ToList();
+                        }
+                        else
+                        {
+                            clientesServices.lsClientesGridViewEmpresasModel = clientesServices.lsClientesGridViewEmpresasModel.OrderByDescending(x => x.VchRFC).ToList();
+                        }
+                        break;
+                    case "VchRazonSocial":
+                        if (Orden == "ASC")
+                        {
+                            clientesServices.lsClientesGridViewEmpresasModel = clientesServices.lsClientesGridViewEmpresasModel.OrderBy(x => x.VchRazonSocial).ToList();
+                        }
+                        else
+                        {
+                            clientesServices.lsClientesGridViewEmpresasModel = clientesServices.lsClientesGridViewEmpresasModel.OrderByDescending(x => x.VchRazonSocial).ToList();
+                        }
+                        break;
+                    case "VchNombreComercial":
+                        if (Orden == "ASC")
+                        {
+                            clientesServices.lsClientesGridViewEmpresasModel = clientesServices.lsClientesGridViewEmpresasModel.OrderBy(x => x.VchNombreComercial).ToList();
+                        }
+                        else
+                        {
+                            clientesServices.lsClientesGridViewEmpresasModel = clientesServices.lsClientesGridViewEmpresasModel.OrderByDescending(x => x.VchNombreComercial).ToList();
+                        }
+                        break;
+                    case "UidEstatus":
+                        if (Orden == "ASC")
+                        {
+                            clientesServices.lsClientesGridViewEmpresasModel = clientesServices.lsClientesGridViewEmpresasModel.OrderBy(x => x.UidEstatus).ToList();
+                        }
+                        else
+                        {
+                            clientesServices.lsClientesGridViewEmpresasModel = clientesServices.lsClientesGridViewEmpresasModel.OrderByDescending(x => x.UidEstatus).ToList();
+                        }
+                        break;
+                }
+
+                gvEmpresas.DataSource = clientesServices.lsClientesGridViewEmpresasModel;
+                gvEmpresas.DataBind();
+            }
+        }
 
         protected void gvPromociones_RowDataBound(object sender, GridViewRowEventArgs e)
         {
@@ -308,11 +427,5 @@ namespace Franquicia.WebForms.Views
             }
         }
 
-        protected void gvEmpresas_PageIndexChanging(object sender, GridViewPageEventArgs e)
-        {
-            gvEmpresas.PageIndex = e.NewPageIndex;
-            gvEmpresas.DataSource = clientesServices.lsClientesGridViewEmpresasModel;
-            gvEmpresas.DataBind();
-        }
     }
 }

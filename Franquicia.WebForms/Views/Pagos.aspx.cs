@@ -48,9 +48,9 @@ namespace Franquicia.WebForms.Views
                     lblNombreComp.Text = "&nbsp;" + ligasUrlsService.ligasUrlsRepository.ligasUrlsConstruirLigaModel.NombreCompleto;
                     lblNombreComercial.Text = "&nbsp;" + ligasUrlsService.ligasUrlsRepository.ligasUrlsConstruirLigaModel.VchNombreComercial;
                     lblConcepto.Text = "&nbsp;" + ligasUrlsService.ligasUrlsRepository.ligasUrlsConstruirLigaModel.VchConcepto;
-                    lblImporte.Text = "&nbsp;$" + ligasUrlsService.ligasUrlsRepository.ligasUrlsConstruirLigaModel.DcmImporte.ToString("N2");
+                    lblImporte.Text = "&nbsp;$" + ligasUrlsService.ligasUrlsRepository.ligasUrlsConstruirLigaModel.DcmTotal.ToString("N2");
                     lblVencimiento.Text = "&nbsp;" + ligasUrlsService.ligasUrlsRepository.ligasUrlsConstruirLigaModel.DtVencimiento.ToString("dd/MM/yyyy");
-                    lblPagar.Text = "Pagar $" + ligasUrlsService.ligasUrlsRepository.ligasUrlsConstruirLigaModel.DcmImporte.ToString("N2");
+                    lblPagar.Text = "Pagar $" + ligasUrlsService.ligasUrlsRepository.ligasUrlsConstruirLigaModel.DcmTotal.ToString("N2");
 
                     aPagar.HRef = ligasUrlsService.ligasUrlsRepository.ligasUrlsConstruirLigaModel.VchUrl;
 
@@ -63,7 +63,7 @@ namespace Franquicia.WebForms.Views
                             foreach (var itPromo in promocionesServices.lsLigasUrlsPromocionesModel)
                             {
                                 decimal promocion = int.Parse(itPromo.VchDescripcion.Replace(" MESES", ""));
-                                decimal Final = itPromo.DcmImporte / promocion;
+                                decimal Final = itPromo.DcmTotal / promocion;
 
                                 strPromociones +=
                                     "\t\t\t\t\t\t\t\t<tr>\r\n" +
@@ -71,7 +71,7 @@ namespace Franquicia.WebForms.Views
                                     "\t\t\t\t\t\t\t\t\t\t" + itPromo.VchDescripcion + " de $" + Final.ToString("N2") + "\r\n" +
                                     "\t\t\t\t\t\t\t\t\t</td>\r\n" +
                                     "\t\t\t\t\t\t\t\t\t<td width=\"50%\" style=\"color: #153643; font-family: Arial, sans-serif; font-size: 16px; line-height: 40px;text-align: center;\">\r\n" +
-                                    "\t\t\t\t\t\t\t\t\t\t &nbsp;" + "<a style =\"color:#fff;font-weight:400;text-align:center;width:100px;font-size:15px;text-decoration:none;background:#28a745;margin:0 auto; padding:5px;\" href=" + URLBase + "Views/Promociones.aspx?CodigoPromocion=" + ligasUrlsService.ligasUrlsRepository.ligasUrlsConstruirLigaModel.UidLigaAsociado + "&CodigoLiga=" + itPromo.IdReferencia + "> Pagar $" + itPromo.DcmImporte.ToString("N2") + "</a>" + "\r\n" +
+                                    "\t\t\t\t\t\t\t\t\t\t &nbsp;" + "<a style =\"color:#fff;font-weight:400;text-align:center;width:100px;font-size:15px;text-decoration:none;background:#28a745;margin:0 auto; padding:5px;\" href=" + URLBase + "Views/Promociones.aspx?CodigoPromocion=" + ligasUrlsService.ligasUrlsRepository.ligasUrlsConstruirLigaModel.UidLigaAsociado + "&CodigoLiga=" + itPromo.IdReferencia + "> Pagar $" + itPromo.DcmTotal.ToString("N2") + "</a>" + "\r\n" +
                                     "\t\t\t\t\t\t\t\t\t</td>\r\n" +
                                     "\t\t\t\t\t\t\t\t</tr>\r\n";
                             }

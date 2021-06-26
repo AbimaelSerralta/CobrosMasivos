@@ -416,7 +416,7 @@ namespace Franquicia.DataAccess.Repository
             }
         }
 
-        public bool RegistrarAdministradores(UsuariosCompletos usuariosCompletos, Guid UidSegPerfilEscuela, DireccionesUsuarios direccionesUsuarios, TelefonosUsuarios telefonosUsuarios, Guid UidFranquicia)
+        public bool RegistrarAdministradores(UsuariosCompletos usuariosCompletos, Guid UidSegPerfilEscuela, TelefonosUsuarios telefonosUsuarios, Guid UidFranquicia)
         {
             bool Resultado = false;
 
@@ -452,48 +452,7 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@UidSegPerfilEscuela", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidSegPerfilEscuela"].Value = UidSegPerfilEscuela;
-
-                //===========================DIRECCION==================================================
-
-                comando.Parameters.Add("@Identificador", SqlDbType.VarChar, 50);
-                comando.Parameters["@Identificador"].Value = direccionesUsuarios.Identificador;
-
-                comando.Parameters.Add("@UidPais", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidPais"].Value = direccionesUsuarios.UidPais;
-
-                comando.Parameters.Add("@UidEstado", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidEstado"].Value = direccionesUsuarios.UidEstado;
-
-                comando.Parameters.Add("@UidMunicipio", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidMunicipio"].Value = direccionesUsuarios.UidMunicipio;
-
-                comando.Parameters.Add("@UidCiudad", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidCiudad"].Value = direccionesUsuarios.UidCiudad;
-
-                comando.Parameters.Add("@UidColonia", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidColonia"].Value = direccionesUsuarios.UidColonia;
-
-                comando.Parameters.Add("@Calle", SqlDbType.VarChar, 50);
-                comando.Parameters["@Calle"].Value = direccionesUsuarios.Calle;
-
-                comando.Parameters.Add("@EntreCalle", SqlDbType.VarChar, 50);
-                comando.Parameters["@EntreCalle"].Value = direccionesUsuarios.EntreCalle;
-
-                comando.Parameters.Add("@YCalle", SqlDbType.VarChar, 50);
-                comando.Parameters["@YCalle"].Value = direccionesUsuarios.YCalle;
-
-                comando.Parameters.Add("@NumeroExterior", SqlDbType.VarChar, 50);
-                comando.Parameters["@NumeroExterior"].Value = direccionesUsuarios.NumeroExterior;
-
-                comando.Parameters.Add("@NumeroInterior", SqlDbType.VarChar, 50);
-                comando.Parameters["@NumeroInterior"].Value = direccionesUsuarios.NumeroInterior;
-
-                comando.Parameters.Add("@CodigoPostal", SqlDbType.VarChar, 30);
-                comando.Parameters["@CodigoPostal"].Value = direccionesUsuarios.CodigoPostal;
-
-                comando.Parameters.Add("@Referencia", SqlDbType.VarChar, 100);
-                comando.Parameters["@Referencia"].Value = direccionesUsuarios.Referencia;
-
+                                
                 //===========================TELEFONO==================================================
 
                 comando.Parameters.Add("@VchTelefono", SqlDbType.VarChar, 50);
@@ -514,7 +473,7 @@ namespace Franquicia.DataAccess.Repository
             }
             return Resultado;
         }
-        public bool ActualizarAdministradores(UsuariosCompletos usuariosCompletos, DireccionesUsuarios direccionesUsuarios, TelefonosUsuarios telefonosUsuarios, Guid UidFranquicia)
+        public bool ActualizarAdministradores(UsuariosCompletos usuariosCompletos, TelefonosUsuarios telefonosUsuarios, Guid UidFranquicia)
         {
             bool Resultado = false;
 
@@ -551,47 +510,6 @@ namespace Franquicia.DataAccess.Repository
                 comando.Parameters.Add("@UidSegPerfil", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidSegPerfil"].Value = usuariosCompletos.UidSegPerfil;
 
-                //===========================DIRECCION==================================================
-
-                comando.Parameters.Add("@Identificador", SqlDbType.VarChar, 50);
-                comando.Parameters["@Identificador"].Value = direccionesUsuarios.Identificador;
-
-                comando.Parameters.Add("@UidPais", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidPais"].Value = direccionesUsuarios.UidPais;
-
-                comando.Parameters.Add("@UidEstado", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidEstado"].Value = direccionesUsuarios.UidEstado;
-
-                comando.Parameters.Add("@UidMunicipio", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidMunicipio"].Value = direccionesUsuarios.UidMunicipio;
-
-                comando.Parameters.Add("@UidCiudad", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidCiudad"].Value = direccionesUsuarios.UidCiudad;
-
-                comando.Parameters.Add("@UidColonia", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidColonia"].Value = direccionesUsuarios.UidColonia;
-
-                comando.Parameters.Add("@Calle", SqlDbType.VarChar, 50);
-                comando.Parameters["@Calle"].Value = direccionesUsuarios.Calle;
-
-                comando.Parameters.Add("@EntreCalle", SqlDbType.VarChar, 50);
-                comando.Parameters["@EntreCalle"].Value = direccionesUsuarios.EntreCalle;
-
-                comando.Parameters.Add("@YCalle", SqlDbType.VarChar, 50);
-                comando.Parameters["@YCalle"].Value = direccionesUsuarios.YCalle;
-
-                comando.Parameters.Add("@NumeroExterior", SqlDbType.VarChar, 50);
-                comando.Parameters["@NumeroExterior"].Value = direccionesUsuarios.NumeroExterior;
-
-                comando.Parameters.Add("@NumeroInterior", SqlDbType.VarChar, 50);
-                comando.Parameters["@NumeroInterior"].Value = direccionesUsuarios.NumeroInterior;
-
-                comando.Parameters.Add("@CodigoPostal", SqlDbType.VarChar, 30);
-                comando.Parameters["@CodigoPostal"].Value = direccionesUsuarios.CodigoPostal;
-
-                comando.Parameters.Add("@Referencia", SqlDbType.VarChar, 100);
-                comando.Parameters["@Referencia"].Value = direccionesUsuarios.Referencia;
-
                 //===========================TELEFONO==================================================
 
                 comando.Parameters.Add("@VchTelefono", SqlDbType.VarChar, 50);
@@ -613,7 +531,7 @@ namespace Franquicia.DataAccess.Repository
             return Resultado;
         }
 
-        public bool RegistrarAdministradoresPrincipal(UsuariosCompletos usuariosCompletos, Guid UidSegPerfilEscuela, DireccionesUsuarios direccionesUsuarios, TelefonosUsuarios telefonosUsuarios)
+        public bool RegistrarAdministradoresPrincipal(UsuariosCompletos usuariosCompletos, Guid UidSegPerfilEscuela, TelefonosUsuarios telefonosUsuarios)
         {
             bool Resultado = false;
 
@@ -650,47 +568,6 @@ namespace Franquicia.DataAccess.Repository
                 comando.Parameters.Add("@UidSegPerfilEscuela", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidSegPerfilEscuela"].Value = UidSegPerfilEscuela;
 
-                //===========================DIRECCION==================================================
-
-                comando.Parameters.Add("@Identificador", SqlDbType.VarChar, 50);
-                comando.Parameters["@Identificador"].Value = direccionesUsuarios.Identificador;
-
-                comando.Parameters.Add("@UidPais", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidPais"].Value = direccionesUsuarios.UidPais;
-
-                comando.Parameters.Add("@UidEstado", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidEstado"].Value = direccionesUsuarios.UidEstado;
-
-                comando.Parameters.Add("@UidMunicipio", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidMunicipio"].Value = direccionesUsuarios.UidMunicipio;
-
-                comando.Parameters.Add("@UidCiudad", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidCiudad"].Value = direccionesUsuarios.UidCiudad;
-
-                comando.Parameters.Add("@UidColonia", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidColonia"].Value = direccionesUsuarios.UidColonia;
-
-                comando.Parameters.Add("@Calle", SqlDbType.VarChar, 50);
-                comando.Parameters["@Calle"].Value = direccionesUsuarios.Calle;
-
-                comando.Parameters.Add("@EntreCalle", SqlDbType.VarChar, 50);
-                comando.Parameters["@EntreCalle"].Value = direccionesUsuarios.EntreCalle;
-
-                comando.Parameters.Add("@YCalle", SqlDbType.VarChar, 50);
-                comando.Parameters["@YCalle"].Value = direccionesUsuarios.YCalle;
-
-                comando.Parameters.Add("@NumeroExterior", SqlDbType.VarChar, 50);
-                comando.Parameters["@NumeroExterior"].Value = direccionesUsuarios.NumeroExterior;
-
-                comando.Parameters.Add("@NumeroInterior", SqlDbType.VarChar, 50);
-                comando.Parameters["@NumeroInterior"].Value = direccionesUsuarios.NumeroInterior;
-
-                comando.Parameters.Add("@CodigoPostal", SqlDbType.VarChar, 30);
-                comando.Parameters["@CodigoPostal"].Value = direccionesUsuarios.CodigoPostal;
-
-                comando.Parameters.Add("@Referencia", SqlDbType.VarChar, 100);
-                comando.Parameters["@Referencia"].Value = direccionesUsuarios.Referencia;
-
                 //===========================TELEFONO==================================================
 
                 comando.Parameters.Add("@VchTelefono", SqlDbType.VarChar, 50);
@@ -708,8 +585,7 @@ namespace Franquicia.DataAccess.Repository
             }
             return Resultado;
         }
-
-        public bool ActualizarAdministradoresPrincipal(UsuariosCompletos usuariosCompletos, Guid UidSegPerfilEscuela, DireccionesUsuarios direccionesUsuarios, TelefonosUsuarios telefonosUsuarios)
+        public bool ActualizarAdministradoresPrincipal(UsuariosCompletos usuariosCompletos, Guid UidSegPerfilEscuela, TelefonosUsuarios telefonosUsuarios)
         {
             bool Resultado = false;
 
@@ -748,47 +624,6 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@UidSegPerfilEscuela", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidSegPerfilEscuela"].Value = UidSegPerfilEscuela;
-
-                //===========================DIRECCION==================================================
-
-                comando.Parameters.Add("@Identificador", SqlDbType.VarChar, 50);
-                comando.Parameters["@Identificador"].Value = direccionesUsuarios.Identificador;
-
-                comando.Parameters.Add("@UidPais", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidPais"].Value = direccionesUsuarios.UidPais;
-
-                comando.Parameters.Add("@UidEstado", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidEstado"].Value = direccionesUsuarios.UidEstado;
-
-                comando.Parameters.Add("@UidMunicipio", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidMunicipio"].Value = direccionesUsuarios.UidMunicipio;
-
-                comando.Parameters.Add("@UidCiudad", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidCiudad"].Value = direccionesUsuarios.UidCiudad;
-
-                comando.Parameters.Add("@UidColonia", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidColonia"].Value = direccionesUsuarios.UidColonia;
-
-                comando.Parameters.Add("@Calle", SqlDbType.VarChar, 50);
-                comando.Parameters["@Calle"].Value = direccionesUsuarios.Calle;
-
-                comando.Parameters.Add("@EntreCalle", SqlDbType.VarChar, 50);
-                comando.Parameters["@EntreCalle"].Value = direccionesUsuarios.EntreCalle;
-
-                comando.Parameters.Add("@YCalle", SqlDbType.VarChar, 50);
-                comando.Parameters["@YCalle"].Value = direccionesUsuarios.YCalle;
-
-                comando.Parameters.Add("@NumeroExterior", SqlDbType.VarChar, 50);
-                comando.Parameters["@NumeroExterior"].Value = direccionesUsuarios.NumeroExterior;
-
-                comando.Parameters.Add("@NumeroInterior", SqlDbType.VarChar, 50);
-                comando.Parameters["@NumeroInterior"].Value = direccionesUsuarios.NumeroInterior;
-
-                comando.Parameters.Add("@CodigoPostal", SqlDbType.VarChar, 30);
-                comando.Parameters["@CodigoPostal"].Value = direccionesUsuarios.CodigoPostal;
-
-                comando.Parameters.Add("@Referencia", SqlDbType.VarChar, 100);
-                comando.Parameters["@Referencia"].Value = direccionesUsuarios.Referencia;
 
                 //===========================TELEFONO==================================================
 
@@ -987,7 +822,7 @@ namespace Franquicia.DataAccess.Repository
                 throw;
             }
         }
-        public bool RegistrarAdministradoresFranquicia(UsuariosCompletos usuariosCompletos, Guid UidSegPerfilEscuela, DireccionesUsuarios direccionesUsuarios, TelefonosUsuarios telefonosUsuarios, Guid UidFranquicia)
+        public bool RegistrarAdministradoresFranquicia(UsuariosCompletos usuariosCompletos, Guid UidSegPerfilEscuela, TelefonosUsuarios telefonosUsuarios, Guid UidFranquicia)
         {
             bool Resultado = false;
 
@@ -1024,47 +859,6 @@ namespace Franquicia.DataAccess.Repository
                 comando.Parameters.Add("@UidSegPerfilEscuela", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidSegPerfilEscuela"].Value = UidSegPerfilEscuela;
 
-                //===========================DIRECCION==================================================
-
-                comando.Parameters.Add("@Identificador", SqlDbType.VarChar, 50);
-                comando.Parameters["@Identificador"].Value = direccionesUsuarios.Identificador;
-
-                comando.Parameters.Add("@UidPais", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidPais"].Value = direccionesUsuarios.UidPais;
-
-                comando.Parameters.Add("@UidEstado", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidEstado"].Value = direccionesUsuarios.UidEstado;
-
-                comando.Parameters.Add("@UidMunicipio", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidMunicipio"].Value = direccionesUsuarios.UidMunicipio;
-
-                comando.Parameters.Add("@UidCiudad", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidCiudad"].Value = direccionesUsuarios.UidCiudad;
-
-                comando.Parameters.Add("@UidColonia", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidColonia"].Value = direccionesUsuarios.UidColonia;
-
-                comando.Parameters.Add("@Calle", SqlDbType.VarChar, 50);
-                comando.Parameters["@Calle"].Value = direccionesUsuarios.Calle;
-
-                comando.Parameters.Add("@EntreCalle", SqlDbType.VarChar, 50);
-                comando.Parameters["@EntreCalle"].Value = direccionesUsuarios.EntreCalle;
-
-                comando.Parameters.Add("@YCalle", SqlDbType.VarChar, 50);
-                comando.Parameters["@YCalle"].Value = direccionesUsuarios.YCalle;
-
-                comando.Parameters.Add("@NumeroExterior", SqlDbType.VarChar, 50);
-                comando.Parameters["@NumeroExterior"].Value = direccionesUsuarios.NumeroExterior;
-
-                comando.Parameters.Add("@NumeroInterior", SqlDbType.VarChar, 50);
-                comando.Parameters["@NumeroInterior"].Value = direccionesUsuarios.NumeroInterior;
-
-                comando.Parameters.Add("@CodigoPostal", SqlDbType.VarChar, 30);
-                comando.Parameters["@CodigoPostal"].Value = direccionesUsuarios.CodigoPostal;
-
-                comando.Parameters.Add("@Referencia", SqlDbType.VarChar, 100);
-                comando.Parameters["@Referencia"].Value = direccionesUsuarios.Referencia;
-
                 //===========================TELEFONO==================================================
 
                 comando.Parameters.Add("@VchTelefono", SqlDbType.VarChar, 50);
@@ -1085,7 +879,7 @@ namespace Franquicia.DataAccess.Repository
             }
             return Resultado;
         }
-        public bool ActualizarAdministradoresFranquicia(UsuariosCompletos usuariosCompletos, Guid UidSegPerfilEscuela, DireccionesUsuarios direccionesUsuarios, TelefonosUsuarios telefonosUsuarios, Guid UidFranquicia)
+        public bool ActualizarAdministradoresFranquicia(UsuariosCompletos usuariosCompletos, Guid UidSegPerfilEscuela, TelefonosUsuarios telefonosUsuarios, Guid UidFranquicia)
         {
             bool Resultado = false;
 
@@ -1124,47 +918,6 @@ namespace Franquicia.DataAccess.Repository
 
                 comando.Parameters.Add("@UidSegPerfilEscuela", SqlDbType.UniqueIdentifier);
                 comando.Parameters["@UidSegPerfilEscuela"].Value = UidSegPerfilEscuela;
-
-                //===========================DIRECCION==================================================
-
-                comando.Parameters.Add("@Identificador", SqlDbType.VarChar, 50);
-                comando.Parameters["@Identificador"].Value = direccionesUsuarios.Identificador;
-
-                comando.Parameters.Add("@UidPais", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidPais"].Value = direccionesUsuarios.UidPais;
-
-                comando.Parameters.Add("@UidEstado", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidEstado"].Value = direccionesUsuarios.UidEstado;
-
-                comando.Parameters.Add("@UidMunicipio", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidMunicipio"].Value = direccionesUsuarios.UidMunicipio;
-
-                comando.Parameters.Add("@UidCiudad", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidCiudad"].Value = direccionesUsuarios.UidCiudad;
-
-                comando.Parameters.Add("@UidColonia", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidColonia"].Value = direccionesUsuarios.UidColonia;
-
-                comando.Parameters.Add("@Calle", SqlDbType.VarChar, 50);
-                comando.Parameters["@Calle"].Value = direccionesUsuarios.Calle;
-
-                comando.Parameters.Add("@EntreCalle", SqlDbType.VarChar, 50);
-                comando.Parameters["@EntreCalle"].Value = direccionesUsuarios.EntreCalle;
-
-                comando.Parameters.Add("@YCalle", SqlDbType.VarChar, 50);
-                comando.Parameters["@YCalle"].Value = direccionesUsuarios.YCalle;
-
-                comando.Parameters.Add("@NumeroExterior", SqlDbType.VarChar, 50);
-                comando.Parameters["@NumeroExterior"].Value = direccionesUsuarios.NumeroExterior;
-
-                comando.Parameters.Add("@NumeroInterior", SqlDbType.VarChar, 50);
-                comando.Parameters["@NumeroInterior"].Value = direccionesUsuarios.NumeroInterior;
-
-                comando.Parameters.Add("@CodigoPostal", SqlDbType.VarChar, 30);
-                comando.Parameters["@CodigoPostal"].Value = direccionesUsuarios.CodigoPostal;
-
-                comando.Parameters.Add("@Referencia", SqlDbType.VarChar, 100);
-                comando.Parameters["@Referencia"].Value = direccionesUsuarios.Referencia;
 
                 //===========================TELEFONO==================================================
 
@@ -1702,7 +1455,7 @@ namespace Franquicia.DataAccess.Repository
                 throw;
             }
         }
-        public bool RegistrarAdministradoresCliente(UsuariosCompletos usuariosCompletos, bool BitEscuela, Guid UidSegPerfilEscuela, DireccionesUsuarios direccionesUsuarios, TelefonosUsuarios telefonosUsuarios, Guid UidCliente)
+        public bool RegistrarAdministradoresCliente(UsuariosCompletos usuariosCompletos, bool BitEscuela, Guid UidSegPerfilEscuela, TelefonosUsuarios telefonosUsuarios, Guid UidCliente)
         {
             bool Resultado = false;
 
@@ -1740,48 +1493,7 @@ namespace Franquicia.DataAccess.Repository
                 {
                     comando.Parameters.Add("@UidSegPerfilEscuela", SqlDbType.UniqueIdentifier);
                     comando.Parameters["@UidSegPerfilEscuela"].Value = UidSegPerfilEscuela;
-                }
-
-                //===========================DIRECCION==================================================
-
-                comando.Parameters.Add("@Identificador", SqlDbType.VarChar, 50);
-                comando.Parameters["@Identificador"].Value = direccionesUsuarios.Identificador;
-
-                comando.Parameters.Add("@UidPais", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidPais"].Value = direccionesUsuarios.UidPais;
-
-                comando.Parameters.Add("@UidEstado", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidEstado"].Value = direccionesUsuarios.UidEstado;
-
-                comando.Parameters.Add("@UidMunicipio", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidMunicipio"].Value = direccionesUsuarios.UidMunicipio;
-
-                comando.Parameters.Add("@UidCiudad", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidCiudad"].Value = direccionesUsuarios.UidCiudad;
-
-                comando.Parameters.Add("@UidColonia", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidColonia"].Value = direccionesUsuarios.UidColonia;
-
-                comando.Parameters.Add("@Calle", SqlDbType.VarChar, 50);
-                comando.Parameters["@Calle"].Value = direccionesUsuarios.Calle;
-
-                comando.Parameters.Add("@EntreCalle", SqlDbType.VarChar, 50);
-                comando.Parameters["@EntreCalle"].Value = direccionesUsuarios.EntreCalle;
-
-                comando.Parameters.Add("@YCalle", SqlDbType.VarChar, 50);
-                comando.Parameters["@YCalle"].Value = direccionesUsuarios.YCalle;
-
-                comando.Parameters.Add("@NumeroExterior", SqlDbType.VarChar, 50);
-                comando.Parameters["@NumeroExterior"].Value = direccionesUsuarios.NumeroExterior;
-
-                comando.Parameters.Add("@NumeroInterior", SqlDbType.VarChar, 50);
-                comando.Parameters["@NumeroInterior"].Value = direccionesUsuarios.NumeroInterior;
-
-                comando.Parameters.Add("@CodigoPostal", SqlDbType.VarChar, 30);
-                comando.Parameters["@CodigoPostal"].Value = direccionesUsuarios.CodigoPostal;
-
-                comando.Parameters.Add("@Referencia", SqlDbType.VarChar, 100);
-                comando.Parameters["@Referencia"].Value = direccionesUsuarios.Referencia;
+                }              
 
                 //===========================TELEFONO==================================================
 
@@ -1803,7 +1515,7 @@ namespace Franquicia.DataAccess.Repository
             }
             return Resultado;
         }
-        public bool ActualizarAdministradoresCliente(UsuariosCompletos usuariosCompletos, bool BitEscuela, Guid UidSegPerfilEscuela, DireccionesUsuarios direccionesUsuarios, TelefonosUsuarios telefonosUsuarios, Guid UidCliente)
+        public bool ActualizarAdministradoresCliente(UsuariosCompletos usuariosCompletos, bool BitEscuela, Guid UidSegPerfilEscuela, TelefonosUsuarios telefonosUsuarios, Guid UidCliente)
         {
             bool Resultado = false;
 
@@ -1845,48 +1557,7 @@ namespace Franquicia.DataAccess.Repository
                     comando.Parameters.Add("@UidSegPerfilEscuela", SqlDbType.UniqueIdentifier);
                     comando.Parameters["@UidSegPerfilEscuela"].Value = UidSegPerfilEscuela;
                 }
-
-                //===========================DIRECCION==================================================
-
-                comando.Parameters.Add("@Identificador", SqlDbType.VarChar, 50);
-                comando.Parameters["@Identificador"].Value = direccionesUsuarios.Identificador;
-
-                comando.Parameters.Add("@UidPais", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidPais"].Value = direccionesUsuarios.UidPais;
-
-                comando.Parameters.Add("@UidEstado", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidEstado"].Value = direccionesUsuarios.UidEstado;
-
-                comando.Parameters.Add("@UidMunicipio", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidMunicipio"].Value = direccionesUsuarios.UidMunicipio;
-
-                comando.Parameters.Add("@UidCiudad", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidCiudad"].Value = direccionesUsuarios.UidCiudad;
-
-                comando.Parameters.Add("@UidColonia", SqlDbType.UniqueIdentifier);
-                comando.Parameters["@UidColonia"].Value = direccionesUsuarios.UidColonia;
-
-                comando.Parameters.Add("@Calle", SqlDbType.VarChar, 50);
-                comando.Parameters["@Calle"].Value = direccionesUsuarios.Calle;
-
-                comando.Parameters.Add("@EntreCalle", SqlDbType.VarChar, 50);
-                comando.Parameters["@EntreCalle"].Value = direccionesUsuarios.EntreCalle;
-
-                comando.Parameters.Add("@YCalle", SqlDbType.VarChar, 50);
-                comando.Parameters["@YCalle"].Value = direccionesUsuarios.YCalle;
-
-                comando.Parameters.Add("@NumeroExterior", SqlDbType.VarChar, 50);
-                comando.Parameters["@NumeroExterior"].Value = direccionesUsuarios.NumeroExterior;
-
-                comando.Parameters.Add("@NumeroInterior", SqlDbType.VarChar, 50);
-                comando.Parameters["@NumeroInterior"].Value = direccionesUsuarios.NumeroInterior;
-
-                comando.Parameters.Add("@CodigoPostal", SqlDbType.VarChar, 30);
-                comando.Parameters["@CodigoPostal"].Value = direccionesUsuarios.CodigoPostal;
-
-                comando.Parameters.Add("@Referencia", SqlDbType.VarChar, 100);
-                comando.Parameters["@Referencia"].Value = direccionesUsuarios.Referencia;
-
+                
                 //===========================TELEFONO==================================================
 
                 comando.Parameters.Add("@VchTelefono", SqlDbType.VarChar, 50);

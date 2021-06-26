@@ -56,7 +56,7 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="table-responsive">
-                                            <asp:GridView ID="gvEventos" OnRowCommand="gvEventos_RowCommand" OnRowDataBound="gvEventos_RowDataBound" OnSorting="gvEventos_Sorting" AllowSorting="true" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvEventos_PageIndexChanging" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidEvento" GridLines="None" border="0" runat="server">
+                                            <asp:GridView ID="gvEventos" OnRowCreated="gvEventos_RowCreated" OnRowCommand="gvEventos_RowCommand" OnRowDataBound="gvEventos_RowDataBound" OnSorting="gvEventos_Sorting" AllowSorting="true" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvEventos_PageIndexChanging" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidEvento" GridLines="None" border="0" runat="server">
                                                 <EmptyDataTemplate>
                                                     <div class="alert alert-info">No hay eventos registrados</div>
                                                 </EmptyDataTemplate>
@@ -211,8 +211,9 @@
                                                             <ContentTemplate>
                                                                 <div class="row">
                                                                     <div class="form-group col-md-6">
-                                                                        <label for="txtNombreEvento" style="color: black;">Nombre del evento *</label>
+                                                                        <label for="txtNombreEvento" title="No se permiten caracteres especiales por ejemplo: &~^#%=" style="color: black;"><i class="material-icons" style="font-size: 15px;">info_outline</i> Nombre del evento *</label>
                                                                         <asp:TextBox ID="txtNombreEvento" CssClass="form-control" Style="margin-top: 17px;" runat="server" />
+                                                                        <asp:FilteredTextBoxExtender FilterType="Numbers, UppercaseLetters, LowercaseLetters" TargetControlID="txtNombreEvento" runat="server" />
                                                                     </div>
                                                                     <div class="form-group col-md-6">
                                                                         <label for="txtDescripcion" style="color: black;">Descripción del evento</label>
@@ -348,7 +349,7 @@
                                                                 </div>
 
                                                                 <div class="table-responsive">
-                                                                    <asp:GridView ID="gvUsuarios" OnSorting="gvUsuarios_Sorting" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidUsuario" GridLines="None" border="0" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvUsuarios_PageIndexChanging" runat="server">
+                                                                    <asp:GridView ID="gvUsuarios" OnRowCreated="gvUsuarios_RowCreated" OnSorting="gvUsuarios_Sorting" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidUsuario" GridLines="None" border="0" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvUsuarios_PageIndexChanging" runat="server">
                                                                         <EmptyDataTemplate>
                                                                             <div class="alert alert-info">No hay usuarios</div>
                                                                         </EmptyDataTemplate>

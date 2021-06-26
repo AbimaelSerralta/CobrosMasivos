@@ -54,7 +54,7 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="table-responsive">
-                                            <asp:GridView ID="gvFranquiciatarios" OnSorting="gvFranquiciatarios_Sorting" OnSelectedIndexChanged="gvFranquiciatarios_SelectedIndexChanged" OnRowCommand="gvFranquiciatarios_RowCommand" OnRowDataBound="gvFranquiciatarios_RowDataBound" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidFranquiciatarios" GridLines="None" border="0" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvFranquiciatarios_PageIndexChanging" runat="server">
+                                            <asp:GridView ID="gvFranquiciatarios" OnRowCreated="gvFranquiciatarios_RowCreated" OnSorting="gvFranquiciatarios_Sorting" OnSelectedIndexChanged="gvFranquiciatarios_SelectedIndexChanged" OnRowCommand="gvFranquiciatarios_RowCommand" OnRowDataBound="gvFranquiciatarios_RowDataBound" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidFranquiciatarios" GridLines="None" border="0" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvFranquiciatarios_PageIndexChanging" runat="server">
                                                 <EmptyDataTemplate>
                                                     <div class="alert alert-info">No hay franquicias registrados</div>
                                                 </EmptyDataTemplate>
@@ -114,6 +114,7 @@
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                 </Columns>
+                                                <SelectedRowStyle BackColor="#dff0d8" />
                                                 <PagerStyle HorizontalAlign="Center" CssClass="pagination-ys" />
                                             </asp:GridView>
                                         </div>
@@ -215,9 +216,9 @@
                                                     <div class="form-group col-md-6">
                                                         <label for="txtCorreo" style="color: black; margin-bottom: 12px;">Correo Eléctronico *</label>
                                                         <asp:TextBox ID="txtCorreo" CssClass="form-control" required="required" runat="server" />
-                                                        <%--<asp:Label CssClass="text-danger" runat="server" ID="lblExiste" />
+                                                        <asp:Label CssClass="text-danger" runat="server" ID="lblExiste" />
                                                         <asp:Label CssClass="text-success" runat="server" ID="lblNoExiste" />
-                                                        <asp:LinkButton ID="btnValidarCorreo" CssClass="pull-right" Text="Validar" OnClick="btnValidarCorreo_Click" runat="server" />--%>
+                                                        <asp:LinkButton ID="btnValidarCorreo" CssClass="pull-right" Text="Validar" OnClick="btnValidarCorreo_Click" runat="server" />
                                                     </div>
                                                     <div class="form-group col-md-6" style="display: none;">
                                                         <label for="ddlTipoTelefono" style="color: black;">Tipo Teléfono</label>
@@ -248,7 +249,7 @@
                                                     <div class="form-group col-md-4">
                                                         <label for="ddlPais" style="color: black;">Pais *</label>
                                                         <asp:DropDownList ID="ddlPais" AutoPostBack="true" AppendDataBoundItems="true" OnSelectedIndexChanged="ddlPais_SelectedIndexChanged" CssClass="form-control" runat="server">
-                                                            <asp:ListItem Text="Seleccione" />
+                                                            <asp:ListItem Text="Seleccione" Value="00000000-0000-0000-0000-000000000000" />
                                                         </asp:DropDownList>
                                                     </div>
                                                     <div class="form-group col-md-4">

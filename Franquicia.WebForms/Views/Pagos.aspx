@@ -15,8 +15,8 @@
                 <table align="center" border="0" cellpadding="0" cellspacing="0" style="border: 1px solid #cccccc; border-collapse: collapse;">
                     <tr>
                         <td align="center" bgcolor="#00bcd4" style="padding: 40px 0 30px 0; color: #153643; font-size: 28px; font-weight: bold; font-family: Arial, sans-serif;">
-                            <a href="http://www.cobroscontarjeta.com/">
-                                <img src="http://www.cobroscontarjeta.com/images/logo.png" alt="Cobroscontarjeta" style="display: block;" /></a>
+                            <a href="https://www.cobroscontarjeta.com/">
+                                <img src="../Images/logo-cobroscontarjetas.png" alt="Cobroscontarjeta" style="display: block;" /></a>
                         </td>
                     </tr>
                     <tr>

@@ -243,6 +243,10 @@
     <Content Include="Images\logoCobroscontarjetasLetras.png" />
     <Content Include="Images\mountain.png" />
     <Content Include="Images\Multiple.PNG" />
+    <Content Include="Images\SortingGv\asc.png" />
+    <Content Include="Images\SortingGv\ascWhite.png" />
+    <Content Include="Images\SortingGv\desc.png" />
+    <Content Include="Images\SortingGv\descWhite.png" />
     <Content Include="Images\think.png" />
     <Content Include="Multiselect\css\bootstrap-multiselect.css" />
     <Content Include="Multiselect\js\bootstrap-multiselect.min.js" />

@@ -77,7 +77,10 @@ namespace Franquicia.WebForms.Views
             if (!IsPostBack)
             {
                 ViewState["gvEventos"] = SortDirection.Ascending;
+                ViewState["SoExgvEventos"] = "";
+
                 ViewState["gvUsuarios"] = SortDirection.Ascending;
+                ViewState["SoExgvUsuarios"] = "";
 
                 Session["eventosServices"] = eventosServices;
                 Session["promocionesServices"] = promocionesServices;
@@ -395,67 +398,6 @@ namespace Franquicia.WebForms.Views
                 }
             }
         }
-        protected void gvEventos_RowCommand(object sender, GridViewCommandEventArgs e)
-        {
-            if (e.CommandName == "Editar")
-            {
-                btnActivarEvento_Click(null, null);
-                ViewState["Accion"] = "Actualizar";
-                DesbloquearCampos();
-                btnCerrar.Visible = false;
-                btnCancelar.Visible = true;
-                btnGuardar.Visible = true;
-                btnEditar.Visible = false;
-                lblTituloModal.Text = "Actualizar Usuario";
-                btnGuardar.Text = "<i class=" + "material-icons>" + "refresh </i> Actualizar";
-
-                int index = Convert.ToInt32(e.CommandArgument.ToString());
-                GridViewRow Seleccionado = gvEventos.Rows[index];
-                GridView valor = (GridView)sender;
-                Guid dataKeys = Guid.Parse(valor.DataKeys[Seleccionado.RowIndex].Value.ToString());
-                ViewState["UidRequerido"] = dataKeys;
-
-                usuariosCompletosServices.ObtenerUsuariosEvento(dataKeys);
-                lblCantSeleccionado.Text = usuariosCompletosServices.lsSelectEventoUsuarioGridViewModel.Count.ToString();
-                gvUsuarios.DataSource = usuariosCompletosServices.lsEventoUsuarioGridViewModel;
-                gvUsuarios.DataBind();
-
-                ManejoDatos(dataKeys);
-
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
-            }
-
-            if (e.CommandName == "Ver")
-            {
-                btnActivarEvento_Click(null, null);
-                BloquearCampos();
-                btnCerrar.Visible = true;
-                btnCancelar.Visible = false;
-                btnGuardar.Visible = false;
-                btnEditar.Visible = true;
-                int index = Convert.ToInt32(e.CommandArgument.ToString());
-                GridViewRow Seleccionado = gvEventos.Rows[index];
-                GridView valor = (GridView)sender;
-                Guid dataKeys = Guid.Parse(valor.DataKeys[Seleccionado.RowIndex].Value.ToString());
-                ViewState["UidRequerido"] = dataKeys;
-
-                usuariosCompletosServices.ObtenerUsuariosEvento(dataKeys);
-                lblCantSeleccionado.Text = usuariosCompletosServices.lsSelectEventoUsuarioGridViewModel.Count.ToString();
-                gvUsuarios.DataSource = usuariosCompletosServices.lsEventoUsuarioGridViewModel;
-                gvUsuarios.DataBind();
-
-                ManejoDatos(dataKeys);
-
-                lblTituloModal.Text = "Visualización de Evento";
-
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
-            }
-
-        }
-        protected void gvEventos_RowDataBound(object sender, GridViewRowEventArgs e)
-        {
-
-        }
 
         private void ManejoDatos(Guid dataKeys)
         {
@@ -586,9 +528,71 @@ namespace Franquicia.WebForms.Views
             ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
         }
 
+        protected void gvEventos_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            if (e.CommandName == "Editar")
+            {
+                btnActivarEvento_Click(null, null);
+                ViewState["Accion"] = "Actualizar";
+                DesbloquearCampos();
+                btnCerrar.Visible = false;
+                btnCancelar.Visible = true;
+                btnGuardar.Visible = true;
+                btnEditar.Visible = false;
+                lblTituloModal.Text = "Actualizar Usuario";
+                btnGuardar.Text = "<i class=" + "material-icons>" + "refresh </i> Actualizar";
+
+                int index = Convert.ToInt32(e.CommandArgument.ToString());
+                GridViewRow Seleccionado = gvEventos.Rows[index];
+                GridView valor = (GridView)sender;
+                Guid dataKeys = Guid.Parse(valor.DataKeys[Seleccionado.RowIndex].Value.ToString());
+                ViewState["UidRequerido"] = dataKeys;
+
+                usuariosCompletosServices.ObtenerUsuariosEvento(dataKeys);
+                lblCantSeleccionado.Text = usuariosCompletosServices.lsSelectEventoUsuarioGridViewModel.Count.ToString();
+                gvUsuarios.DataSource = usuariosCompletosServices.lsEventoUsuarioGridViewModel;
+                gvUsuarios.DataBind();
+
+                ManejoDatos(dataKeys);
+
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
+            }
+
+            if (e.CommandName == "Ver")
+            {
+                btnActivarEvento_Click(null, null);
+                BloquearCampos();
+                btnCerrar.Visible = true;
+                btnCancelar.Visible = false;
+                btnGuardar.Visible = false;
+                btnEditar.Visible = true;
+                int index = Convert.ToInt32(e.CommandArgument.ToString());
+                GridViewRow Seleccionado = gvEventos.Rows[index];
+                GridView valor = (GridView)sender;
+                Guid dataKeys = Guid.Parse(valor.DataKeys[Seleccionado.RowIndex].Value.ToString());
+                ViewState["UidRequerido"] = dataKeys;
+
+                usuariosCompletosServices.ObtenerUsuariosEvento(dataKeys);
+                lblCantSeleccionado.Text = usuariosCompletosServices.lsSelectEventoUsuarioGridViewModel.Count.ToString();
+                gvUsuarios.DataSource = usuariosCompletosServices.lsEventoUsuarioGridViewModel;
+                gvUsuarios.DataBind();
+
+                ManejoDatos(dataKeys);
+
+                lblTituloModal.Text = "Visualización de Evento";
+
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
+            }
+
+        }
+        protected void gvEventos_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+
+        }
         protected void gvEventos_Sorting(object sender, GridViewSortEventArgs e)
         {
             string SortExpression = e.SortExpression;
+            ViewState["SoExgvEventos"] = e.SortExpression;
             SortDirection direccion;
             string Orden = string.Empty;
 
@@ -664,12 +668,42 @@ namespace Franquicia.WebForms.Views
                 gvEventos.DataBind();
             }
         }
-
         protected void gvEventos_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             gvEventos.PageIndex = e.NewPageIndex;
             gvEventos.DataSource = eventosServices.lsEventosGridViewModel;
             gvEventos.DataBind();
+        }
+        protected void gvEventos_RowCreated(object sender, GridViewRowEventArgs e)
+        {
+            SortDirection direccion = (SortDirection)ViewState["gvEventos"];
+            string SortExpression = ViewState["SoExgvEventos"].ToString();
+
+            if (e.Row.RowType == DataControlRowType.Header)
+            {
+                foreach (TableCell tc in e.Row.Cells)
+                {
+                    if (tc.HasControls())
+                    {
+                        // Buscar el enlace de la cabecera
+                        LinkButton lnk = tc.Controls[0] as LinkButton;
+                        if (lnk != null && SortExpression == lnk.CommandArgument)
+                        {
+                            // Verificar que se está ordenando por el campo indicado en el comando de ordenación
+                            // Crear una imagen
+                            System.Web.UI.WebControls.Image img = new System.Web.UI.WebControls.Image();
+                            img.Height = 20;
+                            img.Width = 20;
+                            // Ajustar dinámicamente el icono adecuado
+                            img.ImageUrl = "~/Images/SortingGv/" + (direccion == SortDirection.Ascending ? "desc" : "asc") + ".png";
+                            img.ImageAlign = ImageAlign.AbsMiddle;
+                            // Le metemos un espacio delante de la imagen para que no se pegue al enlace
+                            tc.Controls.Add(new LiteralControl(""));
+                            tc.Controls.Add(img);
+                        }
+                    }
+                }
+            }
         }
 
         protected void btnFiltros_Click(object sender, EventArgs e)
@@ -750,6 +784,7 @@ namespace Franquicia.WebForms.Views
         protected void gvUsuarios_Sorting(object sender, GridViewSortEventArgs e)
         {
             string SortExpression = e.SortExpression;
+            ViewState["SoExgvUsuarios"] = e.SortExpression;
             SortDirection direccion;
             string Orden = string.Empty;
 
@@ -805,13 +840,44 @@ namespace Franquicia.WebForms.Views
                 gvUsuarios.DataBind();
             }
         }
-
         protected void gvUsuarios_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             gvUsuarios.PageIndex = e.NewPageIndex;
             gvUsuarios.DataSource = usuariosCompletosServices.lsEventoUsuarioGridViewModel;
             gvUsuarios.DataBind();
         }
+        protected void gvUsuarios_RowCreated(object sender, GridViewRowEventArgs e)
+        {
+            SortDirection direccion = (SortDirection)ViewState["gvUsuarios"];
+            string SortExpression = ViewState["SoExgvUsuarios"].ToString();
+
+            if (e.Row.RowType == DataControlRowType.Header)
+            {
+                foreach (TableCell tc in e.Row.Cells)
+                {
+                    if (tc.HasControls())
+                    {
+                        // Buscar el enlace de la cabecera
+                        LinkButton lnk = tc.Controls[0] as LinkButton;
+                        if (lnk != null && SortExpression == lnk.CommandArgument)
+                        {
+                            // Verificar que se está ordenando por el campo indicado en el comando de ordenación
+                            // Crear una imagen
+                            System.Web.UI.WebControls.Image img = new System.Web.UI.WebControls.Image();
+                            img.Height = 20;
+                            img.Width = 20;
+                            // Ajustar dinámicamente el icono adecuado
+                            img.ImageUrl = "~/Images/SortingGv/" + (direccion == SortDirection.Ascending ? "desc" : "asc") + ".png";
+                            img.ImageAlign = ImageAlign.AbsMiddle;
+                            // Le metemos un espacio delante de la imagen para que no se pegue al enlace
+                            tc.Controls.Add(new LiteralControl(""));
+                            tc.Controls.Add(img);
+                        }
+                    }
+                }
+            }
+        }
+
         protected void cbTodo_CheckedChanged(object sender, EventArgs e)
         {
             CheckBox cbSeleccionado = (CheckBox)gvUsuarios.HeaderRow.FindControl("cbTodo");

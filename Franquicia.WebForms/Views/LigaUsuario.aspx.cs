@@ -30,6 +30,7 @@ namespace Franquicia.WebForms.Views
                 tmValidar.Enabled = false;
 
                 ViewState["gvLigasGeneradas"] = SortDirection.Ascending;
+                ViewState["SoExgvLigasGeneradas"] = "";
 
                 Session["ReporteLigasUsuariosligasUrlsServices"] = ligasUrlsServices;
                 Session["ReporteLigasUsuariospagosTarjetaServices"] = pagosTarjetaServices;
@@ -156,17 +157,176 @@ namespace Franquicia.WebForms.Views
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModalPagar()", true);
             }
         }
-
         protected void gvLigasGeneradas_RowDataBound(object sender, GridViewRowEventArgs e)
         {
 
         }
-
         protected void gvLigasGeneradas_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             gvLigasGeneradas.PageIndex = e.NewPageIndex;
             gvLigasGeneradas.DataSource = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel;
             gvLigasGeneradas.DataBind();
+        }
+        protected void gvLigasGeneradas_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            string SortExpression = e.SortExpression;
+            ViewState["SoExgvLigasGeneradas"] = e.SortExpression;
+            SortDirection direccion;
+            string Orden = string.Empty;
+
+            if (ViewState["gvLigasGeneradas"] != null)
+            {
+                direccion = (SortDirection)ViewState["gvLigasGeneradas"];
+                if (direccion == SortDirection.Ascending)
+                {
+                    ViewState["gvLigasGeneradas"] = SortDirection.Descending;
+                    Orden = "ASC";
+                }
+                else
+                {
+                    ViewState["gvLigasGeneradas"] = SortDirection.Ascending;
+                    Orden = "DESC";
+                }
+
+                switch (SortExpression)
+                {
+                    case "VchIdentificador":
+                        if (Orden == "ASC")
+                        {
+                            ligasUrlsServices.lsLigasUsuariosFinalGridViewModel = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel.OrderBy(x => x.VchIdentificador).ToList();
+                        }
+                        else
+                        {
+                            ligasUrlsServices.lsLigasUsuariosFinalGridViewModel = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel.OrderByDescending(x => x.VchIdentificador).ToList();
+                        }
+                        break;
+                    case "VchNombreComercial":
+                        if (Orden == "ASC")
+                        {
+                            ligasUrlsServices.lsLigasUsuariosFinalGridViewModel = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel.OrderBy(x => x.VchNombreComercial).ToList();
+                        }
+                        else
+                        {
+                            ligasUrlsServices.lsLigasUsuariosFinalGridViewModel = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel.OrderByDescending(x => x.VchNombreComercial).ToList();
+                        }
+                        break;
+                    case "VchAsunto":
+                        if (Orden == "ASC")
+                        {
+                            ligasUrlsServices.lsLigasUsuariosFinalGridViewModel = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel.OrderBy(x => x.VchAsunto).ToList();
+                        }
+                        else
+                        {
+                            ligasUrlsServices.lsLigasUsuariosFinalGridViewModel = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel.OrderByDescending(x => x.VchAsunto).ToList();
+                        }
+                        break;
+                    case "VchConcepto":
+                        if (Orden == "ASC")
+                        {
+                            ligasUrlsServices.lsLigasUsuariosFinalGridViewModel = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel.OrderBy(x => x.VchConcepto).ToList();
+                        }
+                        else
+                        {
+                            ligasUrlsServices.lsLigasUsuariosFinalGridViewModel = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel.OrderByDescending(x => x.VchConcepto).ToList();
+                        }
+                        break;
+                    case "DtVencimiento":
+                        if (Orden == "ASC")
+                        {
+                            ligasUrlsServices.lsLigasUsuariosFinalGridViewModel = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel.OrderBy(x => x.DtVencimiento).ToList();
+                        }
+                        else
+                        {
+                            ligasUrlsServices.lsLigasUsuariosFinalGridViewModel = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel.OrderByDescending(x => x.DtVencimiento).ToList();
+                        }
+                        break;
+                    case "DcmImporte":
+                        if (Orden == "ASC")
+                        {
+                            ligasUrlsServices.lsLigasUsuariosFinalGridViewModel = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel.OrderBy(x => x.DcmImporte).ToList();
+                        }
+                        else
+                        {
+                            ligasUrlsServices.lsLigasUsuariosFinalGridViewModel = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel.OrderByDescending(x => x.DcmImporte).ToList();
+                        }
+                        break;
+                    case "Comisiones":
+                        if (Orden == "ASC")
+                        {
+                            ligasUrlsServices.lsLigasUrlsGridViewModel = ligasUrlsServices.lsLigasUrlsGridViewModel.OrderBy(x => x.Comisiones).ToList();
+                        }
+                        else
+                        {
+                            ligasUrlsServices.lsLigasUrlsGridViewModel = ligasUrlsServices.lsLigasUrlsGridViewModel.OrderByDescending(x => x.Comisiones).ToList();
+                        }
+                        break;
+                    case "DcmImportePromocion":
+                        if (Orden == "ASC")
+                        {
+                            ligasUrlsServices.lsLigasUrlsGridViewModel = ligasUrlsServices.lsLigasUrlsGridViewModel.OrderBy(x => x.DcmImportePromocion).ToList();
+                        }
+                        else
+                        {
+                            ligasUrlsServices.lsLigasUrlsGridViewModel = ligasUrlsServices.lsLigasUrlsGridViewModel.OrderByDescending(x => x.DcmImportePromocion).ToList();
+                        }
+                        break;
+                    case "VchPromocion":
+                        if (Orden == "ASC")
+                        {
+                            ligasUrlsServices.lsLigasUrlsGridViewModel = ligasUrlsServices.lsLigasUrlsGridViewModel.OrderBy(x => x.VchPromocion).ToList();
+                        }
+                        else
+                        {
+                            ligasUrlsServices.lsLigasUrlsGridViewModel = ligasUrlsServices.lsLigasUrlsGridViewModel.OrderByDescending(x => x.VchPromocion).ToList();
+                        }
+                        break;
+                    case "VchEstatus":
+                        if (Orden == "ASC")
+                        {
+                            ligasUrlsServices.lsLigasUsuariosFinalGridViewModel = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel.OrderBy(x => x.VchEstatus).ToList();
+                        }
+                        else
+                        {
+                            ligasUrlsServices.lsLigasUsuariosFinalGridViewModel = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel.OrderByDescending(x => x.VchEstatus).ToList();
+                        }
+                        break;
+
+                }
+
+                gvLigasGeneradas.DataSource = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel;
+                gvLigasGeneradas.DataBind();
+            }
+        }
+        protected void gvLigasGeneradas_RowCreated(object sender, GridViewRowEventArgs e)
+        {
+            SortDirection direccion = (SortDirection)ViewState["gvLigasGeneradas"];
+            string SortExpression = ViewState["SoExgvLigasGeneradas"].ToString();
+
+            if (e.Row.RowType == DataControlRowType.Header)
+            {
+                foreach (TableCell tc in e.Row.Cells)
+                {
+                    if (tc.HasControls())
+                    {
+                        // Buscar el enlace de la cabecera
+                        LinkButton lnk = tc.Controls[0] as LinkButton;
+                        if (lnk != null && SortExpression == lnk.CommandArgument)
+                        {
+                            // Verificar que se está ordenando por el campo indicado en el comando de ordenación
+                            // Crear una imagen
+                            System.Web.UI.WebControls.Image img = new System.Web.UI.WebControls.Image();
+                            img.Height = 20;
+                            img.Width = 20;
+                            // Ajustar dinámicamente el icono adecuado
+                            img.ImageUrl = "~/Images/SortingGv/" + (direccion == SortDirection.Ascending ? "desc" : "asc") + ".png";
+                            img.ImageAlign = ImageAlign.AbsMiddle;
+                            // Le metemos un espacio delante de la imagen para que no se pegue al enlace
+                            tc.Controls.Add(new LiteralControl(""));
+                            tc.Controls.Add(img);
+                        }
+                    }
+                }
+            }
         }
 
         protected void btnFiltros_Click(object sender, EventArgs e)
@@ -232,126 +392,6 @@ namespace Franquicia.WebForms.Views
             gvLigasGeneradas.DataBind();
 
             ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModalBusqueda()", true);
-        }
-
-        protected void gvLigasGeneradas_Sorting(object sender, GridViewSortEventArgs e)
-        {
-            string SortExpression = e.SortExpression;
-            SortDirection direccion;
-            string Orden = string.Empty;
-
-            if (ViewState["gvLigasGeneradas"] != null)
-            {
-                direccion = (SortDirection)ViewState["gvLigasGeneradas"];
-                if (direccion == SortDirection.Ascending)
-                {
-                    ViewState["gvLigasGeneradas"] = SortDirection.Descending;
-                    Orden = "ASC";
-                }
-                else
-                {
-                    ViewState["gvLigasGeneradas"] = SortDirection.Ascending;
-                    Orden = "DESC";
-                }
-
-                switch (SortExpression)
-                {
-                    case "VchIdentificador":
-                        if (Orden == "ASC")
-                        {
-                            ligasUrlsServices.lsLigasUsuariosFinalGridViewModel = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel.OrderBy(x => x.VchIdentificador).ToList();
-                        }
-                        else
-                        {
-                            ligasUrlsServices.lsLigasUsuariosFinalGridViewModel = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel.OrderByDescending(x => x.VchIdentificador).ToList();
-                        }
-                        break;
-                    case "VchNombreComercial":
-                        if (Orden == "ASC")
-                        {
-                            ligasUrlsServices.lsLigasUsuariosFinalGridViewModel = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel.OrderBy(x => x.VchNombreComercial).ToList();
-                        }
-                        else
-                        {
-                            ligasUrlsServices.lsLigasUsuariosFinalGridViewModel = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel.OrderByDescending(x => x.VchNombreComercial).ToList();
-                        }
-                        break;
-                    case "VchAsunto":
-                        if (Orden == "ASC")
-                        {
-                            ligasUrlsServices.lsLigasUsuariosFinalGridViewModel = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel.OrderBy(x => x.VchAsunto).ToList();
-                        }
-                        else
-                        {
-                            ligasUrlsServices.lsLigasUsuariosFinalGridViewModel = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel.OrderByDescending(x => x.VchAsunto).ToList();
-                        }
-                        break;
-                    case "VchConcepto":
-                        if (Orden == "ASC")
-                        {
-                            ligasUrlsServices.lsLigasUsuariosFinalGridViewModel = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel.OrderBy(x => x.VchConcepto).ToList();
-                        }
-                        else
-                        {
-                            ligasUrlsServices.lsLigasUsuariosFinalGridViewModel = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel.OrderByDescending(x => x.VchConcepto).ToList();
-                        }
-                        break;
-                    case "DcmImporte":
-                        if (Orden == "ASC")
-                        {
-                            ligasUrlsServices.lsLigasUsuariosFinalGridViewModel = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel.OrderBy(x => x.DcmImporte).ToList();
-                        }
-                        else
-                        {
-                            ligasUrlsServices.lsLigasUsuariosFinalGridViewModel = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel.OrderByDescending(x => x.DcmImporte).ToList();
-                        }
-                        break;
-                    case "DtVencimiento":
-                        if (Orden == "ASC")
-                        {
-                            ligasUrlsServices.lsLigasUsuariosFinalGridViewModel = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel.OrderBy(x => x.DtVencimiento).ToList();
-                        }
-                        else
-                        {
-                            ligasUrlsServices.lsLigasUsuariosFinalGridViewModel = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel.OrderByDescending(x => x.DtVencimiento).ToList();
-                        }
-                        break;
-                    case "VchPromocion":
-                        if (Orden == "ASC")
-                        {
-                            ligasUrlsServices.lsLigasUsuariosFinalGridViewModel = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel.OrderBy(x => x.VchPromocion).ToList();
-                        }
-                        else
-                        {
-                            ligasUrlsServices.lsLigasUsuariosFinalGridViewModel = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel.OrderByDescending(x => x.VchPromocion).ToList();
-                        }
-                        break;
-                    case "DcmImportePromocion":
-                        if (Orden == "ASC")
-                        {
-                            ligasUrlsServices.lsLigasUsuariosFinalGridViewModel = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel.OrderBy(x => x.DcmImportePromocion).ToList();
-                        }
-                        else
-                        {
-                            ligasUrlsServices.lsLigasUsuariosFinalGridViewModel = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel.OrderByDescending(x => x.DcmImportePromocion).ToList();
-                        }
-                        break;
-                    case "VchEstatus":
-                        if (Orden == "ASC")
-                        {
-                            ligasUrlsServices.lsLigasUsuariosFinalGridViewModel = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel.OrderBy(x => x.VchEstatus).ToList();
-                        }
-                        else
-                        {
-                            ligasUrlsServices.lsLigasUsuariosFinalGridViewModel = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel.OrderByDescending(x => x.VchEstatus).ToList();
-                        }
-                        break;
-
-                }
-
-                gvLigasGeneradas.DataSource = ligasUrlsServices.lsLigasUsuariosFinalGridViewModel;
-                gvLigasGeneradas.DataBind();
-            }
         }
 
         protected void btnExportarLista_Click(object sender, EventArgs e)

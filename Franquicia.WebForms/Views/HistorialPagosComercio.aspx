@@ -62,7 +62,7 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="table-responsive">
-                                            <asp:GridView ID="gvHistorial" DataKeyNames="UidHistorialPago" OnRowCommand="gvHistorial_RowCommand" OnSorting="gvHistorial_Sorting" AllowSorting="true" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvHistorial_PageIndexChanging" AutoGenerateColumns="false" CssClass="table table-hover" GridLines="None" border="0" runat="server">
+                                            <asp:GridView ID="gvHistorial" OnRowCreated="gvHistorial_RowCreated" DataKeyNames="UidHistorialPago" OnRowCommand="gvHistorial_RowCommand" OnSorting="gvHistorial_Sorting" AllowSorting="true" AllowPaging="true" PageSize="10" OnPageIndexChanging="gvHistorial_PageIndexChanging" AutoGenerateColumns="false" CssClass="table table-hover" GridLines="None" border="0" runat="server">
                                                 <EmptyDataTemplate>
                                                     <div class="alert alert-info">Su historial esta vacio</div>
                                                 </EmptyDataTemplate>

@@ -44,6 +44,7 @@ namespace Franquicia.WebForms.Views
             if (!IsPostBack)
             {
                 ViewState["gvAdministradores"] = SortDirection.Ascending;
+                ViewState["SoExgvAdministradores"] = "";
 
                 #region Direccion
                 Session["paisesServices"] = paisesServices;
@@ -120,6 +121,11 @@ namespace Franquicia.WebForms.Views
         #region Dirección
         protected void ddlPais_SelectedIndexChanged(object sender, EventArgs e)
         {
+            ddlEstado.Items.Clear();
+            ddlMunicipio.Items.Clear();
+            ddlColonia.Items.Clear();
+            ddlCiudad.Items.Clear();
+
             //llena el combo Estados
             estadosServices.CargarEstados(ddlPais.SelectedItem.Value.ToString());
             ddlEstado.Items.Insert(0, new ListItem("Seleccione", "00000000-0000-0000-0000-000000000000"));
@@ -693,7 +699,6 @@ namespace Franquicia.WebForms.Views
                 e.Row.Attributes["onclick"] = Page.ClientScript.GetPostBackClientHyperlink(gvAdministradores, "Select$" + e.Row.RowIndex);
             }
         }
-
         protected void gvAdministradores_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandName == "Editar")
@@ -764,6 +769,112 @@ namespace Franquicia.WebForms.Views
                 lblTituloModal.Text = "Visualización de Usuario";
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
+            }
+        }
+        protected void gvAdministradores_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvAdministradores.PageIndex = e.NewPageIndex;
+            gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
+            gvAdministradores.DataBind();
+        }
+        protected void gvAdministradores_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            string SortExpression = e.SortExpression;
+            ViewState["SoExgvAdministradores"] = e.SortExpression;
+            SortDirection direccion;
+            string Orden = string.Empty;
+
+            if (ViewState["gvAdministradores"] != null)
+            {
+                direccion = (SortDirection)ViewState["gvAdministradores"];
+                if (direccion == SortDirection.Ascending)
+                {
+                    ViewState["gvAdministradores"] = SortDirection.Descending;
+                    Orden = "ASC";
+                }
+                else
+                {
+                    ViewState["gvAdministradores"] = SortDirection.Ascending;
+                    Orden = "DESC";
+                }
+
+                switch (SortExpression)
+                {
+                    case "NombreCompleto":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderBy(x => x.NombreCompleto).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.NombreCompleto).ToList();
+                        }
+                        break;
+                    case "VchUsuario":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderBy(x => x.VchUsuario).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.VchUsuario).ToList();
+                        }
+                        break;
+                    case "VchNombrePerfil":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderBy(x => x.VchNombrePerfil).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.VchNombrePerfil).ToList();
+                        }
+                        break;
+                    case "UidEstatus":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderBy(x => x.UidEstatus).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.UidEstatus).ToList();
+                        }
+                        break;
+                }
+
+                gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
+                gvAdministradores.DataBind();
+            }
+        }
+        protected void gvAdministradores_RowCreated(object sender, GridViewRowEventArgs e)
+        {
+            SortDirection direccion = (SortDirection)ViewState["gvAdministradores"];
+            string SortExpression = ViewState["SoExgvAdministradores"].ToString();
+
+            if (e.Row.RowType == DataControlRowType.Header)
+            {
+                foreach (TableCell tc in e.Row.Cells)
+                {
+                    if (tc.HasControls())
+                    {
+                        // Buscar el enlace de la cabecera
+                        LinkButton lnk = tc.Controls[0] as LinkButton;
+                        if (lnk != null && SortExpression == lnk.CommandArgument)
+                        {
+                            // Verificar que se está ordenando por el campo indicado en el comando de ordenación
+                            // Crear una imagen
+                            System.Web.UI.WebControls.Image img = new System.Web.UI.WebControls.Image();
+                            img.Height = 20;
+                            img.Width = 20;
+                            // Ajustar dinámicamente el icono adecuado
+                            img.ImageUrl = "~/Images/SortingGv/" + (direccion == SortDirection.Ascending ? "desc" : "asc") + ".png";
+                            img.ImageAlign = ImageAlign.AbsMiddle;
+                            // Le metemos un espacio delante de la imagen para que no se pegue al enlace
+                            tc.Controls.Add(new LiteralControl(""));
+                            tc.Controls.Add(img);
+                        }
+                    }
+                }
             }
         }
 
@@ -924,82 +1035,6 @@ namespace Franquicia.WebForms.Views
             {
                 lblNoExisteUsuario.Text = string.Empty;
                 lblExisteUsuario.Text = string.Empty;
-            }
-        }
-
-        protected void gvAdministradores_PageIndexChanging(object sender, GridViewPageEventArgs e)
-        {
-            gvAdministradores.PageIndex = e.NewPageIndex;
-            gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
-            gvAdministradores.DataBind();
-        }
-
-        protected void gvAdministradores_Sorting(object sender, GridViewSortEventArgs e)
-        {
-            string SortExpression = e.SortExpression;
-            SortDirection direccion;
-            string Orden = string.Empty;
-
-            if (ViewState["gvAdministradores"] != null)
-            {
-                direccion = (SortDirection)ViewState["gvAdministradores"];
-                if (direccion == SortDirection.Ascending)
-                {
-                    ViewState["gvAdministradores"] = SortDirection.Descending;
-                    Orden = "ASC";
-                }
-                else
-                {
-                    ViewState["gvAdministradores"] = SortDirection.Ascending;
-                    Orden = "DESC";
-                }
-
-                switch (SortExpression)
-                {
-                    case "NombreCompleto":
-                        if (Orden == "ASC")
-                        {
-                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderBy(x => x.NombreCompleto).ToList();
-                        }
-                        else
-                        {
-                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.NombreCompleto).ToList();
-                        }
-                        break;
-                    case "VchUsuario":
-                        if (Orden == "ASC")
-                        {
-                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderBy(x => x.VchUsuario).ToList();
-                        }
-                        else
-                        {
-                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.VchUsuario).ToList();
-                        }
-                        break;
-                    case "VchNombrePerfil":
-                        if (Orden == "ASC")
-                        {
-                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderBy(x => x.VchNombrePerfil).ToList();
-                        }
-                        else
-                        {
-                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.VchNombrePerfil).ToList();
-                        }
-                        break;
-                    case "UidEstatus":
-                        if (Orden == "ASC")
-                        {
-                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderBy(x => x.UidEstatus).ToList();
-                        }
-                        else
-                        {
-                            usuariosCompletosServices.lsUsuariosCompletos = usuariosCompletosServices.lsUsuariosCompletos.OrderByDescending(x => x.UidEstatus).ToList();
-                        }
-                        break;
-                }
-
-                gvAdministradores.DataSource = usuariosCompletosServices.lsUsuariosCompletos;
-                gvAdministradores.DataBind();
             }
         }
 

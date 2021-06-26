@@ -39,7 +39,7 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="table-responsive">
-                                            <asp:GridView ID="gvAdministradores" OnRowCommand="gvAdministradores_RowCommand" OnRowDataBound="gvAdministradores_RowDataBound" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidUsuario" GridLines="None" border="0" runat="server">
+                                            <asp:GridView ID="gvAdministradores" OnRowCreated="gvAdministradores_RowCreated" OnPageIndexChanging="gvAdministradores_PageIndexChanging" OnSorting="gvAdministradores_Sorting" OnRowCommand="gvAdministradores_RowCommand" OnRowDataBound="gvAdministradores_RowDataBound" AllowSorting="true" AutoGenerateColumns="false" CssClass="table table-hover" DataKeyNames="UidUsuario" GridLines="None" AllowPaging="true" PageSize="10" border="0" runat="server">
                                                 <EmptyDataTemplate>
                                                     <div class="alert alert-info">No hay usuarios registrados</div>
                                                 </EmptyDataTemplate>
@@ -84,6 +84,7 @@
                                                         </ItemTemplate>
                                                     </asp:TemplateField>
                                                 </Columns>
+                                                <PagerStyle HorizontalAlign="Center" CssClass="pagination-ys" />
                                             </asp:GridView>
                                         </div>
                                     </div>
@@ -104,7 +105,7 @@
 <asp:Content ID="Content3" ContentPlaceHolderID="cBodyBottom" runat="server">
     <!--MODAL-->
     <div class="modal fade" id="ModalNuevo" tabindex="-1" role="dialog" data-backdrop="static" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <asp:UpdatePanel runat="server">
                     <ContentTemplate>
@@ -141,14 +142,14 @@
                                             </li>
                                             <li class="nav-item">
                                                 <a class="nav-link" href="#direccion" data-toggle="tab">
-                                                    <i class="material-icons">directions</i>Dirección<div class="ripple-container"></div>
+                                                    <i class="material-icons">directions</i>Dirección (Opcional)<div class="ripple-container"></div>
                                                 </a>
                                             </li>
-                                            <li class="nav-item">
+                                            <%--<li class="nav-item">
                                                 <a class="nav-link" href="#telefono" data-toggle="tab">
                                                     <i class="material-icons">phone</i>Teléfono<div class="ripple-container"></div>
                                                 </a>
-                                            </li>
+                                            </li>--%>
                                         </ul>
                                     </div>
                                 </div>
@@ -177,12 +178,19 @@
                                                         <label for="txtApeMaterno" style="color: black;">Apellido Materno</label>
                                                         <asp:TextBox ID="txtApeMaterno" CssClass="form-control" runat="server" />
                                                     </div>
-                                                    <div class="form-group col-md-8">
+                                                    <div class="form-group col-md-4">
                                                         <label for="txtCorreo" style="color: black; margin-bottom: 12px;">Correo Eléctronico</label>
                                                         <asp:TextBox ID="txtCorreo" CssClass="form-control" required="required" runat="server" />
                                                         <asp:Label CssClass="text-danger" runat="server" ID="lblExiste" />
                                                         <asp:Label CssClass="text-success" runat="server" ID="lblNoExiste" />
                                                         <asp:LinkButton ID="btnValidarCorreo" CssClass="pull-right" Text="Validar" OnClick="btnValidarCorreo_Click" runat="server" />
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label for="txtNumero" style="color: black;">Numero</label>
+                                                            <asp:TextBox ID="txtNumero" TextMode="Phone" CssClass="form-control" runat="server" />
+                                                            <asp:RegularExpressionValidator ID="REVNumero" runat="server" ControlToValidate="txtNumero" ErrorMessage="* Valores númericos" ForeColor="Red" ValidationExpression="^[0-9]*"></asp:RegularExpressionValidator>
+                                                        </div>
                                                     </div>
                                                     <div class="form-group col-md-4">
                                                         <label for="ddlEstatus" style="color: black;">Estatus</label>
@@ -218,66 +226,79 @@
                                     <div class="tab-pane" id="direccion">
                                         <asp:UpdatePanel runat="server">
                                             <ContentTemplate>
-                                                <div class="row">
-                                                    <div class="form-group col-md-4 d-lg-none">
-                                                        <label for="txtIdentificador" style="color: black;">Identificador</label>
-                                                        <asp:TextBox ID="txtIdentificador" CssClass="form-control" runat="server" />
-                                                    </div>
-                                                    <div class="form-group col-md-4">
-                                                        <label for="ddlPais" style="color: black;">Pais</label>
-                                                        <asp:DropDownList ID="ddlPais" AutoPostBack="true" AppendDataBoundItems="true" OnSelectedIndexChanged="ddlPais_SelectedIndexChanged" CssClass="form-control" runat="server">
-                                                            <asp:ListItem Text="Seleccione" />
+                                                <div class="d-flex flex-row-reverse">
+                                                    <div class="p-2">
+
+                                                        <label for="ddlIncluirDir" style="color: black;">¿Incluir dirección?</label>
+                                                        <asp:DropDownList ID="ddlIncluirDir" AutoPostBack="true" AppendDataBoundItems="true" OnSelectedIndexChanged="ddlIncluirDir_SelectedIndexChanged" CssClass="form-control" runat="server">
+                                                            <asp:ListItem Text="NO" Value="NO" />
+                                                            <asp:ListItem Text="SI" Value="SI" />
                                                         </asp:DropDownList>
-                                                    </div>
-                                                    <div class="form-group col-md-4">
-                                                        <label for="ddlEstado" style="color: black;">Estado</label>
-                                                        <asp:DropDownList ID="ddlEstado" AutoPostBack="true" AppendDataBoundItems="true" OnSelectedIndexChanged="ddlEstado_SelectedIndexChanged" CssClass="form-control" runat="server">
-                                                        </asp:DropDownList>
-                                                    </div>
-                                                    <div class="form-group col-md-4">
-                                                        <label for="ddlMunicipio" style="color: black;">Municipio</label>
-                                                        <asp:DropDownList ID="ddlMunicipio" AutoPostBack="true" AppendDataBoundItems="true" OnSelectedIndexChanged="ddlMunicipio_SelectedIndexChanged" CssClass="form-control" runat="server">
-                                                        </asp:DropDownList>
-                                                    </div>
-                                                    <div class="form-group col-md-4">
-                                                        <label for="ddlCiudad" style="color: black;">Ciudad</label>
-                                                        <asp:DropDownList ID="ddlCiudad" AutoPostBack="true" AppendDataBoundItems="true" OnSelectedIndexChanged="ddlCiudad_SelectedIndexChanged" CssClass="form-control" runat="server">
-                                                        </asp:DropDownList>
-                                                    </div>
-                                                    <div class="form-group col-md-4">
-                                                        <label for="ddlColonia" style="color: black;">Colonia</label>
-                                                        <asp:DropDownList ID="ddlColonia" AutoPostBack="true" AppendDataBoundItems="true" OnSelectedIndexChanged="ddlColonia_SelectedIndexChanged" CssClass="form-control" runat="server">
-                                                        </asp:DropDownList>
-                                                    </div>
-                                                    <div class="form-group col-md-4">
-                                                        <label for="txtCalle" style="color: black;">Calle</label>
-                                                        <asp:TextBox ID="txtCalle" CssClass="form-control" runat="server" />
-                                                    </div>
-                                                    <div class="form-group col-md-4">
-                                                        <label for="txtEntreCalle" style="color: black;">Entre Calle</label>
-                                                        <asp:TextBox ID="txtEntreCalle" CssClass="form-control" runat="server" />
-                                                    </div>
-                                                    <div class="form-group col-md-4">
-                                                        <label for="txtYCalle" style="color: black;">Y Calle</label>
-                                                        <asp:TextBox ID="txtYCalle" CssClass="form-control" runat="server" />
-                                                    </div>
-                                                    <div class="form-group col-md-4">
-                                                        <label for="txtNumeroExterior" style="color: black;">Número Exterior</label>
-                                                        <asp:TextBox ID="txtNumeroExterior" CssClass="form-control" runat="server" />
-                                                    </div>
-                                                    <div class="form-group col-md-4">
-                                                        <label for="txtNumeroInterior" style="color: black;">Número Interior</label>
-                                                        <asp:TextBox ID="txtNumeroInterior" CssClass="form-control" runat="server" />
-                                                    </div>
-                                                    <div class="form-group col-md-4">
-                                                        <label for="txtCodigoPostal" style="color: black;">Código Postal</label>
-                                                        <asp:TextBox ID="txtCodigoPostal" CssClass="form-control" runat="server" />
-                                                    </div>
-                                                    <div class="form-group col-md-12">
-                                                        <label for="txtReferencia" style="color: black;">Referencia</label>
-                                                        <asp:TextBox ID="txtReferencia" CssClass="form-control" runat="server" />
+
                                                     </div>
                                                 </div>
+                                                <asp:Panel ID="pnlIncluirDir" Visible="false" runat="server">
+                                                    <div class="row">
+                                                        <div class="form-group col-md-4 d-lg-none">
+                                                            <label for="txtIdentificador" style="color: black;">Identificador</label>
+                                                            <asp:TextBox ID="txtIdentificador" CssClass="form-control" runat="server" />
+                                                        </div>
+                                                        <div class="form-group col-md-4">
+                                                            <label for="ddlPais" style="color: black;">Pais</label>
+                                                            <asp:DropDownList ID="ddlPais" AutoPostBack="true" AppendDataBoundItems="true" OnSelectedIndexChanged="ddlPais_SelectedIndexChanged" CssClass="form-control" runat="server">
+                                                                <asp:ListItem Text="Seleccione" Value="00000000-0000-0000-0000-000000000000" />
+                                                            </asp:DropDownList>
+                                                        </div>
+                                                        <div class="form-group col-md-4">
+                                                            <label for="ddlEstado" style="color: black;">Estado</label>
+                                                            <asp:DropDownList ID="ddlEstado" AutoPostBack="true" AppendDataBoundItems="true" OnSelectedIndexChanged="ddlEstado_SelectedIndexChanged" CssClass="form-control" runat="server">
+                                                            </asp:DropDownList>
+                                                        </div>
+                                                        <div class="form-group col-md-4">
+                                                            <label for="ddlMunicipio" style="color: black;">Municipio</label>
+                                                            <asp:DropDownList ID="ddlMunicipio" AutoPostBack="true" AppendDataBoundItems="true" OnSelectedIndexChanged="ddlMunicipio_SelectedIndexChanged" CssClass="form-control" runat="server">
+                                                            </asp:DropDownList>
+                                                        </div>
+                                                        <div class="form-group col-md-4">
+                                                            <label for="ddlCiudad" style="color: black;">Ciudad</label>
+                                                            <asp:DropDownList ID="ddlCiudad" AutoPostBack="true" AppendDataBoundItems="true" OnSelectedIndexChanged="ddlCiudad_SelectedIndexChanged" CssClass="form-control" runat="server">
+                                                            </asp:DropDownList>
+                                                        </div>
+                                                        <div class="form-group col-md-4">
+                                                            <label for="ddlColonia" style="color: black;">Colonia</label>
+                                                            <asp:DropDownList ID="ddlColonia" AutoPostBack="true" AppendDataBoundItems="true" OnSelectedIndexChanged="ddlColonia_SelectedIndexChanged" CssClass="form-control" runat="server">
+                                                            </asp:DropDownList>
+                                                        </div>
+                                                        <div class="form-group col-md-4">
+                                                            <label for="txtCalle" style="color: black;">Calle</label>
+                                                            <asp:TextBox ID="txtCalle" CssClass="form-control" runat="server" />
+                                                        </div>
+                                                        <div class="form-group col-md-4">
+                                                            <label for="txtEntreCalle" style="color: black;">Entre Calle</label>
+                                                            <asp:TextBox ID="txtEntreCalle" CssClass="form-control" runat="server" />
+                                                        </div>
+                                                        <div class="form-group col-md-4">
+                                                            <label for="txtYCalle" style="color: black;">Y Calle</label>
+                                                            <asp:TextBox ID="txtYCalle" CssClass="form-control" runat="server" />
+                                                        </div>
+                                                        <div class="form-group col-md-4">
+                                                            <label for="txtNumeroExterior" style="color: black;">Número Exterior</label>
+                                                            <asp:TextBox ID="txtNumeroExterior" CssClass="form-control" runat="server" />
+                                                        </div>
+                                                        <div class="form-group col-md-4">
+                                                            <label for="txtNumeroInterior" style="color: black;">Número Interior</label>
+                                                            <asp:TextBox ID="txtNumeroInterior" CssClass="form-control" runat="server" />
+                                                        </div>
+                                                        <div class="form-group col-md-4">
+                                                            <label for="txtCodigoPostal" style="color: black;">Código Postal</label>
+                                                            <asp:TextBox ID="txtCodigoPostal" CssClass="form-control" runat="server" />
+                                                        </div>
+                                                        <div class="form-group col-md-12">
+                                                            <label for="txtReferencia" style="color: black;">Referencia</label>
+                                                            <asp:TextBox ID="txtReferencia" CssClass="form-control" runat="server" />
+                                                        </div>
+                                                    </div>
+                                                </asp:Panel>
                                             </ContentTemplate>
                                         </asp:UpdatePanel>
                                     </div>
@@ -291,13 +312,6 @@
                                                             <label for="ddlTipoTelefono" style="color: black;">Tipo Teléfono</label>
                                                             <asp:DropDownList ID="ddlTipoTelefono" CssClass="form-control" runat="server">
                                                             </asp:DropDownList>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <div class="form-group">
-                                                                <label for="txtNumero" style="color: black;">Numero</label>
-                                                                <asp:TextBox ID="txtNumero" TextMode="Phone" CssClass="form-control" runat="server" />
-                                                                <asp:RegularExpressionValidator ID="REVNumero" runat="server" ControlToValidate="txtNumero" ErrorMessage="* Valores númericos" ForeColor="Red" ValidationExpression="^[0-9]*"></asp:RegularExpressionValidator>
-                                                            </div>
                                                         </div>
                                                     </div>
                                                 </ContentTemplate>

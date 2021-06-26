@@ -48,6 +48,9 @@ namespace Franquicia.WebForms.Views
 
             if (!IsPostBack)
             {
+                ViewState["gvEventos"] = SortDirection.Ascending;
+                ViewState["SoExgvEventos"] = "";
+
                 Session["EventosUsuarioseventosServices"] = eventosServices;
                 Session["EventosUsuariosusuariosCompletosServices"] = usuariosCompletosServices;
                 Session["importeLigaMinMaxServices"] = importeLigaMinMaxServices;
@@ -261,10 +264,10 @@ namespace Franquicia.WebForms.Views
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
             }
         }
-
         protected void gvEventos_Sorting(object sender, GridViewSortEventArgs e)
         {
             string SortExpression = e.SortExpression;
+            ViewState["SoExgvEventos"] = e.SortExpression;
             SortDirection direccion;
             string Orden = string.Empty;
 
@@ -330,12 +333,42 @@ namespace Franquicia.WebForms.Views
                 gvEventos.DataBind();
             }
         }
-
         protected void gvEventos_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             gvEventos.PageIndex = e.NewPageIndex;
             gvEventos.DataSource = eventosServices.lsEventosUsuarioFinalGridViewModel;
             gvEventos.DataBind();
+        }
+        protected void gvEventos_RowCreated(object sender, GridViewRowEventArgs e)
+        {
+            SortDirection direccion = (SortDirection)ViewState["gvEventos"];
+            string SortExpression = ViewState["SoExgvEventos"].ToString();
+
+            if (e.Row.RowType == DataControlRowType.Header)
+            {
+                foreach (TableCell tc in e.Row.Cells)
+                {
+                    if (tc.HasControls())
+                    {
+                        // Buscar el enlace de la cabecera
+                        LinkButton lnk = tc.Controls[0] as LinkButton;
+                        if (lnk != null && SortExpression == lnk.CommandArgument)
+                        {
+                            // Verificar que se está ordenando por el campo indicado en el comando de ordenación
+                            // Crear una imagen
+                            System.Web.UI.WebControls.Image img = new System.Web.UI.WebControls.Image();
+                            img.Height = 20;
+                            img.Width = 20;
+                            // Ajustar dinámicamente el icono adecuado
+                            img.ImageUrl = "~/Images/SortingGv/" + (direccion == SortDirection.Ascending ? "desc" : "asc") + ".png";
+                            img.ImageAlign = ImageAlign.AbsMiddle;
+                            // Le metemos un espacio delante de la imagen para que no se pegue al enlace
+                            tc.Controls.Add(new LiteralControl(""));
+                            tc.Controls.Add(img);
+                        }
+                    }
+                }
+            }
         }
 
         #region Evento

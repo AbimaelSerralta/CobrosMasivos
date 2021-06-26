@@ -26,6 +26,9 @@ namespace Franquicia.WebForms.Views
         {
             if (!IsPostBack)
             {
+                ViewState["gvPerfiles"] = SortDirection.Ascending;
+                ViewState["SoExgvPerfiles"] = "";
+
                 Session["listPermisosPrincipal"] = listPermisosPrincipal;
                 Session["listDenegarPermisos"] = listDenegarPermisos;
 
@@ -260,7 +263,6 @@ namespace Franquicia.WebForms.Views
                 }
             }
         }
-
         protected void gvPerfiles_RowCommand(object sender, GridViewCommandEventArgs e)
         {
             if (e.CommandName == "Editar")
@@ -304,6 +306,102 @@ namespace Franquicia.WebForms.Views
                 lblTituloModal.Text = "Visualización del Acceso";
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "showModal()", true);
+            }
+        }
+        protected void gvPerfiles_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvPerfiles.PageIndex = e.NewPageIndex;
+            gvPerfiles.DataSource = perfilesServices.lsperfilesGridViewModel;
+            gvPerfiles.DataBind();
+        }
+        protected void gvPerfiles_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            string SortExpression = e.SortExpression;
+            ViewState["SoExgvPerfiles"] = e.SortExpression;
+            SortDirection direccion;
+            string Orden = string.Empty;
+
+            if (ViewState["gvPerfiles"] != null)
+            {
+                direccion = (SortDirection)ViewState["gvPerfiles"];
+                if (direccion == SortDirection.Ascending)
+                {
+                    ViewState["gvPerfiles"] = SortDirection.Descending;
+                    Orden = "ASC";
+                }
+                else
+                {
+                    ViewState["gvPerfiles"] = SortDirection.Ascending;
+                    Orden = "DESC";
+                }
+
+                switch (SortExpression)
+                {
+                    case "VchNombre":
+                        if (Orden == "ASC")
+                        {
+                            perfilesServices.lsperfilesGridViewModel = perfilesServices.lsperfilesGridViewModel.OrderBy(x => x.VchNombre).ToList();
+                        }
+                        else
+                        {
+                            perfilesServices.lsperfilesGridViewModel = perfilesServices.lsperfilesGridViewModel.OrderByDescending(x => x.VchNombre).ToList();
+                        }
+                        break;
+                    case "VchPerfil":
+                        if (Orden == "ASC")
+                        {
+                            perfilesServices.lsperfilesGridViewModel = perfilesServices.lsperfilesGridViewModel.OrderBy(x => x.VchPerfil).ToList();
+                        }
+                        else
+                        {
+                            perfilesServices.lsperfilesGridViewModel = perfilesServices.lsperfilesGridViewModel.OrderByDescending(x => x.VchPerfil).ToList();
+                        }
+                        break;
+                    case "UidEstatus":
+                        if (Orden == "ASC")
+                        {
+                            perfilesServices.lsperfilesGridViewModel = perfilesServices.lsperfilesGridViewModel.OrderBy(x => x.UidEstatus).ToList();
+                        }
+                        else
+                        {
+                            perfilesServices.lsperfilesGridViewModel = perfilesServices.lsperfilesGridViewModel.OrderByDescending(x => x.UidEstatus).ToList();
+                        }
+                        break;
+                }
+
+                gvPerfiles.DataSource = perfilesServices.lsperfilesGridViewModel;
+                gvPerfiles.DataBind();
+            }
+        }
+        protected void gvPerfiles_RowCreated(object sender, GridViewRowEventArgs e)
+        {
+            SortDirection direccion = (SortDirection)ViewState["gvPerfiles"];
+            string SortExpression = ViewState["SoExgvPerfiles"].ToString();
+
+            if (e.Row.RowType == DataControlRowType.Header)
+            {
+                foreach (TableCell tc in e.Row.Cells)
+                {
+                    if (tc.HasControls())
+                    {
+                        // Buscar el enlace de la cabecera
+                        LinkButton lnk = tc.Controls[0] as LinkButton;
+                        if (lnk != null && SortExpression == lnk.CommandArgument)
+                        {
+                            // Verificar que se está ordenando por el campo indicado en el comando de ordenación
+                            // Crear una imagen
+                            System.Web.UI.WebControls.Image img = new System.Web.UI.WebControls.Image();
+                            img.Height = 20;
+                            img.Width = 20;
+                            // Ajustar dinámicamente el icono adecuado
+                            img.ImageUrl = "~/Images/SortingGv/" + (direccion == SortDirection.Ascending ? "desc" : "asc") + ".png";
+                            img.ImageAlign = ImageAlign.AbsMiddle;
+                            // Le metemos un espacio delante de la imagen para que no se pegue al enlace
+                            tc.Controls.Add(new LiteralControl(""));
+                            tc.Controls.Add(img);
+                        }
+                    }
+                }
             }
         }
 

@@ -74,13 +74,8 @@ namespace Franquicia.Bussiness
         }
 
         #region Metodos Principal
-        public bool RegistrarAdministradores(
-            string Nombre, string ApePaterno, string ApeMaterno, string Correo, string Usuario, string Password, Guid UidSegPerfil, Guid UidSegPerfilEscuela,
-            string Identificador, Guid UidPais, Guid UidEstado, Guid Municipio, Guid UidCiudad, Guid UidColonia, string Calle, string EntreCalle, string YCalle, string NumeroExterior, string NumeroInterior, string CodigoPostal, string Referencia,
-            string Telefono, Guid UidTipoTelefono, Guid UidFranquicia)
+        public bool RegistrarAdministradores(Guid UidUsuario, string Nombre, string ApePaterno, string ApeMaterno, string Correo, string Usuario, string Password, Guid UidSegPerfil, Guid UidSegPerfilEscuela, string Telefono, Guid UidTipoTelefono, Guid UidFranquicia)
         {
-            Guid UidUsuario = Guid.NewGuid();
-
             bool result = false;
             if (usuariosCompletosRepository.RegistrarAdministradores(
                 new UsuariosCompletos
@@ -95,22 +90,6 @@ namespace Franquicia.Bussiness
                     UidSegPerfil = UidSegPerfil
                 },
                 UidSegPerfilEscuela,
-                new DireccionesUsuarios
-                {
-                    Identificador = Identificador,
-                    UidPais = UidPais,
-                    UidEstado = UidEstado,
-                    UidMunicipio = Municipio,
-                    UidCiudad = UidCiudad,
-                    UidColonia = UidColonia,
-                    Calle = Calle,
-                    EntreCalle = EntreCalle,
-                    YCalle = YCalle,
-                    NumeroExterior = NumeroExterior,
-                    NumeroInterior = NumeroInterior,
-                    CodigoPostal = CodigoPostal,
-                    Referencia = Referencia
-                },
                 new TelefonosUsuarios
                 {
                     VchTelefono = Telefono,
@@ -125,9 +104,7 @@ namespace Franquicia.Bussiness
         }
 
         public bool ActualizarAdministradores(
-            Guid UidUsuario, string Nombre, string ApePaterno, string ApeMaterno, string Correo, Guid UidEstatus, string Usuario, string Password, Guid UidSegPerfil,
-            string Identificador, Guid UidPais, Guid UidEstado, Guid Municipio, Guid UidCiudad, Guid UidColonia, string Calle, string EntreCalle, string YCalle, string NumeroExterior, string NumeroInterior, string CodigoPostal, string Referencia,
-            string Telefono, Guid UidTipoTelefono, Guid UidFranquicia)
+            Guid UidUsuario, string Nombre, string ApePaterno, string ApeMaterno, string Correo, Guid UidEstatus, string Usuario, string Password, Guid UidSegPerfil, string Telefono, Guid UidTipoTelefono, Guid UidFranquicia)
         {
 
             bool result = false;
@@ -143,22 +120,6 @@ namespace Franquicia.Bussiness
                     VchUsuario = Usuario,
                     VchContrasenia = Password,
                     UidSegPerfil = UidSegPerfil
-                },
-                new DireccionesUsuarios
-                {
-                    Identificador = Identificador,
-                    UidPais = UidPais,
-                    UidEstado = UidEstado,
-                    UidMunicipio = Municipio,
-                    UidCiudad = UidCiudad,
-                    UidColonia = UidColonia,
-                    Calle = Calle,
-                    EntreCalle = EntreCalle,
-                    YCalle = YCalle,
-                    NumeroExterior = NumeroExterior,
-                    NumeroInterior = NumeroInterior,
-                    CodigoPostal = CodigoPostal,
-                    Referencia = Referencia
                 },
                 new TelefonosUsuarios
                 {
@@ -179,13 +140,8 @@ namespace Franquicia.Bussiness
             usuariosCompletosRepository.usuarioCompleto = lsUsuariosCompletos.Find(x => x.UidUsuario == UidAdministrador);
         }
 
-        public bool RegistrarAdministradoresPrincipal(
-            string Nombre, string ApePaterno, string ApeMaterno, string Correo, string Usuario, string Password, Guid UidSegPerfil, Guid UidSegPerfilEscuela,
-            string Identificador, Guid UidPais, Guid UidEstado, Guid Municipio, Guid UidCiudad, Guid UidColonia, string Calle, string EntreCalle, string YCalle, string NumeroExterior, string NumeroInterior, string CodigoPostal, string Referencia,
-            string Telefono, Guid UidTipoTelefono)
+        public bool RegistrarAdministradoresPrincipal(Guid UidUsuario, string Nombre, string ApePaterno, string ApeMaterno, string Correo, string Usuario, string Password, Guid UidSegPerfil, Guid UidSegPerfilEscuela, string Telefono, Guid UidTipoTelefono)
         {
-            Guid UidUsuario = Guid.NewGuid();
-
             bool result = false;
             if (usuariosCompletosRepository.RegistrarAdministradoresPrincipal(
                 new UsuariosCompletos
@@ -200,22 +156,6 @@ namespace Franquicia.Bussiness
                     UidSegPerfil = UidSegPerfil
                 },
                 UidSegPerfilEscuela,
-                new DireccionesUsuarios
-                {
-                    Identificador = Identificador,
-                    UidPais = UidPais,
-                    UidEstado = UidEstado,
-                    UidMunicipio = Municipio,
-                    UidCiudad = UidCiudad,
-                    UidColonia = UidColonia,
-                    Calle = Calle,
-                    EntreCalle = EntreCalle,
-                    YCalle = YCalle,
-                    NumeroExterior = NumeroExterior,
-                    NumeroInterior = NumeroInterior,
-                    CodigoPostal = CodigoPostal,
-                    Referencia = Referencia
-                },
                 new TelefonosUsuarios
                 {
                     VchTelefono = Telefono,
@@ -227,13 +167,8 @@ namespace Franquicia.Bussiness
             }
             return result;
         }
-
-        public bool ActualizarAdministradoresPrincipal(
-            Guid UidUsuario, string Nombre, string ApePaterno, string ApeMaterno, string Correo, Guid UidEstatus, string Usuario, string Password, Guid UidSegPerfil, Guid UidSegPerfilEscuela,
-            string Identificador, Guid UidPais, Guid UidEstado, Guid Municipio, Guid UidCiudad, Guid UidColonia, string Calle, string EntreCalle, string YCalle, string NumeroExterior, string NumeroInterior, string CodigoPostal, string Referencia,
-            string Telefono, Guid UidTipoTelefono)
+        public bool ActualizarAdministradoresPrincipal(Guid UidUsuario, string Nombre, string ApePaterno, string ApeMaterno, string Correo, Guid UidEstatus, string Usuario, string Password, Guid UidSegPerfil, Guid UidSegPerfilEscuela, string Telefono, Guid UidTipoTelefono)
         {
-
             bool result = false;
             if (usuariosCompletosRepository.ActualizarAdministradoresPrincipal(
                 new UsuariosCompletos
@@ -249,22 +184,6 @@ namespace Franquicia.Bussiness
                     UidSegPerfil = UidSegPerfil
                 },
                 UidSegPerfilEscuela,
-                new DireccionesUsuarios
-                {
-                    Identificador = Identificador,
-                    UidPais = UidPais,
-                    UidEstado = UidEstado,
-                    UidMunicipio = Municipio,
-                    UidCiudad = UidCiudad,
-                    UidColonia = UidColonia,
-                    Calle = Calle,
-                    EntreCalle = EntreCalle,
-                    YCalle = YCalle,
-                    NumeroExterior = NumeroExterior,
-                    NumeroInterior = NumeroInterior,
-                    CodigoPostal = CodigoPostal,
-                    Referencia = Referencia
-                },
                 new TelefonosUsuarios
                 {
                     VchTelefono = Telefono,
@@ -425,13 +344,8 @@ namespace Franquicia.Bussiness
         {
             lsUsuariosCompletos = usuariosCompletosRepository.BuscarAdministradoresFranquicia(UidFranquiciatario, UidTipoPerfilFranquicia, Nombre, ApePaterno, ApeMaterno, Correo, Perfil, UidEstatus);
         }
-        public bool RegistrarAdministradoresFranquicia(
-            string Nombre, string ApePaterno, string ApeMaterno, string Correo, string Usuario, string Password, Guid UidSegPerfil, Guid UidSegPerfilEscuela,
-            string Identificador, Guid UidPais, Guid UidEstado, Guid Municipio, Guid UidCiudad, Guid UidColonia, string Calle, string EntreCalle, string YCalle, string NumeroExterior, string NumeroInterior, string CodigoPostal, string Referencia,
-            string Telefono, Guid UidTipoTelefono, Guid UidFranquicia)
+        public bool RegistrarAdministradoresFranquicia(Guid UidUsuario, string Nombre, string ApePaterno, string ApeMaterno, string Correo, string Usuario, string Password, Guid UidSegPerfil, Guid UidSegPerfilEscuela, string Telefono, Guid UidTipoTelefono, Guid UidFranquicia)
         {
-            Guid UidUsuario = Guid.NewGuid();
-
             bool result = false;
             if (usuariosCompletosRepository.RegistrarAdministradoresFranquicia(
                 new UsuariosCompletos
@@ -446,22 +360,6 @@ namespace Franquicia.Bussiness
                     UidSegPerfil = UidSegPerfil
                 },
                 UidSegPerfilEscuela,
-                new DireccionesUsuarios
-                {
-                    Identificador = Identificador,
-                    UidPais = UidPais,
-                    UidEstado = UidEstado,
-                    UidMunicipio = Municipio,
-                    UidCiudad = UidCiudad,
-                    UidColonia = UidColonia,
-                    Calle = Calle,
-                    EntreCalle = EntreCalle,
-                    YCalle = YCalle,
-                    NumeroExterior = NumeroExterior,
-                    NumeroInterior = NumeroInterior,
-                    CodigoPostal = CodigoPostal,
-                    Referencia = Referencia
-                },
                 new TelefonosUsuarios
                 {
                     VchTelefono = Telefono,
@@ -475,10 +373,7 @@ namespace Franquicia.Bussiness
             return result;
         }
 
-        public bool ActualizarAdministradoresFranquicia(
-            Guid UidUsuario, string Nombre, string ApePaterno, string ApeMaterno, string Correo, Guid UidEstatus, string Usuario, string Password, Guid UidSegPerfil, Guid UidSegPerfilEscuela,
-            string Identificador, Guid UidPais, Guid UidEstado, Guid Municipio, Guid UidCiudad, Guid UidColonia, string Calle, string EntreCalle, string YCalle, string NumeroExterior, string NumeroInterior, string CodigoPostal, string Referencia,
-            string Telefono, Guid UidTipoTelefono, Guid UidFranquicia)
+        public bool ActualizarAdministradoresFranquicia(Guid UidUsuario, string Nombre, string ApePaterno, string ApeMaterno, string Correo, Guid UidEstatus, string Usuario, string Password, Guid UidSegPerfil, Guid UidSegPerfilEscuela,string Telefono, Guid UidTipoTelefono, Guid UidFranquicia)
         {
 
             bool result = false;
@@ -496,22 +391,6 @@ namespace Franquicia.Bussiness
                     UidSegPerfil = UidSegPerfil
                 },
                 UidSegPerfilEscuela,
-                new DireccionesUsuarios
-                {
-                    Identificador = Identificador,
-                    UidPais = UidPais,
-                    UidEstado = UidEstado,
-                    UidMunicipio = Municipio,
-                    UidCiudad = UidCiudad,
-                    UidColonia = UidColonia,
-                    Calle = Calle,
-                    EntreCalle = EntreCalle,
-                    YCalle = YCalle,
-                    NumeroExterior = NumeroExterior,
-                    NumeroInterior = NumeroInterior,
-                    CodigoPostal = CodigoPostal,
-                    Referencia = Referencia
-                },
                 new TelefonosUsuarios
                 {
                     VchTelefono = Telefono,
@@ -537,13 +416,8 @@ namespace Franquicia.Bussiness
         {
             lsUsuariosCompletos = usuariosCompletosRepository.BuscarAdministradoresCliente(UidFranquiciatario, UidTipoPerfil, Nombre, ApePaterno, ApeMaterno, Correo, Cliente, UidEstatus);
         }
-        public bool RegistrarAdministradoresCliente(
-            string Nombre, string ApePaterno, string ApeMaterno, string Correo, string Usuario, string Password, bool BitEscuela, Guid UidSegPerfil, Guid UidSegPerfilEscuela,
-            string Identificador, Guid UidPais, Guid UidEstado, Guid Municipio, Guid UidCiudad, Guid UidColonia, string Calle, string EntreCalle, string YCalle, string NumeroExterior, string NumeroInterior, string CodigoPostal, string Referencia,
-            string Telefono, Guid UidTipoTelefono, Guid UidCliente)
+        public bool RegistrarAdministradoresCliente(Guid UidUsuario, string Nombre, string ApePaterno, string ApeMaterno, string Correo, string Usuario, string Password, bool BitEscuela, Guid UidSegPerfil, Guid UidSegPerfilEscuela, string Telefono, Guid UidTipoTelefono, Guid UidCliente)
         {
-            Guid UidUsuario = Guid.NewGuid();
-
             bool result = false;
             if (usuariosCompletosRepository.RegistrarAdministradoresCliente(
                 new UsuariosCompletos
@@ -559,22 +433,6 @@ namespace Franquicia.Bussiness
                 },
                 BitEscuela,
                 UidSegPerfilEscuela,
-                new DireccionesUsuarios
-                {
-                    Identificador = Identificador,
-                    UidPais = UidPais,
-                    UidEstado = UidEstado,
-                    UidMunicipio = Municipio,
-                    UidCiudad = UidCiudad,
-                    UidColonia = UidColonia,
-                    Calle = Calle,
-                    EntreCalle = EntreCalle,
-                    YCalle = YCalle,
-                    NumeroExterior = NumeroExterior,
-                    NumeroInterior = NumeroInterior,
-                    CodigoPostal = CodigoPostal,
-                    Referencia = Referencia
-                },
                 new TelefonosUsuarios
                 {
                     VchTelefono = Telefono,
@@ -588,10 +446,7 @@ namespace Franquicia.Bussiness
             return result;
         }
 
-        public bool ActualizarAdministradoresCliente(
-            Guid UidUsuario, string Nombre, string ApePaterno, string ApeMaterno, string Correo, Guid UidEstatus, string Usuario, string Password, bool BitEscuela, Guid UidSegPerfil, Guid UidSegPerfilEscuela,
-            string Identificador, Guid UidPais, Guid UidEstado, Guid Municipio, Guid UidCiudad, Guid UidColonia, string Calle, string EntreCalle, string YCalle, string NumeroExterior, string NumeroInterior, string CodigoPostal, string Referencia,
-            string Telefono, Guid UidTipoTelefono, Guid UidCliente)
+        public bool ActualizarAdministradoresCliente(Guid UidUsuario, string Nombre, string ApePaterno, string ApeMaterno, string Correo, Guid UidEstatus, string Usuario, string Password, bool BitEscuela, Guid UidSegPerfil, Guid UidSegPerfilEscuela, string Telefono, Guid UidTipoTelefono, Guid UidCliente)
         {
 
             bool result = false;
@@ -610,22 +465,6 @@ namespace Franquicia.Bussiness
                 },
                 BitEscuela,
                 UidSegPerfilEscuela,
-                new DireccionesUsuarios
-                {
-                    Identificador = Identificador,
-                    UidPais = UidPais,
-                    UidEstado = UidEstado,
-                    UidMunicipio = Municipio,
-                    UidCiudad = UidCiudad,
-                    UidColonia = UidColonia,
-                    Calle = Calle,
-                    EntreCalle = EntreCalle,
-                    YCalle = YCalle,
-                    NumeroExterior = NumeroExterior,
-                    NumeroInterior = NumeroInterior,
-                    CodigoPostal = CodigoPostal,
-                    Referencia = Referencia
-                },
                 new TelefonosUsuarios
                 {
                     VchTelefono = Telefono,
@@ -1064,12 +903,36 @@ namespace Franquicia.Bussiness
         }
 
 
-        public void ValidarExcelToListMultiple(DataTable dataTable, List<CBLPromocionesModel> lsCBLPromocionesModelCliente)
+        public void ValidarExcelToListMultiple(DataTable dataTable, List<CBLPromocionesModel> lsCBLPromocionesModelCliente, Guid UidClienteLocal)
         {
             lsLigasErroresMultiple.Clear();
             lsLigasInsertarMultiple.Clear();
 
             bool PromocionCorrecto = false;
+
+            ParametrosEntradaRepository parametrosEntradaRepository = new ParametrosEntradaRepository();
+            ImporteLigaMinMaxRepository ImporteLigaMinMaxRepository = new ImporteLigaMinMaxRepository();
+
+            parametrosEntradaRepository.ObtenerParametrosEntradaClienteCM(UidClienteLocal);
+
+            string MontoMin = "0";
+            string MontoMax = "0";
+
+            if (parametrosEntradaRepository.parametrosEntrada.BitImporteLiga)
+            {
+                //Asigna los importes min y max del cliente
+                MontoMin = parametrosEntradaRepository.parametrosEntrada.DcmImporteMin.ToString();
+                MontoMax = parametrosEntradaRepository.parametrosEntrada.DcmImporteMax.ToString();
+            }
+            else
+            {
+                //Asigna los importes min y max del sistema
+                foreach (var itemImp in ImporteLigaMinMaxRepository.CargarImporteLigaMinMax())
+                {
+                    MontoMin = itemImp.DcmImporteMin.ToString();
+                    MontoMax = itemImp.DcmImporteMax.ToString();
+                }
+            }
 
             foreach (DataRow item in dataTable.Rows)
             {
@@ -1142,9 +1005,6 @@ namespace Franquicia.Bussiness
                                         decimal validar = 0;
                                         if (decimal.TryParse(item["IMPORTE"].ToString(), out validar))
                                         {
-                                            string MontoMin = "50.00";
-                                            string MontoMax = "15000.00";
-
                                             if (decimal.Parse(item["IMPORTE"].ToString()) >= decimal.Parse(MontoMin) && decimal.Parse(item["IMPORTE"].ToString()) <= decimal.Parse(MontoMax))
                                             {
                                                 DateTime date = DateTime.Parse(item["VENCIMIENTO"].ToString());
@@ -1184,7 +1044,15 @@ namespace Franquicia.Bussiness
                                                                     }
                                                                     else
                                                                     {
-                                                                        pro += arPromo[i] + ",";
+                                                                        if (pro == string.Empty)
+                                                                        {
+                                                                            pro = arPromo[i];
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            pro += "," + arPromo[i];
+                                                                        }
+
                                                                         PromocionCorrecto = true;
                                                                     }
                                                                 }
@@ -1730,7 +1598,7 @@ namespace Franquicia.Bussiness
         }
 
         #region Metodos Escuela
-        
+
         #region Pagos Padres
         public void SelectUsuCliColegiatura(Guid UidCliente, Guid UidUsuario)
         {

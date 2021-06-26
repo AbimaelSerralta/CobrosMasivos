@@ -93,7 +93,10 @@ namespace Franquicia.WebForms.Views
             if (!IsPostBack)
             {
                 ViewState["gvUsuariosSeleccionados"] = SortDirection.Ascending;
+                ViewState["SoExgvUsuariosSeleccionados"] = "";
+
                 ViewState["gvUsuarios"] = SortDirection.Ascending;
+                ViewState["SoExgvUsuarios"] = "";
 
                 ViewState["listPromocionesSeleccionados"] = listPromocionesSeleccionados;
 
@@ -325,7 +328,7 @@ namespace Franquicia.WebForms.Views
                             && dt.Columns.Contains("SMS".Trim()) && dt.Columns.Contains("PROMOCION(ES)".Trim()))
                         {
 
-                            usuariosCompletosServices.ValidarExcelToListMultiple(dt, promocionesServices.lsCBLPromocionesModelCliente);
+                            usuariosCompletosServices.ValidarExcelToListMultiple(dt, promocionesServices.lsCBLPromocionesModelCliente, Guid.Parse(ViewState["UidClienteLocal"].ToString()));
 
                             if (usuariosCompletosServices.lsLigasInsertarMultiple.Count >= 1)
                             {
@@ -815,6 +818,96 @@ namespace Franquicia.WebForms.Views
             gvUsuarios.DataSource = usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel;
             gvUsuarios.DataBind();
         }
+        protected void gvUsuarios_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            string SortExpression = e.SortExpression;
+            ViewState["SoExgvUsuarios"] = e.SortExpression;
+            SortDirection direccion;
+            string Orden = string.Empty;
+
+            if (ViewState["gvUsuarios"] != null)
+            {
+                direccion = (SortDirection)ViewState["gvUsuarios"];
+                if (direccion == SortDirection.Ascending)
+                {
+                    ViewState["gvUsuarios"] = SortDirection.Descending;
+                    Orden = "ASC";
+                }
+                else
+                {
+                    ViewState["gvUsuarios"] = SortDirection.Ascending;
+                    Orden = "DESC";
+                }
+
+                switch (SortExpression)
+                {
+                    case "NombreCompleto":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel = usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel.OrderBy(x => x.NombreCompleto).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel = usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel.OrderByDescending(x => x.NombreCompleto).ToList();
+                        }
+                        break;
+                    case "StrCorreo":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel = usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel.OrderBy(x => x.StrCorreo).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel = usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel.OrderByDescending(x => x.StrCorreo).ToList();
+                        }
+                        break;
+                    case "StrTelefono":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel = usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel.OrderBy(x => x.StrTelefono).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel = usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel.OrderByDescending(x => x.StrTelefono).ToList();
+                        }
+                        break;
+                }
+
+                gvUsuarios.DataSource = usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel;
+                gvUsuarios.DataBind();
+            }
+        }
+        protected void gvUsuarios_RowCreated(object sender, GridViewRowEventArgs e)
+        {
+            SortDirection direccion = (SortDirection)ViewState["gvUsuarios"];
+            string SortExpression = ViewState["SoExgvUsuarios"].ToString();
+
+            if (e.Row.RowType == DataControlRowType.Header)
+            {
+                foreach (TableCell tc in e.Row.Cells)
+                {
+                    if (tc.HasControls())
+                    {
+                        // Buscar el enlace de la cabecera
+                        LinkButton lnk = tc.Controls[0] as LinkButton;
+                        if (lnk != null && SortExpression == lnk.CommandArgument)
+                        {
+                            // Verificar que se está ordenando por el campo indicado en el comando de ordenación
+                            // Crear una imagen
+                            System.Web.UI.WebControls.Image img = new System.Web.UI.WebControls.Image();
+                            img.Height = 20;
+                            img.Width = 20;
+                            // Ajustar dinámicamente el icono adecuado
+                            img.ImageUrl = "~/Images/SortingGv/" + (direccion == SortDirection.Ascending ? "desc" : "asc") + ".png";
+                            img.ImageAlign = ImageAlign.AbsMiddle;
+                            // Le metemos un espacio delante de la imagen para que no se pegue al enlace
+                            tc.Controls.Add(new LiteralControl(""));
+                            tc.Controls.Add(img);
+                        }
+                    }
+                }
+            }
+        }
 
         protected void gvUsuariosSeleccionados_RowCommand(object sender, GridViewCommandEventArgs e)
         {
@@ -1079,6 +1172,195 @@ namespace Franquicia.WebForms.Views
                 promocionesServices.EliminarPromocionesMultiplesTemporal(dataKey, lblGvAuxiliar.Text);
                 gvUsuariosSeleccionados.DataSource = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple;
                 gvUsuariosSeleccionados.DataBind();
+            }
+        }
+        protected void gvUsuariosSeleccionados_PageIndexChanging(object sender, GridViewPageEventArgs e)
+        {
+            gvUsuariosSeleccionados.PageIndex = e.NewPageIndex;
+            gvUsuariosSeleccionados.DataSource = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple;
+            gvUsuariosSeleccionados.DataBind();
+        }
+        protected void gvUsuariosSeleccionados_Sorting(object sender, GridViewSortEventArgs e)
+        {
+            string SortExpression = e.SortExpression;
+            ViewState["SoExgvUsuariosSeleccionados"] = e.SortExpression;
+            SortDirection direccion;
+            string Orden = string.Empty;
+
+            if (ViewState["gvUsuariosSeleccionados"] != null)
+            {
+                direccion = (SortDirection)ViewState["gvUsuariosSeleccionados"];
+                if (direccion == SortDirection.Ascending)
+                {
+                    ViewState["gvUsuariosSeleccionados"] = SortDirection.Descending;
+                    Orden = "ASC";
+                }
+                else
+                {
+                    ViewState["gvUsuariosSeleccionados"] = SortDirection.Ascending;
+                    Orden = "DESC";
+                }
+
+                switch (SortExpression)
+                {
+                    case "NombreCompleto":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple.OrderBy(x => x.NombreCompleto).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple.OrderByDescending(x => x.NombreCompleto).ToList();
+                        }
+                        break;
+                    case "StrCorreo":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple.OrderBy(x => x.StrCorreo).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple.OrderByDescending(x => x.StrCorreo).ToList();
+                        }
+                        break;
+                    case "StrTelefono":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple.OrderBy(x => x.StrTelefono).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple.OrderByDescending(x => x.StrTelefono).ToList();
+                        }
+                        break;
+                    case "StrAsunto":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple.OrderBy(x => x.StrAsunto).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple.OrderByDescending(x => x.StrAsunto).ToList();
+                        }
+                        break;
+                    case "StrConcepto":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple.OrderBy(x => x.StrConcepto).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple.OrderByDescending(x => x.StrConcepto).ToList();
+                        }
+                        break;
+                    case "DcmImporte":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple.OrderBy(x => x.DcmImporte).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple.OrderByDescending(x => x.DcmImporte).ToList();
+                        }
+                        break;
+                    case "DtVencimiento":
+                        if (Orden == "ASC")
+                        {
+                            usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple.OrderBy(x => x.DtVencimiento).ToList();
+                        }
+                        else
+                        {
+                            usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple.OrderByDescending(x => x.DtVencimiento).ToList();
+                        }
+                        break;
+                }
+
+                gvUsuariosSeleccionados.DataSource = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple;
+                gvUsuariosSeleccionados.DataBind();
+            }
+        }
+        protected void gvUsuariosSeleccionados_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                //e.Row.Attributes["onclick"] = Page.ClientScript.GetPostBackClientHyperlink(gvFranquiciatarios, "Select$" + e.Row.RowIndex);
+
+
+                string DataKey = gvUsuariosSeleccionados.DataKeys[e.Row.RowIndex].Values[0].ToString();
+
+                ListBox GvListBoxMultiple = (ListBox)e.Row.FindControl("ListBoxMultiple");
+                Label GvlblPromociones = (Label)e.Row.FindControl("GvlblPromociones");
+                Label lblGvAuxiliar = (Label)e.Row.FindControl("lblGvAuxiliar");
+                ListBox GvlbPromociones = (ListBox)e.Row.FindControl("GvlbPromociones");
+
+                if (promocionesServices.lsCBLPromocionesModelCliente.Count >= 1)
+                {
+                    GvListBoxMultiple.DataSource = promocionesServices.lsCBLPromocionesModelCliente;
+                    GvListBoxMultiple.DataTextField = "VchDescripcion";
+                    GvListBoxMultiple.DataValueField = "UidPromocion";
+                    GvListBoxMultiple.DataBind();
+                }
+                else
+                {
+                    //pnlPromociones.Visible = false;
+                }
+
+                int Numero = e.Row.RowIndex;
+
+                foreach (ListItem item in GvListBoxMultiple.Items)
+                {
+                    foreach (var it in promocionesServices.lsLigasMultiplePromocionesModel)
+                    {
+                        if (it.IdUsuario == int.Parse(DataKey))
+                        {
+                            if (item.Value == it.UidPromocion.ToString() && lblGvAuxiliar.Text == it.IntAuxiliar)
+                            {
+                                GvlblPromociones.Text += item.Text + ",";
+                                //GvlbPromociones.Items.Add(item.Text);
+                                item.Selected = true;
+                            }
+                        }
+                    }
+                }
+
+                GvlblPromociones.Text = GvlblPromociones.Text.Replace(",", "</br>");
+
+                if (Convert.ToBoolean((Numero % 2 == 0 ? true : false)))
+                {
+                    e.Row.BackColor = Color.FromName("#fceeff");
+                }
+
+            }
+        }
+        protected void gvUsuariosSeleccionados_RowCreated(object sender, GridViewRowEventArgs e)
+        {
+            SortDirection direccion = (SortDirection)ViewState["gvUsuariosSeleccionados"];
+            string SortExpression = ViewState["SoExgvUsuariosSeleccionados"].ToString();
+
+            if (e.Row.RowType == DataControlRowType.Header)
+            {
+                foreach (TableCell tc in e.Row.Cells)
+                {
+                    if (tc.HasControls())
+                    {
+                        // Buscar el enlace de la cabecera
+                        LinkButton lnk = tc.Controls[0] as LinkButton;
+                        if (lnk != null && SortExpression == lnk.CommandArgument)
+                        {
+                            // Verificar que se está ordenando por el campo indicado en el comando de ordenación
+                            // Crear una imagen
+                            System.Web.UI.WebControls.Image img = new System.Web.UI.WebControls.Image();
+                            img.Height = 20;
+                            img.Width = 20;
+                            // Ajustar dinámicamente el icono adecuado
+                            img.ImageUrl = "~/Images/SortingGv/" + (direccion == SortDirection.Ascending ? "descWhite" : "ascWhite") + ".png";
+                            img.ImageAlign = ImageAlign.AbsMiddle;
+                            // Le metemos un espacio delante de la imagen para que no se pegue al enlace
+                            tc.Controls.Add(new LiteralControl(""));
+                            tc.Controls.Add(img);
+                        }
+                    }
+                }
             }
         }
 
@@ -1684,13 +1966,6 @@ namespace Franquicia.WebForms.Views
             ScriptManager.RegisterStartupScript(this, this.GetType(), "FormScript", "hideModal()", true);
         }
 
-        protected void gvUsuariosSeleccionados_PageIndexChanging(object sender, GridViewPageEventArgs e)
-        {
-            gvUsuariosSeleccionados.PageIndex = e.NewPageIndex;
-            gvUsuariosSeleccionados.DataSource = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple;
-            gvUsuariosSeleccionados.DataBind();
-        }
-
         protected void btnLimpiarFiltros_Click(object sender, EventArgs e)
         {
             FiltroNombre.Text = string.Empty;
@@ -1705,164 +1980,6 @@ namespace Franquicia.WebForms.Views
             usuariosCompletosServices.BuscarUsuarios(usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel, new Guid(ViewState["UidClienteLocal"].ToString()), new Guid("E39FF705-8A01-4302-829A-7CFB9615CC8F"), FiltroNombre.Text, FiltroApePaterno.Text, FiltroApeMaterno.Text, FiltroCorreo.Text, FiltroTelefono.Text);
             gvUsuarios.DataSource = usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel.Where(x => x.blSeleccionado == false).ToList();
             gvUsuarios.DataBind();
-        }
-
-        protected void gvUsuariosSeleccionados_Sorting(object sender, GridViewSortEventArgs e)
-        {
-            string SortExpression = e.SortExpression;
-            SortDirection direccion;
-            string Orden = string.Empty;
-
-            if (ViewState["gvUsuariosSeleccionados"] != null)
-            {
-                direccion = (SortDirection)ViewState["gvUsuariosSeleccionados"];
-                if (direccion == SortDirection.Ascending)
-                {
-                    ViewState["gvUsuariosSeleccionados"] = SortDirection.Descending;
-                    Orden = "ASC";
-                }
-                else
-                {
-                    ViewState["gvUsuariosSeleccionados"] = SortDirection.Ascending;
-                    Orden = "DESC";
-                }
-
-                switch (SortExpression)
-                {
-                    case "NombreCompleto":
-                        if (Orden == "ASC")
-                        {
-                            usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple.OrderBy(x => x.NombreCompleto).ToList();
-                        }
-                        else
-                        {
-                            usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple.OrderByDescending(x => x.NombreCompleto).ToList();
-                        }
-                        break;
-                    case "StrCorreo":
-                        if (Orden == "ASC")
-                        {
-                            usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple.OrderBy(x => x.StrCorreo).ToList();
-                        }
-                        else
-                        {
-                            usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple.OrderByDescending(x => x.StrCorreo).ToList();
-                        }
-                        break;
-                    case "StrTelefono":
-                        if (Orden == "ASC")
-                        {
-                            usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple.OrderBy(x => x.StrTelefono).ToList();
-                        }
-                        else
-                        {
-                            usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple.OrderByDescending(x => x.StrTelefono).ToList();
-                        }
-                        break;
-                    case "StrAsunto":
-                        if (Orden == "ASC")
-                        {
-                            usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple.OrderBy(x => x.StrAsunto).ToList();
-                        }
-                        else
-                        {
-                            usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple.OrderByDescending(x => x.StrAsunto).ToList();
-                        }
-                        break;
-                    case "StrConcepto":
-                        if (Orden == "ASC")
-                        {
-                            usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple.OrderBy(x => x.StrConcepto).ToList();
-                        }
-                        else
-                        {
-                            usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple.OrderByDescending(x => x.StrConcepto).ToList();
-                        }
-                        break;
-                    case "DcmImporte":
-                        if (Orden == "ASC")
-                        {
-                            usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple.OrderBy(x => x.DcmImporte).ToList();
-                        }
-                        else
-                        {
-                            usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple.OrderByDescending(x => x.DcmImporte).ToList();
-                        }
-                        break;
-                    case "DtVencimiento":
-                        if (Orden == "ASC")
-                        {
-                            usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple.OrderBy(x => x.DtVencimiento).ToList();
-                        }
-                        else
-                        {
-                            usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple.OrderByDescending(x => x.DtVencimiento).ToList();
-                        }
-                        break;
-                }
-
-                gvUsuariosSeleccionados.DataSource = usuariosCompletosServices.lsgvUsuariosSeleccionadosMultiple;
-                gvUsuariosSeleccionados.DataBind();
-            }
-        }
-
-        protected void gvUsuarios_Sorting(object sender, GridViewSortEventArgs e)
-        {
-            string SortExpression = e.SortExpression;
-            SortDirection direccion;
-            string Orden = string.Empty;
-
-            if (ViewState["gvUsuarios"] != null)
-            {
-                direccion = (SortDirection)ViewState["gvUsuarios"];
-                if (direccion == SortDirection.Ascending)
-                {
-                    ViewState["gvUsuarios"] = SortDirection.Descending;
-                    Orden = "ASC";
-                }
-                else
-                {
-                    ViewState["gvUsuarios"] = SortDirection.Ascending;
-                    Orden = "DESC";
-                }
-
-                switch (SortExpression)
-                {
-                    case "NombreCompleto":
-                        if (Orden == "ASC")
-                        {
-                            usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel = usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel.OrderBy(x => x.NombreCompleto).ToList();
-                        }
-                        else
-                        {
-                            usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel = usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel.OrderByDescending(x => x.NombreCompleto).ToList();
-                        }
-                        break;
-                    case "StrCorreo":
-                        if (Orden == "ASC")
-                        {
-                            usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel = usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel.OrderBy(x => x.StrCorreo).ToList();
-                        }
-                        else
-                        {
-                            usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel = usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel.OrderByDescending(x => x.StrCorreo).ToList();
-                        }
-                        break;
-                    case "StrTelefono":
-                        if (Orden == "ASC")
-                        {
-                            usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel = usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel.OrderBy(x => x.StrTelefono).ToList();
-                        }
-                        else
-                        {
-                            usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel = usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel.OrderByDescending(x => x.StrTelefono).ToList();
-                        }
-                        break;
-                }
-
-                gvUsuarios.DataSource = usuariosCompletosServices.lsLigasMultiplesUsuariosGridViewModel;
-                gvUsuarios.DataBind();
-            }
         }
 
         protected void btnReiniciar_Click(object sender, EventArgs e)
@@ -2016,59 +2133,7 @@ namespace Franquicia.WebForms.Views
             }
         }
 
-        protected void gvUsuariosSeleccionados_RowDataBound(object sender, GridViewRowEventArgs e)
-        {
-            if (e.Row.RowType == DataControlRowType.DataRow)
-            {
-                //e.Row.Attributes["onclick"] = Page.ClientScript.GetPostBackClientHyperlink(gvFranquiciatarios, "Select$" + e.Row.RowIndex);
-
-
-                string DataKey = gvUsuariosSeleccionados.DataKeys[e.Row.RowIndex].Values[0].ToString();
-
-                ListBox GvListBoxMultiple = (ListBox)e.Row.FindControl("ListBoxMultiple");
-                Label GvlblPromociones = (Label)e.Row.FindControl("GvlblPromociones");
-                Label lblGvAuxiliar = (Label)e.Row.FindControl("lblGvAuxiliar");
-                ListBox GvlbPromociones = (ListBox)e.Row.FindControl("GvlbPromociones");
-
-                if (promocionesServices.lsCBLPromocionesModelCliente.Count >= 1)
-                {
-                    GvListBoxMultiple.DataSource = promocionesServices.lsCBLPromocionesModelCliente;
-                    GvListBoxMultiple.DataTextField = "VchDescripcion";
-                    GvListBoxMultiple.DataValueField = "UidPromocion";
-                    GvListBoxMultiple.DataBind();
-                }
-                else
-                {
-                    //pnlPromociones.Visible = false;
-                }
-
-                int Numero = e.Row.RowIndex;
-
-                foreach (ListItem item in GvListBoxMultiple.Items)
-                {
-                    foreach (var it in promocionesServices.lsLigasMultiplePromocionesModel)
-                    {
-                        if (it.IdUsuario == int.Parse(DataKey))
-                        {
-                            if (item.Value == it.UidPromocion.ToString() && lblGvAuxiliar.Text == it.IntAuxiliar)
-                            {
-                                GvlblPromociones.Text += item.Text + ",";
-                                //GvlbPromociones.Items.Add(item.Text);
-                                item.Selected = true;
-                            }
-                        }
-                    }
-                }
-
-                GvlblPromociones.Text = GvlblPromociones.Text.Replace(",", "</br>");
-
-                if (Convert.ToBoolean((Numero % 2 == 0 ? true : false)))
-                {
-                    e.Row.BackColor = Color.FromName("#fceeff");
-                }
-
-            }
-        }
+        
 
         protected void btnGuardar_Click(object sender, EventArgs e)
         {
