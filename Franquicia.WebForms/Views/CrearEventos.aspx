@@ -216,8 +216,9 @@
                                                                         <asp:FilteredTextBoxExtender FilterType="Numbers, UppercaseLetters, LowercaseLetters" TargetControlID="txtNombreEvento" runat="server" />
                                                                     </div>
                                                                     <div class="form-group col-md-6">
-                                                                        <label for="txtDescripcion" style="color: black;">Descripción del evento</label>
+                                                                        <label for="txtDescripcion" title="No se permiten caracteres especiales por ejemplo: &~^#%=" style="color: black;"><i class="material-icons" style="font-size: 15px;">info_outline</i> Descripción del evento</label>
                                                                         <asp:TextBox ID="txtDescripcion" CssClass="form-control" TextMode="MultiLine" runat="server" />
+                                                                        <asp:FilteredTextBoxExtender FilterType="Numbers, UppercaseLetters, LowercaseLetters" TargetControlID="txtDescripcion" runat="server" />
                                                                     </div>
                                                                     <div class="form-group col-md-6">
                                                                         <label for="txtFHInicio" style="color: black;">F/H de inicio *</label>
@@ -255,8 +256,9 @@
                                                                         </div>
                                                                     </div>
                                                                     <div class="form-group col-md-6">
-                                                                        <label for="txtConcepto" style="color: black;">Concepto *</label>
+                                                                        <label for="txtConcepto" title="No se permiten caracteres especiales por ejemplo: &~^#%=" style="color: black;"><i class="material-icons" style="font-size: 15px;">info_outline</i> Concepto *</label>
                                                                         <asp:TextBox ID="txtConcepto" CssClass="form-control" Style="margin-top: 11px;" runat="server" />
+                                                                        <asp:FilteredTextBoxExtender FilterType="Numbers, UppercaseLetters, LowercaseLetters" TargetControlID="txtConcepto" runat="server" />
                                                                     </div>
                                                                     <div class="form-group col-md-4">
                                                                         <label for="ddlPedirDatos" style="color: black; padding-left: 0px; text-overflow: ellipsis;">¿Pedir datos? *</label>
